@@ -97,7 +97,11 @@ jobs:
       - docker/check
       - run:
           name: Build setup
-          command: cd node && make clean build
+          command: |
+            sudo apt-get update \
+            && sudo apt-get install -y rsync \
+            && cd node \
+            && make clean build
       - docker/build:
           path: node
           image: uscictdocker/mentor-client
