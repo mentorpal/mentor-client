@@ -24,7 +24,7 @@ jobs:
       - checkout
       - run:
           name: Check format
-          command: make test-format-js
+          command: cd client && npm run test:format
       - run: 
           name: Install client
           command: cd client && npm install
@@ -35,6 +35,10 @@ jobs:
           name: Lint client
           command:
             cd client && npm run test:lint
+      - run:
+          name: Lint client
+          command:
+            cd client && npm run test:types
       - run:
           name: Test client
           command:
