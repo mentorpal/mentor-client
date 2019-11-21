@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 
-const MENTOR_API_URL = process.env.MENTOR_API_URL || "/mentor-api"; // eslint-disable-line no-undef
-let MENTOR_VIDEO_HOST =
-  process.env.MENTOR_VIDEO_HOST || "https://video.mentorpal.org";
+let MENTOR_API_URL = process.env.MENTOR_API_URL || "/mentor-api"; // eslint-disable-line no-undef
+let MENTOR_VIDEO_URL =
+  process.env.MENTOR_VIDEO_URL || "/videos";
 
 export interface MentorApiData {
   id: string;
@@ -47,7 +47,7 @@ if (typeof window !== "undefined" && process.env.NODE_ENV !== "test") {
     .then(result => {
       console.log(`get ${MENTOR_API_URL}/config/video-host`, result);
       if (typeof result.data.url === "string") {
-        MENTOR_VIDEO_HOST = result.data.url;
+        MENTOR_VIDEO_URL = result.data.url;
       }
     })
     .catch(err => {
@@ -60,11 +60,11 @@ export const videoUrl = (
   answerId: string,
   format: string
 ): string => {
-  return `${MENTOR_VIDEO_HOST}/videos/mentors/${mentor}/${format}/${answerId}.mp4`;
+  return `${MENTOR_VIDEO_URL}/mentors/${mentor}/${format}/${answerId}.mp4`;
 };
 
 export const idleUrl = (mentor: string, format: string): string => {
-  return `${MENTOR_VIDEO_HOST}/videos/mentors/${mentor}/${format}/idle.mp4`;
+  return `${MENTOR_VIDEO_URL}/mentors/${mentor}/${format}/idle.mp4`;
 };
 
 // TODO: don't pass mentor here, pass mentorId and answerId
@@ -89,15 +89,4 @@ export const queryMentor = async (
       query: question,
     },
   });
-  // const { data } = res;
-  // const response = {
-  //   id: mentorId,
-  //   question: data.query,
-  //   answer_id: data.answer_id,
-  //   answer_text: data.answer_text,
-  //   confidence: data.confidence,
-  //   is_off_topic: data.confidence <= RESPONSE_CUTOFF,
-  //   classifier: data.classifier,
-  // };
-  // return response;
 };
