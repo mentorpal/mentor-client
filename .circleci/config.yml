@@ -96,6 +96,7 @@ jobs:
       - checkout
       - docker/check
       - docker/build:
+          path: node
           image: uscictdocker/mentor-client
           tag: ${IMAGE_TAG}
       - docker/push:
