@@ -18,21 +18,24 @@ executors:
     docker:
       - image: circleci/python:3.6.9
 jobs:
-  client-test-format:
+  client-format:
     executor: node
     steps:
       - checkout
+      - run: 
+          name: Install client
+          command: cd client && npm install
       - run:
           name: Client test format
           command: cd client && npm run test:format
-  client-test-audit:
+  client-audit:
     executor: node
     steps:
       - checkout
       - run:
           name: Audit js
           command: cd client && npm run test:audit
-  client-test-lint:
+  client-lint:
     executor: node
     steps:
       - checkout
@@ -43,7 +46,7 @@ jobs:
           name: Client test lint
           command:
             cd client && npm run test:lint
-  client-test-types:
+  client-types:
     executor: node
     steps:
       - checkout
@@ -105,13 +108,13 @@ jobs:
 workflows:
   test-build-deploy:
     jobs:
-      - client-test-format:
+      - client-format:
           filters: *only-untagged
-      - client-test-audit:
+      - client-audit:
           filters: *only-untagged
-      - client-test-lint:
+      - client-lint:
           filters: *only-untagged
-      - client-test-types:
+      - client-types:
           filters: *only-untagged
       - client-test:
           filters: *only-untagged
@@ -119,10 +122,10 @@ workflows:
           filters: *only-untagged
           type: approval
           requires:
-            - client-test-format
-            - client-test-audit
-            - client-test-lint
-            - client-test-types
+            - client-format
+            - client-audit
+            - client-lint
+            - client-types
             - client-test
       - build-and-push:
           is-release-tag: false
@@ -131,13 +134,13 @@ workflows:
             - approve-build-and-push
   test-build-deploy-release:
     jobs:
-      - client-test-format:
+      - client-format:
           filters: *only-tagged-releases
-      - client-test-audit:
+      - client-audit:
           filters: *only-tagged-releases
-      - client-test-lint:
+      - client-lint:
           filters: *only-tagged-releases
-      - client-test-types:
+      - client-types:
           filters: *only-tagged-releases
       - client-test:
           filters: *only-tagged-releases
@@ -145,10 +148,10 @@ workflows:
           is-release-tag: true
           filters: *only-tagged-releases
           requires:
-            - client-test-format
-            - client-test-audit
-            - client-test-lint
-            - client-test-types
+            - client-format
+            - client-audit
+            - client-lint
+            - client-types
             - client-test
 
 

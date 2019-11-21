@@ -3,19 +3,17 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const http = require("http");
-const cors = require('cors');
-
-
+const cors = require("cors");
 var server = http.createServer(app);
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/", express.static(path.join(__dirname, "public", "mentorpanel")));
+app.use(cors());
 app.get("/config", (req, res, next) => {
   res.send({
     MENTOR_API_URL: process.env.MENTOR_API_URL || "/mentor-api",
-    MENTOR_VIDEO_URL: process.env.MENTOR_VIDEO_URL || "/videos"
+    MENTOR_VIDEO_URL: process.env.MENTOR_VIDEO_URL || "/videos",
   });
 });
 app.get(/mentor-api\/*/, cors(), (req, res, next) => {
