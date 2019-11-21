@@ -42,11 +42,14 @@ to test serving those videos
 if (typeof window !== "undefined" && process.env.NODE_ENV !== "test") {
   // i.e. don't run at build time
   axios
-    .get(`${MENTOR_API_URL}/config/video-host`)
+    .get(`/config`)
     .then(result => {
-      console.log(`get ${MENTOR_API_URL}/config/video-host`, result);
-      if (typeof result.data.url === "string") {
-        MENTOR_VIDEO_URL = result.data.url;
+      console.log(`get ${MENTOR_API_URL}/config`, result);
+      if (typeof result.data["MENTOR_VIDEO_URL"] === "string") {
+        MENTOR_VIDEO_URL = result.data["MENTOR_VIDEO_URL"];
+      }
+      if (typeof result.data["MENTOR_API_URL"] === "string") {
+        MENTOR_API_URL = result.data["MENTOR_API_URL"];
       }
     })
     .catch(err => {
