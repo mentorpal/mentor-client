@@ -18,29 +18,51 @@ executors:
     docker:
       - image: circleci/python:3.6.9
 jobs:
-  client-test:
+  client-test-format:
     executor: node
     steps:
       - checkout
       - run:
-          name: Check format
+          name: Client test format
           command: cd client && npm run test:format
+  client-test-audit:
+    executor: node
+    steps:
+      - checkout
+      - run:
+          name: Audit js
+          command: cd client && npm run test:audit
+  client-test-lint:
+    executor: node
+    steps:
+      - checkout
       - run: 
           name: Install client
           command: cd client && npm install
       - run:
-          name: Audit js
-          command: cd client && npm run test:audit
-      - run:
-          name: Lint client
+          name: Client test lint
           command:
             cd client && npm run test:lint
+  client-test-types:
+    executor: node
+    steps:
+      - checkout
+      - run: 
+          name: Install client
+          command: cd client && npm install
       - run:
-          name: Lint client
+          name: Client test types
           command:
             cd client && npm run test:types
+  client-test:
+    executor: node
+    steps:
+      - checkout
+      - run: 
+          name: Install client
+          command: cd client && npm install
       - run:
-          name: Test client
+          name: Client test
           command:
             cd client && npm run test
   build-and-push:
@@ -83,12 +105,24 @@ jobs:
 workflows:
   test-build-deploy:
     jobs:
+      - client-test-format:
+          filters: *only-untagged
+      - client-test-audit:
+          filters: *only-untagged
+      - client-test-lint:
+          filters: *only-untagged
+      - client-test-types:
+          filters: *only-untagged
       - client-test:
           filters: *only-untagged
       - approve-build-and-push:
           filters: *only-untagged
           type: approval
           requires:
+            - client-test-format
+            - client-test-audit
+            - client-test-lint
+            - client-test-types
             - client-test
       - build-and-push:
           is-release-tag: false
@@ -97,12 +131,24 @@ workflows:
             - approve-build-and-push
   test-build-deploy-release:
     jobs:
+      - client-test-format:
+          filters: *only-tagged-releases
+      - client-test-audit:
+          filters: *only-tagged-releases
+      - client-test-lint:
+          filters: *only-tagged-releases
+      - client-test-types:
+          filters: *only-tagged-releases
       - client-test:
           filters: *only-tagged-releases
       - build-and-push:
           is-release-tag: true
           filters: *only-tagged-releases
           requires:
+            - client-test-format
+            - client-test-audit
+            - client-test-lint
+            - client-test-types
             - client-test
 
 
