@@ -55,6 +55,47 @@ exec-shell:
 		$(DOCKER_CONTAINER) \
 			bash
 
-.PHONY: audit-js
+.PHONY: format
+format:
+	npm run format
+
+node_modules/eslint:
+	npm install
+
+node_modules/jest:
+	npm install
+
+
+node_modules/prettier:
+	npm install
+
+node_modules/typescript:
+	npm install
+
+.PHONY: test
+test: node_modules/jest
+	npm run test
+
+.PHONY: test-all
+test-all:
+	$(MAKE) test-audit
+	$(MAKE) test-format
+	$(MAKE) test-lint
+	$(MAKE) test-types
+	$(MAKE) test
+
+.PHONY: test-audit
 test-audit:
 	npm run test:audit
+
+.PHONY: test-format
+test-format:
+	npm run test:format
+
+.PHONY: test-lint
+test-lint:
+	npm run test:lint
+
+.PHONY: test-types
+test-types: node_modules/typescript
+	npm run test:types

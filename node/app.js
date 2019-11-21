@@ -17,8 +17,8 @@ app.get("/config", (req, res, next) => {
   });
 });
 app.get(/mentor-api\/*/, (req, res, next) => {
-  if(!process.env.MENTOR_API_URL) {
-    return next(new Error("MENTOR_API_URL not set in env"))
+  if (!process.env.MENTOR_API_URL) {
+    return next(new Error("MENTOR_API_URL not set in env"));
   }
   return res.redirect(
     301,
@@ -26,8 +26,8 @@ app.get(/mentor-api\/*/, (req, res, next) => {
   );
 });
 app.get(/videos\/*/, (req, res, next) => {
-  if(!process.env.MENTOR_VIDEO_URL) {
-    return next(new Error("MENTOR_VIDEO_URL not set in env"))
+  if (!process.env.MENTOR_VIDEO_URL) {
+    return next(new Error("MENTOR_VIDEO_URL not set in env"));
   }
   res.redirect(
     301,
