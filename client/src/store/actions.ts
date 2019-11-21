@@ -82,14 +82,12 @@ function findIntro(mentorData: MentorApiData): string {
   return "intro";
 }
 
-export const loadMentor: ActionCreator<
-  ThunkAction<
-    Promise<MentorDataRequestDoneAction>, // The type of the last action to be dispatched - will always be promise<T> for async actions
-    State, // The type for the data within the last action
-    string, // The type of the parameter for the nested function
-    MentorDataRequestDoneAction // The type of the last action to be dispatched
-  >
-> = (
+export const loadMentor: ActionCreator<ThunkAction<
+  Promise<MentorDataRequestDoneAction>, // The type of the last action to be dispatched - will always be promise<T> for async actions
+  State, // The type for the data within the last action
+  string, // The type of the parameter for the nested function
+  MentorDataRequestDoneAction // The type of the last action to be dispatched
+>> = (
   mentors: string | string[],
   {
     recommendedQuestions,
@@ -377,9 +375,9 @@ export const sendQuestion = (question: any) => async (
 
   // ...but still don't move forward till we have all the answers,
   // because we will prefer the user's fav and then highest confidence
-  const responses = (await Promise.all(
-    promises.map(p => p.catch(e => e))
-  )).filter(r => !(r instanceof Error));
+  const responses = (
+    await Promise.all(promises.map(p => p.catch(e => e)))
+  ).filter(r => !(r instanceof Error));
 
   if (responses.length === 0) {
     return;
@@ -459,9 +457,12 @@ export const answerFinished = () => (
   }, NEXT_MENTOR_DELAY);
 };
 
-export const onInput: ActionCreator<
-  ThunkAction<AnyAction, State, void, NextMentorAction>
-> = () => (dispatch: Dispatch) => {
+export const onInput: ActionCreator<ThunkAction<
+  AnyAction,
+  State,
+  void,
+  NextMentorAction
+>> = () => (dispatch: Dispatch) => {
   if (timer) {
     clearTimeout(timer);
     timer = null;
