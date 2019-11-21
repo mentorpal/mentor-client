@@ -4,7 +4,18 @@ mentor-client
 Usage
 -----
 
-A docker image that serves a web client for question/answer sessions using prerecorded mentor videos and an AI (mentor-client)[https://github.com/ICTLearningSciences/mentor-client]
+A docker image that serves a web client for question/answer sessions using prerecorded mentor videos and an AI classifier provided by [mentor-api](https://github.com/ICTLearningSciences/mentor-api)
+
+
+Variables
+---------
+
+In order to function properly the client generally requires these environment variables defined:
+
+- **MENTOR_API_URL**: The base url for the the [mentor-api](https://github.com/ICTLearningSciences/mentor-api), e.g. https://mentorpal.org/mentor-api
+
+- **MENTOR_VIDEO_URL**: The base url for the mentor videos, e.g. https://video.mentorpal.org/videos
+
 
 Development
 -----------
