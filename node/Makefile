@@ -31,7 +31,7 @@ docker-run:
 			-it \
 			--rm \
 			--name $(DOCKER_CONTAINER) \
-			-e MENTOR_API_URL="https://mentorpal.org/mentor-api" \
+			-e MENTOR_API_URL="https://qa.mentorpal.org/mentor-api" \
 			-e MENTOR_VIDEO_URL="https://video.mentorpal.org/videos" \
 			-p 3000:3000 \
 		$(DOCKER_IMAGE) 
