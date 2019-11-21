@@ -17,6 +17,7 @@ build/client:
 	mkdir -p build
 	rsync -rv --exclude=node_modules $(CLIENT) build
 
+build: build/client
 
 .PHONY docker-build:
 docker-build: clean build/client
