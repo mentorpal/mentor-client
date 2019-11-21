@@ -1,8 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 
 let MENTOR_API_URL = process.env.MENTOR_API_URL || "/mentor-api"; // eslint-disable-line no-undef
-let MENTOR_VIDEO_URL =
-  process.env.MENTOR_VIDEO_URL || "/videos";
+let MENTOR_VIDEO_URL = process.env.MENTOR_VIDEO_URL || "/videos";
 
 export interface MentorApiData {
   id: string;

@@ -3,6 +3,8 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const http = require("http");
+const cors = require('cors');
+
 
 var server = http.createServer(app);
 
@@ -16,14 +18,14 @@ app.get("/config", (req, res, next) => {
     MENTOR_VIDEO_URL: process.env.MENTOR_VIDEO_URL || "/videos"
   });
 });
-app.get(/mentor-api\/*/, (req, res, next) => {
+app.get(/mentor-api\/*/, cors(), (req, res, next) => {
   // expectation is that MENTOR_VIDEO_URL env is configured
   res.redirect(
     301,
     process.env.MENTOR_API_URL + req.url.replace(/^\/mentor-api/, "")
   );
 });
-app.get(/videos\/*/, (req, res, next) => {
+app.get(/videos\/*/, cors(), (req, res, next) => {
   // expectation is that MENTOR_VIDEO_URL env is configured
   res.redirect(
     301,
