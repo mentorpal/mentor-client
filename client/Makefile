@@ -24,6 +24,9 @@ node_modules/eslint:
 node_modules/gatsby-cli:
 	yarn install --frozen-lockfile
 
+node_modules/jest:
+	yarn install --frozen-lockfile
+
 node_modules/prettier:
 	yarn install --frozen-lockfile
 
@@ -31,8 +34,16 @@ node_modules/typescript:
 	yarn install --frozen-lockfile
 
 .PHONY: test
-test:
-	yarn install --frozen-lockfile && yarn run test:all
+test: node_modules/jest
+	yarn run test
+
+PHONY: test-all
+test-all:
+	$(MAKE) test-audit
+	$(MAKE) test-format
+	$(MAKE) test-lint
+	$(MAKE) test-types
+	$(MAKE) test
 
 .PHONY: test-audit
 test-audit:

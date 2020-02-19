@@ -24,50 +24,50 @@ jobs:
       - checkout
       - run: 
           name: Install client
-          command: cd client && npm install
+          command: cd client && yarn install --frozen-lockfile
       - run:
           name: Client test format
-          command: cd client && npm run test:format
+          command: cd client && yarn run test:format
   client-audit:
     executor: node
     steps:
       - checkout
       - run:
           name: Audit js
-          command: cd client && npm run test:audit
+          command: cd client && yarn run test:audit
   client-lint:
     executor: node
     steps:
       - checkout
       - run: 
           name: Install client
-          command: cd client && npm install
+          command: cd client && yarn install --frozen-lockfile
       - run:
           name: Client test lint
           command:
-            cd client && npm run test:lint
+            cd client && yarn run test:lint
   client-types:
     executor: node
     steps:
       - checkout
       - run: 
           name: Install client
-          command: cd client && npm install
+          command: cd client && yarn install --frozen-lockfile
       - run:
           name: Client test types
           command:
-            cd client && npm run test:types
+            cd client && yarn run test:types
   client-test:
     executor: node
     steps:
       - checkout
       - run: 
           name: Install client
-          command: cd client && npm install
+          command: cd client && yarn install --frozen-lockfile
       - run:
           name: Client test
           command:
-            cd client && npm run test
+            cd client && yarn run test
   build-and-push:
     parameters:
       is-release-tag:

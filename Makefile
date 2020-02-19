@@ -1,7 +1,3 @@
-PHONY: audit-fix
-audit-fix:
-	cd client && $(MAKE) audit-fix
-
 PHONY: format
 format:
 	cd client && $(MAKE) format
