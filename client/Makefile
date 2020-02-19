@@ -6,10 +6,6 @@
 	@echo "This file should not be committed. "
 	@echo "Feel free to change to point to a local server if you're running one."
 
-.PHONY: audit-fix
-audit-fix:
-	npm audit fix
-
 .PHONY: clean
 clean:
 	rm -rf node_modules .cache public
@@ -20,36 +16,36 @@ develop: .env.development node_modules/gatsby-cli
 
 .PHONY: format
 format: node_modules/prettier
-	npm run format
+	yarn run format
 
 node_modules/eslint:
-	npm install
+	yarn install --frozen-lockfile
 
 node_modules/gatsby-cli:
-	npm install
+	yarn install --frozen-lockfile
 
 node_modules/prettier:
-	npm install
+	yarn install --frozen-lockfile
 
 node_modules/typescript:
-	npm install
+	yarn install --frozen-lockfile
 
 .PHONY: test
 test:
-	npm install && npm run test:all
+	yarn install --frozen-lockfile && yarn run test:all
 
 .PHONY: test-audit
 test-audit:
-	npm run test:audit
+	yarn run test:audit
 
 .PHONY: test-format
 test-format: node_modules/prettier
-	npm run test:format
+	yarn run test:format
 
 .PHONY: test-format
 test-lint: node_modules/eslint
-	npm run test:lint
+	yarn run test:lint
 
 .PHONY: test-types
 test-types: node_modules/typescript
-	npm run test:types
+	yarn run test:types
