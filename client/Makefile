@@ -30,6 +30,9 @@ node_modules/jest:
 =======
 >>>>>>> 873bdc2... switch client to yarn
 
+node_modules/jest:
+	yarn install --frozen-lockfile
+
 node_modules/prettier:
 	yarn install --frozen-lockfile
 
@@ -38,6 +41,9 @@ node_modules/typescript:
 
 .PHONY: test
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 87c632c... fixes peer dependencies in client
 test: node_modules/jest
 	yarn run test
 
@@ -48,10 +54,13 @@ test-all:
 	$(MAKE) test-lint
 	$(MAKE) test-types
 	$(MAKE) test
+<<<<<<< HEAD
 =======
 test:
 	yarn install --frozen-lockfile && yarn run test:all
 >>>>>>> 873bdc2... switch client to yarn
+=======
+>>>>>>> 87c632c... fixes peer dependencies in client
 
 .PHONY: test-audit
 test-audit:
