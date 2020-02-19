@@ -23,9 +23,12 @@ node_modules/eslint:
 
 node_modules/gatsby-cli:
 	yarn install --frozen-lockfile
+<<<<<<< HEAD
 
 node_modules/jest:
 	yarn install --frozen-lockfile
+=======
+>>>>>>> 873bdc2... switch client to yarn
 
 node_modules/prettier:
 	yarn install --frozen-lockfile
@@ -34,6 +37,7 @@ node_modules/typescript:
 	yarn install --frozen-lockfile
 
 .PHONY: test
+<<<<<<< HEAD
 test: node_modules/jest
 	yarn run test
 
@@ -44,6 +48,10 @@ test-all:
 	$(MAKE) test-lint
 	$(MAKE) test-types
 	$(MAKE) test
+=======
+test:
+	yarn install --frozen-lockfile && yarn run test:all
+>>>>>>> 873bdc2... switch client to yarn
 
 .PHONY: test-audit
 test-audit:
