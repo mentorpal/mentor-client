@@ -23,12 +23,9 @@ node_modules/eslint:
 
 node_modules/gatsby-cli:
 	yarn install --frozen-lockfile
-<<<<<<< HEAD
 
 node_modules/jest:
 	yarn install --frozen-lockfile
-=======
->>>>>>> 873bdc2... switch client to yarn
 
 node_modules/jest:
 	yarn install --frozen-lockfile
