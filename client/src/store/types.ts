@@ -1,12 +1,23 @@
-export interface MentorSelection {
-  id: string;
-}
-
 export enum MentorQuestionStatus {
   NONE = "NONE",
   ANSWERED = "ANSWERED",
   ERROR = "ERROR",
   READY = "READY",
+}
+
+export enum MentorSelectReason {
+  HIGHEST_CONFIDENCE = "HIGHEST_CONFIDENCE",
+  NEXT_READY = "NEXT_READY",
+  NONE = "NONE",
+  OFF_TOPIC_CUR = "OFF_TOPIC_CUR",
+  OFF_TOPIC_FAV = "OFF_TOPIC_FAV",
+  USER_FAV = "USER_FAV",
+  USER_SELECT = "USER_SELECT",
+}
+
+export interface MentorSelection {
+  id: string;
+  reason: MentorSelectReason;
 }
 
 export enum ResultStatus {
@@ -104,6 +115,7 @@ export interface QuestionState {
 
 export interface State {
   current_mentor: string; // id of selected mentor
+  currentMentorReason: MentorSelectReason;
   current_question: string; // question that was last asked
   current_topic: string; // topic to show questions for
   faved_mentor: string; // id of the preferred mentor
@@ -135,6 +147,7 @@ export interface XapiResultExt {
   confidence: number;
   isOffTopic: boolean;
   mentorCurrent: string;
+  mentorCurrentReason: MentorSelectReason;
   mentorFaved: string;
   mentorList: string[];
   mentorNext: string;

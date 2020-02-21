@@ -8,6 +8,7 @@ import {
   MentorDataResult,
   MentorQuestionStatus,
   MentorSelection,
+  MentorSelectReason,
   QuestionResponse,
   QuestionResult,
   ResultStatus,
@@ -19,6 +20,7 @@ import {
 const RESPONSE_CUTOFF = -100;
 
 export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished playing
+export const MENTOR_ANSWER_PLAYBACK_STARTED = "MENTOR_ANSWER_PLAYBACK_STARTED";
 export const MENTOR_DATA_REQUESTED = "MENTOR_DATA_REQUESTED";
 export const MENTOR_DATA_RESULT = "MENTOR_DATA_RESULT";
 export const MENTOR_DATA_REQUEST_DONE = "MENTOR_DATA_REQUEST_DONE";
@@ -32,6 +34,11 @@ export const QUESTION_ERROR = "QUESTION_ERROR"; // question could not be answere
 export const QUESTION_RESULT = "QUESTION_RESULT";
 export const QUESTION_SENT = "QUESTION_SENT"; // question input was sent
 export const TOPIC_SELECTED = "TOPIC_SELECTED";
+
+export interface MentorAnswerPlaybackStartedAction {
+  type: typeof MENTOR_ANSWER_PLAYBACK_STARTED;
+  mentor: string;
+}
 
 export interface MentorDataRequestedAction {
   type: typeof MENTOR_DATA_REQUESTED;
@@ -91,6 +98,7 @@ function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
     confidence: Number(mentorData.confidence),
     isOffTopic: Boolean(mentorData.is_off_topic),
     mentorCurrent: mentorData.id,
+    mentorCurrentReason: state.currentMentorReason,
     mentorFaved: state.faved_mentor,
     mentorList: Object.getOwnPropertyNames(state.mentors_by_id),
     mentorNext: state.next_mentor,
@@ -192,7 +200,7 @@ export const loadMentor: ActionCreator<ThunkAction<
       id => mentorsById[id].status === MentorQuestionStatus.READY
     );
     if (firstMentor) {
-      dispatch(selectMentor(firstMentor));
+      dispatch(selectMentor(firstMentor, MentorSelectReason.NEXT_READY));
     }
   } catch (err) {
     console.error(`Failed to load mentor data for id ${mentors}`, err);
@@ -217,6 +225,7 @@ export function mentorAnswerPlaybackStarted(mentorId: string) {
       );
       return;
     }
+    dispatch(onMentorAnswerPlaybackStarted(mentorId));
     dispatch(
       sendXapiStatement({
         verb: "https://mentorpal.org/xapi/verb/answer-playback-started",
@@ -234,13 +243,14 @@ export function mentorAnswerPlaybackStarted(mentorId: string) {
   };
 }
 
-export const selectMentor = (mentor: string) => (
+export const selectMentor = (mentor: string, reason: MentorSelectReason) => (
   dispatch: ThunkDispatch<State, void, AnyAction>
 ) => {
   dispatch(onInput());
   return dispatch({
     payload: {
       id: mentor,
+      reason,
     },
     type: MENTOR_SELECTED,
   });
@@ -369,7 +379,7 @@ export const sendQuestion = (question: any) => async (
       return response.id === state.faved_mentor;
     });
     if (!fave_response.is_off_topic) {
-      dispatch(selectMentor(state.faved_mentor));
+      dispatch(selectMentor(state.faved_mentor, MentorSelectReason.USER_FAV));
       return;
     }
   }
@@ -379,12 +389,17 @@ export const sendQuestion = (question: any) => async (
   if (responses[0].is_off_topic) {
     dispatch(
       selectMentor(
-        state.faved_mentor ? state.faved_mentor : state.current_mentor
+        state.faved_mentor ? state.faved_mentor : state.current_mentor,
+        state.faved_mentor
+          ? MentorSelectReason.OFF_TOPIC_FAV
+          : MentorSelectReason.OFF_TOPIC_CUR
       )
     );
     return;
   }
-  dispatch(selectMentor(responses[0].id));
+  dispatch(
+    selectMentor(responses[0].id, MentorSelectReason.HIGHEST_CONFIDENCE)
+  );
 };
 
 const NEXT_MENTOR_DELAY = 3000;
@@ -433,7 +448,7 @@ export const answerFinished = () => (
     timer = null;
   }
   timer = setTimeout(() => {
-    dispatch(selectMentor(next_mentor.id));
+    dispatch(selectMentor(next_mentor.id, MentorSelectReason.NEXT_READY));
   }, NEXT_MENTOR_DELAY);
 };
 
@@ -449,6 +464,15 @@ export const onInput: ActionCreator<ThunkAction<
   }
   return dispatch(nextMentor(""));
 };
+
+function onMentorAnswerPlaybackStarted(
+  mentor: string
+): MentorAnswerPlaybackStartedAction {
+  return {
+    type: MENTOR_ANSWER_PLAYBACK_STARTED,
+    mentor,
+  };
+}
 
 const onQuestionSent = (question: string): QuestionSentAction => ({
   question,

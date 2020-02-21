@@ -8,6 +8,7 @@ import { MentorQuestionStatus } from "store/types";
 import VideoThumbnail from "components/video-thumbnail";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
+import { MentorSelectReason } from "@/store/types";
 
 const VideoPanel = ({ isMobile }) => {
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ const VideoPanel = ({ isMobile }) => {
     if (mentor.is_off_topic || mentor.status === MentorQuestionStatus.ERROR) {
       return;
     }
-    dispatch(selectMentor(mentor.id));
+    dispatch(selectMentor(mentor.id, MentorSelectReason.USER_SELECT));
   };
 
   return (

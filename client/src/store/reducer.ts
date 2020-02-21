@@ -2,6 +2,7 @@ import { reducers as cmi5Reducer } from "redux-cmi5";
 import { normalizeString } from "@/funcs/funcs";
 import {
   ANSWER_FINISHED,
+  MENTOR_ANSWER_PLAYBACK_STARTED,
   MENTOR_FAVED,
   MENTOR_NEXT,
   MENTOR_DATA_REQUESTED,
@@ -11,6 +12,7 @@ import {
   QUESTION_ERROR,
   QUESTION_SENT,
   TOPIC_SELECTED,
+  MentorAnswerPlaybackStartedAction,
   MentorDataResultAction,
   MentorDataRequestedAction,
   MentorSelectedAction,
@@ -24,10 +26,12 @@ import {
   QuestionState,
   ResultStatus,
   State,
+  MentorSelectReason,
 } from "./types";
 
 export const initialState: State = cmi5Reducer({
   current_mentor: "", // id of selected mentor
+  currentMentorReason: MentorSelectReason.NONE,
   current_question: "", // question that was last asked
   current_topic: "", // topic to show questions for
   faved_mentor: "", // id of the preferred mentor
@@ -43,6 +47,7 @@ function mentorSelected(state: State, action: MentorSelectedAction): State {
   return {
     ...state,
     current_mentor: action.payload.id,
+    currentMentorReason: action.payload.reason,
     isIdle: false,
     mentors_by_id: {
       ...state.mentors_by_id,
@@ -51,6 +56,15 @@ function mentorSelected(state: State, action: MentorSelectedAction): State {
         status: MentorQuestionStatus.ANSWERED,
       },
     },
+  };
+}
+
+function onMentorAnswerPlaybackStarted(
+  state: State,
+  action: MentorAnswerPlaybackStartedAction
+): State {
+  return {
+    ...state,
   };
 }
 
@@ -132,6 +146,11 @@ function updateActive<T>(a: T[], transform: Transform<T>): T[] {
 export default function reducer(state = initialState, action: any): State {
   state = cmi5Reducer(state, action);
   switch (action.type) {
+    case MENTOR_ANSWER_PLAYBACK_STARTED:
+      return onMentorAnswerPlaybackStarted(
+        state,
+        action as MentorAnswerPlaybackStartedAction
+      );
     case MENTOR_DATA_REQUESTED:
       return onMentorDataRequested(state, action as MentorDataRequestedAction);
     case MENTOR_DATA_RESULT:
