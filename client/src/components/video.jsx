@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import { useSelector, useDispatch } from "react-redux";
 import { Star, StarBorder } from "@material-ui/icons";
@@ -44,6 +44,7 @@ function findMentorIdleId(mentor) {
 
 const VideoPlayer = ({ width, height, format = "mobile" }) => {
   const dispatch = useDispatch();
+  const [duration, setDuration] = useState(Number.NaN);
   const isIdle = useSelector(state => state.isIdle);
   const mentor = useSelector(state => state.mentorsById[state.curMentor]);
   const idleVideoId = findMentorIdleId(mentor);
@@ -66,13 +67,19 @@ const VideoPlayer = ({ width, height, format = "mobile" }) => {
     if (isIdle) {
       return;
     }
-    dispatch(mentorAnswerPlaybackStarted(mentor.id));
+    dispatch(
+      mentorAnswerPlaybackStarted({
+        mentor: mentor.id,
+        duration: duration,
+      })
+    );
   };
 
   return (
     <ReactPlayer
       style={{ backgroundColor: "black" }}
       url={url}
+      onDuration={setDuration}
       onEnded={onEnded}
       onPlay={onPlay}
       loop={isIdle}

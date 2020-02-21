@@ -14,6 +14,8 @@ import {
   MentorDataResultAction,
   MentorDataRequestedAction,
   MentorSelectedAction,
+  MentorAnswerPlaybackStartedAction,
+  MENTOR_ANSWER_PLAYBACK_STARTED,
 } from "./actions";
 import {
   MentorData,
@@ -50,6 +52,26 @@ function mentorSelected(state: State, action: MentorSelectedAction): State {
       [mentorId]: {
         ...state.mentorsById[mentorId],
         status: MentorQuestionStatus.ANSWERED,
+      },
+    },
+  };
+}
+
+function onMentorAnswerPlaybackStarted(
+  state: State,
+  action: MentorAnswerPlaybackStartedAction
+): State {
+  const mentorData = state.mentorsById[action.payload.mentor];
+  if (!mentorData) {
+    return state;
+  }
+  return {
+    ...state,
+    mentorsById: {
+      ...state.mentorsById,
+      [action.payload.mentor]: {
+        ...state.mentorsById[action.payload.mentor],
+        answerDuration: Number(action.payload.duration),
       },
     },
   };
@@ -101,6 +123,11 @@ function onMentorDataRequested(
 export default function reducer(state = initialState, action: any): State {
   state = cmi5Reducer(state, action);
   switch (action.type) {
+    case MENTOR_ANSWER_PLAYBACK_STARTED:
+      return onMentorAnswerPlaybackStarted(
+        state,
+        action as MentorAnswerPlaybackStartedAction
+      );
     case MENTOR_DATA_REQUESTED:
       return onMentorDataRequested(state, action as MentorDataRequestedAction);
     case MENTOR_DATA_RESULT:

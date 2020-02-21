@@ -17,11 +17,11 @@ import {
   XapiResultExt,
   XapiResultAnswerStatusByMentorId,
 } from "./types";
-import reducer from "./reducer";
 
 const RESPONSE_CUTOFF = -100;
 
 export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished playing
+export const MENTOR_ANSWER_PLAYBACK_STARTED = "MENTOR_ANSWER_PLAYBACK_STARTED";
 export const MENTOR_DATA_REQUESTED = "MENTOR_DATA_REQUESTED";
 export const MENTOR_DATA_RESULT = "MENTOR_DATA_RESULT";
 export const MENTOR_DATA_REQUEST_DONE = "MENTOR_DATA_REQUEST_DONE";
@@ -35,6 +35,14 @@ export const QUESTION_ERROR = "QUESTION_ERROR"; // question could not be answere
 export const QUESTION_RESULT = "QUESTION_RESULT";
 export const QUESTION_SENT = "QUESTION_SENT"; // question input was sent
 export const TOPIC_SELECTED = "TOPIC_SELECTED";
+
+export interface MentorAnswerPlaybackStartedAction {
+  type: typeof MENTOR_ANSWER_PLAYBACK_STARTED;
+  payload: {
+    mentor: string;
+    duration: number;
+  };
+}
 
 export interface MentorDataRequestedAction {
   type: typeof MENTOR_DATA_REQUESTED;
@@ -88,7 +96,12 @@ function findIntro(mentorData: MentorApiData): string {
 
 function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
   return {
+    answerClassifier: mentorData.classifier || "",
+    answerConfidence: Number(mentorData.confidence),
+    answerDuration: Number(mentorData.answerDuration),
     answerId: mentorData.answer_id || "",
+    answerIsOffTopic: Boolean(mentorData.is_off_topic),
+    answerResponseTimeSecs: Number(mentorData.response_time) / 1000,
     answerStatusByMentor: Object.getOwnPropertyNames(state.mentorsById).reduce(
       (
         acc: XapiResultAnswerStatusByMentorId,
@@ -107,10 +120,6 @@ function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
       {}
     ),
     answerText: mentorData.answer_text || "",
-    answerClassifier: mentorData.classifier || "",
-    answerConfidence: Number(mentorData.confidence),
-    answerIsOffTopic: Boolean(mentorData.is_off_topic),
-    answerResponseTimeSecs: Number(mentorData.response_time) / 1000,
     mentorCur: mentorData.id,
     mentorCurReason: state.curMentorReason,
     mentorCurStatus: mentorData.status,
@@ -228,16 +237,20 @@ export const loadMentor: ActionCreator<ThunkAction<
 
 const { sendStatement: sendXapiStatement } = cmi5Actions;
 
-export function mentorAnswerPlaybackStarted(mentorId: string) {
+export function mentorAnswerPlaybackStarted(video: {
+  mentor: string;
+  duration: number;
+}) {
   return (
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
   ) => {
+    dispatch(onMentorAnswerPlaybackStarted(video.mentor, video.duration)); // must go first to apply duration to mentordata in state
     const curState = getState();
-    const mentorData = curState.mentorsById[mentorId];
+    const mentorData = curState.mentorsById[video.mentor];
     if (!mentorData) {
       console.warn(
-        `on mentorAnswerPlaybackStarted no mentor found for id '${mentorId}`
+        `on mentorAnswerPlaybackStarted no mentor found for id '${video.mentor}`
       );
       return;
     }
@@ -252,7 +265,6 @@ export function mentorAnswerPlaybackStarted(mentorId: string) {
             ),
           },
         },
-        // contextExtensions: sessionStateExt(curState),
       })
     );
   };
@@ -283,33 +295,6 @@ export const faveMentor = (mentor_id: any) => ({
 
 const currentQuestionIndex = (state: { questionsAsked: { length: any } }) =>
   Array.isArray(state.questionsAsked) ? state.questionsAsked.length : -1;
-
-// function xapiSessionState(state: State) : XapiContextExt {
-//   return {
-//     mentor_current: state.curMentor,
-//     mentor_faved: state.mentorFaved,
-//     mentor_list: state.mentorsById
-//       ? Object.getOwnPropertyNames(state.mentorsById).sort()
-//       : [],
-//     mentor_next: state.mentorNext,
-//     question_current: state.curQuestion,
-//     question_index: currentQuestionIndex(state),
-//     questionsAsked: state.questionsAsked,
-//     topic_current: state.curTopic,
-//   };
-// }
-
-// const sessionStateExt = (
-//   state: State,
-//   ext: Extensions | undefined = undefined
-// ) : Extensions => {
-//   return {
-//     ...(ext || {}),
-//     "https://mentorpal.org/xapi/context/extensions/session-state": xapiSessionState(
-//       state
-//     ),
-//   };
-// };
 
 export const sendQuestion = (question: any) => async (
   dispatch: ThunkDispatch<State, void, AnyAction>,
@@ -478,6 +463,17 @@ export const onInput: ActionCreator<ThunkAction<
   }
   return dispatch(nextMentor(""));
 };
+
+const onMentorAnswerPlaybackStarted = (
+  mentor: string,
+  duration: number
+): MentorAnswerPlaybackStartedAction => ({
+  type: MENTOR_ANSWER_PLAYBACK_STARTED,
+  payload: {
+    mentor,
+    duration,
+  },
+});
 
 const onQuestionSent = (question: string): QuestionSentAction => ({
   question,

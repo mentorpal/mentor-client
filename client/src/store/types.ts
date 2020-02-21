@@ -45,6 +45,7 @@ export function newMentorData(id: string): MentorData {
 export interface MentorData {
   answer_id?: string;
   answer_text?: string;
+  answerDuration: number;
   answerRecievedAt: Date;
   classifier?: string;
   confidence?: number;
@@ -127,6 +128,7 @@ export interface XapiResultAnswerStatusByMentorId {
 export interface XapiResultExt {
   answerClassifier: string;
   answerConfidence: number;
+  answerDuration: number;
   answerId: string;
   answerIsOffTopic: boolean;
   answerResponseTimeSecs: number;
