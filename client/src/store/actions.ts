@@ -98,7 +98,7 @@ function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
     questionsAsked: state.questions_asked,
     questionCurrent: state.current_question,
     questionIndex: currentQuestionIndex(state),
-    responseTime: mentorData.response_time,
+    responseTimeSecs: mentorData.response_time,
   };
 }
 

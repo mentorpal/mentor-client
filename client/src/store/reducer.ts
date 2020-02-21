@@ -19,7 +19,9 @@ import {
   MentorData,
   MentorQuestionStatus,
   newMentorData,
+  QuestionMentorAnswerState,
   QuestionResponse,
+  QuestionState,
   ResultStatus,
   State,
 } from "./types";
@@ -32,6 +34,7 @@ export const initialState: State = cmi5Reducer({
   isIdle: false,
   mentors_by_id: {},
   next_mentor: "", // id of the next mentor to speak after the current finishes
+  questions: [],
   questions_asked: [],
 });
 
@@ -94,6 +97,38 @@ function onMentorDataRequested(
   };
 }
 
+function newQuestionState(question: string, state: State): QuestionState {
+  const mentors = Object.getOwnPropertyNames(state.mentors_by_id);
+  return {
+    question,
+    answersByMentor: mentors.reduce((acc, cur) => {
+      const qma: QuestionMentorAnswerState = {
+        answerId: "",
+        answerText: "",
+        answeredAt: new Date(0),
+        askedAt: new Date(Date.now()),
+        classifier: "",
+        confidence: Number.NaN,
+        isOffTopic: false,
+        responseTimeSecs: Number.NaN,
+        status: MentorQuestionStatus.NONE,
+      };
+      acc[cur] = qma;
+      return acc;
+    }, {}),
+  };
+}
+
+interface Transform<T> {
+  (before: T): T;
+}
+
+function updateActive<T>(a: T[], transform: Transform<T>): T[] {
+  const aAfter = [...a];
+  aAfter[a.length - 1] = transform(a[a.length - 1]);
+  return aAfter;
+}
+
 export default function reducer(state = initialState, action: any): State {
   state = cmi5Reducer(state, action);
   switch (action.type) {
@@ -117,6 +152,10 @@ export default function reducer(state = initialState, action: any): State {
       return {
         ...state,
         current_question: action.question,
+        questions: [
+          ...state.questions,
+          newQuestionState(action.question, state),
+        ],
         questions_asked: Array.from(
           new Set([...state.questions_asked, normalizeString(action.question)])
         ),
@@ -149,6 +188,31 @@ export default function reducer(state = initialState, action: any): State {
           ...state.mentors_by_id,
           [response.id]: mentor,
         },
+        questions: updateActive(
+          state.questions,
+          (b: QuestionState): QuestionState => {
+            const mentorAnswerBefore = b.answersByMentor[response.id];
+            const mentorAnswerAfter: QuestionMentorAnswerState = {
+              ...mentorAnswerBefore,
+              answeredAt: new Date(Date.now()),
+              answerId: response.answer_id,
+              answerText: response.answer_text,
+              classifier: response.classifier,
+              confidence: response.confidence,
+              isOffTopic: response.is_off_topic,
+              responseTimeSecs:
+                (Date.now() - mentorAnswerBefore.askedAt.getTime()) / 1000,
+              status: MentorQuestionStatus.ANSWERED,
+            };
+            return {
+              ...b,
+              answersByMentor: {
+                ...b.answersByMentor,
+                [response.id]: mentorAnswerAfter,
+              },
+            };
+          }
+        ),
       };
     }
     case QUESTION_ERROR:
@@ -162,6 +226,26 @@ export default function reducer(state = initialState, action: any): State {
             status: MentorQuestionStatus.ERROR,
           },
         },
+        questions: updateActive(
+          state.questions,
+          (b: QuestionState): QuestionState => {
+            const mentorAnswerBefore = b.answersByMentor[action.mentor];
+            const mentorAnswerAfter: QuestionMentorAnswerState = {
+              ...mentorAnswerBefore,
+              answeredAt: new Date(Date.now()),
+              responseTimeSecs:
+                (Date.now() - mentorAnswerBefore.askedAt.getTime()) / 1000,
+              status: MentorQuestionStatus.ERROR,
+            };
+            return {
+              ...b,
+              answersByMentor: {
+                ...b.answersByMentor,
+                [action.mentor]: mentorAnswerAfter,
+              },
+            };
+          }
+        ),
       };
     case ANSWER_FINISHED:
       return {

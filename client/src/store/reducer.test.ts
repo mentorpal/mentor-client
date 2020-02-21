@@ -9,7 +9,8 @@ describe("reducer", () => {
       faved_mentor: "", // id of the preferred mentor
       isIdle: false,
       mentors_by_id: {},
-      next_mentor: "", // id of the next mentor to speak after the current finishes
+      next_mentor: "", // id of the next mentor to speak after the current finishes,
+      questions: [],
       questions_asked: [],
     });
   });
