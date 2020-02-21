@@ -30,6 +30,7 @@ export enum ResultStatus {
 export function newMentorData(id: string): MentorData {
   return {
     id: id,
+    answerRecievedAt: new Date(Number.NaN),
     name: "",
     questions_by_id: {},
     short_name: "",
@@ -41,24 +42,24 @@ export function newMentorData(id: string): MentorData {
   };
 }
 
-// TODO: transient properties--answer_id, and status should NOT be part of MentorData
 export interface MentorData {
-  answer_id?: string; // move elsewhere, e.g. history of QuestionStatus objects
-  answer_text?: string; // move elsewhere, e.g. history of QuestionStatus objects
-  classifier?: string; // move elsewhere, e.g. history of QuestionStatus objects
-  confidence?: number; // move elsewhere, e.g. history of QuestionStatus objects
+  answer_id?: string;
+  answer_text?: string;
+  answerRecievedAt: Date;
+  classifier?: string;
+  confidence?: number;
   id: string;
-  is_off_topic?: boolean; // move elsewhere, e.g. history of QuestionStatus objects
+  is_off_topic?: boolean;
   name: string;
-  question?: string; // move elsewhere, e.g. history of QuestionStatus objects
+  question?: string;
   questions_by_id: {
     [question_id: string]: {
       question_text: string;
     };
   };
-  response_time?: number; // move elsewhere, e.g. history of QuestionStatus objects
+  response_time?: number;
   short_name: string;
-  status: MentorQuestionStatus; // move elsewhere, e.g. history of QuestionStatus objects
+  status: MentorQuestionStatus;
   title: string;
   topics_by_id: {
     [topic_id: string]: {
@@ -84,17 +85,18 @@ export interface QuestionResult {
 }
 
 export interface State {
-  current_mentor: string; // id of selected mentor
-  currentMentorReason: MentorSelectReason;
-  current_question: string; // question that was last asked
-  current_topic: string; // topic to show questions for
-  faved_mentor: string; // id of the preferred mentor
+  curMentor: string; // id of selected mentor
+  curMentorReason: MentorSelectReason;
+  curQuestion: string; // question that was last asked
+  curQuestionUpdatedAt: Date;
+  curTopic: string; // topic to show questions for
+  mentorFaved: string; // id of the preferred mentor
   isIdle: boolean;
-  mentors_by_id: {
-    [mentor_id: string]: MentorData;
+  mentorsById: {
+    [mentor: string]: MentorData;
   };
-  next_mentor: string; // id of the next mentor to speak after the current finishes
-  questions_asked: string[];
+  mentorNext: string; // id of the next mentor to speak after the current finishes
+  questionsAsked: string[];
 }
 
 export interface QuestionResponse {
@@ -118,23 +120,28 @@ export interface XapiResultMentorAnswerStatus {
   responseTimeSecs: number;
 }
 
-export interface XapiResultAnswerStatusByMentorId { [mentor: string] : XapiResultMentorAnswerStatus }
+export interface XapiResultAnswerStatusByMentorId {
+  [mentor: string]: XapiResultMentorAnswerStatus;
+}
 
 export interface XapiResultExt {
+  answerClassifier: string;
+  answerConfidence: number;
   answerId: string;
+  answerIsOffTopic: boolean;
+  answerResponseTimeSecs: number;
   answerStatusByMentor: XapiResultAnswerStatusByMentorId;
   answerText: string;
-  classifier: string;
-  confidence: number;
-  isOffTopic: boolean;
-  mentorCurrent: string;
-  mentorCurrentReason: MentorSelectReason;
-  mentorCurrentStatus: MentorQuestionStatus;
+  mentorCur: string;
+  mentorCurIsFav: boolean;
+  mentorCurReason: MentorSelectReason;
+  mentorCurStatus: MentorQuestionStatus;
   mentorFaved: string;
   mentorNext: string;
   mentorTopicDisplayed: string;
-  questionCurrent: string;
+  questionCur: string;
   questionIndex: number;
   questionsAsked: string[];
-  responseTimeSecs: number;
+  timestampAsked: Date;
+  timestampAnswered: Date;
 }

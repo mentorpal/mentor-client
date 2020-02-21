@@ -8,7 +8,7 @@ import { normalizeString } from "funcs/funcs";
 const ScrollingQuestions = ({
   height,
   questions,
-  questions_asked,
+  questionsAsked,
   recommended,
   onQuestionSelected,
 }) => {
@@ -18,7 +18,7 @@ const ScrollingQuestions = ({
 
   useEffect(() => {
     const top_question = questions.find(q => {
-      return !questions_asked.includes(normalizeString(q));
+      return !questionsAsked.includes(normalizeString(q));
     });
     const parent = document.getElementById("scrolling-questions-list");
     const node = document.getElementById(top_question);
@@ -30,7 +30,7 @@ const ScrollingQuestions = ({
       top: node.offsetTop,
       left: 0,
     });
-  }, [questions, questions_asked]);
+  }, [questions, questionsAsked]);
 
   return (
     <List
@@ -48,7 +48,7 @@ const ScrollingQuestions = ({
           <ListItemText
             style={{
               paddingLeft: 0,
-              color: questions_asked.includes(normalizeString(question))
+              color: questionsAsked.includes(normalizeString(question))
                 ? "gray"
                 : "black",
             }}

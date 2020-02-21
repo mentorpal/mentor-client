@@ -5,7 +5,7 @@ import { Sms, SmsFailed } from "@material-ui/icons";
 import { MentorQuestionStatus } from "@/store/types";
 
 const MessageStatus = ({ mentor }) => {
-  const next_mentor = useSelector(state => state.next_mentor);
+  const mentorNext = useSelector(state => state.mentorNext);
 
   if (!mentor || mentor.is_off_topic) {
     return <div />;
@@ -20,7 +20,7 @@ const MessageStatus = ({ mentor }) => {
     );
   }
   if (mentor.status === MentorQuestionStatus.READY) {
-    const isNext = mentor.id === next_mentor;
+    const isNext = mentor.id === mentorNext;
     return (
       <Sms
         className={`message-notice ${isNext ? "blink" : ""}`}

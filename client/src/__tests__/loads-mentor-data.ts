@@ -115,7 +115,7 @@ describe("load mentor data", () => {
           },
           {}
         );
-        expect(store.getState().mentors_by_id).toMatchObject(expectedState);
+        expect(store.getState().mentorsById).toMatchObject(expectedState);
       },
       unmetMessage:
         "action sets up a placeholder record for all mentors immediately on request load mentors",
@@ -151,10 +151,10 @@ describe("load mentor data", () => {
     await dispatch(loadMentor(mentorId));
     intermediateStates.testExpectations();
     const state = store.getState();
-    expect(state.mentors_by_id).toEqual({
+    expect(state.mentorsById).toEqual({
       [mentorId]: expectedMentorData,
     });
-    expect(state.current_mentor).toEqual(mentorId);
+    expect(state.curMentor).toEqual(mentorId);
   });
 
   it("loads all data for a panel of mentors with a single action", async () => {
@@ -181,8 +181,8 @@ describe("load mentor data", () => {
     await dispatch(loadMentor(mentors));
     intermediateStates.testExpectations();
     const state = store.getState();
-    expect(state.mentors_by_id).toEqual(expectedMentorData);
-    expect(state.current_mentor).toEqual(mentors[0]);
+    expect(state.mentorsById).toEqual(expectedMentorData);
+    expect(state.curMentor).toEqual(mentors[0]);
   });
 
   it("integrates recommended questions passed as args into mentor data", async () => {
@@ -212,7 +212,7 @@ describe("load mentor data", () => {
     await dispatch(loadMentor(mentorId, { recommendedQuestions }));
     intermediateStates.testExpectations();
     const state = store.getState();
-    expect(state.mentors_by_id).toEqual({
+    expect(state.mentorsById).toEqual({
       [mentorId]: expectedMentorData,
     });
   });
@@ -246,7 +246,7 @@ describe("load mentor data", () => {
     );
     intermediateStates.testExpectations();
     const state = store.getState();
-    expect(state.mentors_by_id).toEqual({
+    expect(state.mentorsById).toEqual({
       [mentorId]: expectedMentorData,
     });
   });

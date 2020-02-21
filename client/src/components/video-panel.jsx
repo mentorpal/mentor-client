@@ -12,8 +12,8 @@ import { MentorSelectReason } from "@/store/types";
 
 const VideoPanel = ({ isMobile }) => {
   const dispatch = useDispatch();
-  const mentor = useSelector(state => state.current_mentor);
-  const mentors = useSelector(state => state.mentors_by_id);
+  const mentor = useSelector(state => state.curMentor);
+  const mentors = useSelector(state => state.mentorsById);
   if (!mentor) {
     return <div />;
   }
@@ -51,8 +51,8 @@ const VideoPanel = ({ isMobile }) => {
 };
 
 const StarIcon = ({ mentor }) => {
-  const faved_mentor = useSelector(state => state.faved_mentor);
-  if (faved_mentor === mentor.id) {
+  const mentorFaved = useSelector(state => state.mentorFaved);
+  if (mentorFaved === mentor.id) {
     return (
       <Star
         className="star-icon"

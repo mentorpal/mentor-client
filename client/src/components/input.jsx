@@ -10,7 +10,7 @@ import Questions from "components/questions";
 
 const Input = ({ height, ...props }) => {
   const dispatch = useDispatch();
-  const question = useSelector(state => state.current_question);
+  const question = useSelector(state => state.curQuestion);
   const [text, setText] = useState("");
   const { classes } = props;
 

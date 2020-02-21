@@ -15,9 +15,7 @@ import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 
 const Video = ({ height, width }) => {
-  const mentor = useSelector(
-    state => state.mentors_by_id[state.current_mentor]
-  );
+  const mentor = useSelector(state => state.mentorsById[state.curMentor]);
   const mobileWidth = height / 0.895;
   const webWidth = height / 0.5625;
   const format =
@@ -47,9 +45,7 @@ function findMentorIdleId(mentor) {
 const VideoPlayer = ({ width, height, format = "mobile" }) => {
   const dispatch = useDispatch();
   const isIdle = useSelector(state => state.isIdle);
-  const mentor = useSelector(
-    state => state.mentors_by_id[state.current_mentor]
-  );
+  const mentor = useSelector(state => state.mentorsById[state.curMentor]);
   const idleVideoId = findMentorIdleId(mentor);
   const url = mentor
     ? isIdle
@@ -106,9 +102,9 @@ const VideoPlayer = ({ width, height, format = "mobile" }) => {
 
 const FaveButton = () => {
   const dispatch = useDispatch();
-  const mentor = useSelector(state => state.current_mentor);
-  const mentors = useSelector(state => state.mentors_by_id);
-  const faved_mentor = useSelector(state => state.faved_mentor);
+  const mentor = useSelector(state => state.curMentor);
+  const mentors = useSelector(state => state.mentorsById);
+  const mentorFaved = useSelector(state => state.mentorFaved);
 
   const onClick = () => {
     dispatch(faveMentor(mentor));
@@ -118,7 +114,7 @@ const FaveButton = () => {
     return <div />;
   }
 
-  return faved_mentor === mentor ? (
+  return mentorFaved === mentor ? (
     <Star className="star-icon" onClick={onClick} style={{ color: "yellow" }} />
   ) : (
     <StarBorder

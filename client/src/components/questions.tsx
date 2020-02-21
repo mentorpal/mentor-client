@@ -20,24 +20,22 @@ interface Props {
 }
 const Questions = ({ height, onSelected }: Props) => {
   const mentor = useSelector<State, MentorData>(
-    state => state.mentors_by_id[state.current_mentor]
+    state => state.mentorsById[state.curMentor]
   );
-  const current_topic = useSelector<State, string>(
-    state => state.current_topic
-  );
-  const questions_asked = useSelector<State, string[]>(
-    state => state.questions_asked
+  const curTopic = useSelector<State, string>(state => state.curTopic);
+  const questionsAsked = useSelector<State, string[]>(
+    state => state.questionsAsked
   );
 
-  if (!(mentor && current_topic && mentor.topic_questions)) {
+  if (!(mentor && curTopic && mentor.topic_questions)) {
     return <div />;
   }
 
-  const questions = mentor.topic_questions[current_topic] || [];
+  const questions = mentor.topic_questions[curTopic] || [];
   const recommended = mentor.topic_questions.Recommended || [];
 
   const ordered_questions = questions.slice();
-  if (current_topic === "History") {
+  if (curTopic === "History") {
     ordered_questions.reverse();
   } else {
     ordered_questions.sort((a, b) => {
@@ -59,7 +57,7 @@ const Questions = ({ height, onSelected }: Props) => {
       <ScrollingQuestions
         height={height}
         questions={ordered_questions}
-        questions_asked={questions_asked}
+        questionsAsked={questionsAsked}
         recommended={recommended}
         onQuestionSelected={onSelected}
       />

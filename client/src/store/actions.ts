@@ -86,26 +86,20 @@ function findIntro(mentorData: MentorApiData): string {
   return "intro";
 }
 
-function toAnswerStatusByMentorId(
-  state: State
-): XapiResultAnswerStatusByMentorId {}
-
 function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
   return {
     answerId: mentorData.answer_id || "",
-    answerStatusByMentor: Object.getOwnPropertyNames(
-      state.mentors_by_id
-    ).reduce(
+    answerStatusByMentor: Object.getOwnPropertyNames(state.mentorsById).reduce(
       (
         acc: XapiResultAnswerStatusByMentorId,
         cur: string
       ): XapiResultAnswerStatusByMentorId => {
         acc[cur] = {
-          answerId: state.mentors_by_id[cur].answer_id || '',
-          confidence: Number(state.mentors_by_id[cur].confidence),
-          isOffTopic: Boolean(state.mentors_by_id[cur].is_off_topic),
-          mentor: state.mentors_by_id[cur].id,
-          status: state.mentors_by_id[cur].status,
+          answerId: state.mentorsById[cur].answer_id || "",
+          confidence: Number(state.mentorsById[cur].confidence),
+          isOffTopic: Boolean(state.mentorsById[cur].is_off_topic),
+          mentor: state.mentorsById[cur].id,
+          status: state.mentorsById[cur].status,
           responseTimeSecs: Number(mentorData.response_time) / 1000,
         };
         return acc;
@@ -113,19 +107,22 @@ function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
       {}
     ),
     answerText: mentorData.answer_text || "",
-    classifier: mentorData.classifier || "",
-    confidence: Number(mentorData.confidence),
-    isOffTopic: Boolean(mentorData.is_off_topic),
-    mentorCurrent: mentorData.id,
-    mentorCurrentReason: state.currentMentorReason,
-    mentorCurrentStatus: mentorData.status,
-    mentorFaved: state.faved_mentor,
-    mentorNext: state.next_mentor,
-    mentorTopicDisplayed: state.current_topic,
-    questionsAsked: state.questions_asked,
-    questionCurrent: state.current_question,
+    answerClassifier: mentorData.classifier || "",
+    answerConfidence: Number(mentorData.confidence),
+    answerIsOffTopic: Boolean(mentorData.is_off_topic),
+    answerResponseTimeSecs: Number(mentorData.response_time) / 1000,
+    mentorCur: mentorData.id,
+    mentorCurReason: state.curMentorReason,
+    mentorCurStatus: mentorData.status,
+    mentorCurIsFav: state.mentorFaved === mentorData.id,
+    mentorFaved: state.mentorFaved,
+    mentorNext: state.mentorNext,
+    mentorTopicDisplayed: state.curTopic,
+    questionsAsked: state.questionsAsked,
+    questionCur: state.curQuestion,
     questionIndex: currentQuestionIndex(state),
-    responseTimeSecs: Number(mentorData.response_time) / 1000,
+    timestampAnswered: state.curQuestionUpdatedAt,
+    timestampAsked: mentorData.answerRecievedAt,
   };
 }
 
@@ -212,7 +209,7 @@ export const loadMentor: ActionCreator<ThunkAction<
       })
     );
     await dataPromises;
-    const mentorsById = getState().mentors_by_id;
+    const mentorsById = getState().mentorsById;
     // find the first of the requested mentors that loaded successfully
     // and select that mentor
     const firstMentor = mentorList.find(
@@ -237,7 +234,7 @@ export function mentorAnswerPlaybackStarted(mentorId: string) {
     getState: () => State
   ) => {
     const curState = getState();
-    const mentorData = curState.mentors_by_id[mentorId];
+    const mentorData = curState.mentorsById[mentorId];
     if (!mentorData) {
       console.warn(
         `on mentorAnswerPlaybackStarted no mentor found for id '${mentorId}`
@@ -284,21 +281,21 @@ export const faveMentor = (mentor_id: any) => ({
   type: MENTOR_FAVED,
 });
 
-const currentQuestionIndex = (state: { questions_asked: { length: any } }) =>
-  Array.isArray(state.questions_asked) ? state.questions_asked.length : -1;
+const currentQuestionIndex = (state: { questionsAsked: { length: any } }) =>
+  Array.isArray(state.questionsAsked) ? state.questionsAsked.length : -1;
 
 // function xapiSessionState(state: State) : XapiContextExt {
 //   return {
-//     mentor_current: state.current_mentor,
-//     mentor_faved: state.faved_mentor,
-//     mentor_list: state.mentors_by_id
-//       ? Object.getOwnPropertyNames(state.mentors_by_id).sort()
+//     mentor_current: state.curMentor,
+//     mentor_faved: state.mentorFaved,
+//     mentor_list: state.mentorsById
+//       ? Object.getOwnPropertyNames(state.mentorsById).sort()
 //       : [],
-//     mentor_next: state.next_mentor,
-//     question_current: state.current_question,
+//     mentor_next: state.mentorNext,
+//     question_current: state.curQuestion,
 //     question_index: currentQuestionIndex(state),
-//     questions_asked: state.questions_asked,
-//     topic_current: state.current_topic,
+//     questionsAsked: state.questionsAsked,
+//     topic_current: state.curTopic,
 //   };
 // }
 
@@ -336,7 +333,7 @@ export const sendQuestion = (question: any) => async (
   dispatch(onQuestionSent(question));
 
   const state = getState();
-  const mentorIds = Object.keys(state.mentors_by_id);
+  const mentorIds = Object.keys(state.mentorsById);
   const tick = Date.now();
   // query all the mentors without waiting for the answers one by one
   const promises = mentorIds.map(mentor => {
@@ -391,12 +388,12 @@ export const sendQuestion = (question: any) => async (
   }
 
   // Play favored mentor if an answer exists
-  if (state.faved_mentor) {
+  if (state.mentorFaved) {
     const fave_response = responses.find(response => {
-      return response.id === state.faved_mentor;
+      return response.id === state.mentorFaved;
     });
     if (!fave_response.is_off_topic) {
-      dispatch(selectMentor(state.faved_mentor, MentorSelectReason.USER_FAV));
+      dispatch(selectMentor(state.mentorFaved, MentorSelectReason.USER_FAV));
       return;
     }
   }
@@ -406,8 +403,8 @@ export const sendQuestion = (question: any) => async (
   if (responses[0].is_off_topic) {
     dispatch(
       selectMentor(
-        state.faved_mentor ? state.faved_mentor : state.current_mentor,
-        state.faved_mentor
+        state.mentorFaved ? state.mentorFaved : state.curMentor,
+        state.mentorFaved
           ? MentorSelectReason.OFF_TOPIC_FAV
           : MentorSelectReason.OFF_TOPIC_CUR
       )
@@ -429,7 +426,7 @@ export const answerFinished = () => (
 
   // order mentors by highest answer confidence
   const state = getState();
-  const mentors = state.mentors_by_id;
+  const mentors = state.mentorsById;
   const responses: {
     confidence: number;
     id: string;
@@ -447,17 +444,17 @@ export const answerFinished = () => (
   responses.sort((a, b) => (a.confidence > b.confidence ? -1 : 1));
 
   // get the most confident answer that has not been given
-  const next_mentor = responses.find(response => {
+  const mentorNext = responses.find(response => {
     return (
       response.status === MentorQuestionStatus.READY && !response.is_off_topic
     );
   });
 
   // set the next mentor to start playing, if there is one
-  if (!next_mentor) {
+  if (!mentorNext) {
     return;
   }
-  dispatch(nextMentor(next_mentor.id));
+  dispatch(nextMentor(mentorNext.id));
 
   // play the next mentor after the timeout
   if (timer) {
@@ -465,7 +462,7 @@ export const answerFinished = () => (
     timer = null;
   }
   timer = setTimeout(() => {
-    dispatch(selectMentor(next_mentor.id, MentorSelectReason.NEXT_READY));
+    dispatch(selectMentor(mentorNext.id, MentorSelectReason.NEXT_READY));
   }, NEXT_MENTOR_DELAY);
 };
 

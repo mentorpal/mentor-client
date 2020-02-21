@@ -28,8 +28,8 @@ describe("load mentor data", () => {
     // mockAxios.onGet(`/mentor-api/mentors/${mentorId}/data`).replyOnce(200, expectedApiResponse);
     await dispatch(sendQuestion(question));
     const state = store.getState();
-    expect(state.current_question).toEqual(question);
-    // expect(state.mentors_by_id).toEqual({
+    expect(state.curQuestion).toEqual(question);
+    // expect(state.mentorsById).toEqual({
     //   [mentorId]: expectedMentorData
     // });
   });

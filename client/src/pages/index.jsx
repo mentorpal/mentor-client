@@ -28,7 +28,7 @@ const theme = createMuiTheme({
 
 const IndexPage = ({ search }) => {
   const dispatch = useDispatch();
-  const mentors_by_id = useSelector(state => state.mentors_by_id);
+  const mentorsById = useSelector(state => state.mentorsById);
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
   const { recommended, mentor } = search;
@@ -79,11 +79,11 @@ const IndexPage = ({ search }) => {
     };
   }, []);
 
-  if (mentors_by_id === {} || height === 0 || width === 0) {
+  if (mentorsById === {} || height === 0 || width === 0) {
     return <CircularProgress />;
   }
 
-  const hidePanel = Object.getOwnPropertyNames(mentors_by_id).length < 2;
+  const hidePanel = Object.getOwnPropertyNames(mentorsById).length < 2;
 
   return (
     <MuiThemeProvider theme={theme}>
