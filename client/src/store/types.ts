@@ -109,16 +109,28 @@ export interface QuestionResponse {
   status: MentorQuestionStatus;
 }
 
+export interface XapiResultMentorAnswerStatus {
+  answerId: string;
+  mentor: string;
+  status: MentorQuestionStatus;
+  confidence: number;
+  isOffTopic: boolean;
+  responseTimeSecs: number;
+}
+
+export interface XapiResultAnswerStatusByMentorId { [mentor: string] : XapiResultMentorAnswerStatus }
+
 export interface XapiResultExt {
   answerId: string;
+  answerStatusByMentor: XapiResultAnswerStatusByMentorId;
   answerText: string;
   classifier: string;
   confidence: number;
   isOffTopic: boolean;
   mentorCurrent: string;
   mentorCurrentReason: MentorSelectReason;
+  mentorCurrentStatus: MentorQuestionStatus;
   mentorFaved: string;
-  mentorList: string[];
   mentorNext: string;
   mentorTopicDisplayed: string;
   questionCurrent: string;

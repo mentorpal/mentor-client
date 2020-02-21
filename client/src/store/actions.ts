@@ -15,7 +15,9 @@ import {
   MentorData,
   State,
   XapiResultExt,
+  XapiResultAnswerStatusByMentorId,
 } from "./types";
+import reducer from "./reducer";
 
 const RESPONSE_CUTOFF = -100;
 
@@ -84,17 +86,40 @@ function findIntro(mentorData: MentorApiData): string {
   return "intro";
 }
 
+function toAnswerStatusByMentorId(
+  state: State
+): XapiResultAnswerStatusByMentorId {}
+
 function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
   return {
     answerId: mentorData.answer_id || "",
+    answerStatusByMentor: Object.getOwnPropertyNames(
+      state.mentors_by_id
+    ).reduce(
+      (
+        acc: XapiResultAnswerStatusByMentorId,
+        cur: string
+      ): XapiResultAnswerStatusByMentorId => {
+        acc[cur] = {
+          answerId: state.mentors_by_id[cur].answer_id || '',
+          confidence: Number(state.mentors_by_id[cur].confidence),
+          isOffTopic: Boolean(state.mentors_by_id[cur].is_off_topic),
+          mentor: state.mentors_by_id[cur].id,
+          status: state.mentors_by_id[cur].status,
+          responseTimeSecs: Number(mentorData.response_time) / 1000,
+        };
+        return acc;
+      },
+      {}
+    ),
     answerText: mentorData.answer_text || "",
     classifier: mentorData.classifier || "",
     confidence: Number(mentorData.confidence),
     isOffTopic: Boolean(mentorData.is_off_topic),
     mentorCurrent: mentorData.id,
     mentorCurrentReason: state.currentMentorReason,
+    mentorCurrentStatus: mentorData.status,
     mentorFaved: state.faved_mentor,
-    mentorList: Object.getOwnPropertyNames(state.mentors_by_id),
     mentorNext: state.next_mentor,
     mentorTopicDisplayed: state.current_topic,
     questionsAsked: state.questions_asked,
@@ -332,7 +357,6 @@ export const sendQuestion = (question: any) => async (
           };
           dispatch(
             sendXapiStatement({
-              // contextExtensions: sessionStateExt(getState()),
               result: {
                 extensions: {
                   "https://mentorpal.org/xapi/activity/extensions/mentor-response": {
