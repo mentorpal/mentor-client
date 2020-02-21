@@ -10,7 +10,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 app.use("/", express.static(path.join(__dirname, "public", "mentorpanel")));
-app.get("/config", (req, res, next) => {
+app.get("/config", (req, res) => {
   res.send({
     MENTOR_API_URL: process.env.MENTOR_API_URL || "/mentor-api",
     MENTOR_VIDEO_URL: process.env.MENTOR_VIDEO_URL || "/videos",
