@@ -19,6 +19,7 @@ import {
   MentorData,
   MentorQuestionStatus,
   newMentorData,
+  QuestionResponse,
   ResultStatus,
   State,
 } from "./types";
@@ -121,16 +122,17 @@ export default function reducer(state = initialState, action: any): State {
         ),
       };
     case QUESTION_ANSWERED: {
-      const response = action.mentor;
+      const response = action.mentor as QuestionResponse;
       const history =
         state.mentors_by_id[response.id].topic_questions.History || [];
       if (!history.includes(response.question)) {
         history.push(response.question);
       }
-      const mentor = {
+      const mentor: MentorData = {
         ...state.mentors_by_id[response.id],
         answer_id: response.answer_id,
         answer_text: response.answer_text,
+        classifier: response.classifier,
         confidence: response.confidence,
         is_off_topic: response.is_off_topic,
         question: response.question,

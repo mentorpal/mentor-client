@@ -34,15 +34,18 @@ export function newMentorData(id: string): MentorData {
 export interface MentorData {
   answer_id?: string; // move elsewhere, e.g. history of QuestionStatus objects
   answer_text?: string; // move elsewhere, e.g. history of QuestionStatus objects
+  classifier?: string; // move elsewhere, e.g. history of QuestionStatus objects
   confidence?: number; // move elsewhere, e.g. history of QuestionStatus objects
   id: string;
   is_off_topic?: boolean; // move elsewhere, e.g. history of QuestionStatus objects
   name: string;
+  question?: string; // move elsewhere, e.g. history of QuestionStatus objects
   questions_by_id: {
     [question_id: string]: {
       question_text: string;
     };
   };
+  response_time?: number; // move elsewhere, e.g. history of QuestionStatus objects
   short_name: string;
   status: MentorQuestionStatus; // move elsewhere, e.g. history of QuestionStatus objects
   title: string;
@@ -80,4 +83,33 @@ export interface State {
   };
   next_mentor: string; // id of the next mentor to speak after the current finishes
   questions_asked: string[];
+}
+
+export interface QuestionResponse {
+  answer_id: string;
+  answer_text: string;
+  classifier: string;
+  confidence: number;
+  id: string;
+  is_off_topic: boolean;
+  question: string;
+  response_time: number;
+  status: MentorQuestionStatus;
+}
+
+export interface XapiResultExt {
+  answerId: string;
+  answerText: string;
+  classifier: string;
+  confidence: number;
+  isOffTopic: boolean;
+  mentorCurrent: string;
+  mentorFaved: string;
+  mentorList: string[];
+  mentorNext: string;
+  mentorTopic: string;
+  questionCurrent: string;
+  questionIndex: number;
+  questionsAsked: string[];
+  responseTime: number;
 }

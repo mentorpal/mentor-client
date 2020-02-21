@@ -6,7 +6,7 @@ import thunk, { ThunkDispatch } from "redux-thunk";
 import { loadMentor } from "@/store/actions";
 import reducer, { initialState } from "@/store/reducer";
 import { State, MentorData, MentorQuestionStatus } from "@/store/types";
-import { ExpectIntermediateStates, ExpectedState } from "@/test_helpers";
+import { ExpectIntermediateStates, ExpectedState } from "@/test-helpers";
 import { MentorApiData } from "@/api/api";
 
 // This sets the mock adapter on the default instance

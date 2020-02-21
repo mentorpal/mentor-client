@@ -4,15 +4,16 @@ import { ActionCreator, AnyAction, Dispatch } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 
 import { fetchMentorData, MentorApiData, queryMentor } from "@/api/api";
-
 import {
   MentorDataResult,
   MentorQuestionStatus,
   MentorSelection,
+  QuestionResponse,
   QuestionResult,
   ResultStatus,
   MentorData,
   State,
+  XapiResultExt,
 } from "./types";
 
 const RESPONSE_CUTOFF = -100;
@@ -80,6 +81,25 @@ function findIntro(mentorData: MentorApiData): string {
     return allIds[0];
   }
   return "intro";
+}
+
+function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
+  return {
+    answerId: mentorData.answer_id || "",
+    answerText: mentorData.answer_text || "",
+    classifier: mentorData.classifier || "",
+    confidence: Number(mentorData.confidence),
+    isOffTopic: Boolean(mentorData.is_off_topic),
+    mentorCurrent: mentorData.id,
+    mentorFaved: state.faved_mentor,
+    mentorList: Object.getOwnPropertyNames(state.mentors_by_id),
+    mentorNext: state.next_mentor,
+    mentorTopic: state.current_topic,
+    questionsAsked: state.questions_asked,
+    questionCurrent: state.current_question,
+    questionIndex: currentQuestionIndex(state),
+    responseTime: mentorData.response_time,
+  };
 }
 
 export const loadMentor: ActionCreator<ThunkAction<
@@ -184,27 +204,35 @@ export const loadMentor: ActionCreator<ThunkAction<
 
 const { sendStatement: sendXapiStatement } = cmi5Actions;
 
-// export const mentorAnswerPlaybackStarted = answer => (
-//   dispatch: ThunkDispatch<State, void, AnyAction>,
-//   getState: () => State
-// ) => {
-//   dispatch(
-//     sendXapiStatement({
-//       verb: "https://mentorpal.org/xapi/verb/answer-playback-started",
-//       result: {
-//         extensions: {
-//           "https://mentorpal.org/xapi/activity/extensions/mentor-response": {
-//             ...answer,
-//             // question: answer.question,
-//             question_index: currentQuestionIndex(getState()),
-//             mentor: answer.id,
-//           },
-//         },
-//       },
-//       contextExtensions: sessionStateExt(getState()),
-//     })
-//   );
-// };
+export function mentorAnswerPlaybackStarted(mentorId: string) {
+  return (
+    dispatch: ThunkDispatch<State, void, AnyAction>,
+    getState: () => State
+  ) => {
+    const curState = getState();
+    const mentorData = curState.mentors_by_id[mentorId];
+    if (!mentorData) {
+      console.warn(
+        `on mentorAnswerPlaybackStarted no mentor found for id '${mentorId}`
+      );
+      return;
+    }
+    dispatch(
+      sendXapiStatement({
+        verb: "https://mentorpal.org/xapi/verb/answer-playback-started",
+        result: {
+          extensions: {
+            "https://mentorpal.org/xapi/activity/extensions/mentor-response": toXapiResultExt(
+              mentorData,
+              curState
+            ),
+          },
+        },
+        // contextExtensions: sessionStateExt(curState),
+      })
+    );
+  };
+}
 
 export const selectMentor = (mentor: string) => (
   dispatch: ThunkDispatch<State, void, AnyAction>
@@ -231,80 +259,32 @@ export const faveMentor = (mentor_id: any) => ({
 const currentQuestionIndex = (state: { questions_asked: { length: any } }) =>
   Array.isArray(state.questions_asked) ? state.questions_asked.length : -1;
 
-const xapiSessionState = (state: {
-  current_mentor: any;
-  faved_mentor: any;
-  mentors_by_id: string;
-  next_mentor: any;
-  current_question: any;
-  questions_asked: any;
-  current_topic: any;
-}) => {
-  return {
-    mentor_current: state.current_mentor,
-    mentor_faved: state.faved_mentor,
-    mentor_list:
-      state.mentors_by_id && typeof (state.mentors_by_id === "object")
-        ? Object.getOwnPropertyNames(state.mentors_by_id).sort()
-        : [],
-    mentor_next: state.next_mentor,
-    question_current: state.current_question,
-    question_index: currentQuestionIndex(state),
-    questions_asked: state.questions_asked,
-    topic_current: state.current_topic,
-  };
-};
+// function xapiSessionState(state: State) : XapiContextExt {
+//   return {
+//     mentor_current: state.current_mentor,
+//     mentor_faved: state.faved_mentor,
+//     mentor_list: state.mentors_by_id
+//       ? Object.getOwnPropertyNames(state.mentors_by_id).sort()
+//       : [],
+//     mentor_next: state.next_mentor,
+//     question_current: state.current_question,
+//     question_index: currentQuestionIndex(state),
+//     questions_asked: state.questions_asked,
+//     topic_current: state.current_topic,
+//   };
+// }
 
-const sessionStateExt = (state: any, ext: any = undefined) => {
-  return {
-    ...(ext || {}),
-    "https://mentorpal.org/xapi/context/extensions/session-state": xapiSessionState(
-      state
-    ),
-  };
-};
-
-interface QuestionResponse {
-  answer_id: string;
-  answer_text: string;
-  classifier: string;
-  confidence: number;
-  id: string;
-  is_off_topic: boolean;
-  question: string;
-  status: MentorQuestionStatus;
-}
-
-// export const sendQuestion2: ActionCreator<
-//   ThunkAction<
-//     Promise<QuestionResultAction>, // The type of the last action to be dispatched - will always be promise<T> for async actions
-//     State, // The type for the data within the last action
-//     string, // The type of the parameter for the nested function
-//     QuestionResultAction // The type of the last action to be dispatched
-//   >
-// > = (question: string) => async (
-//   dispatch: ThunkDispatch<State, void, AnyAction>,
-//   getState: () => State
-// ) => {
-//   try {
-//     dispatch(onInput());
-//     dispatch(onQuestionSent(question));
-//     return dispatch<QuestionResultAction>({
-//       type: QUESTION_RESULT,
-//       payload: {
-//         status: ResultStatus.SUCCEEDED,
-//       },
-//     });
-//   } catch (err) {
-//     console.error(`Failed to get response for question ${question}`, err);
-//     return dispatch<QuestionResultAction>({
-//       type: QUESTION_RESULT,
-//       payload: {
-//         status: ResultStatus.FAILED,
-//       },
-//     });
-//   }
-// };
+// const sessionStateExt = (
+//   state: State,
+//   ext: Extensions | undefined = undefined
+// ) : Extensions => {
+//   return {
+//     ...(ext || {}),
+//     "https://mentorpal.org/xapi/context/extensions/session-state": xapiSessionState(
+//       state
+//     ),
+//   };
+// };
 
 export const sendQuestion = (question: any) => async (
   dispatch: ThunkDispatch<State, void, AnyAction>,
@@ -312,7 +292,7 @@ export const sendQuestion = (question: any) => async (
 ) => {
   dispatch(
     sendXapiStatement({
-      contextExtensions: sessionStateExt(getState()),
+      // contextExtensions: sessionStateExt(getState()),
       result: {
         extensions: {
           "https://mentorpal.org/xapi/activity/extensions/actor-question": {
@@ -336,19 +316,20 @@ export const sendQuestion = (question: any) => async (
       queryMentor(mentor, question)
         .then(r => {
           const { data } = r;
-          const response = {
+          const response: QuestionResponse = {
             id: mentor,
             question: question,
             answer_id: data.answer_id,
             answer_text: data.answer_text,
+            classifier: data.classifier,
             confidence: data.confidence,
             is_off_topic: data.confidence <= RESPONSE_CUTOFF,
-            classifier: data.classifier,
+            response_time: Date.now() - tick,
             status: MentorQuestionStatus.ANSWERED,
           };
           dispatch(
             sendXapiStatement({
-              contextExtensions: sessionStateExt(getState()),
+              // contextExtensions: sessionStateExt(getState()),
               result: {
                 extensions: {
                   "https://mentorpal.org/xapi/activity/extensions/mentor-response": {
@@ -356,7 +337,6 @@ export const sendQuestion = (question: any) => async (
                     question,
                     question_index: currentQuestionIndex(getState()),
                     mentor,
-                    response_time: Date.now() - tick,
                   },
                 },
               },
@@ -475,10 +455,12 @@ const onQuestionSent = (question: string): QuestionSentAction => ({
   type: QUESTION_SENT,
 });
 
-const onQuestionAnswered = (response: any) => ({
-  mentor: response,
-  type: QUESTION_ANSWERED,
-});
+function onQuestionAnswered(response: QuestionResponse) {
+  return {
+    mentor: response,
+    type: QUESTION_ANSWERED,
+  };
+}
 
 const onQuestionError = (id: string, question: string) => ({
   mentor: id,
