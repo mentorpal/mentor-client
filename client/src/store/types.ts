@@ -83,36 +83,6 @@ export interface QuestionResult {
   status: ResultStatus;
 }
 
-export interface QuestionMentorAnswerState {
-  answerId: string;
-  answerText: string;
-  answeredAt: Date;
-  askedAt: Date;
-  classifier: string;
-  confidence: number;
-  isOffTopic: boolean;
-  responseTimeSecs: number;
-  status: MentorQuestionStatus;
-}
-
-// export enum QuestionMentorAnswerEventType {
-//   CLICKED_MENTOR = "CLICKED_MENTOR",
-//   PLAYBACK_STARTED = "PLAYBACK_STARTED",
-// }
-
-// export interface QuestionMentorAnswerEvent {
-//   mentor: string;
-//   timestamp: Date;
-//   event: Date;
-// }
-
-export interface QuestionState {
-  answersByMentor: {
-    [mentor: string]: QuestionMentorAnswerState;
-  };
-  question: string;
-}
-
 export interface State {
   current_mentor: string; // id of selected mentor
   currentMentorReason: MentorSelectReason;
@@ -124,7 +94,6 @@ export interface State {
     [mentor_id: string]: MentorData;
   };
   next_mentor: string; // id of the next mentor to speak after the current finishes
-  questions: QuestionState[];
   questions_asked: string[];
 }
 
@@ -151,7 +120,7 @@ export interface XapiResultExt {
   mentorFaved: string;
   mentorList: string[];
   mentorNext: string;
-  mentorTopic: string;
+  mentorTopicDisplayed: string;
   questionCurrent: string;
   questionIndex: number;
   questionsAsked: string[];

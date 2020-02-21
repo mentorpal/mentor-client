@@ -20,7 +20,6 @@ import {
 const RESPONSE_CUTOFF = -100;
 
 export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished playing
-export const MENTOR_ANSWER_PLAYBACK_STARTED = "MENTOR_ANSWER_PLAYBACK_STARTED";
 export const MENTOR_DATA_REQUESTED = "MENTOR_DATA_REQUESTED";
 export const MENTOR_DATA_RESULT = "MENTOR_DATA_RESULT";
 export const MENTOR_DATA_REQUEST_DONE = "MENTOR_DATA_REQUEST_DONE";
@@ -34,11 +33,6 @@ export const QUESTION_ERROR = "QUESTION_ERROR"; // question could not be answere
 export const QUESTION_RESULT = "QUESTION_RESULT";
 export const QUESTION_SENT = "QUESTION_SENT"; // question input was sent
 export const TOPIC_SELECTED = "TOPIC_SELECTED";
-
-export interface MentorAnswerPlaybackStartedAction {
-  type: typeof MENTOR_ANSWER_PLAYBACK_STARTED;
-  mentor: string;
-}
 
 export interface MentorDataRequestedAction {
   type: typeof MENTOR_DATA_REQUESTED;
@@ -102,11 +96,11 @@ function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
     mentorFaved: state.faved_mentor,
     mentorList: Object.getOwnPropertyNames(state.mentors_by_id),
     mentorNext: state.next_mentor,
-    mentorTopic: state.current_topic,
+    mentorTopicDisplayed: state.current_topic,
     questionsAsked: state.questions_asked,
     questionCurrent: state.current_question,
     questionIndex: currentQuestionIndex(state),
-    responseTimeSecs: mentorData.response_time,
+    responseTimeSecs: Number(mentorData.response_time) / 1000,
   };
 }
 
@@ -225,7 +219,6 @@ export function mentorAnswerPlaybackStarted(mentorId: string) {
       );
       return;
     }
-    dispatch(onMentorAnswerPlaybackStarted(mentorId));
     dispatch(
       sendXapiStatement({
         verb: "https://mentorpal.org/xapi/verb/answer-playback-started",
@@ -464,15 +457,6 @@ export const onInput: ActionCreator<ThunkAction<
   }
   return dispatch(nextMentor(""));
 };
-
-function onMentorAnswerPlaybackStarted(
-  mentor: string
-): MentorAnswerPlaybackStartedAction {
-  return {
-    type: MENTOR_ANSWER_PLAYBACK_STARTED,
-    mentor,
-  };
-}
 
 const onQuestionSent = (question: string): QuestionSentAction => ({
   question,
