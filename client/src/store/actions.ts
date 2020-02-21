@@ -131,7 +131,7 @@ function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
     questionCur: state.curQuestion,
     questionIndex: currentQuestionIndex(state),
     timestampAnswered: state.curQuestionUpdatedAt,
-    timestampAsked: mentorData.answerRecievedAt,
+    timestampAsked: mentorData.answerReceivedAt,
   };
 }
 

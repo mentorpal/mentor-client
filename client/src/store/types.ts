@@ -30,7 +30,7 @@ export enum ResultStatus {
 export function newMentorData(id: string): MentorData {
   return {
     id: id,
-    answerRecievedAt: new Date(Number.NaN),
+    answerReceivedAt: new Date(Number.NaN),
     name: "",
     questions_by_id: {},
     short_name: "",
@@ -46,7 +46,7 @@ export interface MentorData {
   answer_id?: string;
   answer_text?: string;
   answerDuration: number;
-  answerRecievedAt: Date;
+  answerReceivedAt: Date;
   classifier?: string;
   confidence?: number;
   id: string;

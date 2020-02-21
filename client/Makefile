@@ -45,7 +45,7 @@ test-all:
 	$(MAKE) test-audit
 	$(MAKE) test-format
 	$(MAKE) test-lint
-	$(MAKE) test-types
+	# $(MAKE) test-types
 	$(MAKE) test
 
 .PHONY: test-audit

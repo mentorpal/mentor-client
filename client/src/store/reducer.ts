@@ -164,7 +164,7 @@ export default function reducer(state = initialState, action: any): State {
         ...state.mentorsById[response.id],
         answer_id: response.answer_id,
         answer_text: response.answer_text,
-        answerRecievedAt: new Date(Date.now()),
+        answerReceivedAt: new Date(Date.now()),
         classifier: response.classifier,
         confidence: response.confidence,
         is_off_topic: response.is_off_topic,
@@ -192,7 +192,7 @@ export default function reducer(state = initialState, action: any): State {
           ...state.mentorsById,
           [action.mentor]: {
             ...state.mentorsById[action.mentor],
-            answerRecievedAt: new Date(Date.now()),
+            answerReceivedAt: new Date(Date.now()),
             question: action.question,
             status: MentorQuestionStatus.ERROR,
           },

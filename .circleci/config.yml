@@ -122,8 +122,8 @@ workflows:
           filters: *only-untagged
       - client-lint:
           filters: *only-untagged
-      - client-types:
-          filters: *only-untagged
+      # - client-types:
+      #     filters: *only-untagged
       - client-test:
           filters: *only-untagged
       - approve-build-and-push:
@@ -133,7 +133,7 @@ workflows:
             - client-format
             - client-audit
             - client-lint
-            - client-types
+            # - client-types
             - client-test
       - build-and-push:
           is-release-tag: false
@@ -148,8 +148,8 @@ workflows:
           filters: *only-tagged-releases
       - client-lint:
           filters: *only-tagged-releases
-      - client-types:
-          filters: *only-tagged-releases
+      # - client-types:
+      #     filters: *only-tagged-releases
       - client-test:
           filters: *only-tagged-releases
       - build-and-push:
@@ -159,7 +159,7 @@ workflows:
             - client-format
             - client-audit
             - client-lint
-            - client-types
+            # - client-types
             - client-test
 
 

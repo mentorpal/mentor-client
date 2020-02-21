@@ -26,6 +26,7 @@ describe("load mentor data", () => {
     mentor_123: {
       id: "mentor_123",
       name: "Mentor Number 1",
+      answerReceivedAt: null,
       questions_by_id: {
         mentor_01_a1_1_1: {
           question_text: "Who are you and what do you do?",
@@ -49,6 +50,7 @@ describe("load mentor data", () => {
     },
     mentor_456: {
       id: "mentor_456",
+      answerReceivedAt: null,
       name: "Mentor Number 2",
       questions_by_id: {
         mentor_02_a1_1_1: {
