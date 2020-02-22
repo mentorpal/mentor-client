@@ -26,7 +26,6 @@ describe("load mentor data", () => {
     mentor_123: {
       id: "mentor_123",
       name: "Mentor Number 1",
-      answerReceivedAt: null,
       questions_by_id: {
         mentor_01_a1_1_1: {
           question_text: "Who are you and what do you do?",
@@ -50,7 +49,6 @@ describe("load mentor data", () => {
     },
     mentor_456: {
       id: "mentor_456",
-      answerReceivedAt: null,
       name: "Mentor Number 2",
       questions_by_id: {
         mentor_02_a1_1_1: {
@@ -79,6 +77,8 @@ describe("load mentor data", () => {
     mentor_123: {
       ...expectedApiDataByMentorId["mentor_123"],
       answer_id: "intro_1234",
+      answerDuration: Number.NaN,
+      answerReceivedAt: Number.NaN,
       status: MentorQuestionStatus.READY,
       topic_questions: {
         "About Me": ["Who are you and what do you do?"],
@@ -87,6 +87,8 @@ describe("load mentor data", () => {
     mentor_456: {
       ...expectedApiDataByMentorId["mentor_456"],
       answer_id: "intro_222",
+      answerDuration: Number.NaN,
+      answerReceivedAt: Number.NaN,
       status: MentorQuestionStatus.READY,
       topic_questions: {
         "About Me": ["How old are you and why?"],

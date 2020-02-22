@@ -13,6 +13,7 @@ import {
   QuestionResult,
   ResultStatus,
   MentorData,
+  MentorQuestionSource,
   State,
   XapiResultExt,
   XapiResultAnswerStatusByMentorId,
@@ -70,7 +71,10 @@ export interface QuestionResultAction {
 
 export interface QuestionSentAction {
   type: typeof QUESTION_SENT;
-  question: string;
+  payload: {
+    question: string;
+    source: MentorQuestionSource;
+  };
 }
 
 export interface NextMentorAction {
@@ -128,7 +132,8 @@ function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
     mentorNext: state.mentorNext,
     mentorTopicDisplayed: state.curTopic,
     questionsAsked: state.questionsAsked,
-    questionCur: state.curQuestion,
+    question: state.curQuestion,
+    questionSource: state.curQuestionSource,
     questionIndex: currentQuestionIndex(state),
     timestampAnswered: state.curQuestionUpdatedAt,
     timestampAsked: mentorData.answerReceivedAt,
@@ -176,6 +181,8 @@ export const loadMentor: ActionCreator<ThunkAction<
                 const mentorData: MentorData = {
                   ...apiData,
                   answer_id: findIntro(apiData),
+                  answerDuration: Number.NaN,
+                  answerReceivedAt: Number.NaN,
                   status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
                   topic_questions: Object.getOwnPropertyNames(
                     apiData.topics_by_id
@@ -296,18 +303,21 @@ export const faveMentor = (mentor_id: any) => ({
 const currentQuestionIndex = (state: { questionsAsked: { length: any } }) =>
   Array.isArray(state.questionsAsked) ? state.questionsAsked.length : -1;
 
-export const sendQuestion = (question: any) => async (
+export const sendQuestion = (q: {
+  question: string;
+  source: MentorQuestionSource;
+}) => async (
   dispatch: ThunkDispatch<State, void, AnyAction>,
   getState: () => State
 ) => {
   dispatch(
     sendXapiStatement({
-      // contextExtensions: sessionStateExt(getState()),
       result: {
         extensions: {
           "https://mentorpal.org/xapi/activity/extensions/actor-question": {
-            question_index: currentQuestionIndex(getState()) + 1,
-            text: question,
+            questionIndex: currentQuestionIndex(getState()) + 1,
+            text: q.question,
+            source: q.source,
           },
         },
       },
@@ -315,26 +325,26 @@ export const sendQuestion = (question: any) => async (
     })
   );
   dispatch(onInput());
-  dispatch(onQuestionSent(question));
-
+  dispatch(onQuestionSent(q));
   const state = getState();
   const mentorIds = Object.keys(state.mentorsById);
   const tick = Date.now();
   // query all the mentors without waiting for the answers one by one
   const promises = mentorIds.map(mentor => {
     return new Promise<QuestionResponse>((resolve, reject) => {
-      queryMentor(mentor, question)
+      queryMentor(mentor, q.question)
         .then(r => {
           const { data } = r;
           const response: QuestionResponse = {
-            id: mentor,
-            question: question,
-            answer_id: data.answer_id,
-            answer_text: data.answer_text,
-            classifier: data.classifier,
-            confidence: data.confidence,
-            is_off_topic: data.confidence <= RESPONSE_CUTOFF,
-            response_time: Date.now() - tick,
+            answerId: data.answer_id,
+            answerText: data.answer_text,
+            answerClassifier: data.classifier,
+            answerConfidence: data.confidence,
+            answerIsOffTopic: data.confidence <= RESPONSE_CUTOFF,
+            answerResponseTimeSecs: Number(Date.now() - tick) / 1000,
+            mentor,
+            question: q.question,
+            questionSource: q.source,
             status: MentorQuestionStatus.ANSWERED,
           };
           dispatch(
@@ -343,8 +353,8 @@ export const sendQuestion = (question: any) => async (
                 extensions: {
                   "https://mentorpal.org/xapi/activity/extensions/mentor-response": {
                     ...response,
-                    question,
-                    question_index: currentQuestionIndex(getState()),
+                    question: q.question,
+                    questionIndex: currentQuestionIndex(getState()),
                     mentor,
                   },
                 },
@@ -356,7 +366,7 @@ export const sendQuestion = (question: any) => async (
           resolve(response);
         })
         .catch((err: any) => {
-          dispatch(onQuestionError(mentor, question));
+          dispatch(onQuestionError(mentor, q.question));
           reject(err);
         });
     });
@@ -365,7 +375,7 @@ export const sendQuestion = (question: any) => async (
   // ...but still don't move forward till we have all the answers,
   // because we will prefer the user's fav and then highest confidence
   const responses = (
-    await Promise.all(promises.map(p => p.catch(e => e)))
+    await Promise.all<QuestionResponse>(promises.map(p => p.catch(e => e)))
   ).filter(r => !(r instanceof Error));
 
   if (responses.length === 0) {
@@ -375,17 +385,17 @@ export const sendQuestion = (question: any) => async (
   // Play favored mentor if an answer exists
   if (state.mentorFaved) {
     const fave_response = responses.find(response => {
-      return response.id === state.mentorFaved;
+      return response.mentor === state.mentorFaved;
     });
-    if (!fave_response.is_off_topic) {
+    if (!fave_response.answerIsOffTopic) {
       dispatch(selectMentor(state.mentorFaved, MentorSelectReason.USER_FAV));
       return;
     }
   }
 
   // Otherwise play mentor with highest confidence answer
-  responses.sort((a, b) => (a.confidence > b.confidence ? -1 : 1));
-  if (responses[0].is_off_topic) {
+  responses.sort((a, b) => (a.answerConfidence > b.answerConfidence ? -1 : 1));
+  if (responses[0].answerIsOffTopic) {
     dispatch(
       selectMentor(
         state.mentorFaved ? state.mentorFaved : state.curMentor,
@@ -397,7 +407,7 @@ export const sendQuestion = (question: any) => async (
     return;
   }
   dispatch(
-    selectMentor(responses[0].id, MentorSelectReason.HIGHEST_CONFIDENCE)
+    selectMentor(responses[0].mentor, MentorSelectReason.HIGHEST_CONFIDENCE)
   );
 };
 
@@ -475,8 +485,11 @@ const onMentorAnswerPlaybackStarted = (
   },
 });
 
-const onQuestionSent = (question: string): QuestionSentAction => ({
-  question,
+const onQuestionSent = (payload: {
+  question: string;
+  source: MentorQuestionSource;
+}): QuestionSentAction => ({
+  payload,
   type: QUESTION_SENT,
 });
 

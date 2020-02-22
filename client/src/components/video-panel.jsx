@@ -20,11 +20,11 @@ const VideoPanel = ({ isMobile }) => {
   const height = 50;
   const width = isMobile ? height / 0.895 : height / 0.5625;
 
-  const onClick = mentor => {
-    if (mentor.is_off_topic || mentor.status === MentorQuestionStatus.ERROR) {
+  const onClick = m => {
+    if (m.is_off_topic || m.status === MentorQuestionStatus.ERROR) {
       return;
     }
-    dispatch(selectMentor(mentor.id, MentorSelectReason.USER_SELECT));
+    dispatch(selectMentor(m.id, MentorSelectReason.USER_SELECT));
   };
 
   return (

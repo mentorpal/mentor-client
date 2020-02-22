@@ -3,6 +3,7 @@ import { normalizeString } from "@/funcs/funcs";
 import {
   ANSWER_FINISHED,
   MENTOR_FAVED,
+  MENTOR_ANSWER_PLAYBACK_STARTED,
   MENTOR_NEXT,
   MENTOR_DATA_REQUESTED,
   MENTOR_DATA_RESULT,
@@ -15,10 +16,11 @@ import {
   MentorDataRequestedAction,
   MentorSelectedAction,
   MentorAnswerPlaybackStartedAction,
-  MENTOR_ANSWER_PLAYBACK_STARTED,
+  QuestionSentAction,
 } from "./actions";
 import {
   MentorData,
+  MentorQuestionSource,
   MentorQuestionStatus,
   newMentorData,
   QuestionResponse,
@@ -31,7 +33,8 @@ export const initialState: State = cmi5Reducer({
   curMentor: "", // id of selected mentor
   curMentorReason: MentorSelectReason.NONE,
   curQuestion: "", // question that was last asked
-  curQuestionUpdatedAt: new Date(Number.NaN),
+  curQuestionSource: MentorQuestionSource.NONE,
+  curQuestionUpdatedAt: Number.NaN,
   curTopic: "", // topic to show questions for
   mentorFaved: "", // id of the preferred mentor
   isIdle: false,
@@ -120,6 +123,21 @@ function onMentorDataRequested(
   };
 }
 
+function onQuestionSent(state: State, action: QuestionSentAction): State {
+  return {
+    ...state,
+    curQuestion: action.payload.question,
+    curQuestionSource: action.payload.source,
+    curQuestionUpdatedAt: new Date(Date.now()),
+    questionsAsked: Array.from(
+      new Set([
+        ...state.questionsAsked,
+        normalizeString(action.payload.question),
+      ])
+    ),
+  };
+}
+
 export default function reducer(state = initialState, action: any): State {
   state = cmi5Reducer(state, action);
   switch (action.type) {
@@ -145,34 +163,27 @@ export default function reducer(state = initialState, action: any): State {
         mentorNext: action.mentor,
       };
     case QUESTION_SENT:
-      return {
-        ...state,
-        curQuestion: action.question,
-        curQuestionUpdatedAt: new Date(Date.now()),
-        questionsAsked: Array.from(
-          new Set([...state.questionsAsked, normalizeString(action.question)])
-        ),
-      };
+      return onQuestionSent(state, action as QuestionSentAction);
     case QUESTION_ANSWERED: {
       const response = action.mentor as QuestionResponse;
       const history =
-        state.mentorsById[response.id].topic_questions.History || [];
+        state.mentorsById[response.mentor].topic_questions.History || [];
       if (!history.includes(response.question)) {
         history.push(response.question);
       }
       const mentor: MentorData = {
-        ...state.mentorsById[response.id],
-        answer_id: response.answer_id,
-        answer_text: response.answer_text,
+        ...state.mentorsById[response.mentor],
+        answer_id: response.answerId,
+        answer_text: response.answerText,
         answerReceivedAt: new Date(Date.now()),
-        classifier: response.classifier,
-        confidence: response.confidence,
-        is_off_topic: response.is_off_topic,
+        classifier: response.answerClassifier,
+        confidence: response.answerConfidence,
+        is_off_topic: response.answerIsOffTopic,
         question: response.question,
-        response_time: response.response_time,
+        response_time: response.answerResponseTimeSecs,
         status: MentorQuestionStatus.READY,
         topic_questions: {
-          ...state.mentorsById[response.id].topic_questions,
+          ...state.mentorsById[response.mentor].topic_questions,
           History: history,
         },
       };
@@ -181,7 +192,7 @@ export default function reducer(state = initialState, action: any): State {
         isIdle: false,
         mentorsById: {
           ...state.mentorsById,
-          [response.id]: mentor,
+          [response.mentor]: mentor,
         },
       };
     }

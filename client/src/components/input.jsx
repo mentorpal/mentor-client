@@ -7,34 +7,57 @@ import { sendQuestion, onInput } from "store/actions";
 
 import Topics from "components/topics";
 import Questions from "components/questions";
+import { MentorQuestionSource } from "@/store/types";
 
 const Input = ({ height, ...props }) => {
   const dispatch = useDispatch();
-  const question = useSelector(state => state.curQuestion);
-  const [text, setText] = useState("");
+  const questionState = useSelector(state => state.curQuestion);
+  const [questionInput, setQuestionInput] = useState({
+    question: "",
+    source: MentorQuestionSource.NONE,
+  });
   const { classes } = props;
 
-  // Input field should be updated (user typed a question or selected a topic)
-  const onInputChanged = text => {
+  function handleQuestionChanged(question, source) {
+    setQuestionInput({
+      question: question || "",
+      source: source || MentorQuestionSource.NONE,
+    });
     dispatch(onInput());
-    setText(text);
-  };
+  }
 
-  // Input field was clicked on
-  const onInputSelected = () => {
-    dispatch(onInput());
-    setText("");
-  };
-
-  // Input is being sent (user hit send button or recommended question button)
-  const onInputSend = text => {
-    if (!text) {
+  function handleQuestionSend(question, source) {
+    if (!question) {
       return;
     }
-    dispatch(sendQuestion(text));
-    setText("");
+    dispatch(sendQuestion({ question, source }));
+    setQuestionInput({ question: "", source: MentorQuestionSource.NONE });
     window.focus();
+  }
+
+  // Input is being sent (user hit send button or recommended question button)
+  const onQuestionInputSend = () => {
+    handleQuestionSend(questionInput.question, questionInput.source);
   };
+
+  function onQuestionSelected(question) {
+    handleQuestionChanged(question, MentorQuestionSource.TOPIC_LIST);
+    handleQuestionSend(question, MentorQuestionSource.TOPIC_LIST);
+  }
+
+  // Input field should be updated (user typed a question or selected a topic)
+  function onQuestionInputChanged(question) {
+    handleQuestionChanged(question, MentorQuestionSource.USER);
+  }
+
+  // Input field was clicked on
+  const onQuestionInputSelected = () => {
+    handleQuestionChanged(questionInput.question, questionInput.source);
+  };
+
+  function onTopicSelected(question) {
+    handleQuestionChanged(question, MentorQuestionSource.TOPIC_LIST);
+  }
 
   // Input field key was entered (check if user hit enter)
   const onKeyPress = ev => {
@@ -42,7 +65,7 @@ const Input = ({ height, ...props }) => {
       return;
     }
     ev.preventDefault();
-    onInputSend(text);
+    onQuestionInputSend();
   };
 
   // Input field keyboard was lowered
@@ -54,32 +77,32 @@ const Input = ({ height, ...props }) => {
   return (
     <div className="flex" style={{ height }}>
       <div className="content" style={{ height: "60px" }}>
-        <Topics onSelected={onInputChanged} />
+        <Topics onSelected={onTopicSelected} />
       </div>
       <div className="expand">
-        <Questions height={height - 120} onSelected={onInputSend} />
+        <Questions height={height - 120} onSelected={onQuestionSelected} />
       </div>
       <div className="footer" style={{ height: "60px" }}>
         <Paper className={classes.root} square>
           <InputBase
             className={classes.inputField}
-            value={text}
+            value={questionInput.question}
             multiline
             rows={2}
             rowsMax={2}
-            placeholder={question || "Ask a question"}
+            placeholder={questionState || "Ask a question"}
             onChange={e => {
-              onInputChanged(e.target.value);
+              onQuestionInputChanged(e.target.value);
             }}
-            onClick={onInputSelected}
+            onClick={onQuestionInputSelected}
             onBlur={onBlur}
             onKeyPress={onKeyPress}
           />
           <Divider className={classes.divider} />
           <Button
             className={classes.button}
-            onClick={() => onInputSend(text)}
-            disabled={!text}
+            onClick={() => onQuestionInputSend()}
+            disabled={!questionInput.question}
             variant="contained"
             color="primary"
           >

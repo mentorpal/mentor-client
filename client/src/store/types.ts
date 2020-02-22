@@ -1,8 +1,16 @@
+import { isNumeric } from "tslint";
+
 export enum MentorQuestionStatus {
   NONE = "NONE",
   ANSWERED = "ANSWERED",
   ERROR = "ERROR",
   READY = "READY",
+}
+
+export enum MentorQuestionSource {
+  NONE = "NONE",
+  USER = "USER",
+  TOPIC_LIST = "TOPIC_LIST",
 }
 
 export enum MentorSelectReason {
@@ -30,7 +38,7 @@ export enum ResultStatus {
 export function newMentorData(id: string): MentorData {
   return {
     id: id,
-    answerReceivedAt: new Date(Number.NaN),
+    answerReceivedAt: Number.NaN,
     name: "",
     questions_by_id: {},
     short_name: "",
@@ -46,7 +54,7 @@ export interface MentorData {
   answer_id?: string;
   answer_text?: string;
   answerDuration: number;
-  answerReceivedAt: Date;
+  answerReceivedAt: number;
   classifier?: string;
   confidence?: number;
   id: string;
@@ -89,7 +97,8 @@ export interface State {
   curMentor: string; // id of selected mentor
   curMentorReason: MentorSelectReason;
   curQuestion: string; // question that was last asked
-  curQuestionUpdatedAt: Date;
+  curQuestionSource: MentorQuestionSource;
+  curQuestionUpdatedAt: number;
   curTopic: string; // topic to show questions for
   mentorFaved: string; // id of the preferred mentor
   isIdle: boolean;
@@ -101,14 +110,15 @@ export interface State {
 }
 
 export interface QuestionResponse {
-  answer_id: string;
-  answer_text: string;
-  classifier: string;
-  confidence: number;
-  id: string;
-  is_off_topic: boolean;
+  answerId: string;
+  answerText: string;
+  answerClassifier: string;
+  answerConfidence: number;
+  answerIsOffTopic: boolean;
+  answerResponseTimeSecs: number;
+  mentor: string;
   question: string;
-  response_time: number;
+  questionSource: MentorQuestionSource;
   status: MentorQuestionStatus;
 }
 
@@ -141,8 +151,9 @@ export interface XapiResultExt {
   mentorFaved: string;
   mentorNext: string;
   mentorTopicDisplayed: string;
-  questionCur: string;
+  question: string;
   questionIndex: number;
+  questionSource: MentorQuestionSource;
   questionsAsked: string[];
   timestampAsked: Date;
   timestampAnswered: Date;

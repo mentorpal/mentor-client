@@ -1,5 +1,5 @@
 import reducer from "./reducer";
-import { MentorSelectReason } from "./types";
+import { MentorSelectReason, MentorQuestionSource } from "./types";
 
 describe("reducer", () => {
   it("should return the initial state", () => {
@@ -9,6 +9,7 @@ describe("reducer", () => {
       curMentor: "", // id of selected mentor
       curMentorReason: MentorSelectReason.NONE,
       curQuestion: "", // question that was last asked
+      curQuestionSource: MentorQuestionSource.NONE,
       curTopic: "", // topic to show questions for
       mentorFaved: "", // id of the preferred mentor
       isIdle: false,
