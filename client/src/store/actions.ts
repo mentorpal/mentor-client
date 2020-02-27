@@ -266,7 +266,7 @@ export function mentorAnswerPlaybackStarted(video: {
         verb: "https://mentorpal.org/xapi/verb/answer-playback-started",
         result: {
           extensions: {
-            "https://mentorpal.org/xapi/activity/extensions/verb/answer-playback-started": toXapiResultExt(
+            "https://mentorpal.org/xapi/verb/answer-playback-started": toXapiResultExt(
               mentorData,
               curState
             ),
@@ -314,7 +314,7 @@ export const sendQuestion = (q: {
     sendXapiStatement({
       result: {
         extensions: {
-          "https://mentorpal.org/xapi/result/extensions/verb/asked": {
+          "https://mentorpal.org/xapi/verb/asked": {
             questionIndex: currentQuestionIndex(getState()) + 1,
             text: q.question,
             source: q.source,
@@ -351,7 +351,7 @@ export const sendQuestion = (q: {
             sendXapiStatement({
               result: {
                 extensions: {
-                  "https://mentorpal.org/xapi/result/extensions/verb/answered": {
+                  "https://mentorpal.org/xapi/verb/answered": {
                     ...response,
                     questionIndex: currentQuestionIndex(getState()),
                   },
