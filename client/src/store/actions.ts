@@ -135,8 +135,8 @@ function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
     question: state.curQuestion,
     questionSource: state.curQuestionSource,
     questionIndex: currentQuestionIndex(state),
-    timestampAnswered: state.curQuestionUpdatedAt,
-    timestampAsked: mentorData.answerReceivedAt,
+    timestampAnswered: new Date(state.curQuestionUpdatedAt),
+    timestampAsked: new Date(mentorData.answerReceivedAt),
   };
 }
 
@@ -266,7 +266,7 @@ export function mentorAnswerPlaybackStarted(video: {
         verb: "https://mentorpal.org/xapi/verb/answer-playback-started",
         result: {
           extensions: {
-            "https://mentorpal.org/xapi/activity/extensions/mentor-response": toXapiResultExt(
+            "https://mentorpal.org/xapi/activity/extensions/verb/answer-playback-started": toXapiResultExt(
               mentorData,
               curState
             ),
@@ -314,7 +314,7 @@ export const sendQuestion = (q: {
     sendXapiStatement({
       result: {
         extensions: {
-          "https://mentorpal.org/xapi/activity/extensions/actor-question": {
+          "https://mentorpal.org/xapi/result/extensions/verb/asked": {
             questionIndex: currentQuestionIndex(getState()) + 1,
             text: q.question,
             source: q.source,
@@ -351,11 +351,9 @@ export const sendQuestion = (q: {
             sendXapiStatement({
               result: {
                 extensions: {
-                  "https://mentorpal.org/xapi/activity/extensions/mentor-response": {
+                  "https://mentorpal.org/xapi/result/extensions/verb/answered": {
                     ...response,
-                    question: q.question,
                     questionIndex: currentQuestionIndex(getState()),
-                    mentor,
                   },
                 },
               },
@@ -371,17 +369,14 @@ export const sendQuestion = (q: {
         });
     });
   });
-
   // ...but still don't move forward till we have all the answers,
   // because we will prefer the user's fav and then highest confidence
   const responses = (
     await Promise.all<QuestionResponse>(promises.map(p => p.catch(e => e)))
   ).filter(r => !(r instanceof Error));
-
   if (responses.length === 0) {
     return;
   }
-
   // Play favored mentor if an answer exists
   if (state.mentorFaved) {
     const fave_response = responses.find(response => {
@@ -392,7 +387,6 @@ export const sendQuestion = (q: {
       return;
     }
   }
-
   // Otherwise play mentor with highest confidence answer
   responses.sort((a, b) => (a.answerConfidence > b.answerConfidence ? -1 : 1));
   if (responses[0].answerIsOffTopic) {
@@ -418,7 +412,6 @@ export const answerFinished = () => (
   getState: () => State
 ) => {
   dispatch(onIdle());
-
   // order mentors by highest answer confidence
   const state = getState();
   const mentors = state.mentorsById;
@@ -437,20 +430,17 @@ export const answerFinished = () => (
     });
   });
   responses.sort((a, b) => (a.confidence > b.confidence ? -1 : 1));
-
   // get the most confident answer that has not been given
   const mentorNext = responses.find(response => {
     return (
       response.status === MentorQuestionStatus.READY && !response.is_off_topic
     );
   });
-
   // set the next mentor to start playing, if there is one
   if (!mentorNext) {
     return;
   }
   dispatch(nextMentor(mentorNext.id));
-
   // play the next mentor after the timeout
   if (timer) {
     clearTimeout(timer);
