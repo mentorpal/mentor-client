@@ -14,10 +14,6 @@ clean:
 develop: .env.development node_modules/gatsby-cli
 	npx gatsby develop
 
-.PHONY: cypress
-cypress:
-	npm run cypress
-
 .PHONY: format
 format: node_modules/prettier
 	yarn run format

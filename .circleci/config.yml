@@ -57,6 +57,23 @@ jobs:
           name: Client test types
           command:
             cd client && yarn run test:types
+  client-cypress:
+    working_directory: client
+    executor: node
+    steps:
+      - checkout
+      - run:
+          name: Install client
+          command: yarn install --frozen-lockfile
+      - run: yarn run cy:verify
+      - run:
+          name: 'Start server'
+          command:
+            yarn run start & wait-on http://localhost:8080
+      - run:
+          name: Client test cypress
+          command:
+            cypress run
   client-test:
     executor: node
     steps:
