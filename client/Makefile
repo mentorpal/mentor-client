@@ -14,6 +14,10 @@ clean:
 develop: .env.development node_modules/gatsby-cli
 	npx gatsby develop
 
+.PHONY: cypress
+cypress:
+	npm run cypress
+
 .PHONY: format
 format: node_modules/prettier
 	yarn run format
@@ -43,6 +47,7 @@ test-all:
 	$(MAKE) test-format
 	$(MAKE) test-lint
 	$(MAKE) test-types
+	$(MAKE) test-cypress
 	$(MAKE) test
 
 .PHONY: test-audit
@@ -60,3 +65,7 @@ test-lint: node_modules/eslint
 .PHONY: test-types
 test-types: node_modules/typescript
 	yarn run test:types
+
+.PHONY: test-cypress
+test-cypress:
+	npm run test:cypress
