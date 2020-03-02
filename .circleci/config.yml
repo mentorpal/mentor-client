@@ -9,6 +9,7 @@ aliases:
     tags:
       ignore: /.*/
 orbs:
+  cypress: cypress-io/cypress@1
   docker: circleci/docker@0.5.17
 executors:
   node:
@@ -57,23 +58,6 @@ jobs:
           name: Client test types
           command:
             cd client && yarn run test:types
-  client-cypress:
-    working_directory: client
-    executor: node
-    steps:
-      - checkout
-      - run:
-          name: Install client
-          command: yarn install --frozen-lockfile
-      - run: yarn run cy:verify
-      - run:
-          name: 'Start server'
-          command:
-            yarn run start & wait-on http://localhost:8080
-      - run:
-          name: Client test cypress
-          command:
-            cypress run
   client-test:
     executor: node
     steps:
@@ -143,6 +127,12 @@ workflows:
       #     filters: *only-untagged
       - client-test:
           filters: *only-untagged
+      - cypress/run:
+          yarn: true
+          start: yarn start
+          wait-on: 'http://localhost:8000'
+          filters: *only-untagged
+          working_directory: client
       - approve-build-and-push:
           filters: *only-untagged
           type: approval
@@ -151,6 +141,7 @@ workflows:
             - client-audit
             - client-lint
             # - client-types
+            - cypress/run
             - client-test
       - build-and-push:
           is-release-tag: false
@@ -169,6 +160,12 @@ workflows:
       #     filters: *only-tagged-releases
       - client-test:
           filters: *only-tagged-releases
+      - cypress/run:
+          yarn: true
+          start: yarn start
+          wait-on: 'http://localhost:8000'
+          filters: *only-untagged
+          working_directory: client
       - build-and-push:
           is-release-tag: true
           filters: *only-tagged-releases
@@ -177,6 +174,7 @@ workflows:
             - client-audit
             - client-lint
             # - client-types
+            - cypress/run
             - client-test
 
 
