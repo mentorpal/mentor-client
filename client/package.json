@@ -14,7 +14,12 @@
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "cors": "^2.8.5",
+<<<<<<< HEAD
     "gatsby": "^2.19.22",
+=======
+    "cypress": "^4.1.0",
+    "gatsby": "^2.19.18",
+>>>>>>> a731539... Init cypress
     "gatsby-image": "^2.2.41",
     "gatsby-plugin-env-variables": "^1.0.1",
     "gatsby-plugin-manifest": "^2.2.41",
@@ -90,12 +95,14 @@
     "format": "prettier --write '**/*.{js,jsx,json,ts,tsx}'",
     "start": "yarn run develop",
     "serve": "gatsby serve",
+    "cypress": "cypress open",
     "test": "jest",
-    "test:all": "yarn run test:format && yarn run test:lint && yarn run test:audit && yarn run test:types && yarn test",
+    "test:all": "yarn run test:format && yarn run test:lint && yarn run test:audit && yarn run test:types && yarn run test:cypress && yarn test",
     "test:audit": "echo 'restore `yarn audit --audit-level=moderate` after https://github.com/gatsbyjs/gatsby/issues/21791'",
     "test:format": "prettier --check '**/*.{js,jsx,json,ts,tsx}'",
     "test:lint": "eslint src --ext ts --ext tsx --ext js --ext jsx",
     "test:types": "tsc --noEmit",
+    "test:cypress": "cypress run",
     "test:watch": "jest --watch"
   },
   "repository": {
