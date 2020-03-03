@@ -8,11 +8,9 @@ import { normalizeString } from "funcs/funcs";
 
 const Topics = ({ onSelected }) => {
   const dispatch = useDispatch();
-  const mentor = useSelector(
-    state => state.mentors_by_id[state.current_mentor]
-  );
-  const current_topic = useSelector(state => state.current_topic);
-  const questions_asked = useSelector(state => state.questions_asked);
+  const mentor = useSelector(state => state.mentorsById[state.curMentor]);
+  const curTopic = useSelector(state => state.curTopic);
+  const questionsAsked = useSelector(state => state.questionsAsked);
 
   if (!(mentor && mentor.topic_questions)) {
     return <div />;
@@ -22,12 +20,12 @@ const Topics = ({ onSelected }) => {
   const onTopicSelected = topic => {
     dispatch(selectTopic(topic));
     const top_question = topic_questions[topic].find(q => {
-      return !questions_asked.includes(normalizeString(q));
+      return !questionsAsked.includes(normalizeString(q));
     });
     onSelected(top_question || "");
   };
 
-  if (!current_topic) {
+  if (!curTopic) {
     const first_topic = Object.keys(topic_questions)[0];
     if (first_topic === "Recommended") {
       onTopicSelected(first_topic);
@@ -43,7 +41,7 @@ const Topics = ({ onSelected }) => {
           <div className="slide topic-slide" key={i}>
             <Button
               variant="contained"
-              color={current_topic === topic ? "primary" : "default"}
+              color={curTopic === topic ? "primary" : "default"}
               onClick={() => onTopicSelected(topic)}
             >
               {topic === "History" ? (

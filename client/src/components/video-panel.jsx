@@ -8,22 +8,23 @@ import { MentorQuestionStatus } from "store/types";
 import VideoThumbnail from "components/video-thumbnail";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
+import { MentorSelectReason } from "@/store/types";
 
 const VideoPanel = ({ isMobile }) => {
   const dispatch = useDispatch();
-  const mentor = useSelector(state => state.current_mentor);
-  const mentors = useSelector(state => state.mentors_by_id);
+  const mentor = useSelector(state => state.curMentor);
+  const mentors = useSelector(state => state.mentorsById);
   if (!mentor) {
     return <div />;
   }
   const height = 50;
   const width = isMobile ? height / 0.895 : height / 0.5625;
 
-  const onClick = mentor => {
-    if (mentor.is_off_topic || mentor.status === MentorQuestionStatus.ERROR) {
+  const onClick = m => {
+    if (m.is_off_topic || m.status === MentorQuestionStatus.ERROR) {
       return;
     }
-    dispatch(selectMentor(mentor.id));
+    dispatch(selectMentor(m.id, MentorSelectReason.USER_SELECT));
   };
 
   return (
@@ -50,8 +51,8 @@ const VideoPanel = ({ isMobile }) => {
 };
 
 const StarIcon = ({ mentor }) => {
-  const faved_mentor = useSelector(state => state.faved_mentor);
-  if (faved_mentor === mentor.id) {
+  const mentorFaved = useSelector(state => state.mentorFaved);
+  if (mentorFaved === mentor.id) {
     return (
       <Star
         className="star-icon"

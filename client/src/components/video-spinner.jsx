@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { CircularProgress } from "@material-ui/core";
 
 const LoadingSpinner = ({ mentor, width, height }) => {
-  const question = useSelector(state => state.current_question);
+  const question = useSelector(state => state.curQuestion);
   const offset_width = 0.5 * width - 15;
   const offset_height = 0.5 * height - 15;
 

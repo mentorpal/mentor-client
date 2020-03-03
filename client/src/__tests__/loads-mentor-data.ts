@@ -6,7 +6,7 @@ import thunk, { ThunkDispatch } from "redux-thunk";
 import { loadMentor } from "@/store/actions";
 import reducer, { initialState } from "@/store/reducer";
 import { State, MentorData, MentorQuestionStatus } from "@/store/types";
-import { ExpectIntermediateStates, ExpectedState } from "@/test_helpers";
+import { ExpectIntermediateStates, ExpectedState } from "@/test-helpers";
 import { MentorApiData } from "@/api/api";
 
 // This sets the mock adapter on the default instance
@@ -77,6 +77,8 @@ describe("load mentor data", () => {
     mentor_123: {
       ...expectedApiDataByMentorId["mentor_123"],
       answer_id: "intro_1234",
+      answerDuration: Number.NaN,
+      answerReceivedAt: Number.NaN,
       status: MentorQuestionStatus.READY,
       topic_questions: {
         "About Me": ["Who are you and what do you do?"],
@@ -85,6 +87,8 @@ describe("load mentor data", () => {
     mentor_456: {
       ...expectedApiDataByMentorId["mentor_456"],
       answer_id: "intro_222",
+      answerDuration: Number.NaN,
+      answerReceivedAt: Number.NaN,
       status: MentorQuestionStatus.READY,
       topic_questions: {
         "About Me": ["How old are you and why?"],
@@ -115,7 +119,7 @@ describe("load mentor data", () => {
           },
           {}
         );
-        expect(store.getState().mentors_by_id).toMatchObject(expectedState);
+        expect(store.getState().mentorsById).toMatchObject(expectedState);
       },
       unmetMessage:
         "action sets up a placeholder record for all mentors immediately on request load mentors",
@@ -151,10 +155,10 @@ describe("load mentor data", () => {
     await dispatch(loadMentor(mentorId));
     intermediateStates.testExpectations();
     const state = store.getState();
-    expect(state.mentors_by_id).toEqual({
+    expect(state.mentorsById).toEqual({
       [mentorId]: expectedMentorData,
     });
-    expect(state.current_mentor).toEqual(mentorId);
+    expect(state.curMentor).toEqual(mentorId);
   });
 
   it("loads all data for a panel of mentors with a single action", async () => {
@@ -181,8 +185,8 @@ describe("load mentor data", () => {
     await dispatch(loadMentor(mentors));
     intermediateStates.testExpectations();
     const state = store.getState();
-    expect(state.mentors_by_id).toEqual(expectedMentorData);
-    expect(state.current_mentor).toEqual(mentors[0]);
+    expect(state.mentorsById).toEqual(expectedMentorData);
+    expect(state.curMentor).toEqual(mentors[0]);
   });
 
   it("integrates recommended questions passed as args into mentor data", async () => {
@@ -212,7 +216,7 @@ describe("load mentor data", () => {
     await dispatch(loadMentor(mentorId, { recommendedQuestions }));
     intermediateStates.testExpectations();
     const state = store.getState();
-    expect(state.mentors_by_id).toEqual({
+    expect(state.mentorsById).toEqual({
       [mentorId]: expectedMentorData,
     });
   });
@@ -246,7 +250,7 @@ describe("load mentor data", () => {
     );
     intermediateStates.testExpectations();
     const state = store.getState();
-    expect(state.mentors_by_id).toEqual({
+    expect(state.mentorsById).toEqual({
       [mentorId]: expectedMentorData,
     });
   });

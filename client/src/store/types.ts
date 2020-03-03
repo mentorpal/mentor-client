@@ -1,12 +1,31 @@
-export interface MentorSelection {
-  id: string;
-}
+import { isNumeric } from "tslint";
 
 export enum MentorQuestionStatus {
   NONE = "NONE",
   ANSWERED = "ANSWERED",
   ERROR = "ERROR",
   READY = "READY",
+}
+
+export enum MentorQuestionSource {
+  NONE = "NONE",
+  USER = "USER",
+  TOPIC_LIST = "TOPIC_LIST",
+}
+
+export enum MentorSelectReason {
+  HIGHEST_CONFIDENCE = "HIGHEST_CONFIDENCE",
+  NEXT_READY = "NEXT_READY",
+  NONE = "NONE",
+  OFF_TOPIC_CUR = "OFF_TOPIC_CUR",
+  OFF_TOPIC_FAV = "OFF_TOPIC_FAV",
+  USER_FAV = "USER_FAV",
+  USER_SELECT = "USER_SELECT",
+}
+
+export interface MentorSelection {
+  id: string;
+  reason: MentorSelectReason;
 }
 
 export enum ResultStatus {
@@ -19,6 +38,7 @@ export enum ResultStatus {
 export function newMentorData(id: string): MentorData {
   return {
     id: id,
+    answerReceivedAt: Number.NaN,
     name: "",
     questions_by_id: {},
     short_name: "",
@@ -30,21 +50,25 @@ export function newMentorData(id: string): MentorData {
   };
 }
 
-// TODO: transient properties--answer_id, and status should NOT be part of MentorData
 export interface MentorData {
-  answer_id?: string; // move elsewhere, e.g. history of QuestionStatus objects
-  answer_text?: string; // move elsewhere, e.g. history of QuestionStatus objects
-  confidence?: number; // move elsewhere, e.g. history of QuestionStatus objects
+  answer_id?: string;
+  answer_text?: string;
+  answerDuration: number;
+  answerReceivedAt: number;
+  classifier?: string;
+  confidence?: number;
   id: string;
-  is_off_topic?: boolean; // move elsewhere, e.g. history of QuestionStatus objects
+  is_off_topic?: boolean;
   name: string;
+  question?: string;
   questions_by_id: {
     [question_id: string]: {
       question_text: string;
     };
   };
+  response_time?: number;
   short_name: string;
-  status: MentorQuestionStatus; // move elsewhere, e.g. history of QuestionStatus objects
+  status: MentorQuestionStatus;
   title: string;
   topics_by_id: {
     [topic_id: string]: {
@@ -70,14 +94,67 @@ export interface QuestionResult {
 }
 
 export interface State {
-  current_mentor: string; // id of selected mentor
-  current_question: string; // question that was last asked
-  current_topic: string; // topic to show questions for
-  faved_mentor: string; // id of the preferred mentor
+  curMentor: string; // id of selected mentor
+  curMentorReason: MentorSelectReason;
+  curQuestion: string; // question that was last asked
+  curQuestionSource: MentorQuestionSource;
+  curQuestionUpdatedAt: number;
+  curTopic: string; // topic to show questions for
+  mentorFaved: string; // id of the preferred mentor
   isIdle: boolean;
-  mentors_by_id: {
-    [mentor_id: string]: MentorData;
+  mentorsById: {
+    [mentor: string]: MentorData;
   };
-  next_mentor: string; // id of the next mentor to speak after the current finishes
-  questions_asked: string[];
+  mentorNext: string; // id of the next mentor to speak after the current finishes
+  questionsAsked: string[];
+}
+
+export interface QuestionResponse {
+  answerId: string;
+  answerText: string;
+  answerClassifier: string;
+  answerConfidence: number;
+  answerIsOffTopic: boolean;
+  answerResponseTimeSecs: number;
+  mentor: string;
+  question: string;
+  questionSource: MentorQuestionSource;
+  status: MentorQuestionStatus;
+}
+
+export interface XapiResultMentorAnswerStatus {
+  answerId: string;
+  mentor: string;
+  status: MentorQuestionStatus;
+  confidence: number;
+  isOffTopic: boolean;
+  responseTimeSecs: number;
+}
+
+export interface XapiResultAnswerStatusByMentorId {
+  [mentor: string]: XapiResultMentorAnswerStatus;
+}
+
+export interface XapiResultExt {
+  answerClassifier: string;
+  answerConfidence: number;
+  answerDuration: number;
+  answerId: string;
+  answerIsOffTopic: boolean;
+  answerResponseTimeSecs: number;
+  answerStatusByMentor: XapiResultAnswerStatusByMentorId;
+  answerText: string;
+  mentorCur: string;
+  mentorCurIsFav: boolean;
+  mentorCurReason: MentorSelectReason;
+  mentorCurStatus: MentorQuestionStatus;
+  mentorFaved: string;
+  mentorNext: string;
+  mentorTopicDisplayed: string;
+  question: string;
+  questionIndex: number;
+  questionSource: MentorQuestionSource;
+  questionsAsked: string[];
+  timestampAsked: Date;
+  timestampAnswered: Date;
 }

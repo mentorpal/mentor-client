@@ -2,9 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const Header = () => {
-  const mentor = useSelector(
-    state => state.mentors_by_id[state.current_mentor]
-  );
+  const mentor = useSelector(state => state.mentorsById[state.curMentor]);
 
   return (
     <div id="header">

@@ -1,16 +1,21 @@
 import reducer from "./reducer";
+import { MentorSelectReason, MentorQuestionSource } from "./types";
 
 describe("reducer", () => {
   it("should return the initial state", () => {
+    const initial = reducer(undefined, {});
+    delete initial.curQuestionUpdatedAt;
     expect(reducer(undefined, {})).toEqual({
-      current_mentor: "", // id of selected mentor
-      current_question: "", // question that was last asked
-      current_topic: "", // topic to show questions for
-      faved_mentor: "", // id of the preferred mentor
+      curMentor: "", // id of selected mentor
+      curMentorReason: MentorSelectReason.NONE,
+      curQuestion: "", // question that was last asked
+      curQuestionSource: MentorQuestionSource.NONE,
+      curTopic: "", // topic to show questions for
+      mentorFaved: "", // id of the preferred mentor
       isIdle: false,
-      mentors_by_id: {},
-      next_mentor: "", // id of the next mentor to speak after the current finishes
-      questions_asked: [],
+      mentorsById: {},
+      mentorNext: "", // id of the next mentor to speak after the current finishes,
+      questionsAsked: [],
     });
   });
 });

@@ -1,19 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import { useSelector, useDispatch } from "react-redux";
 import { Star, StarBorder } from "@material-ui/icons";
 
 import { idleUrl, videoUrl, subtitleUrl } from "api/api";
-import { answerFinished, faveMentor } from "store/actions";
+import {
+  answerFinished,
+  faveMentor,
+  mentorAnswerPlaybackStarted,
+} from "store/actions";
 import { chromeVersion } from "funcs/funcs";
 
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 
 const Video = ({ height, width }) => {
-  const mentor = useSelector(
-    state => state.mentors_by_id[state.current_mentor]
-  );
+  const mentor = useSelector(state => state.mentorsById[state.curMentor]);
   const mobileWidth = height / 0.895;
   const webWidth = height / 0.5625;
   const format =
@@ -42,10 +44,9 @@ function findMentorIdleId(mentor) {
 
 const VideoPlayer = ({ width, height, format = "mobile" }) => {
   const dispatch = useDispatch();
+  const [duration, setDuration] = useState(Number.NaN);
   const isIdle = useSelector(state => state.isIdle);
-  const mentor = useSelector(
-    state => state.mentors_by_id[state.current_mentor]
-  );
+  const mentor = useSelector(state => state.mentorsById[state.curMentor]);
   const idleVideoId = findMentorIdleId(mentor);
   const url = mentor
     ? isIdle
@@ -62,11 +63,25 @@ const VideoPlayer = ({ width, height, format = "mobile" }) => {
     dispatch(answerFinished());
   };
 
+  const onPlay = () => {
+    if (isIdle) {
+      return;
+    }
+    dispatch(
+      mentorAnswerPlaybackStarted({
+        mentor: mentor.id,
+        duration: duration,
+      })
+    );
+  };
+
   return (
     <ReactPlayer
       style={{ backgroundColor: "black" }}
       url={url}
+      onDuration={setDuration}
       onEnded={onEnded}
+      onPlay={onPlay}
       loop={isIdle}
       width={width}
       height={height}
@@ -94,9 +109,9 @@ const VideoPlayer = ({ width, height, format = "mobile" }) => {
 
 const FaveButton = () => {
   const dispatch = useDispatch();
-  const mentor = useSelector(state => state.current_mentor);
-  const mentors = useSelector(state => state.mentors_by_id);
-  const faved_mentor = useSelector(state => state.faved_mentor);
+  const mentor = useSelector(state => state.curMentor);
+  const mentors = useSelector(state => state.mentorsById);
+  const mentorFaved = useSelector(state => state.mentorFaved);
 
   const onClick = () => {
     dispatch(faveMentor(mentor));
@@ -106,7 +121,7 @@ const FaveButton = () => {
     return <div />;
   }
 
-  return faved_mentor === mentor ? (
+  return mentorFaved === mentor ? (
     <Star className="star-icon" onClick={onClick} style={{ color: "yellow" }} />
   ) : (
     <StarBorder

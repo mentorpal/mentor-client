@@ -27,6 +27,9 @@ node_modules/gatsby-cli:
 node_modules/jest:
 	yarn install --frozen-lockfile
 
+node_modules/jest:
+	yarn install --frozen-lockfile
+
 node_modules/prettier:
 	yarn install --frozen-lockfile
 
@@ -42,7 +45,7 @@ test-all:
 	$(MAKE) test-audit
 	$(MAKE) test-format
 	$(MAKE) test-lint
-	$(MAKE) test-types
+	# $(MAKE) test-types
 	$(MAKE) test
 
 .PHONY: test-audit
