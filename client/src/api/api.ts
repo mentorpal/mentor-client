@@ -77,6 +77,7 @@ export const subtitleUrl = (mentor: string, answerId: string): string => {
 export async function fetchMentorData(
   mentorId: string
 ): Promise<AxiosResponse<MentorApiData>> {
+  console.log(`${MENTOR_API_URL}/mentors/${mentorId}/data`);
   return await axios.get(`${MENTOR_API_URL}/mentors/${mentorId}/data`);
 }
 
