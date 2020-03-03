@@ -36,10 +36,11 @@ const Topics = ({ onSelected }) => {
 
   return (
     <Paper elevation={2} square>
-      <div className="carousel">
+      <div id="topics" className="carousel">
         {Object.keys(topic_questions).map((topic, i) => (
-          <div className="slide topic-slide" key={i}>
+          <div id={`topic-${i}`} className="slide topic-slide" key={i}>
             <Button
+              className={current_topic === topic ? "topic-selected" : ""}
               variant="contained"
               color={curTopic === topic ? "primary" : "default"}
               onClick={() => onTopicSelected(topic)}

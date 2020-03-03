@@ -85,6 +85,7 @@ const Input = ({ height, ...props }) => {
       <div className="footer" style={{ height: "60px" }}>
         <Paper className={classes.root} square>
           <InputBase
+            id="input-field"
             className={classes.inputField}
             value={questionInput.question}
             multiline
@@ -100,6 +101,7 @@ const Input = ({ height, ...props }) => {
           />
           <Divider className={classes.divider} />
           <Button
+            id="input-send"
             className={classes.button}
             onClick={() => onQuestionInputSend()}
             disabled={!questionInput.question}

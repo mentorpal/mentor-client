@@ -1,0 +1,1413 @@
+{
+  "id": "carlos",
+  "name": "Carlos Rios",
+  "questions_by_id": {
+    "carlos_A100_2_1": { "question_text": "Did you ever go into combat?" },
+    "carlos_A101_3_1": {
+      "question_text": "What is the most challening part about your job?"
+    },
+    "carlos_A102_3_1": {
+      "question_text": "What is the biggest barrier to entry in this field?"
+    },
+    "carlos_A103_3_1": {
+      "question_text": "How did you become interested in this type of work?"
+    },
+    "carlos_A104_3_1": { "question_text": "Why did you choose this career?" },
+    "carlos_A105_3_1": {
+      "question_text": "If you could do it all over, would you choose this career again?"
+    },
+    "carlos_A106_3_1": {
+      "question_text": "When you were a kid, what did you want to be when you grew up?"
+    },
+    "carlos_A107_3_1": {
+      "question_text": "What sports did you play in high school?"
+    },
+    "carlos_A108_3_1": { "question_text": "What is your favorite color?" },
+    "carlos_A109_3_1": { "question_text": "Are you married?" },
+    "carlos_A10_1_1": { "question_text": "What was your home life like?" },
+    "carlos_A110_3_1": { "question_text": "Do you have siblings?" },
+    "carlos_A111_3_1": { "question_text": "Do you have any pets?" },
+    "carlos_A112_3_1": { "question_text": "What is your favorite food?" },
+    "carlos_A113_3_1": { "question_text": "What is your least favorite food?" },
+    "carlos_A114_3_1": {
+      "question_text": "What is the food like in the military?"
+    },
+    "carlos_A115_3_1": { "question_text": "Do you shoot guns?" },
+    "carlos_A116_3_1": { "question_text": "Did you ever have to kill anyone?" },
+    "carlos_A117_3_1": {
+      "question_text": "What are the ribbons/awards that you've gotten?"
+    },
+    "carlos_A118_3_1": { "question_text": "Do you have any tattoos?" },
+    "carlos_A119_3_1": {
+      "question_text": "Do you have to be a good swimmer to work with the Marines?"
+    },
+    "carlos_A11_1_1": {
+      "question_text": "When did you start working with the Navy?"
+    },
+    "carlos_A120_3_1": {
+      "question_text": "Do you have to wear a uniform (now)?"
+    },
+    "carlos_A121_3_1": {
+      "question_text": "What's something that most people don't know about logistics?"
+    },
+    "carlos_A122_3_1": {
+      "question_text": "Who gave you the best advice about your career?"
+    },
+    "carlos_A123_3_1": { "question_text": "How can I work smarter?" },
+    "carlos_A124_3_1": {
+      "question_text": "What would you advise a person in this field to do in order to relate well with bosses?"
+    },
+    "carlos_A125_3_1": { "question_text": "Does your job give you housing?" },
+    "carlos_A126_3_1": {
+      "question_text": "What has been your favorite place to live?"
+    },
+    "carlos_A127_3_1": {
+      "question_text": "Did your job give you a chance to live overseas?"
+    },
+    "carlos_A128_3_1": {
+      "question_text": "What was your promotion track throughout your career?"
+    },
+    "carlos_A129_3_1": { "question_text": "What was your salary in your job?" },
+    "carlos_A12_1_1": {
+      "question_text": "Are you currently serving in the military?"
+    },
+    "carlos_A130_3_1": {
+      "question_text": "Can you explain the government service grade system?"
+    },
+    "carlos_A131_3_1": {
+      "question_text": "How much do you work with military people vs. civilians?"
+    },
+    "carlos_A132_3_1": {
+      "question_text": "What were your living quarters in the military? (What was the lifestyle? Similar to college?)"
+    },
+    "carlos_A133_3_1": {
+      "question_text": "What are common crimes people in your job commit?"
+    },
+    "carlos_A134_3_1": {
+      "question_text": "Did you receive a monetary bonus for joining?"
+    },
+    "carlos_A135_3_1": {
+      "question_text": "Can you tell me about retirement in your field?"
+    },
+    "carlos_A136_3_1": {
+      "question_text": "What modes of transportation are fastest?"
+    },
+    "carlos_A137_3_1": { "question_text": "What does logistics shipping do?" },
+    "carlos_A138_3_1": { "question_text": "What does handling do?" },
+    "carlos_A139_3_1": { "question_text": "What does procurement do?" },
+    "carlos_A13_1_1": { "question_text": "What is your current position?" },
+    "carlos_A140_3_1": { "question_text": "What does transportation do?" },
+    "carlos_A141_3_1": {
+      "question_text": "What made you interested in being a marine as a kid?"
+    },
+    "carlos_A142_3_2": {
+      "question_text": "Who gave you the best advice about your life?"
+    },
+    "carlos_A143_3_2": {
+      "question_text": "What is the most important lesson about life you have learned?"
+    },
+    "carlos_A144_3_2": {
+      "question_text": "What do you think is really important in life?"
+    },
+    "carlos_A145_3_2": {
+      "question_text": "What problem are you looking to solve?"
+    },
+    "carlos_A146_3_2": {
+      "question_text": "How and where do you find inspiration?"
+    },
+    "carlos_A147_3_2": {
+      "question_text": "How often do you ever get in a \"state of flow\" when doing your job?"
+    },
+    "carlos_A148_3_2": { "question_text": "What makes you proud?" },
+    "carlos_A149_3_2": { "question_text": "What keeps you up at night?" },
+    "carlos_A14_1_1": {
+      "question_text": "How do you spend most of your time at work?"
+    },
+    "carlos_A150_3_2": {
+      "question_text": "Whom do you see as the main beneficiaries of the work you do?"
+    },
+    "carlos_A151_3_2": {
+      "question_text": "Why are you motivated and inspired to go to work?"
+    },
+    "carlos_A152_3_2": {
+      "question_text": "How did you manage both career and family effectively?"
+    },
+    "carlos_A153_3_2": {
+      "question_text": "How strongly would you recommend this profession to others? \ufffd to me personally?"
+    },
+    "carlos_A154_3_2": {
+      "question_text": "If you could change one thing about your job, what would it be?"
+    },
+    "carlos_A155_3_3": { "question_text": "Describe the hiring process?" },
+    "carlos_A156_3_3": { "question_text": "Describe the initial training?" },
+    "carlos_A157_3_3": { "question_text": "What is bootcamp like?" },
+    "carlos_A158_3_3": {
+      "question_text": "Who do I talk to if I'm interested in this field?"
+    },
+    "carlos_A159_3_3": {
+      "question_text": "What is dress attire for this career?"
+    },
+    "carlos_A15_1_1": {
+      "question_text": "Describe the work you do on a typical day?"
+    },
+    "carlos_A160_3_3": {
+      "question_text": "To what extent does this organization adhere to tight schedules both long term and daily?"
+    },
+    "carlos_A161_3_3": {
+      "question_text": "How can I request to work in a certain area or field?"
+    },
+    "carlos_A162_3_3": {
+      "question_text": "What was the most difficult part of your training?"
+    },
+    "carlos_A163_3_3": {
+      "question_text": "What is the most difficult part of logistics?"
+    },
+    "carlos_A164_3_3": {
+      "question_text": "How would you describe your work culture?"
+    },
+    "carlos_A165_3_3": {
+      "question_text": "How does an officer's/non-officer's salary compare to civilian salaries?"
+    },
+    "carlos_A166_3_3": {
+      "question_text": "How significant is there a chance of being deployed?"
+    },
+    "carlos_A167_3_3": {
+      "question_text": "What things are there for me to do on a ship?"
+    },
+    "carlos_A168_3_3": {
+      "question_text": "Why should someone choose to work with the Marines?"
+    },
+    "carlos_A169_3_3": {
+      "question_text": "Why should someone choose to go into logistics?"
+    },
+    "carlos_A16_1_1": {
+      "question_text": "How many hours do you work in a typical day or week?"
+    },
+    "carlos_A170_3_3": {
+      "question_text": "What are the long-term impacts of STEM fields?"
+    },
+    "carlos_A171_3_3": {
+      "question_text": "How do you and your work colleagues socialize outside of work?"
+    },
+    "carlos_A172_3_3": {
+      "question_text": "What is the gender mix of your workplace?"
+    },
+    "carlos_A173_3_3": {
+      "question_text": "What are the ethnic percentages of your workplace?"
+    },
+    "carlos_A174_3_3": {
+      "question_text": "Why do people leave this field or company?"
+    },
+    "carlos_A175_3_3": {
+      "question_text": "Why do people leave the logistics field?"
+    },
+    "carlos_A176_3_3": {
+      "question_text": "How will my relationship with my friends or family members be affected if I join the navy, and what advice should i give them?"
+    },
+    "carlos_A177_3_3": {
+      "question_text": "How much value does your organization put on education and training?"
+    },
+    "carlos_A178_3_3": {
+      "question_text": "How do the educational benefits of the military work?"
+    },
+    "carlos_A179_3_3": {
+      "question_text": "How can I get financial help from the navy for an advanced degree?"
+    },
+    "carlos_A17_1_1": {
+      "question_text": "What kinds of problems do you deal with?"
+    },
+    "carlos_A180_3_3": {
+      "question_text": "How can I switch jobs if I don't like what i do?"
+    },
+    "carlos_A181_3_3": {
+      "question_text": "What is the advancement potential in the field? What is a typical path?"
+    },
+    "carlos_A182_3_3": {
+      "question_text": "What are the opportunities for advancement in this career?"
+    },
+    "carlos_A183_3_3": {
+      "question_text": "How will my experience transfer to civilian jobs outside of the Navy?"
+    },
+    "carlos_A184_3_3": {
+      "question_text": "What is a story that really shows what it is like working in your job?"
+    },
+    "carlos_A185_3_3": {
+      "question_text": "How do you handle supervisors who were unable or unwilling to give you feedback? (asked: How do you get good feedback?)"
+    },
+    "carlos_A186_3_3": {
+      "question_text": "What are the most important decisions that you face daily as a leader in your organization?"
+    },
+    "carlos_A187_4_1": { "question_text": "What is a STEM career like?" },
+    "carlos_A188_4_1": {
+      "question_text": "What are the different STEM careers?"
+    },
+    "carlos_A189_4_1": {
+      "question_text": "What STEM positions are available in the military?"
+    },
+    "carlos_A18_1_1": {
+      "question_text": "What kinds of decisions do you make in your career on a daily basis?"
+    },
+    "carlos_A190_4_1": {
+      "question_text": "What are the benefits of your STEM career?"
+    },
+    "carlos_A191_4_1": {
+      "question_text": "Who do I talk to if I'm interested in this field?"
+    },
+    "carlos_A192_4_1": {
+      "question_text": "What is the difference between working in the public vs private sectors?"
+    },
+    "carlos_A193_4_1": {
+      "question_text": "How much free time do you have in your career?"
+    },
+    "carlos_A194_4_1": {
+      "question_text": "How ethnically diverse is this career field?"
+    },
+    "carlos_A195_4_1": {
+      "question_text": "Why are there fewer minorities in STEM?"
+    },
+    "carlos_A196_4_1": {
+      "question_text": "Why are there fewer females in STEM?"
+    },
+    "carlos_A197_4_1": {
+      "question_text": "Why is there a gender and diversity gap in engineering?"
+    },
+    "carlos_A198_4_1": {
+      "question_text": "How does someone recover from a professional \"bump in the road\"?"
+    },
+    "carlos_A199_4_1": { "question_text": "Who has influenced you the most?" },
+    "carlos_A19_1_1": {
+      "question_text": "What are the major benefits of doing this kind of work?"
+    },
+    "carlos_A1_1_1": { "question_text": "Who are you and what do you do?" },
+    "carlos_A200_4_1": {
+      "question_text": "Tell me about the project that you are most proud of?"
+    },
+    "carlos_A201_4_1": {
+      "question_text": "Tell me about a mentor that you have or had. How did that person positively influence your academic decisions?"
+    },
+    "carlos_A202_4_1": {
+      "question_text": "Who is a person that you considered as a role model early in your life? How and why does this person impact your life?"
+    },
+    "carlos_A203_4_1": {
+      "question_text": "Describe an experience that illuminates STEM culture?"
+    },
+    "carlos_A204_4_1": {
+      "question_text": "Describe an experience that illuminates (Navy) culture?"
+    },
+    "carlos_A205_4_1": {
+      "question_text": "Describe the physical environments in which you've worked?"
+    },
+    "carlos_A206_4_1": {
+      "question_text": "What struggles did you overcome to get where you are?"
+    },
+    "carlos_A207_4_1": {
+      "question_text": "What was a pivotal moment in your career/life?"
+    },
+    "carlos_A208_4_1": {
+      "question_text": "What's the biggest risk you've taken in your career?"
+    },
+    "carlos_A209_4_1": {
+      "question_text": "What are the failures for which you are the most unhappy?"
+    },
+    "carlos_A20_1_1": {
+      "question_text": "What are the major negatives of doing this kind of work?"
+    },
+    "carlos_A210_4_1": {
+      "question_text": "What is the most dangerous thing you've ever done on the job?"
+    },
+    "carlos_A211_4_1": { "question_text": "When is breaking the rules okay?" },
+    "carlos_A212_4_1": {
+      "question_text": "Tell me about a time where your priorities conflicted with the priorities of your management?"
+    },
+    "carlos_A213_4_1": {
+      "question_text": "Tell me about a situation where your team and you had a major disagreement about how to handle something?"
+    },
+    "carlos_A214_4_1": {
+      "question_text": "How have you been the victim of favoritism or group-think?"
+    },
+    "carlos_A215_4_1": {
+      "question_text": "How have you been supported when you took a chance and the result was poor?"
+    },
+    "carlos_A216_4_1": {
+      "question_text": "What is the biggest failure you ever had and what did you learn from it?"
+    },
+    "carlos_A217_4_2": {
+      "question_text": "What is your current position and how did you get there?"
+    },
+    "carlos_A218_4_2": { "question_text": "How did you choose your field?" },
+    "carlos_A219_4_2": {
+      "question_text": "What is your plan to reach your career/life goal?"
+    },
+    "carlos_A21_1_1": {
+      "question_text": "What are the main things that new employees must learn and adjust to?"
+    },
+    "carlos_A220_4_2": {
+      "question_text": "What were some of your fears entering college and your career?"
+    },
+    "carlos_A221_4_2": {
+      "question_text": "What internships did you have? How did they prepare you?"
+    },
+    "carlos_A222_4_2": {
+      "question_text": "What challenges did you face and how did you overcome them?"
+    },
+    "carlos_A223_4_2": {
+      "question_text": "What used to be your biggest weaknesses?"
+    },
+    "carlos_A224_4_2": {
+      "question_text": "How have your priorities changed as your career progresses?"
+    },
+    "carlos_A225_4_2": {
+      "question_text": "Where do you see yourself in 5 years?"
+    },
+    "carlos_A226_4_2": { "question_text": "What do you like to do the most?" },
+    "carlos_A227_4_2": {
+      "question_text": "How has your job affected your lifestyle?"
+    },
+    "carlos_A228_4_2": {
+      "question_text": "What do you plan to do until you retire?"
+    },
+    "carlos_A229_4_2": { "question_text": "What is your career goal?" },
+    "carlos_A22_1_1": {
+      "question_text": "How much travel do you do in a year?"
+    },
+    "carlos_A230_4_2": {
+      "question_text": "If you weren't doing this, what do you think you would like to do?"
+    },
+    "carlos_A231_4_2": {
+      "question_text": "Can you change branches? Can you switch to the Army or Air Force?"
+    },
+    "carlos_A232_4_2": {
+      "question_text": "Can I change my job if I don't like it?"
+    },
+    "carlos_A233_4_2": {
+      "question_text": "What is the diversity of people like in the Navy?"
+    },
+    "carlos_A234_4_2": {
+      "question_text": "What is the diversity of religion in the Navy?"
+    },
+    "carlos_A235_4_2": {
+      "question_text": "What is the ratio of guys vs. girls in your area?"
+    },
+    "carlos_A236_4_2": {
+      "question_text": "Can you date other people who are also working with the Navy?"
+    },
+    "carlos_A237_4_2": {
+      "question_text": "Is sexual harassment common at the workplace?"
+    },
+    "carlos_A238_4_2": {
+      "question_text": "How do you stay in touch with family?"
+    },
+    "carlos_A239_4_2": {
+      "question_text": "Are there too many or too few people entering your profession?"
+    },
+    "carlos_A23_1_1": {
+      "question_text": "What lifestyle changes does your work involve?(frequent travel, irregular hours, family difficulties etc)"
+    },
+    "carlos_A240_4_2": {
+      "question_text": "What sorts of changes are occurring in your occupation?"
+    },
+    "carlos_A241_4_2": {
+      "question_text": "Which sectors of your career are expanding?"
+    },
+    "carlos_A242_4_2": {
+      "question_text": "How do you proactively prepare for a decline in your field?"
+    },
+    "carlos_A243_4_2": {
+      "question_text": "What do you believe will be the most important factors that will shape your future?"
+    },
+    "carlos_A244_4_2": {
+      "question_text": "What was the coolest thing you did in the Navy?"
+    },
+    "carlos_A245_4_2": {
+      "question_text": "Which sectors of your career are dying out?"
+    },
+    "carlos_A246_4_2": {
+      "question_text": "How do you react to change in your field?"
+    },
+    "carlos_A247_4_2": {
+      "question_text": "What do you think the future of this occupational area is?"
+    },
+    "carlos_A248_4_2": {
+      "question_text": "How does this field's future growth affect me?"
+    },
+    "carlos_A249_4_2": {
+      "question_text": "What technical innovations on the horizon could obviate the need for this field?"
+    },
+    "carlos_A24_1_1": {
+      "question_text": "Who are the most important people in the industry today?"
+    },
+    "carlos_A250_4_2": {
+      "question_text": "What is this field's tempo of change(increasing or decreasing)?"
+    },
+    "carlos_A251_4_2": {
+      "question_text": "What part of your future are you most worried about?"
+    },
+    "carlos_A252_5_1": {
+      "question_text": "How do you handle fatigue at work?"
+    },
+    "carlos_A253_5_1": {
+      "question_text": "What branch of the military should I go into?"
+    },
+    "carlos_A254_5_1": { "question_text": "How do you handle self doubt?" },
+    "carlos_A255_5_1": { "question_text": "Have you seen the button?" },
+    "carlos_A256_5_1": { "question_text": "How do you define success?" },
+    "carlos_A257_5_1": {
+      "question_text": "What has been your greatest success?"
+    },
+    "carlos_A258_5_1": {
+      "question_text": "Do you need to be good at math or science to go into STEM?"
+    },
+    "carlos_A259_5_1": {
+      "question_text": "How interesting is your work? Is it boring?"
+    },
+    "carlos_A25_1_1": {
+      "question_text": "To what extent will I understand the overall goals of the work I am doing?"
+    },
+    "carlos_A260_5_1": {
+      "question_text": "where can education take me in the logistics field?"
+    },
+    "carlos_A261_5_1": {
+      "question_text": "What factors should I consider when deciding where I want to study?"
+    },
+    "carlos_A262_5_1": {
+      "question_text": "What if I can't go or can't afford to go to a 4 year college?"
+    },
+    "carlos_A263_5_1": { "question_text": "How does your college matter?" },
+    "carlos_A264_5_1": {
+      "question_text": "What did you learn for your career that you truly never used?"
+    },
+    "carlos_A265_5_1": {
+      "question_text": "What specific courses do you recommend?"
+    },
+    "carlos_A266_5_1": {
+      "question_text": "What courses are good indicators of whether I fit in this field?"
+    },
+    "carlos_A267_5_1": {
+      "question_text": "What courses were just a waste of time for you?"
+    },
+    "carlos_A268_5_1": {
+      "question_text": "What influenced you the most in your college decision?"
+    },
+    "carlos_A269_5_1": {
+      "question_text": "What extracurriculars did you do in college?"
+    },
+    "carlos_A26_1_1": {
+      "question_text": "How often do you ever take work home with you?"
+    },
+    "carlos_A270_5_1": {
+      "question_text": "What was the most difficult part of your education?"
+    },
+    "carlos_A271_5_1": {
+      "question_text": "Given the chance to do school over, what would you do differently?"
+    },
+    "carlos_A272_5_1": {
+      "question_text": "What opportunities are there for future education and training?"
+    },
+    "carlos_A273_5_1": {
+      "question_text": "How do you continue to improve your skills during your career?"
+    },
+    "carlos_A274_5_1": {
+      "question_text": "What are some of the things you do really well?"
+    },
+    "carlos_A275_5_1": {
+      "question_text": "How do you stay in touch with family?"
+    },
+    "carlos_A276_5_1": {
+      "question_text": "Can you change branches? Can you switch to the Army or Air Force?"
+    },
+    "carlos_A277_5_1": {
+      "question_text": "Do you need to exercise all the time or be in great shape?"
+    },
+    "carlos_A278_5_1": {
+      "question_text": "What types of uniforms do you wear?"
+    },
+    "carlos_A279_5_1": {
+      "question_text": "How transferable is your job to the civilian sector?"
+    },
+    "carlos_A27_1_1": {
+      "question_text": "How much turnover is there in this job?"
+    },
+    "carlos_A280_5_1": {
+      "question_text": "Do you get to fly in helicopters or planes?"
+    },
+    "carlos_A281_5_1": {
+      "question_text": "Is it possible to quit the military? (Either deployment, or the service?)"
+    },
+    "carlos_A282_5_1": {
+      "question_text": "What happens if you get into trouble in the Navy?"
+    },
+    "carlos_A283_5_1": { "question_text": "Have you killed anyone?" },
+    "carlos_A284_5_1": { "question_text": "Are you happy with your job?" },
+    "carlos_A285_5_1": {
+      "question_text": "What is the best military perk you experienced?"
+    },
+    "carlos_A286_5_1": {
+      "question_text": "Is the military like it is in video games?"
+    },
+    "carlos_A287_5_1": {
+      "question_text": "Can you use outside communication on a deployment, like using the internet and email, calling by phone, and writing mail?"
+    },
+    "carlos_A288_5_1": {
+      "question_text": "Can you have a cell phone or laptop while in the military?"
+    },
+    "carlos_A289_5_1": {
+      "question_text": "Can you drink alcohol when deployed?"
+    },
+    "carlos_A28_1_1": { "question_text": "How stable is the employment here?" },
+    "carlos_A290_5_1": { "question_text": "Where did you go as a Marine?" },
+    "carlos_A291_5_1": {
+      "question_text": "How important is it to have the right training, degree or experience?"
+    },
+    "carlos_A292_5_1": { "question_text": "Why shouldn't I join the Marines?" },
+    "carlos_A293_5_1": {
+      "question_text": "What is the typical education level at each stage of a career in the Marines?"
+    },
+    "carlos_A294_5_1": {
+      "question_text": "In what ways did your education prepare you for your career?"
+    },
+    "carlos_A295_5_1": {
+      "question_text": "Is sexual harassment common in the military?"
+    },
+    "carlos_A296_5_1": {
+      "question_text": "What kinds of people succeed in logistics fields?"
+    },
+    "carlos_A297_5_1": { "question_text": "What is logistics?" },
+    "carlos_A298_5_1": {
+      "question_text": "What kinds of new skills have you learned recently?"
+    },
+    "carlos_A299_5_1": {
+      "question_text": "How much does GPA affect job outcomes?"
+    },
+    "carlos_A29_1_1": {
+      "question_text": "What opportunities do you have to alter your own work schedule?"
+    },
+    "carlos_A2_1_1": { "question_text": "What is your name?" },
+    "carlos_A300_5_1": {
+      "question_text": "If I did poorly in high school, can I join the military?"
+    },
+    "carlos_A301_5_1": { "question_text": "How do I pay for education?" },
+    "carlos_A302_5_1": {
+      "question_text": "Should I still go to college, if I need to take out a loan?"
+    },
+    "carlos_A303_5_1": {
+      "question_text": "How often have you been presented with challenging new skills to learn?"
+    },
+    "carlos_A304_5_1": {
+      "question_text": "How much of your free time do you spend learning new tasks?"
+    },
+    "carlos_A305_5_1": {
+      "question_text": "What are you doing daily to ensure your growth and development continues?"
+    },
+    "carlos_A306_5_1": {
+      "question_text": "How is college different than high school?"
+    },
+    "carlos_A307_5_1": { "question_text": "What is Military vacation like?" },
+    "carlos_A30_1_1": {
+      "question_text": "How many members of this profession have high stress symptoms?"
+    },
+    "carlos_A31_1_1": {
+      "question_text": "What happens if I find out I don\ufffdt like this line of work?"
+    },
+    "carlos_A32_1_1": {
+      "question_text": "What opportunity would I have to change careers/fields?"
+    },
+    "carlos_A33_1_1": { "question_text": "What is an E-1?" },
+    "carlos_A34_1_1": {
+      "question_text": "What brought you back into high school?"
+    },
+    "carlos_A35_1_1": {
+      "question_text": "What did you do when you skipped school?"
+    },
+    "carlos_A36_1_1": { "question_text": "What is logistics?" },
+    "carlos_A37_1_1": { "question_text": "What is support?" },
+    "carlos_A38_1_1": {
+      "question_text": "What other organizations do logistics?"
+    },
+    "carlos_A39_1_2": { "question_text": "What is Puerto Rico like?" },
+    "carlos_A3_1_1": { "question_text": "What year were you born?" },
+    "carlos_A40_1_2": { "question_text": "What is New Haven like?" },
+    "carlos_A41_1_2": { "question_text": "What is Philadelphia like?" },
+    "carlos_A42_1_2": {
+      "question_text": "Did you have any problems with gangs in Philadelphia?"
+    },
+    "carlos_A43_1_2": {
+      "question_text": "What does Amazon do with logistics?"
+    },
+    "carlos_A44_1_2": {
+      "question_text": "What are different jobs that people do in logistics?"
+    },
+    "carlos_A45_1_2": { "question_text": "How well do you speak Spanish?" },
+    "carlos_A46_1_2": { "question_text": "Can you say something in Spanish?" },
+    "carlos_A47_1_2": { "question_text": "Hablas espa\ufffdol?" },
+    "carlos_A48_2_1": { "question_text": "What's up?" },
+    "carlos_A49_2_1": { "question_text": "How is the weather?" },
+    "carlos_A4_1_1": { "question_text": "How old are you now?" },
+    "carlos_A50_2_1": { "question_text": "How are you?" },
+    "carlos_A51_2_1": { "question_text": "Where are you?" },
+    "carlos_A52_2_1": { "question_text": "What are your hobbies?" },
+    "carlos_A53_2_1": { "question_text": "What is a logistics manager?" },
+    "carlos_A54_2_1": { "question_text": "How many children do you have?" },
+    "carlos_A55_2_1": { "question_text": "Why did you join the Marines?" },
+    "carlos_A56_2_1": { "question_text": "Did you like the Marines?" },
+    "carlos_A57_2_1": { "question_text": "Where did you go with the Marines?" },
+    "carlos_A58_2_1": { "question_text": "Why do you love your job?" },
+    "carlos_A59_2_1": { "question_text": "Is education important?" },
+    "carlos_A5_1_1": { "question_text": "When is your birthday?" },
+    "carlos_A60_2_1": { "question_text": "What does artillery do?" },
+    "carlos_A61_2_1": {
+      "question_text": "What gets romanticized about your career field that really isn't that great?"
+    },
+    "carlos_A62_2_1": {
+      "question_text": "What are some of the common misconceptions about your field?"
+    },
+    "carlos_A63_2_1": {
+      "question_text": "What do you do now that is different from what you thought you would be doing?"
+    },
+    "carlos_A64_2_1": {
+      "question_text": "How did your work day change over your career?"
+    },
+    "carlos_A65_2_1": {
+      "question_text": "How has your view of this line of work changed over time?"
+    },
+    "carlos_A66_2_1": {
+      "question_text": "What kind of people will I work with at each stage of my career?"
+    },
+    "carlos_A67_2_1": {
+      "question_text": "Where did you have to move in your career, and how did that change things each time?"
+    },
+    "carlos_A68_2_1": {
+      "question_text": "What do you find unique about your career field?"
+    },
+    "carlos_A69_2_1": {
+      "question_text": "Are great practitioners in this field made or born?"
+    },
+    "carlos_A6_1_1": { "question_text": "Where did you grow up?" },
+    "carlos_A70_2_1": {
+      "question_text": "What priorities would you recommend for a person entering this field?"
+    },
+    "carlos_A71_2_1": {
+      "question_text": "How fair are the expectations of you as an employee?"
+    },
+    "carlos_A72_2_1": {
+      "question_text": "How accepting of failure is this work environment when a good and honest effort was made?"
+    },
+    "carlos_A73_2_1": {
+      "question_text": "What range of tasks and opportunities does this field present to allow me to grow?"
+    },
+    "carlos_A74_2_1": {
+      "question_text": "How satisfied have you been with your bosses in your career?"
+    },
+    "carlos_A75_2_1": {
+      "question_text": "Describe the technological environment in which you've worked?"
+    },
+    "carlos_A76_2_1": {
+      "question_text": "What organizations were most helpful to you in your career?"
+    },
+    "carlos_A77_2_1": {
+      "question_text": "What kind of risks do you need to take in this field?"
+    },
+    "carlos_A78_2_1": {
+      "question_text": "Should I go to college before or after serving?"
+    },
+    "carlos_A79_2_1": {
+      "question_text": "How can your work change the world?"
+    },
+    "carlos_A7_1_1": { "question_text": "Tell me about your childhood?" },
+    "carlos_A80_2_1": {
+      "question_text": "What\ufffds your favorite book of all time? Why?"
+    },
+    "carlos_A81_2_1": {
+      "question_text": "What\ufffds your favorite movie of all time? Why?"
+    },
+    "carlos_A82_2_1": {
+      "question_text": "If you could meet anyone in the world today, who would it be and why? What would you say to that person?"
+    },
+    "carlos_A83_2_1": {
+      "question_text": "What kind of personal satisfaction do you get from your job?"
+    },
+    "carlos_A84_2_1": {
+      "question_text": "What qualifications, experience, do you look for when interviewing new people in this field?"
+    },
+    "carlos_A85_2_1": {
+      "question_text": "What do you see as the major problems for those working in this field today?"
+    },
+    "carlos_A86_2_1": {
+      "question_text": "What person do you most admire and why?"
+    },
+    "carlos_A87_2_1": { "question_text": "Where were you born?" },
+    "carlos_A88_2_1": { "question_text": "Tell me a funny story?" },
+    "carlos_A89_2_1": {
+      "question_text": "What did you do predictions on in the Marines? "
+    },
+    "carlos_A8_1_1": { "question_text": "Tell me about your family?" },
+    "carlos_A90_2_1": { "question_text": "Why did you do artillery?" },
+    "carlos_A91_2_1": {
+      "question_text": "How long did you do artillery? What did you do there?"
+    },
+    "carlos_A92_2_1": { "question_text": "Who are your customers?" },
+    "carlos_A93_2_1": { "question_text": "What are your main products?" },
+    "carlos_A94_2_1": { "question_text": "How do you work with engineers?" },
+    "carlos_A95_2_1": {
+      "question_text": "How much financial work do you need to do?"
+    },
+    "carlos_A96_2_1": { "question_text": "What do contracting people do?" },
+    "carlos_A97_2_1": {
+      "question_text": "What is six sigma?  What are green belt black belt?"
+    },
+    "carlos_A98_2_1": { "question_text": "Does your wife work?" },
+    "carlos_A99_2_1": {
+      "question_text": "How do you know how long it will take a part to fail?"
+    },
+    "carlos_A9_1_1": { "question_text": "What kind of student were you?" }
+  },
+  "short_name": "Carlos",
+  "title": "Marine Logistician",
+  "topics_by_id": {
+    "about_me": {
+      "name": "About Me",
+      "questions": [
+        "carlos_A103_3_1",
+        "carlos_A104_3_1",
+        "carlos_A106_3_1",
+        "carlos_A107_3_1",
+        "carlos_A109_3_1",
+        "carlos_A10_1_1",
+        "carlos_A110_3_1",
+        "carlos_A118_3_1",
+        "carlos_A11_1_1",
+        "carlos_A120_3_1",
+        "carlos_A12_1_1",
+        "carlos_A13_1_1",
+        "carlos_A141_3_1",
+        "carlos_A143_3_2",
+        "carlos_A146_3_2",
+        "carlos_A1_1_1",
+        "carlos_A200_4_1",
+        "carlos_A201_4_1",
+        "carlos_A202_4_1",
+        "carlos_A206_4_1",
+        "carlos_A207_4_1",
+        "carlos_A208_4_1",
+        "carlos_A209_4_1",
+        "carlos_A216_4_1",
+        "carlos_A217_4_2",
+        "carlos_A218_4_2",
+        "carlos_A219_4_2",
+        "carlos_A220_4_2",
+        "carlos_A221_4_2",
+        "carlos_A222_4_2",
+        "carlos_A223_4_2",
+        "carlos_A224_4_2",
+        "carlos_A257_5_1",
+        "carlos_A268_5_1",
+        "carlos_A269_5_1",
+        "carlos_A270_5_1",
+        "carlos_A274_5_1",
+        "carlos_A290_5_1",
+        "carlos_A2_1_1",
+        "carlos_A39_1_2",
+        "carlos_A3_1_1",
+        "carlos_A40_1_2",
+        "carlos_A41_1_2",
+        "carlos_A42_1_2",
+        "carlos_A45_1_2",
+        "carlos_A46_1_2",
+        "carlos_A47_1_2",
+        "carlos_A4_1_1",
+        "carlos_A51_2_1",
+        "carlos_A52_2_1",
+        "carlos_A54_2_1",
+        "carlos_A55_2_1",
+        "carlos_A5_1_1",
+        "carlos_A6_1_1",
+        "carlos_A7_1_1",
+        "carlos_A80_2_1",
+        "carlos_A81_2_1",
+        "carlos_A82_2_1",
+        "carlos_A87_2_1",
+        "carlos_A8_1_1",
+        "carlos_A91_2_1",
+        "carlos_A98_2_1",
+        "carlos_A9_1_1"
+      ]
+    },
+    "about_the_job": {
+      "name": "About the Job",
+      "questions": [
+        "carlos_A100_2_1",
+        "carlos_A101_3_1",
+        "carlos_A102_3_1",
+        "carlos_A103_3_1",
+        "carlos_A104_3_1",
+        "carlos_A105_3_1",
+        "carlos_A114_3_1",
+        "carlos_A117_3_1",
+        "carlos_A118_3_1",
+        "carlos_A119_3_1",
+        "carlos_A120_3_1",
+        "carlos_A121_3_1",
+        "carlos_A124_3_1",
+        "carlos_A125_3_1",
+        "carlos_A127_3_1",
+        "carlos_A128_3_1",
+        "carlos_A129_3_1",
+        "carlos_A130_3_1",
+        "carlos_A131_3_1",
+        "carlos_A132_3_1",
+        "carlos_A133_3_1",
+        "carlos_A134_3_1",
+        "carlos_A135_3_1",
+        "carlos_A137_3_1",
+        "carlos_A138_3_1",
+        "carlos_A139_3_1",
+        "carlos_A140_3_1",
+        "carlos_A141_3_1",
+        "carlos_A145_3_2",
+        "carlos_A146_3_2",
+        "carlos_A147_3_2",
+        "carlos_A148_3_2",
+        "carlos_A149_3_2",
+        "carlos_A14_1_1",
+        "carlos_A150_3_2",
+        "carlos_A151_3_2",
+        "carlos_A153_3_2",
+        "carlos_A154_3_2",
+        "carlos_A155_3_3",
+        "carlos_A156_3_3",
+        "carlos_A157_3_3",
+        "carlos_A158_3_3",
+        "carlos_A159_3_3",
+        "carlos_A15_1_1",
+        "carlos_A160_3_3",
+        "carlos_A161_3_3",
+        "carlos_A162_3_3",
+        "carlos_A163_3_3",
+        "carlos_A164_3_3",
+        "carlos_A165_3_3",
+        "carlos_A166_3_3",
+        "carlos_A167_3_3",
+        "carlos_A168_3_3",
+        "carlos_A169_3_3",
+        "carlos_A16_1_1",
+        "carlos_A170_3_3",
+        "carlos_A171_3_3",
+        "carlos_A172_3_3",
+        "carlos_A173_3_3",
+        "carlos_A174_3_3",
+        "carlos_A175_3_3",
+        "carlos_A176_3_3",
+        "carlos_A177_3_3",
+        "carlos_A178_3_3",
+        "carlos_A179_3_3",
+        "carlos_A17_1_1",
+        "carlos_A180_3_3",
+        "carlos_A182_3_3",
+        "carlos_A183_3_3",
+        "carlos_A184_3_3",
+        "carlos_A186_3_3",
+        "carlos_A187_4_1",
+        "carlos_A188_4_1",
+        "carlos_A189_4_1",
+        "carlos_A18_1_1",
+        "carlos_A190_4_1",
+        "carlos_A191_4_1",
+        "carlos_A192_4_1",
+        "carlos_A193_4_1",
+        "carlos_A194_4_1",
+        "carlos_A195_4_1",
+        "carlos_A196_4_1",
+        "carlos_A197_4_1",
+        "carlos_A199_4_1",
+        "carlos_A19_1_1",
+        "carlos_A200_4_1",
+        "carlos_A203_4_1",
+        "carlos_A204_4_1",
+        "carlos_A205_4_1",
+        "carlos_A20_1_1",
+        "carlos_A212_4_1",
+        "carlos_A213_4_1",
+        "carlos_A227_4_2",
+        "carlos_A22_1_1",
+        "carlos_A230_4_2",
+        "carlos_A231_4_2",
+        "carlos_A232_4_2",
+        "carlos_A233_4_2",
+        "carlos_A234_4_2",
+        "carlos_A235_4_2",
+        "carlos_A236_4_2",
+        "carlos_A237_4_2",
+        "carlos_A238_4_2",
+        "carlos_A239_4_2",
+        "carlos_A240_4_2",
+        "carlos_A241_4_2",
+        "carlos_A242_4_2",
+        "carlos_A243_4_2",
+        "carlos_A244_4_2",
+        "carlos_A245_4_2",
+        "carlos_A247_4_2",
+        "carlos_A248_4_2",
+        "carlos_A249_4_2",
+        "carlos_A250_4_2",
+        "carlos_A251_4_2",
+        "carlos_A252_5_1",
+        "carlos_A253_5_1",
+        "carlos_A254_5_1",
+        "carlos_A255_5_1",
+        "carlos_A256_5_1",
+        "carlos_A258_5_1",
+        "carlos_A259_5_1",
+        "carlos_A25_1_1",
+        "carlos_A260_5_1",
+        "carlos_A261_5_1",
+        "carlos_A262_5_1",
+        "carlos_A263_5_1",
+        "carlos_A264_5_1",
+        "carlos_A265_5_1",
+        "carlos_A266_5_1",
+        "carlos_A267_5_1",
+        "carlos_A268_5_1",
+        "carlos_A275_5_1",
+        "carlos_A276_5_1",
+        "carlos_A277_5_1",
+        "carlos_A278_5_1",
+        "carlos_A279_5_1",
+        "carlos_A27_1_1",
+        "carlos_A280_5_1",
+        "carlos_A281_5_1",
+        "carlos_A282_5_1",
+        "carlos_A283_5_1",
+        "carlos_A284_5_1",
+        "carlos_A285_5_1",
+        "carlos_A286_5_1",
+        "carlos_A287_5_1",
+        "carlos_A288_5_1",
+        "carlos_A289_5_1",
+        "carlos_A28_1_1",
+        "carlos_A290_5_1",
+        "carlos_A291_5_1",
+        "carlos_A292_5_1",
+        "carlos_A293_5_1",
+        "carlos_A294_5_1",
+        "carlos_A295_5_1",
+        "carlos_A296_5_1",
+        "carlos_A297_5_1",
+        "carlos_A298_5_1",
+        "carlos_A299_5_1",
+        "carlos_A29_1_1",
+        "carlos_A300_5_1",
+        "carlos_A301_5_1",
+        "carlos_A303_5_1",
+        "carlos_A304_5_1",
+        "carlos_A305_5_1",
+        "carlos_A307_5_1",
+        "carlos_A32_1_1",
+        "carlos_A34_1_1",
+        "carlos_A35_1_1",
+        "carlos_A38_1_1",
+        "carlos_A43_1_2",
+        "carlos_A44_1_2",
+        "carlos_A53_2_1",
+        "carlos_A55_2_1",
+        "carlos_A56_2_1",
+        "carlos_A57_2_1",
+        "carlos_A58_2_1",
+        "carlos_A60_2_1",
+        "carlos_A61_2_1",
+        "carlos_A62_2_1",
+        "carlos_A63_2_1",
+        "carlos_A64_2_1",
+        "carlos_A65_2_1",
+        "carlos_A66_2_1",
+        "carlos_A67_2_1",
+        "carlos_A68_2_1",
+        "carlos_A69_2_1",
+        "carlos_A70_2_1",
+        "carlos_A71_2_1",
+        "carlos_A72_2_1",
+        "carlos_A73_2_1",
+        "carlos_A74_2_1",
+        "carlos_A75_2_1",
+        "carlos_A76_2_1",
+        "carlos_A77_2_1",
+        "carlos_A78_2_1",
+        "carlos_A79_2_1",
+        "carlos_A83_2_1",
+        "carlos_A85_2_1",
+        "carlos_A86_2_1",
+        "carlos_A89_2_1",
+        "carlos_A90_2_1",
+        "carlos_A91_2_1",
+        "carlos_A92_2_1",
+        "carlos_A93_2_1",
+        "carlos_A94_2_1",
+        "carlos_A95_2_1",
+        "carlos_A96_2_1",
+        "carlos_A99_2_1"
+      ]
+    },
+    "challenges": {
+      "name": "Challenges",
+      "questions": [
+        "carlos_A100_2_1",
+        "carlos_A101_3_1",
+        "carlos_A102_3_1",
+        "carlos_A115_3_1",
+        "carlos_A116_3_1",
+        "carlos_A133_3_1",
+        "carlos_A198_4_1",
+        "carlos_A206_4_1",
+        "carlos_A208_4_1",
+        "carlos_A209_4_1",
+        "carlos_A210_4_1",
+        "carlos_A211_4_1",
+        "carlos_A212_4_1",
+        "carlos_A213_4_1",
+        "carlos_A214_4_1",
+        "carlos_A215_4_1",
+        "carlos_A216_4_1",
+        "carlos_A21_1_1",
+        "carlos_A222_4_2",
+        "carlos_A246_4_2",
+        "carlos_A252_5_1",
+        "carlos_A255_5_1",
+        "carlos_A270_5_1",
+        "carlos_A283_5_1",
+        "carlos_A77_2_1",
+        "carlos_A85_2_1"
+      ]
+    },
+    "learning_more": {
+      "name": "Learning More",
+      "questions": [
+        "carlos_A122_3_1",
+        "carlos_A142_3_2",
+        "carlos_A181_3_3",
+        "carlos_A191_4_1",
+        "carlos_A199_4_1",
+        "carlos_A201_4_1",
+        "carlos_A202_4_1",
+        "carlos_A225_4_2",
+        "carlos_A228_4_2",
+        "carlos_A229_4_2",
+        "carlos_A247_4_2",
+        "carlos_A248_4_2",
+        "carlos_A249_4_2",
+        "carlos_A250_4_2",
+        "carlos_A251_4_2",
+        "carlos_A272_5_1"
+      ]
+    },
+    "lifestyle": {
+      "name": "Lifestyle",
+      "questions": [
+        "carlos_A114_3_1",
+        "carlos_A117_3_1",
+        "carlos_A125_3_1",
+        "carlos_A126_3_1",
+        "carlos_A127_3_1",
+        "carlos_A128_3_1",
+        "carlos_A129_3_1",
+        "carlos_A131_3_1",
+        "carlos_A132_3_1",
+        "carlos_A134_3_1",
+        "carlos_A135_3_1",
+        "carlos_A143_3_2",
+        "carlos_A145_3_2",
+        "carlos_A150_3_2",
+        "carlos_A151_3_2",
+        "carlos_A152_3_2",
+        "carlos_A165_3_3",
+        "carlos_A176_3_3",
+        "carlos_A177_3_3",
+        "carlos_A178_3_3",
+        "carlos_A179_3_3",
+        "carlos_A181_3_3",
+        "carlos_A190_4_1",
+        "carlos_A192_4_1",
+        "carlos_A193_4_1",
+        "carlos_A200_4_1",
+        "carlos_A21_1_1",
+        "carlos_A227_4_2",
+        "carlos_A23_1_1",
+        "carlos_A26_1_1",
+        "carlos_A275_5_1",
+        "carlos_A285_5_1",
+        "carlos_A28_1_1",
+        "carlos_A298_5_1",
+        "carlos_A305_5_1",
+        "carlos_A30_1_1",
+        "carlos_A79_2_1"
+      ]
+    },
+    "other": {
+      "name": "Other",
+      "questions": [
+        "carlos_A108_3_1",
+        "carlos_A111_3_1",
+        "carlos_A112_3_1",
+        "carlos_A113_3_1",
+        "carlos_A117_3_1",
+        "carlos_A126_3_1",
+        "carlos_A130_3_1",
+        "carlos_A136_3_1",
+        "carlos_A137_3_1",
+        "carlos_A138_3_1",
+        "carlos_A139_3_1",
+        "carlos_A140_3_1",
+        "carlos_A144_3_2",
+        "carlos_A226_4_2",
+        "carlos_A230_4_2",
+        "carlos_A297_5_1",
+        "carlos_A33_1_1",
+        "carlos_A36_1_1",
+        "carlos_A37_1_1",
+        "carlos_A48_2_1",
+        "carlos_A49_2_1",
+        "carlos_A50_2_1",
+        "carlos_A51_2_1",
+        "carlos_A53_2_1",
+        "carlos_A80_2_1",
+        "carlos_A81_2_1",
+        "carlos_A82_2_1",
+        "carlos_A86_2_1",
+        "carlos_A88_2_1",
+        "carlos_A97_2_1"
+      ]
+    },
+    "what_does_it_take_": {
+      "name": "What Does it Take?",
+      "questions": [
+        "carlos_A119_3_1",
+        "carlos_A122_3_1",
+        "carlos_A123_3_1",
+        "carlos_A124_3_1",
+        "carlos_A142_3_2",
+        "carlos_A143_3_2",
+        "carlos_A144_3_2",
+        "carlos_A153_3_2",
+        "carlos_A156_3_3",
+        "carlos_A157_3_3",
+        "carlos_A158_3_3",
+        "carlos_A159_3_3",
+        "carlos_A160_3_3",
+        "carlos_A161_3_3",
+        "carlos_A162_3_3",
+        "carlos_A178_3_3",
+        "carlos_A179_3_3",
+        "carlos_A185_3_3",
+        "carlos_A201_4_1",
+        "carlos_A202_4_1",
+        "carlos_A211_4_1",
+        "carlos_A21_1_1",
+        "carlos_A220_4_2",
+        "carlos_A246_4_2",
+        "carlos_A253_5_1",
+        "carlos_A254_5_1",
+        "carlos_A256_5_1",
+        "carlos_A258_5_1",
+        "carlos_A261_5_1",
+        "carlos_A262_5_1",
+        "carlos_A268_5_1",
+        "carlos_A270_5_1",
+        "carlos_A271_5_1",
+        "carlos_A273_5_1",
+        "carlos_A276_5_1",
+        "carlos_A277_5_1",
+        "carlos_A290_5_1",
+        "carlos_A291_5_1",
+        "carlos_A292_5_1",
+        "carlos_A299_5_1",
+        "carlos_A300_5_1",
+        "carlos_A302_5_1",
+        "carlos_A304_5_1",
+        "carlos_A306_5_1",
+        "carlos_A307_5_1",
+        "carlos_A31_1_1",
+        "carlos_A34_1_1",
+        "carlos_A35_1_1",
+        "carlos_A59_2_1",
+        "carlos_A70_2_1",
+        "carlos_A78_2_1",
+        "carlos_A84_2_1",
+        "carlos_A9_1_1"
+      ]
+    },
+    "who_does_it_": {
+      "name": "Who Does it?",
+      "questions": [
+        "carlos_A118_3_1",
+        "carlos_A120_3_1",
+        "carlos_A124_3_1",
+        "carlos_A133_3_1",
+        "carlos_A163_3_3",
+        "carlos_A164_3_3",
+        "carlos_A177_3_3",
+        "carlos_A184_3_3",
+        "carlos_A185_3_3",
+        "carlos_A186_3_3",
+        "carlos_A192_4_1",
+        "carlos_A194_4_1",
+        "carlos_A195_4_1",
+        "carlos_A196_4_1",
+        "carlos_A197_4_1",
+        "carlos_A204_4_1",
+        "carlos_A205_4_1",
+        "carlos_A214_4_1",
+        "carlos_A231_4_2",
+        "carlos_A232_4_2",
+        "carlos_A233_4_2",
+        "carlos_A234_4_2",
+        "carlos_A235_4_2",
+        "carlos_A236_4_2",
+        "carlos_A237_4_2",
+        "carlos_A238_4_2",
+        "carlos_A239_4_2",
+        "carlos_A240_4_2",
+        "carlos_A241_4_2",
+        "carlos_A242_4_2",
+        "carlos_A243_4_2",
+        "carlos_A244_4_2",
+        "carlos_A245_4_2",
+        "carlos_A24_1_1",
+        "carlos_A253_5_1",
+        "carlos_A254_5_1",
+        "carlos_A255_5_1",
+        "carlos_A256_5_1",
+        "carlos_A259_5_1",
+        "carlos_A260_5_1",
+        "carlos_A263_5_1",
+        "carlos_A264_5_1",
+        "carlos_A265_5_1",
+        "carlos_A266_5_1",
+        "carlos_A267_5_1",
+        "carlos_A276_5_1",
+        "carlos_A277_5_1",
+        "carlos_A278_5_1",
+        "carlos_A279_5_1",
+        "carlos_A280_5_1",
+        "carlos_A281_5_1",
+        "carlos_A282_5_1",
+        "carlos_A286_5_1",
+        "carlos_A287_5_1",
+        "carlos_A288_5_1",
+        "carlos_A289_5_1",
+        "carlos_A292_5_1",
+        "carlos_A293_5_1",
+        "carlos_A294_5_1",
+        "carlos_A295_5_1",
+        "carlos_A301_5_1",
+        "carlos_A303_5_1",
+        "carlos_A307_5_1",
+        "carlos_A68_2_1",
+        "carlos_A70_2_1",
+        "carlos_A71_2_1",
+        "carlos_A72_2_1"
+      ]
+    }
+  },
+  "utterances_by_type": {
+    "_FEEDBACK_": [
+      ["carlos_U2_1_1", "Yes"],
+      ["carlos_U3_1_1", "Yes, sir"],
+      ["carlos_U4_1_1", "Yes, ma'am"],
+      ["carlos_U5_1_1", "Excuse me?"],
+      ["carlos_U6_1_1", "How are you?"],
+      ["carlos_U7_1_1", "Good morning"],
+      ["carlos_U8_1_1", "Good afternoon"],
+      ["carlos_U9_1_1", "Good evening"],
+      ["carlos_U10_1_1", "Good night"],
+      ["carlos_U12_1_1", "No"],
+      ["carlos_U13_1_1", "Maybe"],
+      ["carlos_U14_1_1", "Perhaps"],
+      ["carlos_U15_1_1", "Of course"],
+      ["carlos_U16_1_1", "Always"],
+      ["carlos_U17_1_1", "Sometimes"],
+      ["carlos_U18_1_1", "Never"],
+      ["carlos_U19_1_1", "Often"],
+      ["carlos_U20_1_1", "I do"],
+      ["carlos_U21_1_1", "I don't"],
+      ["carlos_U22_1_1", "I have no idea"],
+      ["carlos_U23_1_1", "I don't think so"],
+      ["carlos_U24_1_1", "Here is something you should really know"],
+      [
+        "carlos_U25_1_1",
+        "That's a good question, but I want to make sure to tell you something"
+      ],
+      [
+        "carlos_U26_1_1",
+        "I don't know if I can answer that, but here is something I do know"
+      ],
+      ["carlos_U27_1_1", "Hold on. This is important"],
+      ["carlos_U28_1_1", "Wait, I want to say this first"],
+      ["carlos_U29_1_1", "Before we get to that, one thing"],
+      ["carlos_U30_1_1", "There's one thing I learned that I keep in mind"],
+      ["carlos_U31_1_1", "Here is something really important"],
+      [
+        "carlos_U32_2_1",
+        "Let me tell you something that was important for my career.,let me tell you something that was important for my career"
+      ],
+      ["carlos_U33_2_1", "I hope so"],
+      ["carlos_U34_2_1", "I'm sorry"],
+      ["carlos_U35_2_1", "I'm sorry to hear that"],
+      ["carlos_U36_2_1", "Thank you"],
+      ["carlos_U37_2_1", "I understand that"],
+      ["carlos_U38_2_1", "I went through something similar"],
+      ["carlos_U39_2_1", "I am not sure"],
+      ["carlos_U40_2_1", "I can't hear you"],
+      ["carlos_U41_2_1", "I don't understand"],
+      ["carlos_U43_2_1", "I don't have an answer for that"],
+      ["carlos_U44_2_1", "Can you ask me something else"],
+      [
+        "carlos_U45_2_1",
+        "It would help if you could keep the questions short and simple"
+      ],
+      ["carlos_U47_2_1", "I can not predict the future"],
+      ["carlos_U48_2_1", "I do not want to speculate about the future"],
+      ["carlos_U49_2_1", "I don\ufffdt know what that is"],
+      ["carlos_U50_2_1", "I don't know who that is"],
+      ["carlos_U51_2_1", "I am not going to talk about that"],
+      ["carlos_U52_2_1", "I am not here to talk about that"],
+      ["carlos_U54_5_1", "I don't have enough information to talk about that"],
+      [
+        "carlos_U55_5_1",
+        "Go ahead, ask me who gave me the best advice about my career."
+      ]
+    ],
+    "_IDLE_": [["idle", ""]],
+    "_INTRO_": [
+      [
+        "carlos_U1_1_1",
+        "So my name is Carlos\ufffdRios. I'm a logistics lead supporting marine corps projects. I'm originally from Connecticut or New Haven, Connecticut. My mother\ufffdand father are from\ufffdPuerto Rico they migrated over to Connecticut and then from there after about six well I was about seven years old and moved over to a Philadelphia where I spent most of my most of my youth. About age 18-19 years old graduated high school and joined the marine corps. Twenty three years later, retired. During that time of course I got married. I have been married for twenty seven years. I have\ufffdtwo great kids, one currently attending USC and one in the near future want to attend Clemson, South Carolina\ufffdwhere I currently reside after my retirement from the marine corps. I spent two years as a contractor supporting the marine corps and I personally think I did such a good job that the government decided to bring it over to that side and support as a government employee and I've been doing that for about seven years high manage everything from my computer, servers, laptops to drones."
+      ]
+    ],
+    "_OFF_TOPIC_": [
+      ["carlos_U56_5_1", "I do not have an answer for that."],
+      [
+        "carlos_U57_5_1",
+        "That is a great question, unfortunately I never recorded an answer to that."
+      ],
+      [
+        "carlos_U59_5_1",
+        "That is a great question. I wish I'd thought of that."
+      ],
+      [
+        "carlos_U60_5_1",
+        "That is an interesting question, but I am here to talk about logistics"
+      ],
+      [
+        "carlos_U61_5_1",
+        "This changes pretty quickly. I would recommend talking to someone local who might know more."
+      ],
+      ["carlos_U62_5_1", "Unfortunately I was never asked that question"]
+    ],
+    "_PROMPT_": [
+      ["carlos_U42_2_1", "Can you repeat that?"],
+      ["carlos_U46_2_1", "Can you rephrase the question?"],
+      ["carlos_U53_5_1", "Anything else?"]
+    ],
+    "_REPEAT_": [
+      ["carlos_U11_1_1", "I may have said this before"],
+      ["carlos_U58_5_1", "I might have covered this already"]
+    ]
+  }
+}
