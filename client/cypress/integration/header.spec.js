@@ -3,28 +3,27 @@ describe("Header", () => {
     cy.server();
     cy.route({
       method: "GET",
-      url: "https://dev.mentorpal.org/mentor-api/mentors/clint/data",
+      url: "**/mentor-api/mentors/clint/data",
       response: "fixture:clint.json",
     });
     cy.route({
       method: "GET",
-      url: "https://dev.mentorpal.org/mentor-api/mentors/dan/data",
+      url: "**/mentor-api/mentors/dan/data",
       response: "fixture:dan.json",
     });
     cy.route({
       method: "GET",
-      url: "https://dev.mentorpal.org/mentor-api/mentors/carlos/data",
+      url: "**/mentor-api/mentors/carlos/data",
       response: "fixture:carlos.json",
     });
     cy.route({
       method: "GET",
-      url: "https://dev.mentorpal.org/mentor-api/mentors/julianne/data",
+      url: "**/mentor-api/mentors/julianne/data",
       response: "fixture:julianne.json",
     });
     cy.route({
       method: "GET",
-      url:
-        "https://video.mentorpal.org/videos/mentors/clint/web/clintanderson_U1_1_1.mp4",
+      url: "**/videos/mentors/clint/web/clintanderson_U1_1_1.mp4",
       response: "fixture:clint_intro.mp4",
     });
   });

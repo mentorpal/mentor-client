@@ -40,7 +40,7 @@ const Topics = ({ onSelected }) => {
         {Object.keys(topic_questions).map((topic, i) => (
           <div id={`topic-${i}`} className="slide topic-slide" key={i}>
             <Button
-              className={current_topic === topic ? "topic-selected" : ""}
+              className={curTopic === topic ? "topic-selected" : ""}
               variant="contained"
               color={curTopic === topic ? "primary" : "default"}
               onClick={() => onTopicSelected(topic)}

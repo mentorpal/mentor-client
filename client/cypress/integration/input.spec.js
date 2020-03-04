@@ -3,22 +3,22 @@ describe("Input field", () => {
     cy.server();
     cy.route({
       method: "GET",
-      url: "https://dev.mentorpal.org/mentor-api/mentors/clint/data",
+      url: "**/mentor-api/mentors/clint/data",
       response: "fixture:clint.json",
     });
     cy.route({
       method: "GET",
-      url: "https://dev.mentorpal.org/mentor-api/mentors/dan/data",
+      url: "**/mentor-api/mentors/dan/data",
       response: "fixture:dan.json",
     });
     cy.route({
       method: "GET",
-      url: "https://dev.mentorpal.org/mentor-api/mentors/carlos/data",
+      url: "**/mentor-api/mentors/carlos/data",
       response: "fixture:carlos.json",
     });
     cy.route({
       method: "GET",
-      url: "https://dev.mentorpal.org/mentor-api/mentors/julianne/data",
+      url: "**/mentor-api/mentors/julianne/data",
       response: "fixture:julianne.json",
     });
   });
@@ -88,26 +88,22 @@ describe("Input field", () => {
 
     cy.route({
       method: "GET",
-      url:
-        "https://dev.mentorpal.org/mentor-api/questions/?mentor=clint&query=how+old+are+you",
+      url: "**/mentor-api/questions/?mentor=clint&query=how+old+are+you",
       response: "fixture:clint_response.json",
     }).as("askClint");
     cy.route({
       method: "GET",
-      url:
-        "https://dev.mentorpal.org/mentor-api/questions/?mentor=dan&query=how+old+are+you",
+      url: "**/mentor-api/questions/?mentor=dan&query=how+old+are+you",
       response: "fixture:clint_response.json",
     }).as("askDan");
     cy.route({
       method: "GET",
-      url:
-        "https://dev.mentorpal.org/mentor-api/questions/?mentor=julianne&query=how+old+are+you",
+      url: "**/mentor-api/questions/?mentor=julianne&query=how+old+are+you",
       response: "fixture:clint_response.json",
     }).as("askJulianne");
     cy.route({
       method: "GET",
-      url:
-        "https://dev.mentorpal.org/mentor-api/questions/?mentor=carlos&query=how+old+are+you",
+      url: "**/mentor-api/questions/?mentor=carlos&query=how+old+are+you",
       response: "fixture:clint_response.json",
     }).as("askCarlos");
 

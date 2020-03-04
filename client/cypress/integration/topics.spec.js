@@ -3,22 +3,22 @@ describe("Topics list", () => {
     cy.server();
     cy.route({
       method: "GET",
-      url: "https://dev.mentorpal.org/mentor-api/mentors/clint/data",
+      url: "**/mentor-api/mentors/clint/data",
       response: "fixture:clint.json",
     });
     cy.route({
       method: "GET",
-      url: "https://dev.mentorpal.org/mentor-api/mentors/dan/data",
+      url: "**/mentor-api/mentors/dan/data",
       response: "fixture:dan.json",
     });
     cy.route({
       method: "GET",
-      url: "https://dev.mentorpal.org/mentor-api/mentors/carlos/data",
+      url: "**/mentor-api/mentors/carlos/data",
       response: "fixture:carlos.json",
     });
     cy.route({
       method: "GET",
-      url: "https://dev.mentorpal.org/mentor-api/mentors/julianne/data",
+      url: "**/mentor-api/mentors/julianne/data",
       response: "fixture:julianne.json",
     });
   });
