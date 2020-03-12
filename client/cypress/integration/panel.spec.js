@@ -39,6 +39,16 @@ describe("Mentor panel", () => {
     });
   });
 
+  it("shows if there is more than one mentor", () => {
+    cy.visit("/?mentor=clint&mentor=dan");
+    cy.get("#video-panel");
+  });
+
+  it("is hidden if there is only one mentor", () => {
+    cy.visit("/?mentor=clint");
+    cy.get("#video-panel").should("not.exist");
+  });
+
   it("displays 4 default mentors if no mentors specified", () => {
     cy.visit("/");
     cy.get("#video-panel").get("#video-thumbnail-clint");
@@ -48,12 +58,7 @@ describe("Mentor panel", () => {
   });
 
   it("loads and displays chosen mentors if mentors specified", () => {
-    cy.visit("/", {
-      qs: {
-        mentor: ["jd_thomas", "mario-pais", "dan-burns"],
-      },
-    });
-
+    cy.visit("/?mentor=jd_thomas&mentor=mario-pais&mentor=dan-burns");
     cy.get("#video-panel").get("#video-thumbnail-jd_thomas");
     cy.get("#video-panel").get("#video-thumbnail-mario-pais");
     cy.get("#video-panel").get("#video-thumbnail-dan-burns");
@@ -69,23 +74,5 @@ describe("Mentor panel", () => {
 
     cy.get("#video-thumbnail-dan-burns").click();
     cy.get("#header").contains("Dan Burns: Captain (Retired), Chief Engineer");
-  });
-
-  it("shows if there is more than one mentor", () => {
-    cy.visit("/", {
-      qs: {
-        mentor: ["clint", "dan"],
-      },
-    });
-    cy.get("#video-panel");
-  });
-
-  it("is hidden if there is only one mentor", () => {
-    cy.visit("/", {
-      qs: {
-        mentor: "clint",
-      },
-    });
-    cy.get("#video-panel").get("not.exist");
   });
 });
