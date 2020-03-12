@@ -54,7 +54,11 @@ const ScrollingQuestions = ({
             }}
           >
             {recommended.includes(question) ? (
-              <Whatshot style={{ marginRight: "5px" }} fontSize="small" />
+              <Whatshot
+                class="recommended-question-icon"
+                style={{ marginRight: "5px" }}
+                fontSize="small"
+              />
             ) : (
               undefined
             )}

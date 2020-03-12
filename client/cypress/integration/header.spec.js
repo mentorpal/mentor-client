@@ -21,25 +21,11 @@ describe("Header", () => {
       url: "**/mentor-api/mentors/julianne/data",
       response: "fixture:julianne.json",
     });
-    cy.route({
-      method: "GET",
-      url: "**/videos/mentors/clint/web/clintanderson_U1_1_1.mp4",
-      response: "fixture:clint_intro.mp4",
-    });
   });
 
   it("shows title for default mentor in panel", () => {
     cy.visit("/");
     cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
-  });
-
-  it("hides title for single mentor (no panel)", () => {
-    cy.visit("/", {
-      qs: {
-        mentor: "clint",
-      },
-    });
-    cy.get("#header").should("not.exist");
   });
 
   it("changes title when selecting a mentor", () => {
@@ -59,12 +45,12 @@ describe("Header", () => {
     cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
   });
 
-  it("changes title when auto-playing next mentor", () => {
-    cy.visit("/");
-    cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
-    cy.wait(40000);
-    cy.get("#header").contains(
-      "Dan Davis: High Performance Computing Researcher"
-    );
+  it("hides title for single mentor (no panel)", () => {
+    cy.visit("/", {
+      qs: {
+        mentor: "clint",
+      },
+    });
+    cy.get("#header").should("not.exist");
   });
 });

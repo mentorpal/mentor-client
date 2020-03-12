@@ -21,10 +21,10 @@ describe("Topics list", () => {
       url: "**/mentor-api/mentors/julianne/data",
       response: "fixture:julianne.json",
     });
+    cy.visit("/");
   });
 
-  it("shows topics list for default mentor in panel", () => {
-    cy.visit("/");
+  it("shows topics for current mentor", () => {
     cy.get("#topics").contains("About Me");
     cy.get("#topics").contains("About the Job");
     cy.get("#topics").contains("Challenges");
@@ -36,7 +36,6 @@ describe("Topics list", () => {
   });
 
   it("has default topic selected", () => {
-    cy.visit("/");
     cy.get("#topics")
       .find(".topic-selected")
       .should("have.length", 1);
@@ -44,7 +43,6 @@ describe("Topics list", () => {
   });
 
   it("can select a topic", () => {
-    cy.visit("/");
     cy.get("#topic-1").click();
     cy.get("#topics")
       .find(".topic-selected")
@@ -88,8 +86,7 @@ describe("Topics list", () => {
     cy.get("#topic-7").find(".topic-selected");
   });
 
-  it("changes topics list when selecting a mentor", () => {
-    cy.visit("/");
+  it("changes topics when selecting a mentor", () => {
     cy.get("#video-thumbnail-dan").click();
     cy.get("#topics").contains("About Me");
     cy.get("#topics").contains("About the Job");
@@ -114,45 +111,14 @@ describe("Topics list", () => {
     cy.get("#topics").contains("About Me");
     cy.get("#topics").contains("About the Job");
     cy.get("#topics").contains("Challenges");
+    cy.get("#topics").should("not.have.value", "Learning More");
     cy.get("#topics").contains("Lifestyle");
+    cy.get("#topics").should("not.have.value", "Other");
     cy.get("#topics").contains("What Does it Take?");
     cy.get("#topics").contains("Who Does it?");
   });
 
-  it("changes topics list when auto-playing next mentor", () => {
-    cy.visit("/");
-    cy.wait(40000);
-    cy.get("#topics").contains("About Me");
-    cy.get("#topics").contains("About the Job");
-    cy.get("#topics").contains("Challenges");
-    cy.get("#topics").contains("Learning More");
-    cy.get("#topics").contains("Lifestyle");
-    cy.get("#topics").contains("Other");
-    cy.get("#topics").contains("What Does it Take?");
-    cy.get("#topics").contains("Who Does it?");
-
-    cy.wait(40000);
-    cy.get("#topics").contains("About Me");
-    cy.get("#topics").contains("About the Job");
-    cy.get("#topics").contains("Challenges");
-    cy.get("#topics").contains("Learning More");
-    cy.get("#topics").contains("Lifestyle");
-    cy.get("#topics").contains("Other");
-    cy.get("#topics").contains("What Does it Take?");
-    cy.get("#topics").contains("Who Does it?");
-
-    cy.wait(40000);
-    cy.get("#topics").contains("About Me");
-    cy.get("#topics").contains("About the Job");
-    cy.get("#topics").contains("Challenges");
-    cy.get("#topics").contains("Lifestyle");
-    cy.get("#topics").contains("What Does it Take?");
-    cy.get("#topics").contains("Who Does it?");
-  });
-
-  it("keeps selected topic when switching mentors if both mentors share it", () => {
-    cy.visit("/");
-
+  it("keeps selected topic when switching mentors if new mentor has it", () => {
     cy.get("#topic-0").find(".topic-selected");
     cy.get("#video-thumbnail-dan").click();
     cy.get("#topic-0").find(".topic-selected");
@@ -164,8 +130,6 @@ describe("Topics list", () => {
   });
 
   it("does not keep selected topic when switching mentors if new mentor does not have it", () => {
-    cy.visit("/");
-
     cy.get("#topic-3").click();
     cy.get("#topic-3").find(".topic-selected");
     cy.get("#topic-3").find(".topic-selected");
@@ -175,8 +139,6 @@ describe("Topics list", () => {
   });
 
   it("recommends a topic-relevant question for current mentor when topic is selected", () => {
-    cy.visit("/");
-
     cy.get("#topic-1").click();
     cy.get("#input-field").contains(
       "What qualifications and experience do recruiters"
@@ -206,7 +168,6 @@ describe("Topics list", () => {
   });
 
   it("recommends different topic-relevant question for different current mentor", () => {
-    cy.visit("/");
     cy.get("#video-thumbnail-dan").click();
 
     cy.get("#topic-1").click();
@@ -231,30 +192,28 @@ describe("Topics list", () => {
     cy.get("#input-field").contains("Do you have any tattoos");
   });
 
-  it("does not recommend a topic question that has already been asked", () => {
-    cy.visit("/");
-
-    cy.get("#topic-0").click();
-    cy.get("#input-field").contains("Where were you born?");
-
-    // direct match from manual input
-    cy.get("#input-field").type("Where were you born?");
+  it("does not recommend a topic question that has already been asked (via manual input)", () => {
+    cy.get("#input-field").type("where were you born?");
     cy.get("#input-send").click();
     cy.get("#topic-0").click();
     cy.get("#input-field").contains("What is Japan like");
+  });
 
-    // direct match from topic button suggestion
+  it("does not recommend a topic question that has already been asked (via topic button)", () => {
+    cy.get("#topic-0").click();
     cy.get("#input-send").click();
+    cy.get("#topic-0").click();
+    cy.get("#input-field").contains("What is Japan like");
+  });
+
+  it("skips topic questions that have already been asked", () => {
+    cy.get("#input-field").type("where were you born?");
+    cy.get("#input-send").click();
+
+    cy.get("#input-field").type("what is Japan like?");
+    cy.get("#input-send").click();
+
     cy.get("#topic-0").click();
     cy.get("#input-field").contains("What do you do in computer");
-
-    // skips several asked topics
-    cy.get("#input-send").click();
-    cy.get("#input-field").type(
-      "Were you ever bullied in high school? What did you do?"
-    );
-    cy.get("#input-send").click();
-    cy.get("#topic-0").click();
-    cy.get("#input-field").contains("What kind of student were you?");
   });
 });

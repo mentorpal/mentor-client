@@ -28,7 +28,7 @@ const Questions = ({ height, onSelected }: Props) => {
   );
 
   if (!(mentor && curTopic && mentor.topic_questions)) {
-    return <div />;
+    return <div id="questions" />;
   }
 
   const questions = mentor.topic_questions[curTopic] || [];
@@ -55,6 +55,7 @@ const Questions = ({ height, onSelected }: Props) => {
   return (
     <MuiThemeProvider theme={theme}>
       <ScrollingQuestions
+        id="questions"
         height={height}
         questions={ordered_questions}
         questionsAsked={questionsAsked}

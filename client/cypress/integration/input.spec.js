@@ -21,29 +21,26 @@ describe("Input field", () => {
       url: "**/mentor-api/mentors/julianne/data",
       response: "fixture:julianne.json",
     });
+    cy.visit("/");
   });
 
-  it("has default placeholder message", () => {
-    cy.visit("/");
+  it("has a default placeholder message", () => {
     cy.get("#input-field")
       .invoke("attr", "placeholder")
       .should("contain", "Ask a question");
   });
 
   it("can be typed into", () => {
-    cy.visit("/");
     cy.get("#input-field").type("Hello");
     cy.get("#input-field").contains("Hello");
   });
 
-  it("enables send button if text", () => {
-    cy.visit("/");
+  it("enables send button if not empty", () => {
     cy.get("#input-field").type("Hello");
     cy.get("#input-send").should("not.be.disabled");
   });
 
-  it("disables send button if no text", () => {
-    cy.visit("/");
+  it("disables send button if empty", () => {
     cy.get("#input-send").should("be.disabled");
     cy.get("#input-field")
       .type("Hello")
@@ -52,7 +49,6 @@ describe("Input field", () => {
   });
 
   it("updates placeholder message to last question asked", () => {
-    cy.visit("/");
     cy.get("#input-field").type("Hello");
     cy.get("#input-send").click();
     cy.get("#input-field")
@@ -67,25 +63,12 @@ describe("Input field", () => {
   });
 
   it("clears text after sending input", () => {
-    cy.visit("/");
     cy.get("#input-field").type("Hello");
     cy.get("#input-send").click();
     cy.get("#input-field").should("not.have.value", "Hello");
   });
 
-  it("clears text after selecting input", () => {
-    cy.visit("/");
-    cy.get("#input-field").type("Hello");
-    cy.get("#input-field").click();
-    cy.get("#input-field").should("not.have.value", "Hello");
-    cy.get("#input-field")
-      .invoke("attr", "placeholder")
-      .should("contain", "Ask a question");
-  });
-
   it("sends api call to get responses from mentors after sending input", () => {
-    cy.visit("/");
-
     cy.route({
       method: "GET",
       url: "**/mentor-api/questions/?mentor=clint&query=how+old+are+you",
