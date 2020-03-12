@@ -32,6 +32,7 @@ describe("Favorite", () => {
 
   it("can be toggled", () => {
     cy.visit("/");
+    cy.wait(1000);
     cy.get("#fave-button").click();
     cy.get("#fave-button")
       .invoke("attr", "style")
