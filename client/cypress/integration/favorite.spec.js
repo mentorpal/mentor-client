@@ -38,4 +38,13 @@ describe("Favorite", () => {
       .invoke("attr", "style")
       .should("contain", "yellow");
   });
+
+  it("is hidden if there is only one mentor", () => {
+    cy.visit("/", {
+      qs: {
+        mentor: "clint",
+      },
+    });
+    cy.get("#fave-button").should("not.exist");
+  });
 });
