@@ -133,6 +133,7 @@ workflows:
           wait-on: 'http://localhost:8000'
           filters: *only-untagged
           working_directory: client
+          cache-key: 'yarn-packages-{{ arch }}-{{ checksum "yarn.lock" }}'
       - approve-build-and-push:
           filters: *only-untagged
           type: approval
@@ -166,6 +167,7 @@ workflows:
           wait-on: 'http://localhost:8000'
           filters: *only-untagged
           working_directory: client
+          cache-key: 'yarn-packages-{{ arch }}-{{ checksum "yarn.lock" }}'
       - build-and-push:
           is-release-tag: true
           filters: *only-tagged-releases
