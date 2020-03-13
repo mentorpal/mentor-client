@@ -14,7 +14,7 @@ import { chromeVersion } from "funcs/funcs";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 
-const Video = ({ height, width }) => {
+const Video = ({ height, width, playing = false }) => {
   const mentor = useSelector(state => state.mentorsById[state.curMentor]);
   const mobileWidth = height / 0.895;
   const webWidth = height / 0.5625;
@@ -26,7 +26,12 @@ const Video = ({ height, width }) => {
 
   return (
     <div id="video-container" style={{ width }}>
-      <VideoPlayer height={height} width={width} format={format} />
+      <VideoPlayer
+        height={height}
+        width={width}
+        format={format}
+        playing={playing}
+      />
       <FaveButton />
       <LoadingSpinner mentor={mentor} height={height} width={width} />
       <MessageStatus mentor={mentor} />
@@ -42,7 +47,7 @@ function findMentorIdleId(mentor) {
   }
 }
 
-const VideoPlayer = ({ width, height, format = "mobile" }) => {
+const VideoPlayer = ({ width, height, format = "mobile", playing = false }) => {
   const dispatch = useDispatch();
   const [duration, setDuration] = useState(Number.NaN);
   const isIdle = useSelector(state => state.isIdle);
@@ -86,7 +91,7 @@ const VideoPlayer = ({ width, height, format = "mobile" }) => {
       width={width}
       height={height}
       controls={!isIdle}
-      playing
+      playing={Boolean(playing)}
       playsinline
       webkit-playsinline="true"
       config={{

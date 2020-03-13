@@ -1,5 +1,3 @@
-import { isNumeric } from "tslint";
-
 export enum MentorQuestionStatus {
   NONE = "NONE",
   ANSWERED = "ANSWERED",
@@ -107,6 +105,7 @@ export interface State {
   };
   mentorNext: string; // id of the next mentor to speak after the current finishes
   questionsAsked: string[];
+  guestName: string;
 }
 
 export interface QuestionResponse {

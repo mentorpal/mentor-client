@@ -1,17 +1,20 @@
+import { withPrefix } from "gatsby";
 import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import { useSelector, useDispatch } from "react-redux";
 import { actions as cmi5Actions } from "redux-cmi5";
-import { withPrefix } from "gatsby";
+import { v1 as uuidv1 } from "uuid";
 import { CircularProgress } from "@material-ui/core";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import { Helmet } from "react-helmet";
 
-import { loadMentor } from "store/actions";
-
+import { addCmi, hasCmi } from "cmiutils";
+import config from "@/config";
+import GuestPrompt from "components/guest-prompt";
 import Header from "components/header";
 import Input from "components/input";
 import Video from "components/video";
 import VideoPanel from "components/video-panel";
+import { loadMentor, setGuestName } from "store/actions";
 import withLocation from "wrap-with-location";
 
 import "styles/layout.css";
@@ -29,9 +32,10 @@ const theme = createMuiTheme({
 const IndexPage = ({ search }) => {
   const dispatch = useDispatch();
   const mentorsById = useSelector(state => state.mentorsById);
+  const guestName = useSelector(state => state.guestName);
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
-  const { recommended, mentor } = search;
+  const { recommended, mentor, guest } = search;
 
   const isMobile = width < 768;
   const videoHeight = isMobile ? height * 0.5 : Math.min(width * 0.5625, 700);
@@ -44,12 +48,67 @@ const IndexPage = ({ search }) => {
     globalWindow = window; // eslint-disable-line no-undef
   }
 
+  function hasSessionUser() {
+    return Boolean(
+      (globalWindow && hasCmi(globalWindow.location.search)) || guestName
+    );
+  }
+
   function handleWindowResize() {
     if (typeof globalWindow === `undefined`) {
       return;
     }
     setHeight(globalWindow.innerHeight);
     setWidth(globalWindow.innerWidth);
+  }
+
+  function setQueryStringWithoutPageReload(qsValue) {
+    let url = `${window.location.protocol}//${window.location.host}${window.location.pathname}${window.location.search}`;
+    if (window.location.search) {
+      url += `&guest=${qsValue}`;
+    } else {
+      url += `?guest=${qsValue}`;
+    }
+    window.history.pushState({ path: url }, "", url);
+  }
+
+  function absUrl(u) {
+    if (!globalWindow) {
+      return u;
+    }
+    return u.startsWith("http")
+      ? u
+      : `${window.location.protocol}//${window.location.host}${
+          u.startsWith("/") ? "" : "/"
+        }${u}`;
+  }
+
+  function onGuestNameEntered(name) {
+    if (!name) {
+      name = "guest";
+    }
+    if (!globalWindow) {
+      setQueryStringWithoutPageReload(name);
+      dispatch(setGuestName(name));
+      return;
+    }
+    const urlRoot = `${window.location.protocol}//${window.location.host}`;
+    const userId = uuidv1();
+    globalWindow.location.href = addCmi(globalWindow.location.href, {
+      activityId: globalWindow.location.href,
+      actor: {
+        name: `${name}`,
+        account: {
+          name: `${userId}`,
+          homePage: `${urlRoot}/guests`,
+        },
+      },
+      endpoint: absUrl(config.CMI5_ENDPOINT),
+      fetch: `${absUrl(config.CMI5_FETCH)}${
+        config.CMI5_FETCH.includes("?") ? "" : "?"
+      }&username=${encodeURIComponent(name)}&userid=${userId}`,
+      registration: uuidv1(),
+    });
   }
 
   useEffect(() => {
@@ -67,7 +126,10 @@ const IndexPage = ({ search }) => {
         recommendedQuestions: recommended,
       })
     );
-  }, []);
+    if (guest) {
+      dispatch(setGuestName(guest));
+    }
+  }, [mentor, recommended, guest]);
 
   useEffect(() => {
     // Media queries for layout
@@ -100,10 +162,19 @@ const IndexPage = ({ search }) => {
           </div>
         )}
         <div className="expand">
-          <Video height={videoHeight - (hidePanel ? 0 : 100)} width={width} />
+          <Video
+            height={videoHeight - (hidePanel ? 0 : 100)}
+            width={width}
+            playing={hasSessionUser()}
+          />
         </div>
       </div>
       <Input height={inputHeight} />
+      {!hasSessionUser() ? (
+        <GuestPrompt submit={onGuestNameEntered} />
+      ) : (
+        undefined
+      )}
     </MuiThemeProvider>
   );
 };
