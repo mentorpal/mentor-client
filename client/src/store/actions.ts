@@ -36,6 +36,7 @@ export const QUESTION_ERROR = "QUESTION_ERROR"; // question could not be answere
 export const QUESTION_RESULT = "QUESTION_RESULT";
 export const QUESTION_SENT = "QUESTION_SENT"; // question input was sent
 export const TOPIC_SELECTED = "TOPIC_SELECTED";
+export const GUEST_NAME_SET = "GUEST_NAME_SET";
 
 export interface MentorAnswerPlaybackStartedAction {
   type: typeof MENTOR_ANSWER_PLAYBACK_STARTED;
@@ -298,6 +299,11 @@ export const selectTopic = (topic: any) => ({
 export const faveMentor = (mentor_id: any) => ({
   id: mentor_id,
   type: MENTOR_FAVED,
+});
+
+export const setGuestName = (name: string) => ({
+  name,
+  type: GUEST_NAME_SET,
 });
 
 const currentQuestionIndex = (state: { questionsAsked: { length: any } }) =>

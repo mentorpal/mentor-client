@@ -6,8 +6,9 @@ import { CircularProgress } from "@material-ui/core";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import { Helmet } from "react-helmet";
 
-import { loadMentor } from "store/actions";
+import { loadMentor, setGuestName } from "store/actions";
 
+import GuestPrompt from "components/guest-prompt";
 import Header from "components/header";
 import Input from "components/input";
 import Video from "components/video";
@@ -29,9 +30,10 @@ const theme = createMuiTheme({
 const IndexPage = ({ search }) => {
   const dispatch = useDispatch();
   const mentorsById = useSelector(state => state.mentorsById);
+  const guestName = useSelector(state => state.guestName);
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
-  const { recommended, mentor } = search;
+  const { recommended, mentor, guest } = search;
 
   const isMobile = width < 768;
   const videoHeight = isMobile ? height * 0.5 : Math.min(width * 0.5625, 700);
@@ -52,6 +54,24 @@ const IndexPage = ({ search }) => {
     setWidth(globalWindow.innerWidth);
   }
 
+  function onGuestNameEntered(name) {
+    if (!name) {
+      name = "guest";
+    }
+    setQueryStringWithoutPageReload(name);
+    dispatch(setGuestName(name));
+  }
+
+  function setQueryStringWithoutPageReload(qsValue) {
+    let url = `${window.location.protocol}//${window.location.host}${window.location.pathname}${window.location.search}`;
+    if (window.location.search) {
+      url += `&guest=${qsValue}`;
+    } else {
+      url += `?guest=${qsValue}`;
+    }
+    window.history.pushState({ path: url }, "", url);
+  }
+
   useEffect(() => {
     dispatch(cmi5Start());
   }, []);
@@ -67,7 +87,10 @@ const IndexPage = ({ search }) => {
         recommendedQuestions: recommended,
       })
     );
-  }, []);
+    if (guest) {
+      dispatch(setGuestName(guest));
+    }
+  }, [mentor, recommended, guest]);
 
   useEffect(() => {
     // Media queries for layout
@@ -104,6 +127,7 @@ const IndexPage = ({ search }) => {
         </div>
       </div>
       <Input height={inputHeight} />
+      {guestName ? undefined : <GuestPrompt submit={onGuestNameEntered} />}
     </MuiThemeProvider>
   );
 };

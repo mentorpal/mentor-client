@@ -35,6 +35,8 @@
     "react-helmet": "^5.2.1",
     "react-player": "^1.15.2",
     "react-redux": "^7.2.0",
+    "react-router": "^5.1.2",
+    "react-router-dom": "^5.1.2",
     "redux": "^4.0.5",
     "redux-cmi5": "github:beatthat/redux-cmi5#semver:^1.3.3",
     "redux-logger": "^3.0.6",
