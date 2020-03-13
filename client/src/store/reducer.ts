@@ -17,6 +17,7 @@ import {
   MentorSelectedAction,
   MentorAnswerPlaybackStartedAction,
   QuestionSentAction,
+  GUEST_NAME_SET,
 } from "./actions";
 import {
   MentorData,
@@ -41,6 +42,7 @@ export const initialState: State = cmi5Reducer({
   mentorsById: {},
   mentorNext: "", // id of the next mentor to speak after the current finishes
   questionsAsked: [],
+  guestName: "",
 });
 
 function mentorSelected(state: State, action: MentorSelectedAction): State {
@@ -218,6 +220,11 @@ export default function reducer(state = initialState, action: any): State {
       return {
         ...state,
         curTopic: action.topic,
+      };
+    case GUEST_NAME_SET:
+      return {
+        ...state,
+        guestName: action.name,
       };
     default:
       return state;
