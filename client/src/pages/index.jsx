@@ -54,14 +54,6 @@ const IndexPage = ({ search }) => {
     setWidth(globalWindow.innerWidth);
   }
 
-  function onGuestNameEntered(name) {
-    if (!name) {
-      name = "guest";
-    }
-    setQueryStringWithoutPageReload(name);
-    dispatch(setGuestName(name));
-  }
-
   function setQueryStringWithoutPageReload(qsValue) {
     let url = `${window.location.protocol}//${window.location.host}${window.location.pathname}${window.location.search}`;
     if (window.location.search) {
@@ -70,6 +62,14 @@ const IndexPage = ({ search }) => {
       url += `?guest=${qsValue}`;
     }
     window.history.pushState({ path: url }, "", url);
+  }
+
+  function onGuestNameEntered(name) {
+    if (!name) {
+      name = "guest";
+    }
+    setQueryStringWithoutPageReload(name);
+    dispatch(setGuestName(name));
   }
 
   useEffect(() => {
