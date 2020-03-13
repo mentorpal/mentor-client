@@ -16,6 +16,7 @@ describe("reducer", () => {
       mentorsById: {},
       mentorNext: "", // id of the next mentor to speak after the current finishes,
       questionsAsked: [],
+      guestName: "",
     });
   });
 });
