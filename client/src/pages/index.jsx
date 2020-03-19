@@ -90,7 +90,9 @@ const IndexPage = ({ search }) => {
     }
     return u.startsWith("http")
       ? u
-      : `${window.location.protocol}//${window.location.host}/${u}`;
+      : `${window.location.protocol}//${window.location.host}${
+          u.startsWith("/") ? "" : "/"
+        }${u}`;
   }
 
   function onGuestNameEntered(name) {
