@@ -12,9 +12,10 @@ app.use(cors());
 app.use("/", express.static(path.join(__dirname, "public", "mentorpanel")));
 app.get("/config", (req, res) => {
   res.send({
+    CMI5_ENDPOINT: process.env.CMI5_ENDPOINT || "/lrs/xapi",
+    CMI5_FETCH: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
     MENTOR_API_URL: process.env.MENTOR_API_URL || "/mentor-api",
     MENTOR_VIDEO_URL: process.env.MENTOR_VIDEO_URL || "/videos",
-    LRS_URL: process.env.LRS_URL || "/lrs",
   });
 });
 app.get(/lrs\/*/, (req, res, next) => {

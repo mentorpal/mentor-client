@@ -84,6 +84,15 @@ const IndexPage = ({ search }) => {
     window.history.pushState({ path: url }, "", url);
   }
 
+  function absUrl(u) {
+    if (!globalWindow) {
+      return u;
+    }
+    return u.startsWith("http")
+      ? u
+      : `${window.location.protocol}//${window.location.host}/${u}`;
+  }
+
   function onGuestNameEntered(name) {
     if (!name) {
       name = "guest";
@@ -102,9 +111,10 @@ const IndexPage = ({ search }) => {
         homePage: `${urlRoot}/guests`,
       },
     };
-    const fetch = `${
-      config.LRS_URL
-    }/auth/guesttoken&username=${encodeURIComponent(name)}&userid=${userId}`;
+    const endpoint = absUrl(config.CMI5_ENDPOINT);
+    const fetch = `${absUrl(config.CMI5_FETCH)}${
+      config.CMI5_FETCH.includes("?") ? "" : "?"
+    }&username=${encodeURIComponent(name)}&userid=${userId}`;
     const activityId = globalWindow.location.href;
     const urlWithCmiParams = `${urlRoot}${window.location.pathname}?${
       window.location.search
@@ -112,11 +122,9 @@ const IndexPage = ({ search }) => {
       activityId
     )}&actor=${encodeURIComponent(
       JSON.stringify(actor)
-    )}&endpoint=${encodeURIComponent(
-      config.LRS_URL
-    )}&fetch=${encodeURIComponent(fetch)}&registration=${encodeURIComponent(
-      uuidv1()
-    )}`;
+    )}&endpoint=${encodeURIComponent(endpoint)}&fetch=${encodeURIComponent(
+      fetch
+    )}&registration=${encodeURIComponent(uuidv1())}`;
     globalWindow.location.href = urlWithCmiParams;
   }
 

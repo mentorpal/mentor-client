@@ -25,7 +25,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-env-variables`,
       options: {
-        whitelist: ["LRS_URL"],
+        whitelist: ["CMI5_ENDPOINT"],
         whitelist: ["MENTOR_API_URL"],
         whitelist: ["MENTOR_VIDEO_URL"],
       },

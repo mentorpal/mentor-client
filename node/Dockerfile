@@ -1,4 +1,4 @@
-FROM node:12.4 as builder
+FROM node:12.16.1 as builder
 ARG NODE_ENV
 RUN apt-get update && \
     apt-get install -y \
@@ -14,7 +14,7 @@ COPY . .
 RUN cd /build/client && \
     yarn install --frozen-lockfile && \
     yarn run build
-FROM node:12.4-slim
+FROM node:12.16.1-slim
 ENV TINI_VERSION=v0.16.1
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini 
