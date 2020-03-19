@@ -12,6 +12,8 @@ Variables
 
 In order to function properly the client generally requires these environment variables defined:
 
+- **LRS_URL**: The base url for the the lrs used for guest users, e.g. https://mentorpal.org/lrs
+
 - **MENTOR_API_URL**: The base url for the the [mentor-api](https://github.com/ICTLearningSciences/mentor-api), e.g. https://mentorpal.org/mentor-api
 
 - **MENTOR_VIDEO_URL**: The base url for the mentor videos, e.g. https://video.mentorpal.org/videos

@@ -1,18 +1,20 @@
+import { withPrefix } from "gatsby";
+import queryString from "query-string";
 import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import { useSelector, useDispatch } from "react-redux";
 import { actions as cmi5Actions } from "redux-cmi5";
-import { withPrefix } from "gatsby";
+import { v1 as uuidv1 } from "uuid";
 import { CircularProgress } from "@material-ui/core";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import { Helmet } from "react-helmet";
 
-import { loadMentor, setGuestName } from "store/actions";
-
+import config from "@/config";
 import GuestPrompt from "components/guest-prompt";
 import Header from "components/header";
 import Input from "components/input";
 import Video from "components/video";
 import VideoPanel from "components/video-panel";
+import { loadMentor, setGuestName } from "store/actions";
 import withLocation from "wrap-with-location";
 
 import "styles/layout.css";
@@ -46,6 +48,24 @@ const IndexPage = ({ search }) => {
     globalWindow = window; // eslint-disable-line no-undef
   }
 
+  function hasCmiParams() {
+    if (!(globalWindow && globalWindow.location.search)) {
+      return false;
+    }
+    const params = queryString.parse(globalWindow.location.search);
+    return Boolean(
+      params.endpoint &&
+        params.fetch &&
+        params.actor &&
+        params.registration &&
+        params.activityId
+    );
+  }
+
+  function shouldPromptGuestName() {
+    return Boolean(!hasCmiParams() && !guestName);
+  }
+
   function handleWindowResize() {
     if (typeof globalWindow === `undefined`) {
       return;
@@ -68,8 +88,36 @@ const IndexPage = ({ search }) => {
     if (!name) {
       name = "guest";
     }
-    setQueryStringWithoutPageReload(name);
-    dispatch(setGuestName(name));
+    if (!globalWindow) {
+      setQueryStringWithoutPageReload(name);
+      dispatch(setGuestName(name));
+      return;
+    }
+    const urlRoot = `${window.location.protocol}//${window.location.host}`;
+    const userId = uuidv1();
+    const actor = {
+      name: `${name}`,
+      account: {
+        name: `${userId}`,
+        homePage: `${urlRoot}/guests`,
+      },
+    };
+    const fetch = `${
+      config.LRS_URL
+    }/auth/guesttoken&username=${encodeURIComponent(name)}&userid=${userId}`;
+    const activityId = globalWindow.location.href;
+    const urlWithCmiParams = `${urlRoot}${window.location.pathname}?${
+      window.location.search
+    }${window.location.search ? "&" : ""}activityId=${encodeURIComponent(
+      activityId
+    )}&actor=${encodeURIComponent(
+      JSON.stringify(actor)
+    )}&endpoint=${encodeURIComponent(
+      config.LRS_URL
+    )}&fetch=${encodeURIComponent(fetch)}&registration=${encodeURIComponent(
+      uuidv1()
+    )}`;
+    globalWindow.location.href = urlWithCmiParams;
   }
 
   useEffect(() => {
@@ -127,7 +175,11 @@ const IndexPage = ({ search }) => {
         </div>
       </div>
       <Input height={inputHeight} />
-      {guestName ? undefined : <GuestPrompt submit={onGuestNameEntered} />}
+      {shouldPromptGuestName() ? (
+        <GuestPrompt submit={onGuestNameEntered} />
+      ) : (
+        undefined
+      )}
     </MuiThemeProvider>
   );
 };
