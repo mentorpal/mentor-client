@@ -12,7 +12,9 @@ Variables
 
 In order to function properly the client generally requires these environment variables defined:
 
-- **LRS_URL**: The base url for the the lrs used for guest users, e.g. https://mentorpal.org/lrs
+- **CMI5_ENDPOINT**: The cmi5 xapi [endpoint](https://github.com/AICC/CMI-5_Spec_Current/blob/quartz/cmi5_spec.md#81-launch-method) to use for guest sessions, e.g. https://mentorpal.org/lrs/xapi
+
+- **CMI5_FETCH**: The cmi5 [fetch](https://github.com/AICC/CMI-5_Spec_Current/blob/quartz/cmi5_spec.md#81-launch-method) url used to retrieve an auth token for guest sessions, e.g. https://mentorpal.org/lrs/auth/guesttoken
 
 - **MENTOR_API_URL**: The base url for the the [mentor-api](https://github.com/ICTLearningSciences/mentor-api), e.g. https://mentorpal.org/mentor-api
 
