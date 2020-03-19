@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Modal,
-  Button,
-  Paper,
-  InputBase,
-  Backdrop,
-  Fade,
-} from "@material-ui/core";
+import { Modal, Button, Paper, InputBase, Backdrop } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({

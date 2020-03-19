@@ -119,8 +119,8 @@ workflows:
     jobs:
       - client-format:
           filters: *only-untagged
-      - client-audit:
-          filters: *only-untagged
+      # - client-audit:
+      #     filters: *only-untagged
       - client-lint:
           filters: *only-untagged
       # - client-types:
@@ -139,7 +139,7 @@ workflows:
           type: approval
           requires:
             - client-format
-            - client-audit
+            # - client-audit
             - client-lint
             # - client-types
             - cypress/run
@@ -153,8 +153,8 @@ workflows:
     jobs:
       - client-format:
           filters: *only-tagged-releases
-      - client-audit:
-          filters: *only-tagged-releases
+      # - client-audit:
+      #     filters: *only-tagged-releases
       - client-lint:
           filters: *only-tagged-releases
       # - client-types:
@@ -173,7 +173,7 @@ workflows:
           filters: *only-tagged-releases
           requires:
             - client-format
-            - client-audit
+            # - client-audit
             - client-lint
             # - client-types
             - cypress/run

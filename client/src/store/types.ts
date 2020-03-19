@@ -1,5 +1,3 @@
-import { isNumeric } from "tslint";
-
 export enum MentorQuestionStatus {
   NONE = "NONE",
   ANSWERED = "ANSWERED",

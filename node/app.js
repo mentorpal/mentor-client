@@ -21,10 +21,7 @@ app.get(/lrs\/*/, (req, res, next) => {
   if (!process.env.LRS_URL) {
     return next(new Error("LRS_URL not set in env"));
   }
-  return res.redirect(
-    301,
-    process.env.LRS_URL + req.url.replace(/^\/lrs/, "")
-  );
+  return res.redirect(301, process.env.LRS_URL + req.url.replace(/^\/lrs/, ""));
 });
 app.get(/mentor-api\/*/, (req, res, next) => {
   if (!process.env.MENTOR_API_URL) {
