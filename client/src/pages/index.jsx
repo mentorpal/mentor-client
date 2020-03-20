@@ -62,8 +62,8 @@ const IndexPage = ({ search }) => {
     );
   }
 
-  function shouldPromptGuestName() {
-    return Boolean(!hasCmiParams() && !guestName);
+  function hasSessionUser() {
+    return Boolean(hasCmiParams() || guestName);
   }
 
   function handleWindowResize() {
@@ -181,11 +181,15 @@ const IndexPage = ({ search }) => {
           </div>
         )}
         <div className="expand">
-          <Video height={videoHeight - (hidePanel ? 0 : 100)} width={width} />
+          <Video
+            height={videoHeight - (hidePanel ? 0 : 100)}
+            width={width}
+            playing={hasSessionUser()}
+          />
         </div>
       </div>
       <Input height={inputHeight} />
-      {shouldPromptGuestName() ? (
+      {!hasSessionUser() ? (
         <GuestPrompt submit={onGuestNameEntered} />
       ) : (
         undefined
