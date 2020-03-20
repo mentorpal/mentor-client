@@ -14,7 +14,7 @@ import { chromeVersion } from "funcs/funcs";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 
-const Video = ({ height, width, playing=false }) => {
+const Video = ({ height, width, playing = false }) => {
   const mentor = useSelector(state => state.mentorsById[state.curMentor]);
   const mobileWidth = height / 0.895;
   const webWidth = height / 0.5625;
@@ -47,7 +47,7 @@ function findMentorIdleId(mentor) {
   }
 }
 
-const VideoPlayer = ({ width, height, format="mobile", playing=false }) => {
+const VideoPlayer = ({ width, height, format = "mobile", playing = false }) => {
   const dispatch = useDispatch();
   const [duration, setDuration] = useState(Number.NaN);
   const isIdle = useSelector(state => state.isIdle);
