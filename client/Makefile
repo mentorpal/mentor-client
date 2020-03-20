@@ -18,6 +18,9 @@ develop: .env.development node_modules/gatsby-cli
 format: node_modules/prettier
 	yarn run format
 
+node_modules/cypress:
+	yarn install --frozen-lockfile
+
 node_modules/eslint:
 	yarn install --frozen-lockfile
 
@@ -66,5 +69,5 @@ test-types: node_modules/typescript
 	yarn run test:types
 
 .PHONY: test-cypress
-test-cypress:
+test-cypress: node_modules/cypress
 	npm run test:cypress
