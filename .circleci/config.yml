@@ -165,7 +165,7 @@ workflows:
           yarn: true
           start: yarn start
           wait-on: 'http://localhost:8000'
-          filters: *only-untagged
+          filters: *only-tagged-releases
           working_directory: client
           cache-key: 'yarn-packages-{{ arch }}-{{ checksum "client/yarn.lock" }}'
       - build-and-push:
