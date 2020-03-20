@@ -1,6 +1,6 @@
 .env.development:
 	@echo "MENTOR_API_URL=https://dev.mentorpal.org/mentor-api" > .env.development
-	@echo "MENTOR_VIDEO_HOST=http://video.mentorpal.org" >> .env.development
+	@echo "MENTOR_VIDEO_HOST=https://video.mentorpal.org/videos" >> .env.development
 	@echo "Set up  a default .env.development file"
 	@echo "that configures MENTOR_API_URL=https://dev.mentorpal.org/mentor-api."
 	@echo "This file should not be committed. "
@@ -17,6 +17,9 @@ develop: .env.development node_modules/gatsby-cli
 .PHONY: format
 format: node_modules/prettier
 	yarn run format
+
+node_modules/cypress:
+	yarn install --frozen-lockfile
 
 node_modules/eslint:
 	yarn install --frozen-lockfile
@@ -46,6 +49,7 @@ test-all:
 	$(MAKE) test-format
 	$(MAKE) test-lint
 	# $(MAKE) test-types
+	$(MAKE) test-cypress
 	$(MAKE) test
 
 .PHONY: test-audit
@@ -63,3 +67,7 @@ test-lint: node_modules/eslint
 .PHONY: test-types
 test-types: node_modules/typescript
 	yarn run test:types
+
+.PHONY: test-cypress
+test-cypress: node_modules/cypress
+	npm run test:cypress

@@ -1,0 +1,1747 @@
+{
+  "id": "dan",
+  "name": "Dan Davis",
+  "questions_by_id": {
+    "dandavis_A100_2_2": { "question_text": "Tell me a funny story." },
+    "dandavis_A101_2_2": {
+      "question_text": "What has been your favorite place to live?"
+    },
+    "dandavis_A102_2_2": { "question_text": "What do you do in STEM?" },
+    "dandavis_A103_2_2": {
+      "question_text": "What is your strategy for overcoming your hardships?"
+    },
+    "dandavis_A104_2_2": {
+      "question_text": "What advice do you have for someone who struggles in school?"
+    },
+    "dandavis_A105_2_2": {
+      "question_text": "What advice do you have for people who are being bullied in high school?"
+    },
+    "dandavis_A106_2_2": {
+      "question_text": "What were some of your fears entering college?"
+    },
+    "dandavis_A107_2_2": {
+      "question_text": "What are the most important things on a resume?"
+    },
+    "dandavis_A108_2_2": {
+      "question_text": "Where can I find an internship that will give me skills for the engineering field?"
+    },
+    "dandavis_A109_2_2": {
+      "question_text": "What do you advise me to do in picking the right career field for me?"
+    },
+    "dandavis_A10_1_1": {
+      "question_text": "Where in the world have you lived?"
+    },
+    "dandavis_A110_2_2": {
+      "question_text": "How do I find what I love to do?"
+    },
+    "dandavis_A111_2_2": {
+      "question_text": "What should I do if I don't know what job I want to do?"
+    },
+    "dandavis_A112_2_2": {
+      "question_text": "Who are the best people to talk to when making a career choice?"
+    },
+    "dandavis_A113_2_2": {
+      "question_text": "What is one piece of advice that you wished you had taken?"
+    },
+    "dandavis_A114_2_2": {
+      "question_text": "What is one question you wish you had asked earlier?"
+    },
+    "dandavis_A115_2_2": {
+      "question_text": "What is the most common mistake you see people make when making decisions about the future?"
+    },
+    "dandavis_A116_2_3": { "question_text": "What's your favorite movie?" },
+    "dandavis_A117_3_1": {
+      "question_text": "What's the most challenging part of your job?"
+    },
+    "dandavis_A118_3_1": {
+      "question_text": "What is the biggest barrier to entry in this field?"
+    },
+    "dandavis_A119_3_1": {
+      "question_text": "How did you become interested in the military?"
+    },
+    "dandavis_A11_1_1": { "question_text": "What kind of student were you?" },
+    "dandavis_A120_3_1": {
+      "question_text": "How did you first become interested in (your STEM field)?"
+    },
+    "dandavis_A121_3_1": {
+      "question_text": "Why did you choose this career path?"
+    },
+    "dandavis_A122_3_1": { "question_text": "Are you happy with your career?" },
+    "dandavis_A123_3_1": {
+      "question_text": "When you were a kid, what did you want to be when you grew up?"
+    },
+    "dandavis_A124_3_1": {
+      "question_text": "What sports did you play in high school?"
+    },
+    "dandavis_A125_3_1": { "question_text": "What is your favorite color?" },
+    "dandavis_A126_3_1": { "question_text": "Are you married?" },
+    "dandavis_A127_3_1": { "question_text": "Do you have siblings?" },
+    "dandavis_A128_3_1": { "question_text": "What is your favorite food?" },
+    "dandavis_A129_3_1": {
+      "question_text": "What is your least favorite food?"
+    },
+    "dandavis_A12_1_1": { "question_text": "When did you join the Navy?" },
+    "dandavis_A130_3_1": {
+      "question_text": "What is the food like in the military?"
+    },
+    "dandavis_A131_3_1": { "question_text": "Do you shoot guns?" },
+    "dandavis_A132_3_1": {
+      "question_text": "What are the ribbons/awards that you've gotten?"
+    },
+    "dandavis_A133_3_1": { "question_text": "Do you have any tattoos?" },
+    "dandavis_A134_3_1": {
+      "question_text": "Did the Navy give you a chance to live overseas?"
+    },
+    "dandavis_A135_3_1": {
+      "question_text": "What are common crimes that military people commit?"
+    },
+    "dandavis_A136_3_1": {
+      "question_text": "What were your living quarters like in the Navy?"
+    },
+    "dandavis_A137_3_1": {
+      "question_text": "Did you receive a monetary bonus for enlisting?"
+    },
+    "dandavis_A138_3_1": {
+      "question_text": "Can you tell me about military retirement?"
+    },
+    "dandavis_A139_3_2": { "question_text": "Describe the hiring process." },
+    "dandavis_A13_1_1": {
+      "question_text": "Are you currently serving in the military?"
+    },
+    "dandavis_A140_3_2": { "question_text": "Describe the initial training." },
+    "dandavis_A141_3_2": { "question_text": "What is bootcamp like?" },
+    "dandavis_A142_3_2": {
+      "question_text": "Who do I talk to if I'm interested in joining the military?"
+    },
+    "dandavis_A143_3_2": {
+      "question_text": "What is dress attire in the Navy?"
+    },
+    "dandavis_A144_3_2": {
+      "question_text": "To what extent does the military adhere to tight schedules both long term and daily?"
+    },
+    "dandavis_A145_3_2": {
+      "question_text": "How can I request to work in a certain area or field?"
+    },
+    "dandavis_A146_3_2": {
+      "question_text": "What was the most difficult part of your training?"
+    },
+    "dandavis_A147_3_2": {
+      "question_text": "How does an officer's/non-officer's salary compare to civilian salaries?"
+    },
+    "dandavis_A148_3_2": {
+      "question_text": "How would you describe the work culture of the Navy?"
+    },
+    "dandavis_A149_3_2": {
+      "question_text": "How significant is there a chance of being deployed?"
+    },
+    "dandavis_A14_1_1": {
+      "question_text": "What is your current rank and duty position now?"
+    },
+    "dandavis_A150_3_2": {
+      "question_text": "What things are there for me to do on a ship?"
+    },
+    "dandavis_A151_3_2": {
+      "question_text": "Why should someone choose to be a part of the Navy?"
+    },
+    "dandavis_A152_3_2": {
+      "question_text": "What is the gender mix of the Navy?"
+    },
+    "dandavis_A153_3_2": {
+      "question_text": "What are the ethnic percentages of the Navy?"
+    },
+    "dandavis_A154_3_2": { "question_text": "Why do people leave the Navy?" },
+    "dandavis_A155_3_2": {
+      "question_text": "How will my relationship with my friends or family members be affected if I join the navy, and what advice should I give them?"
+    },
+    "dandavis_A156_3_2": {
+      "question_text": "How do the educational benefits of the military work?"
+    },
+    "dandavis_A157_3_2": {
+      "question_text": "What is the advancement potential in the field? What is a typical path?"
+    },
+    "dandavis_A158_3_2": {
+      "question_text": "How will my experience transfer to civilian life after my navy tour of duty?"
+    },
+    "dandavis_A159_3_2": {
+      "question_text": "What is a story that really shows what it is like being in the Navy?"
+    },
+    "dandavis_A15_1_1": {
+      "question_text": "What was your duty position while in the military?"
+    },
+    "dandavis_A160_3_2": {
+      "question_text": "What do navy reservists do and what benefits do they get?"
+    },
+    "dandavis_A161_3_2": {
+      "question_text": "What experience is necessary to become an officer?"
+    },
+    "dandavis_A162_3_2": {
+      "question_text": "How do you make sure to get good feedback?"
+    },
+    "dandavis_A163_3_2": {
+      "question_text": "What are the most important decisions that you faced as a leader in your organization?"
+    },
+    "dandavis_A164_3_2": {
+      "question_text": "Who gave you the best advice about your life?"
+    },
+    "dandavis_A165_3_2": {
+      "question_text": "What is the most important lesson about life you have learned?"
+    },
+    "dandavis_A166_3_2": {
+      "question_text": "What do you think is really important in life?"
+    },
+    "dandavis_A167_4_1": {
+      "question_text": "What problem are you looking to solve?"
+    },
+    "dandavis_A168_4_1": {
+      "question_text": "How and where do you find inspiration?"
+    },
+    "dandavis_A169_4_1": {
+      "question_text": "How often do you ever get in a \"state of flow\" when doing your job?"
+    },
+    "dandavis_A16_1_1": {
+      "question_text": "What does your ranking stand for?"
+    },
+    "dandavis_A170_4_1": { "question_text": "What makes you proud?" },
+    "dandavis_A171_4_1": { "question_text": "What keeps you up at night?" },
+    "dandavis_A172_4_1": { "question_text": "What are your strengths?" },
+    "dandavis_A173_4_1": { "question_text": "What do you not like to do?" },
+    "dandavis_A174_4_1": {
+      "question_text": "Whom do you see as the main beneficiaries of the work you do in (your STEM field)?"
+    },
+    "dandavis_A175_4_1": {
+      "question_text": "Why are you motivated and inspired to go to work as a cryptologist?"
+    },
+    "dandavis_A176_4_1": {
+      "question_text": "How did you manage both career and personal life effectively?"
+    },
+    "dandavis_A177_4_1": {
+      "question_text": "How strongly would you recommend this profession to others or to me personally?"
+    },
+    "dandavis_A178_4_1": {
+      "question_text": "If you could change one thing about your job, what would it be?"
+    },
+    "dandavis_A179_4_1": {
+      "question_text": "What STEM positions are available in the military?"
+    },
+    "dandavis_A17_1_1": { "question_text": "Are you an officer?" },
+    "dandavis_A180_4_1": {
+      "question_text": "What are the benefits of your STEM career?"
+    },
+    "dandavis_A181_4_1": {
+      "question_text": "Who do I talk to if I'm interested cryptology?"
+    },
+    "dandavis_A182_4_1": {
+      "question_text": "What is the difference between working in the public vs private sectors?"
+    },
+    "dandavis_A183_4_1": {
+      "question_text": "What is your favorite coding language and why?"
+    },
+    "dandavis_A184_4_1": {
+      "question_text": "How do you feel the cryptology field has changed since you've been in it?"
+    },
+    "dandavis_A185_4_1": {
+      "question_text": "How much free time do you have in your career?"
+    },
+    "dandavis_A186_4_1": {
+      "question_text": "How ethnically diverse is cryptology?"
+    },
+    "dandavis_A187_4_1": {
+      "question_text": "Is it more difficult to join STEM as a female or minority?"
+    },
+    "dandavis_A188_4_1": {
+      "question_text": "What characterizes a good career?"
+    },
+    "dandavis_A189_4_1": { "question_text": "What don't you like about STEM?" },
+    "dandavis_A18_1_1": {
+      "question_text": "How did you get to your current rank/position?"
+    },
+    "dandavis_A190_4_1": {
+      "question_text": "Why should someone choose to go into cryptology?"
+    },
+    "dandavis_A191_4_1": {
+      "question_text": "Why shouldn't someone choose to go into cryptology?"
+    },
+    "dandavis_A192_4_1": {
+      "question_text": "What is the most difficult part of cryptology?"
+    },
+    "dandavis_A193_4_1": {
+      "question_text": "What are the long-term impacts of entering cryptology or STEM fields?"
+    },
+    "dandavis_A194_4_1": {
+      "question_text": "Why do people leave the cryptology/STEM field?"
+    },
+    "dandavis_A195_4_1": {
+      "question_text": "What's something that most people don't know about cryptology?"
+    },
+    "dandavis_A196_4_1": {
+      "question_text": "Describe an experience that illuminates STEM culture."
+    },
+    "dandavis_A197_4_1": {
+      "question_text": "What kinds of people succeed in STEM fields?"
+    },
+    "dandavis_A198_4_2": {
+      "question_text": "How does someone recover from a professional blunder?"
+    },
+    "dandavis_A199_4_2": {
+      "question_text": "Who has influenced you the most in your life?"
+    },
+    "dandavis_A19_1_1": { "question_text": "What was it like being in war?" },
+    "dandavis_A1_1_1": { "question_text": "Who are you and what do you do?" },
+    "dandavis_A200_4_2": {
+      "question_text": "Tell me about a mentor that you have or had."
+    },
+    "dandavis_A201_4_2": {
+      "question_text": "Who is a person that you considered as a role model early in your life? How and why does this person impact your life?"
+    },
+    "dandavis_A202_4_2": {
+      "question_text": "What struggles did you overcome to get where you are?"
+    },
+    "dandavis_A203_4_2": {
+      "question_text": "What was a pivotal moment in your career/life?"
+    },
+    "dandavis_A204_4_2": {
+      "question_text": "What are the failures for which you are the most unhappy?"
+    },
+    "dandavis_A205_4_3": {
+      "question_text": "What was your biggest mistake you made in your life?"
+    },
+    "dandavis_A206_4_3": { "question_text": "Do you have any regrets?" },
+    "dandavis_A207_4_3": {
+      "question_text": "Where do you see yourself in 5 years?"
+    },
+    "dandavis_A208_4_3": {
+      "question_text": "What was your plan to reach your career/life goal?"
+    },
+    "dandavis_A209_4_3": {
+      "question_text": "What part of my future should I be most worried about?"
+    },
+    "dandavis_A20_1_1": {
+      "question_text": "What is the day to day life being in war?"
+    },
+    "dandavis_A210_4_3": {
+      "question_text": "What used to be your biggest weakness? How did you improve it?"
+    },
+    "dandavis_A211_4_3": {
+      "question_text": "How have your priorities changed as your career progresses?"
+    },
+    "dandavis_A212_4_3": {
+      "question_text": "What do you like to do the most?"
+    },
+    "dandavis_A213_4_3": {
+      "question_text": "Are too many or too few people entering this profession?"
+    },
+    "dandavis_A214_4_3": {
+      "question_text": "What sorts of changes are occurring in cryptology?"
+    },
+    "dandavis_A215_4_3": {
+      "question_text": "How do you ensure job security and proactively prepare for a decline in cryptology?"
+    },
+    "dandavis_A216_4_3": {
+      "question_text": "What do you believe will be the most important factors that will shape your future?"
+    },
+    "dandavis_A217_4_3": {
+      "question_text": "Who gave you the best advice about your career?"
+    },
+    "dandavis_A218_4_3": { "question_text": "How can I work smarter?" },
+    "dandavis_A219_4_3": {
+      "question_text": "What would you advise a person in cryptology to do in order to create good relationships with bosses and coworkers?"
+    },
+    "dandavis_A21_1_1": {
+      "question_text": "\"I want to join the Navy but I'm afraid of going into battle...\""
+    },
+    "dandavis_A220_4_3": { "question_text": "What makes a good leader?" },
+    "dandavis_A221_4_3": {
+      "question_text": "How has combat or the Navy changed you?"
+    },
+    "dandavis_A222_4_3": {
+      "question_text": "Do you get to take vacations in the military?"
+    },
+    "dandavis_A223_4_3": {
+      "question_text": "Does it get claustrophobic and sea sick on the ship?"
+    },
+    "dandavis_A224_4_3": {
+      "question_text": "How long are you on the ship for?"
+    },
+    "dandavis_A225_4_3": {
+      "question_text": "Did you miss home while in the Navy and how did you handle it?"
+    },
+    "dandavis_A226_5_1": {
+      "question_text": "How do you handle fatigue at work?"
+    },
+    "dandavis_A227_5_1": { "question_text": "How do you handle self doubt?" },
+    "dandavis_A228_5_1": { "question_text": "How do you define success?" },
+    "dandavis_A229_5_1": {
+      "question_text": "What has been your greatest success?"
+    },
+    "dandavis_A22_1_1": {
+      "question_text": "Though you were a cryptologist, did you work on other things besides that?"
+    },
+    "dandavis_A230_5_1": {
+      "question_text": "Do you need to be good at math or science to go into STEM?"
+    },
+    "dandavis_A231_5_1": {
+      "question_text": "Where will a STEM degree take me?"
+    },
+    "dandavis_A232_5_1": {
+      "question_text": "How interesting is your work in cryptology? Is it boring?"
+    },
+    "dandavis_A233_5_1": {
+      "question_text": "What influenced you the most in your college decision?"
+    },
+    "dandavis_A234_5_1": {
+      "question_text": "What factors should I consider when deciding where I want to study?"
+    },
+    "dandavis_A235_5_1": { "question_text": "How does your college matter?" },
+    "dandavis_A236_5_1": {
+      "question_text": "What if I can't go or can't afford to go to a 4 year college?"
+    },
+    "dandavis_A237_5_1": {
+      "question_text": "What was the most difficult part of your education?"
+    },
+    "dandavis_A238_5_1": {
+      "question_text": "What specific courses do you recommend?"
+    },
+    "dandavis_A239_5_1": {
+      "question_text": "What courses are good indicators of whether I fit in this field?"
+    },
+    "dandavis_A23_1_1": {
+      "question_text": "What is the training progression and what is it like?"
+    },
+    "dandavis_A240_5_1": {
+      "question_text": "What courses were just a waste of time for you?"
+    },
+    "dandavis_A241_5_1": {
+      "question_text": "What did you learn for your career that you truly never used?"
+    },
+    "dandavis_A242_5_1": {
+      "question_text": "What extracurriculars did you do in college?"
+    },
+    "dandavis_A243_5_1": {
+      "question_text": "Given the chance to do school over, what would you do differently?"
+    },
+    "dandavis_A244_5_1": {
+      "question_text": "How do you continue to improve your skills during your career?"
+    },
+    "dandavis_A245_5_1": {
+      "question_text": "How much of your free time do you spend learning new tasks?"
+    },
+    "dandavis_A246_5_1": {
+      "question_text": "What kinds of new skills have you learned recently?"
+    },
+    "dandavis_A247_5_1": {
+      "question_text": "What are you doing daily to ensure your growth and development continues?"
+    },
+    "dandavis_A248_5_2": {
+      "question_text": "How is college different than high school?"
+    },
+    "dandavis_A249_5_2": {
+      "question_text": "How much do you have to study in college?"
+    },
+    "dandavis_A24_1_1": { "question_text": "Why should I join the Navy?" },
+    "dandavis_A250_5_2": {
+      "question_text": "How can I study STEM and another area?"
+    },
+    "dandavis_A251_5_2": { "question_text": "How do I pay for education?" },
+    "dandavis_A252_5_2": {
+      "question_text": "Should I still go to college, if I need to take out a loan?"
+    },
+    "dandavis_A253_5_2": {
+      "question_text": "How important is it to have the right training, degree or experience for your STEM field?"
+    },
+    "dandavis_A254_5_2": {
+      "question_text": "In what ways did your education prepare you for your career?"
+    },
+    "dandavis_A255_5_2": {
+      "question_text": "What is your favorite college memory?"
+    },
+    "dandavis_A256_5_2": {
+      "question_text": "How would you recommend overcoming bad teachers or difficult subjects?"
+    },
+    "dandavis_A257_5_2": {
+      "question_text": "How much does GPA affect job outcomes?"
+    },
+    "dandavis_A258_5_2": {
+      "question_text": "What was your favorite job or internship?"
+    },
+    "dandavis_A259_5_2": {
+      "question_text": "How do you stay in touch with family?"
+    },
+    "dandavis_A25_1_1": { "question_text": "Why shouldn't I join the Navy?" },
+    "dandavis_A260_5_2": {
+      "question_text": "Do you need to exercise and be in great shape to be in the military?"
+    },
+    "dandavis_A261_5_2": {
+      "question_text": "How transferable is your job to the civilian sector?"
+    },
+    "dandavis_A262_5_2": {
+      "question_text": "What is the best military benefit you experienced?"
+    },
+    "dandavis_A263_5_2": {
+      "question_text": "Do you get to fly in helicopters or planes?"
+    },
+    "dandavis_A264_5_2": { "question_text": "Have you killed anyone?" },
+    "dandavis_A265_5_2": {
+      "question_text": "What is the most dangerous thing you've ever done on the job?"
+    },
+    "dandavis_A266_5_2": {
+      "question_text": "Is the military like it is in video games?"
+    },
+    "dandavis_A267_5_2": {
+      "question_text": "Can you use outside communication on a deployment, like using the internet and email, calling by phone, and writing mail?"
+    },
+    "dandavis_A268_5_2": {
+      "question_text": "Can you have a cell phone or laptop while in the military?"
+    },
+    "dandavis_A269_5_2": {
+      "question_text": "Can you drink alcohol when deployed?"
+    },
+    "dandavis_A26_1_1": {
+      "question_text": "What is the difference between an officer and an enlisted person?"
+    },
+    "dandavis_A270_5_2": {
+      "question_text": "If I did poorly in high school, can I join the military?"
+    },
+    "dandavis_A271_5_2": {
+      "question_text": "What Navy position makes the most money?"
+    },
+    "dandavis_A272_5_2": {
+      "question_text": "Describe an experience that illuminates (Navy) culture."
+    },
+    "dandavis_A273_5_2": {
+      "question_text": "When is breaking the rules okay?"
+    },
+    "dandavis_A274_5_2": {
+      "question_text": "Tell me about a time where your priorities conflicted with the priorities of your management."
+    },
+    "dandavis_A275_5_2": {
+      "question_text": "Describe the physical environments in which you've worked."
+    },
+    "dandavis_A276_5_2": {
+      "question_text": "What was the coolest thing you did in the Navy?"
+    },
+    "dandavis_A277_5_2": {
+      "question_text": "What advice do you have for spouses who don't understand the career demands of the Navy?"
+    },
+    "dandavis_A278_6_1": { "question_text": "When were you on active duty?" },
+    "dandavis_A279_6_1": {
+      "question_text": "How long have you been in the reserves?"
+    },
+    "dandavis_A27_1_1": { "question_text": "What does NCO stand for?" },
+    "dandavis_A280_6_1": {
+      "question_text": "What is the age limit to join the Navy?"
+    },
+    "dandavis_A281_6_1": {
+      "question_text": "Who was your best friend in the Navy?"
+    },
+    "dandavis_A282_6_1": { "question_text": "What are the reserves?" },
+    "dandavis_A283_6_1": {
+      "question_text": "Do you know anyone who died in the military?"
+    },
+    "dandavis_A284_6_1": {
+      "question_text": "What was your first position in the Navy?"
+    },
+    "dandavis_A285_6_1": {
+      "question_text": "Tell me about the cryptology project that you are most proud of."
+    },
+    "dandavis_A286_6_1": { "question_text": "What is a STEM career like?" },
+    "dandavis_A287_6_1": {
+      "question_text": "What are the different types of STEM that people can practice?"
+    },
+    "dandavis_A288_6_1": {
+      "question_text": "What are the different types of careers in cryptology?"
+    },
+    "dandavis_A289_6_1": {
+      "question_text": "What is the best career to go into?"
+    },
+    "dandavis_A28_1_1": {
+      "question_text": "Is the Navy a good place to have a career?"
+    },
+    "dandavis_A290_6_1": {
+      "question_text": "What excites you most about the future?"
+    },
+    "dandavis_A291_6_1": {
+      "question_text": "What is the most important thing I should learn from you?"
+    },
+    "dandavis_A292_6_1": { "question_text": "How does this project work?" },
+    "dandavis_A293_6_2": {
+      "question_text": "What is the best STEM field to go into?"
+    },
+    "dandavis_A294_6_2": {
+      "question_text": "What STEM field makes the most money?"
+    },
+    "dandavis_A295_6_2": {
+      "question_text": "Where should I go to find more information?"
+    },
+    "dandavis_A296_6_2": { "question_text": "Who should I talk to?" },
+    "dandavis_A297_6_2": {
+      "question_text": "How do you feel about becoming digital?"
+    },
+    "dandavis_A298_6_2": { "question_text": "What should I do now?" },
+    "dandavis_A299_6_2": {
+      "question_text": "What is your favorite thing to talk about?"
+    },
+    "dandavis_A29_1_1": {
+      "question_text": "Describe the work you do on a typical day."
+    },
+    "dandavis_A2_1_1": { "question_text": "What is your name?" },
+    "dandavis_A300_6_2": { "question_text": "What are you?" },
+    "dandavis_A301_6_2": { "question_text": "Are you human?" },
+    "dandavis_A302_6_2": { "question_text": "Are you there?" },
+    "dandavis_A303_6_2": { "question_text": "Are you real?" },
+    "dandavis_A304_6_2": { "question_text": "How can you help me?" },
+    "dandavis_A305_6_2": { "question_text": "What time is it?" },
+    "dandavis_A306_6_2": { "question_text": "Can you sing a song?" },
+    "dandavis_A307_6_2": { "question_text": "What am I doing right now?" },
+    "dandavis_A308_6_2": {
+      "question_text": "For what in your life do you feel most grateful?"
+    },
+    "dandavis_A309_6_3": {
+      "question_text": "What is the most important principle for academic success?"
+    },
+    "dandavis_A30_1_1": {
+      "question_text": "What are you doing now that you aren't active duty Navy?"
+    },
+    "dandavis_A310_6_3": {
+      "question_text": "Are there any military focused extracurricular activities for high school students?"
+    },
+    "dandavis_A311_6_3": {
+      "question_text": "Do you have any advice for high school students?"
+    },
+    "dandavis_A312_6_3": {
+      "question_text": "How do I get into a good college?"
+    },
+    "dandavis_A313_6_3": {
+      "question_text": "What did you get your undergraduate degree in?"
+    },
+    "dandavis_A314_6_3": {
+      "question_text": "What did you get your graduate degree in?"
+    },
+    "dandavis_A315_6_3": {
+      "question_text": "Why did you go to college and grad school?"
+    },
+    "dandavis_A316_6_3": {
+      "question_text": "Why should anyone go to grad school?"
+    },
+    "dandavis_A317_6_3": {
+      "question_text": "What's the difference between undergraduate and graduate school or education?"
+    },
+    "dandavis_A318_6_3": {
+      "question_text": "What was your favorite class in college?"
+    },
+    "dandavis_A319_6_3": { "question_text": "Did you work while in college?" },
+    "dandavis_A31_1_1": {
+      "question_text": "How much money do you earn working for the Navy?"
+    },
+    "dandavis_A320_6_3": {
+      "question_text": "Tell me about your education and college experience."
+    },
+    "dandavis_A321_6_3": {
+      "question_text": "What if I am not smart enough to succeed at a college?"
+    },
+    "dandavis_A322_6_3": {
+      "question_text": "Would you recommend studying abroad as a STEM major?"
+    },
+    "dandavis_A323_6_3": {
+      "question_text": "How is cryptology different outside of the US?"
+    },
+    "dandavis_A324_6_3": {
+      "question_text": "What do you give up to study cryptology?"
+    },
+    "dandavis_A325_6_3": {
+      "question_text": "Should I go to college before or after serving?"
+    },
+    "dandavis_A326_6_3": {
+      "question_text": "How is college different from the navy?"
+    },
+    "dandavis_A327_6_3": {
+      "question_text": "How do you balance going to school while being in the military?"
+    },
+    "dandavis_A328_6_3": {
+      "question_text": "What path would you recommend for someone who wants to go to college but also be in the military?"
+    },
+    "dandavis_A329_6_3": {
+      "question_text": "What is ROTC and why should I do it?"
+    },
+    "dandavis_A32_1_1": {
+      "question_text": "What was your salary progression throughout your Navy service?"
+    },
+    "dandavis_A330_6_3": { "question_text": "What does ROTC stand for?" },
+    "dandavis_A331_6_3": { "question_text": "What is A School?" },
+    "dandavis_A332_6_3": {
+      "question_text": "Tell me about Naval Post Graduate School."
+    },
+    "dandavis_A333_6_3": {
+      "question_text": "Where is the Naval Post Graduate School?"
+    },
+    "dandavis_A334_6_3": {
+      "question_text": "How can I talk to Navy sailors to see if I am interested?"
+    },
+    "dandavis_A335_6_3": {
+      "question_text": "How do you meet people in the Navy?"
+    },
+    "dandavis_A336_6_3": {
+      "question_text": "Have you ever worked with someone you didn't get along with? how do you handle it?"
+    },
+    "dandavis_A337_6_3": {
+      "question_text": "What types of questions can I ask you about?"
+    },
+    "dandavis_A338_6_3": { "question_text": "What do you do?" },
+    "dandavis_A339_6_3": {
+      "question_text": "What distracts you and how do you overcome it?"
+    },
+    "dandavis_A33_1_1": {
+      "question_text": "How many hours do you work in a typical day?"
+    },
+    "dandavis_A340_7_1": { "question_text": "What is a Cryptologist?" },
+    "dandavis_A341_7_1": {
+      "question_text": "Do all the services have this specialty?"
+    },
+    "dandavis_A342_7_1": { "question_text": "Is this work classified?" },
+    "dandavis_A343_7_1": { "question_text": "What is a security clearance?" },
+    "dandavis_A344_7_1": {
+      "question_text": "Does this job require a security clearance?"
+    },
+    "dandavis_A345_7_1": {
+      "question_text": "What is a linguist in the military?"
+    },
+    "dandavis_A346_7_1": {
+      "question_text": "What training do linguists get in the service?"
+    },
+    "dandavis_A347_7_1": {
+      "question_text": "How long does the training take?"
+    },
+    "dandavis_A348_7_1": {
+      "question_text": "How hard is the linguistic training?"
+    },
+    "dandavis_A349_7_1": {
+      "question_text": "What happens if a student can't learn the language?"
+    },
+    "dandavis_A34_1_1": {
+      "question_text": "What types of problems do you deal with on a daily basis?"
+    },
+    "dandavis_A350_7_1": {
+      "question_text": "What are the duties of a cryptologic linguist?"
+    },
+    "dandavis_A351_7_1": {
+      "question_text": "What are the other fields in cryptology?"
+    },
+    "dandavis_A352_7_1": {
+      "question_text": "Where in the world are cryptologists stationed?"
+    },
+    "dandavis_A353_7_1": {
+      "question_text": "What are their working conditions like?"
+    },
+    "dandavis_A354_7_1": {
+      "question_text": "Are there civilian jobs that do the same things?"
+    },
+    "dandavis_A355_7_1": {
+      "question_text": "Does specializing in Cryptology open a desirable set of civilian jobs?"
+    },
+    "dandavis_A356_7_1": {
+      "question_text": "Have Cryptographic capabilities made a difference in history?"
+    },
+    "dandavis_A357_7_1": {
+      "question_text": "Are there good books on this topic?"
+    },
+    "dandavis_A358_7_1": {
+      "question_text": "Do other service people think well of Cryptologists?"
+    },
+    "dandavis_A359_7_1": {
+      "question_text": "Has your experience in the service enhanced you civilian career?"
+    },
+    "dandavis_A35_1_1": {
+      "question_text": "What kind of issues are there with alcohol in the Navy?"
+    },
+    "dandavis_A360_7_1": {
+      "question_text": "What was a typical day like at your civilian work?"
+    },
+    "dandavis_A361_7_2": {
+      "question_text": "What would have made your job better?"
+    },
+    "dandavis_A362_7_2": {
+      "question_text": "Do you think there is a future in being in your particular civilian profession?"
+    },
+    "dandavis_A363_7_2": {
+      "question_text": "Can you compare working in industry to working in academia?"
+    },
+    "dandavis_A364_7_2": {
+      "question_text": "If researchers have good ideas, why don't they just resign from their employer and start a business to develop and sell their ideas?"
+    },
+    "dandavis_A36_1_1": {
+      "question_text": "How much did your friends impact where you ended up in your career?"
+    },
+    "dandavis_A37_1_2": {
+      "question_text": "Do you get to travel a lot during active duty?"
+    },
+    "dandavis_A38_1_2": {
+      "question_text": "What countries did you visit on Port Calls?"
+    },
+    "dandavis_A39_1_2": {
+      "question_text": "What types of uniforms do you wear?"
+    },
+    "dandavis_A3_1_1": { "question_text": "What year were you born?" },
+    "dandavis_A40_1_2": {
+      "question_text": "Did you like wearing the same uniform?"
+    },
+    "dandavis_A41_1_2": {
+      "question_text": "What are the major benefits of doing this kind of work?"
+    },
+    "dandavis_A42_1_2": {
+      "question_text": "What are the major negatives of doing this kind of work?"
+    },
+    "dandavis_A43_1_2": {
+      "question_text": "What is one thing you would change about your career?"
+    },
+    "dandavis_A44_1_2": {
+      "question_text": "What do most people do after leaving active duty?"
+    },
+    "dandavis_A45_1_2": { "question_text": "Was joining the Navy worth it?" },
+    "dandavis_A46_1_2": {
+      "question_text": "If you could do it all over, would you choose this career again?"
+    },
+    "dandavis_A47_1_2": {
+      "question_text": "What are the main things that new military members must learn and adjust to?"
+    },
+    "dandavis_A48_1_3": { "question_text": "Do you miss being in the Navy?" },
+    "dandavis_A49_1_3": {
+      "question_text": "How much of your private time is spent doing your job?"
+    },
+    "dandavis_A4_1_1": { "question_text": "How old are you now?" },
+    "dandavis_A50_1_3": {
+      "question_text": "What did you give up for the Navy?"
+    },
+    "dandavis_A51_1_3": {
+      "question_text": "How many Navy members have high stress symptoms?"
+    },
+    "dandavis_A52_1_3": {
+      "question_text": "What happens if you get into trouble in the Navy?"
+    },
+    "dandavis_A53_1_3": {
+      "question_text": "What happens if I don't like this line of work?"
+    },
+    "dandavis_A54_1_3": {
+      "question_text": "What opportunities do you have to change career field?"
+    },
+    "dandavis_A55_1_3": {
+      "question_text": "Can you change branches? Can you switch to the Army or Air Force?"
+    },
+    "dandavis_A56_1_3": {
+      "question_text": "Is it possible to quit the military? (Either deployment, or the service?)"
+    },
+    "dandavis_A57_1_3": {
+      "question_text": "How stable is employment in the Navy?"
+    },
+    "dandavis_A58_1_3": {
+      "question_text": "How much turnover is there in the Navy?"
+    },
+    "dandavis_A59_1_3": {
+      "question_text": "Do you speak any other languages?"
+    },
+    "dandavis_A5_1_1": { "question_text": "When is your birthday?" },
+    "dandavis_A60_1_3": {
+      "question_text": "Describe a particular technical issue you've had to solve on the job."
+    },
+    "dandavis_A61_1_3": {
+      "question_text": "How much of your time is spent with people versus with technology?"
+    },
+    "dandavis_A62_1_3": {
+      "question_text": "How much do you understand the overall goals of what you are doing?"
+    },
+    "dandavis_A63_2_1": { "question_text": "What's up?" },
+    "dandavis_A64_2_1": { "question_text": "How is the weather?" },
+    "dandavis_A65_2_1": { "question_text": "How are you?" },
+    "dandavis_A66_2_1": { "question_text": "What are your hobbies?" },
+    "dandavis_A67_2_1": { "question_text": "What does \"in port\" mean?" },
+    "dandavis_A68_2_1": { "question_text": "What is a rate?" },
+    "dandavis_A69_2_1": {
+      "question_text": "What was your first position in the Navy?"
+    },
+    "dandavis_A6_1_1": { "question_text": "Where did you grow up?" },
+    "dandavis_A70_2_1": {
+      "question_text": "Are you currently serving in the military?"
+    },
+    "dandavis_A71_2_1": {
+      "question_text": "What deployments have you been on?"
+    },
+    "dandavis_A72_2_1": { "question_text": "What was 9-11 like for you?" },
+    "dandavis_A73_2_1": { "question_text": "Why do you love your job?" },
+    "dandavis_A74_2_1": {
+      "question_text": "What benefits does the Navy give you?"
+    },
+    "dandavis_A75_2_1": {
+      "question_text": "What gets romanticized about your career field that really isn't that great?"
+    },
+    "dandavis_A76_2_1": {
+      "question_text": "What are some of the common misconceptions about the Navy?"
+    },
+    "dandavis_A77_2_1": {
+      "question_text": "What makes the navy different than other branches of the military?"
+    },
+    "dandavis_A78_2_1": {
+      "question_text": "What branch of the military should I go into?"
+    },
+    "dandavis_A79_2_1": {
+      "question_text": "What are some of the common misconceptions about (your STEM\ufffd field)?"
+    },
+    "dandavis_A7_1_1": { "question_text": "Tell me about your childhood." },
+    "dandavis_A80_2_1": {
+      "question_text": "How has work day changed over your career?"
+    },
+    "dandavis_A81_2_1": {
+      "question_text": "Where did you have to move in your career, and how did that change things each time?"
+    },
+    "dandavis_A82_2_1": {
+      "question_text": "What do you find unique about the military?"
+    },
+    "dandavis_A83_2_1": {
+      "question_text": "What do you find unique about(your STEM field)?"
+    },
+    "dandavis_A84_2_1": {
+      "question_text": "Are great practitioners in (your STEM field) made or born? Can anyone be great at it?"
+    },
+    "dandavis_A85_2_1": {
+      "question_text": "What priorities would you recommend for a person entering this field?"
+    },
+    "dandavis_A86_2_1": {
+      "question_text": "How fair are the expectations of you as an employee?"
+    },
+    "dandavis_A87_2_1": {
+      "question_text": "How accepting of failure is this work?"
+    },
+    "dandavis_A88_2_1": {
+      "question_text": "What range of tasks and opportunities does this field present to allow me to grow?"
+    },
+    "dandavis_A89_2_1": {
+      "question_text": "Describe the technological environment in which you've worked."
+    },
+    "dandavis_A8_1_1": {
+      "question_text": "Tell me about your family growing up."
+    },
+    "dandavis_A90_2_1": {
+      "question_text": "What organizations were most helpful to you in your career?"
+    },
+    "dandavis_A91_2_1": {
+      "question_text": "What kind of risks do you need to take in this field?"
+    },
+    "dandavis_A92_2_1": {
+      "question_text": "How can your work change the world?"
+    },
+    "dandavis_A93_2_1": {
+      "question_text": "What lifestyle changes does being in the Navy involve?"
+    },
+    "dandavis_A94_2_2": {
+      "question_text": "What is your favorite book of all time? Why?"
+    },
+    "dandavis_A95_2_2": {
+      "question_text": "If you could meet anyone in the world today, who would it be and why? What would you say to that person?"
+    },
+    "dandavis_A96_2_2": {
+      "question_text": "What kind of personal satisfaction do you get from your job?"
+    },
+    "dandavis_A97_2_2": {
+      "question_text": "What qualifications and experience do recruiters look for when choosing new people for this field?"
+    },
+    "dandavis_A98_2_2": {
+      "question_text": "What do you see as the major problems for those working in this field today?"
+    },
+    "dandavis_A99_2_2": {
+      "question_text": "What person do you most admire and why?"
+    },
+    "dandavis_A9_1_1": { "question_text": "Do you have your own family?" }
+  },
+  "short_name": "Dan",
+  "title": "High Performance Computing Researcher",
+  "topics_by_id": {
+    "about_me": {
+      "name": "About Me",
+      "questions": [
+        "dandavis_A101_2_2",
+        "dandavis_A10_1_1",
+        "dandavis_A113_2_2",
+        "dandavis_A114_2_2",
+        "dandavis_A116_2_3",
+        "dandavis_A119_3_1",
+        "dandavis_A11_1_1",
+        "dandavis_A120_3_1",
+        "dandavis_A121_3_1",
+        "dandavis_A122_3_1",
+        "dandavis_A123_3_1",
+        "dandavis_A124_3_1",
+        "dandavis_A125_3_1",
+        "dandavis_A126_3_1",
+        "dandavis_A127_3_1",
+        "dandavis_A128_3_1",
+        "dandavis_A129_3_1",
+        "dandavis_A12_1_1",
+        "dandavis_A132_3_1",
+        "dandavis_A133_3_1",
+        "dandavis_A13_1_1",
+        "dandavis_A145_3_2",
+        "dandavis_A14_1_1",
+        "dandavis_A15_1_1",
+        "dandavis_A162_3_2",
+        "dandavis_A164_3_2",
+        "dandavis_A165_3_2",
+        "dandavis_A173_4_1",
+        "dandavis_A17_1_1",
+        "dandavis_A183_4_1",
+        "dandavis_A18_1_1",
+        "dandavis_A199_4_2",
+        "dandavis_A19_1_1",
+        "dandavis_A1_1_1",
+        "dandavis_A200_4_2",
+        "dandavis_A201_4_2",
+        "dandavis_A202_4_2",
+        "dandavis_A203_4_2",
+        "dandavis_A204_4_2",
+        "dandavis_A205_4_3",
+        "dandavis_A206_4_3",
+        "dandavis_A20_1_1",
+        "dandavis_A211_4_3",
+        "dandavis_A21_1_1",
+        "dandavis_A229_5_1",
+        "dandavis_A22_1_1",
+        "dandavis_A233_5_1",
+        "dandavis_A242_5_1",
+        "dandavis_A243_5_1",
+        "dandavis_A24_1_1",
+        "dandavis_A25_1_1",
+        "dandavis_A278_6_1",
+        "dandavis_A279_6_1",
+        "dandavis_A284_6_1",
+        "dandavis_A285_6_1",
+        "dandavis_A28_1_1",
+        "dandavis_A292_6_1",
+        "dandavis_A2_1_1",
+        "dandavis_A30_1_1",
+        "dandavis_A313_6_3",
+        "dandavis_A314_6_3",
+        "dandavis_A315_6_3",
+        "dandavis_A319_6_3",
+        "dandavis_A320_6_3",
+        "dandavis_A323_6_3",
+        "dandavis_A338_6_3",
+        "dandavis_A3_1_1",
+        "dandavis_A4_1_1",
+        "dandavis_A59_1_3",
+        "dandavis_A5_1_1",
+        "dandavis_A66_2_1",
+        "dandavis_A69_2_1",
+        "dandavis_A6_1_1",
+        "dandavis_A70_2_1",
+        "dandavis_A71_2_1",
+        "dandavis_A72_2_1",
+        "dandavis_A74_2_1",
+        "dandavis_A7_1_1",
+        "dandavis_A81_2_1",
+        "dandavis_A8_1_1",
+        "dandavis_A94_2_2",
+        "dandavis_A9_1_1"
+      ]
+    },
+    "about_the_job": {
+      "name": "About the Job",
+      "questions": [
+        "dandavis_A101_2_2",
+        "dandavis_A102_2_2",
+        "dandavis_A108_2_2",
+        "dandavis_A110_2_2",
+        "dandavis_A112_2_2",
+        "dandavis_A117_3_1",
+        "dandavis_A118_3_1",
+        "dandavis_A119_3_1",
+        "dandavis_A120_3_1",
+        "dandavis_A121_3_1",
+        "dandavis_A130_3_1",
+        "dandavis_A131_3_1",
+        "dandavis_A133_3_1",
+        "dandavis_A134_3_1",
+        "dandavis_A135_3_1",
+        "dandavis_A136_3_1",
+        "dandavis_A137_3_1",
+        "dandavis_A138_3_1",
+        "dandavis_A139_3_2",
+        "dandavis_A140_3_2",
+        "dandavis_A141_3_2",
+        "dandavis_A142_3_2",
+        "dandavis_A143_3_2",
+        "dandavis_A144_3_2",
+        "dandavis_A146_3_2",
+        "dandavis_A147_3_2",
+        "dandavis_A148_3_2",
+        "dandavis_A149_3_2",
+        "dandavis_A150_3_2",
+        "dandavis_A151_3_2",
+        "dandavis_A152_3_2",
+        "dandavis_A153_3_2",
+        "dandavis_A154_3_2",
+        "dandavis_A155_3_2",
+        "dandavis_A156_3_2",
+        "dandavis_A158_3_2",
+        "dandavis_A159_3_2",
+        "dandavis_A160_3_2",
+        "dandavis_A161_3_2",
+        "dandavis_A167_4_1",
+        "dandavis_A168_4_1",
+        "dandavis_A169_4_1",
+        "dandavis_A170_4_1",
+        "dandavis_A171_4_1",
+        "dandavis_A172_4_1",
+        "dandavis_A174_4_1",
+        "dandavis_A175_4_1",
+        "dandavis_A177_4_1",
+        "dandavis_A178_4_1",
+        "dandavis_A179_4_1",
+        "dandavis_A180_4_1",
+        "dandavis_A182_4_1",
+        "dandavis_A183_4_1",
+        "dandavis_A184_4_1",
+        "dandavis_A185_4_1",
+        "dandavis_A186_4_1",
+        "dandavis_A187_4_1",
+        "dandavis_A189_4_1",
+        "dandavis_A190_4_1",
+        "dandavis_A191_4_1",
+        "dandavis_A192_4_1",
+        "dandavis_A193_4_1",
+        "dandavis_A194_4_1",
+        "dandavis_A195_4_1",
+        "dandavis_A196_4_1",
+        "dandavis_A197_4_1",
+        "dandavis_A200_4_2",
+        "dandavis_A201_4_2",
+        "dandavis_A212_4_3",
+        "dandavis_A213_4_3",
+        "dandavis_A214_4_3",
+        "dandavis_A215_4_3",
+        "dandavis_A219_4_3",
+        "dandavis_A221_4_3",
+        "dandavis_A222_4_3",
+        "dandavis_A223_4_3",
+        "dandavis_A224_4_3",
+        "dandavis_A225_4_3",
+        "dandavis_A226_5_1",
+        "dandavis_A228_5_1",
+        "dandavis_A230_5_1",
+        "dandavis_A231_5_1",
+        "dandavis_A232_5_1",
+        "dandavis_A233_5_1",
+        "dandavis_A234_5_1",
+        "dandavis_A236_5_1",
+        "dandavis_A239_5_1",
+        "dandavis_A241_5_1",
+        "dandavis_A243_5_1",
+        "dandavis_A244_5_1",
+        "dandavis_A250_5_2",
+        "dandavis_A252_5_2",
+        "dandavis_A253_5_2",
+        "dandavis_A254_5_2",
+        "dandavis_A257_5_2",
+        "dandavis_A258_5_2",
+        "dandavis_A259_5_2",
+        "dandavis_A260_5_2",
+        "dandavis_A261_5_2",
+        "dandavis_A262_5_2",
+        "dandavis_A263_5_2",
+        "dandavis_A264_5_2",
+        "dandavis_A266_5_2",
+        "dandavis_A267_5_2",
+        "dandavis_A268_5_2",
+        "dandavis_A269_5_2",
+        "dandavis_A270_5_2",
+        "dandavis_A271_5_2",
+        "dandavis_A272_5_2",
+        "dandavis_A275_5_2",
+        "dandavis_A276_5_2",
+        "dandavis_A277_5_2",
+        "dandavis_A278_6_1",
+        "dandavis_A279_6_1",
+        "dandavis_A280_6_1",
+        "dandavis_A281_6_1",
+        "dandavis_A282_6_1",
+        "dandavis_A283_6_1",
+        "dandavis_A284_6_1",
+        "dandavis_A285_6_1",
+        "dandavis_A286_6_1",
+        "dandavis_A287_6_1",
+        "dandavis_A288_6_1",
+        "dandavis_A289_6_1",
+        "dandavis_A290_6_1",
+        "dandavis_A293_6_2",
+        "dandavis_A294_6_2",
+        "dandavis_A29_1_1",
+        "dandavis_A308_6_2",
+        "dandavis_A310_6_3",
+        "dandavis_A313_6_3",
+        "dandavis_A314_6_3",
+        "dandavis_A315_6_3",
+        "dandavis_A316_6_3",
+        "dandavis_A322_6_3",
+        "dandavis_A324_6_3",
+        "dandavis_A326_6_3",
+        "dandavis_A327_6_3",
+        "dandavis_A328_6_3",
+        "dandavis_A329_6_3",
+        "dandavis_A330_6_3",
+        "dandavis_A331_6_3",
+        "dandavis_A332_6_3",
+        "dandavis_A333_6_3",
+        "dandavis_A334_6_3",
+        "dandavis_A335_6_3",
+        "dandavis_A336_6_3",
+        "dandavis_A33_1_1",
+        "dandavis_A340_7_1",
+        "dandavis_A341_7_1",
+        "dandavis_A342_7_1",
+        "dandavis_A343_7_1",
+        "dandavis_A344_7_1",
+        "dandavis_A345_7_1",
+        "dandavis_A346_7_1",
+        "dandavis_A347_7_1",
+        "dandavis_A348_7_1",
+        "dandavis_A349_7_1",
+        "dandavis_A34_1_1",
+        "dandavis_A350_7_1",
+        "dandavis_A351_7_1",
+        "dandavis_A352_7_1",
+        "dandavis_A353_7_1",
+        "dandavis_A354_7_1",
+        "dandavis_A355_7_1",
+        "dandavis_A356_7_1",
+        "dandavis_A357_7_1",
+        "dandavis_A358_7_1",
+        "dandavis_A359_7_1",
+        "dandavis_A360_7_1",
+        "dandavis_A361_7_2",
+        "dandavis_A362_7_2",
+        "dandavis_A363_7_2",
+        "dandavis_A364_7_2",
+        "dandavis_A37_1_2",
+        "dandavis_A38_1_2",
+        "dandavis_A39_1_2",
+        "dandavis_A41_1_2",
+        "dandavis_A42_1_2",
+        "dandavis_A43_1_2",
+        "dandavis_A45_1_2",
+        "dandavis_A46_1_2",
+        "dandavis_A47_1_2",
+        "dandavis_A48_1_3",
+        "dandavis_A49_1_3",
+        "dandavis_A50_1_3",
+        "dandavis_A53_1_3",
+        "dandavis_A54_1_3",
+        "dandavis_A55_1_3",
+        "dandavis_A56_1_3",
+        "dandavis_A57_1_3",
+        "dandavis_A58_1_3",
+        "dandavis_A60_1_3",
+        "dandavis_A61_1_3",
+        "dandavis_A62_1_3",
+        "dandavis_A69_2_1",
+        "dandavis_A71_2_1",
+        "dandavis_A73_2_1",
+        "dandavis_A74_2_1",
+        "dandavis_A75_2_1",
+        "dandavis_A76_2_1",
+        "dandavis_A78_2_1",
+        "dandavis_A79_2_1",
+        "dandavis_A80_2_1",
+        "dandavis_A81_2_1",
+        "dandavis_A82_2_1",
+        "dandavis_A83_2_1",
+        "dandavis_A84_2_1",
+        "dandavis_A85_2_1",
+        "dandavis_A86_2_1",
+        "dandavis_A87_2_1",
+        "dandavis_A88_2_1",
+        "dandavis_A89_2_1",
+        "dandavis_A91_2_1",
+        "dandavis_A92_2_1",
+        "dandavis_A96_2_2",
+        "dandavis_A97_2_2",
+        "dandavis_A98_2_2",
+        "dandavis_A99_2_2"
+      ]
+    },
+    "challenges": {
+      "name": "Challenges",
+      "questions": [
+        "dandavis_A103_2_2",
+        "dandavis_A104_2_2",
+        "dandavis_A105_2_2",
+        "dandavis_A106_2_2",
+        "dandavis_A111_2_2",
+        "dandavis_A115_2_2",
+        "dandavis_A117_3_1",
+        "dandavis_A118_3_1",
+        "dandavis_A135_3_1",
+        "dandavis_A189_4_1",
+        "dandavis_A192_4_1",
+        "dandavis_A198_4_2",
+        "dandavis_A19_1_1",
+        "dandavis_A202_4_2",
+        "dandavis_A204_4_2",
+        "dandavis_A205_4_3",
+        "dandavis_A20_1_1",
+        "dandavis_A210_4_3",
+        "dandavis_A21_1_1",
+        "dandavis_A221_4_3",
+        "dandavis_A223_4_3",
+        "dandavis_A225_4_3",
+        "dandavis_A226_5_1",
+        "dandavis_A227_5_1",
+        "dandavis_A232_5_1",
+        "dandavis_A237_5_1",
+        "dandavis_A256_5_2",
+        "dandavis_A264_5_2",
+        "dandavis_A265_5_2",
+        "dandavis_A266_5_2",
+        "dandavis_A273_5_2",
+        "dandavis_A281_6_1",
+        "dandavis_A283_6_1",
+        "dandavis_A319_6_3",
+        "dandavis_A324_6_3",
+        "dandavis_A336_6_3",
+        "dandavis_A339_6_3",
+        "dandavis_A50_1_3",
+        "dandavis_A51_1_3",
+        "dandavis_A52_1_3",
+        "dandavis_A87_2_1",
+        "dandavis_A91_2_1",
+        "dandavis_A98_2_2"
+      ]
+    },
+    "learning_more": {
+      "name": "Learning More",
+      "questions": [
+        "dandavis_A108_2_2",
+        "dandavis_A112_2_2",
+        "dandavis_A115_2_2",
+        "dandavis_A139_3_2",
+        "dandavis_A157_3_2",
+        "dandavis_A158_3_2",
+        "dandavis_A181_4_1",
+        "dandavis_A193_4_1",
+        "dandavis_A199_4_2",
+        "dandavis_A200_4_2",
+        "dandavis_A201_4_2",
+        "dandavis_A207_4_3",
+        "dandavis_A208_4_3",
+        "dandavis_A209_4_3",
+        "dandavis_A213_4_3",
+        "dandavis_A214_4_3",
+        "dandavis_A215_4_3",
+        "dandavis_A216_4_3",
+        "dandavis_A217_4_3",
+        "dandavis_A231_5_1",
+        "dandavis_A289_6_1",
+        "dandavis_A290_6_1",
+        "dandavis_A295_6_2",
+        "dandavis_A296_6_2",
+        "dandavis_A298_6_2",
+        "dandavis_A44_1_2"
+      ]
+    },
+    "lifestyle": {
+      "name": "Lifestyle",
+      "questions": [
+        "dandavis_A130_3_1",
+        "dandavis_A131_3_1",
+        "dandavis_A136_3_1",
+        "dandavis_A137_3_1",
+        "dandavis_A138_3_1",
+        "dandavis_A147_3_2",
+        "dandavis_A150_3_2",
+        "dandavis_A155_3_2",
+        "dandavis_A156_3_2",
+        "dandavis_A157_3_2",
+        "dandavis_A160_3_2",
+        "dandavis_A161_3_2",
+        "dandavis_A165_3_2",
+        "dandavis_A167_4_1",
+        "dandavis_A172_4_1",
+        "dandavis_A174_4_1",
+        "dandavis_A176_4_1",
+        "dandavis_A180_4_1",
+        "dandavis_A182_4_1",
+        "dandavis_A184_4_1",
+        "dandavis_A185_4_1",
+        "dandavis_A188_4_1",
+        "dandavis_A193_4_1",
+        "dandavis_A197_4_1",
+        "dandavis_A203_4_2",
+        "dandavis_A210_4_3",
+        "dandavis_A222_4_3",
+        "dandavis_A228_5_1",
+        "dandavis_A238_5_1",
+        "dandavis_A244_5_1",
+        "dandavis_A245_5_1",
+        "dandavis_A246_5_1",
+        "dandavis_A247_5_1",
+        "dandavis_A251_5_2",
+        "dandavis_A252_5_2",
+        "dandavis_A255_5_2",
+        "dandavis_A256_5_2",
+        "dandavis_A257_5_2",
+        "dandavis_A259_5_2",
+        "dandavis_A260_5_2",
+        "dandavis_A262_5_2",
+        "dandavis_A267_5_2",
+        "dandavis_A268_5_2",
+        "dandavis_A269_5_2",
+        "dandavis_A271_5_2",
+        "dandavis_A277_5_2",
+        "dandavis_A286_6_1",
+        "dandavis_A291_6_1",
+        "dandavis_A294_6_2",
+        "dandavis_A308_6_2",
+        "dandavis_A309_6_3",
+        "dandavis_A30_1_1",
+        "dandavis_A319_6_3",
+        "dandavis_A31_1_1",
+        "dandavis_A320_6_3",
+        "dandavis_A325_6_3",
+        "dandavis_A326_6_3",
+        "dandavis_A32_1_1",
+        "dandavis_A331_6_3",
+        "dandavis_A335_6_3",
+        "dandavis_A340_7_1",
+        "dandavis_A341_7_1",
+        "dandavis_A35_1_1",
+        "dandavis_A360_7_1",
+        "dandavis_A36_1_1",
+        "dandavis_A39_1_2",
+        "dandavis_A40_1_2",
+        "dandavis_A49_1_3",
+        "dandavis_A57_1_3",
+        "dandavis_A84_2_1",
+        "dandavis_A88_2_1",
+        "dandavis_A92_2_1",
+        "dandavis_A93_2_1"
+      ]
+    },
+    "other": {
+      "name": "Other",
+      "questions": [
+        "dandavis_A100_2_2",
+        "dandavis_A131_3_1",
+        "dandavis_A16_1_1",
+        "dandavis_A263_5_2",
+        "dandavis_A26_1_1",
+        "dandavis_A27_1_1",
+        "dandavis_A282_6_1",
+        "dandavis_A297_6_2",
+        "dandavis_A299_6_2",
+        "dandavis_A300_6_2",
+        "dandavis_A301_6_2",
+        "dandavis_A302_6_2",
+        "dandavis_A303_6_2",
+        "dandavis_A304_6_2",
+        "dandavis_A305_6_2",
+        "dandavis_A306_6_2",
+        "dandavis_A307_6_2",
+        "dandavis_A330_6_3",
+        "dandavis_A337_6_3",
+        "dandavis_A340_7_1",
+        "dandavis_A343_7_1",
+        "dandavis_A345_7_1",
+        "dandavis_A356_7_1",
+        "dandavis_A38_1_2",
+        "dandavis_A63_2_1",
+        "dandavis_A64_2_1",
+        "dandavis_A65_2_1",
+        "dandavis_A66_2_1",
+        "dandavis_A67_2_1",
+        "dandavis_A68_2_1",
+        "dandavis_A95_2_2",
+        "dandavis_A99_2_2"
+      ]
+    },
+    "what_does_it_take_": {
+      "name": "What Does it Take?",
+      "questions": [
+        "dandavis_A103_2_2",
+        "dandavis_A104_2_2",
+        "dandavis_A105_2_2",
+        "dandavis_A106_2_2",
+        "dandavis_A107_2_2",
+        "dandavis_A108_2_2",
+        "dandavis_A109_2_2",
+        "dandavis_A110_2_2",
+        "dandavis_A111_2_2",
+        "dandavis_A112_2_2",
+        "dandavis_A113_2_2",
+        "dandavis_A114_2_2",
+        "dandavis_A115_2_2",
+        "dandavis_A140_3_2",
+        "dandavis_A141_3_2",
+        "dandavis_A146_3_2",
+        "dandavis_A151_3_2",
+        "dandavis_A155_3_2",
+        "dandavis_A156_3_2",
+        "dandavis_A158_3_2",
+        "dandavis_A161_3_2",
+        "dandavis_A163_3_2",
+        "dandavis_A164_3_2",
+        "dandavis_A165_3_2",
+        "dandavis_A166_3_2",
+        "dandavis_A177_4_1",
+        "dandavis_A181_4_1",
+        "dandavis_A187_4_1",
+        "dandavis_A188_4_1",
+        "dandavis_A190_4_1",
+        "dandavis_A191_4_1",
+        "dandavis_A197_4_1",
+        "dandavis_A209_4_3",
+        "dandavis_A210_4_3",
+        "dandavis_A217_4_3",
+        "dandavis_A218_4_3",
+        "dandavis_A219_4_3",
+        "dandavis_A220_4_3",
+        "dandavis_A223_4_3",
+        "dandavis_A227_5_1",
+        "dandavis_A230_5_1",
+        "dandavis_A231_5_1",
+        "dandavis_A233_5_1",
+        "dandavis_A234_5_1",
+        "dandavis_A235_5_1",
+        "dandavis_A236_5_1",
+        "dandavis_A237_5_1",
+        "dandavis_A238_5_1",
+        "dandavis_A239_5_1",
+        "dandavis_A23_1_1",
+        "dandavis_A240_5_1",
+        "dandavis_A241_5_1",
+        "dandavis_A242_5_1",
+        "dandavis_A243_5_1",
+        "dandavis_A244_5_1",
+        "dandavis_A245_5_1",
+        "dandavis_A246_5_1",
+        "dandavis_A247_5_1",
+        "dandavis_A248_5_2",
+        "dandavis_A249_5_2",
+        "dandavis_A250_5_2",
+        "dandavis_A251_5_2",
+        "dandavis_A252_5_2",
+        "dandavis_A253_5_2",
+        "dandavis_A254_5_2",
+        "dandavis_A255_5_2",
+        "dandavis_A256_5_2",
+        "dandavis_A257_5_2",
+        "dandavis_A270_5_2",
+        "dandavis_A273_5_2",
+        "dandavis_A274_5_2",
+        "dandavis_A277_5_2",
+        "dandavis_A289_6_1",
+        "dandavis_A291_6_1",
+        "dandavis_A293_6_2",
+        "dandavis_A298_6_2",
+        "dandavis_A309_6_3",
+        "dandavis_A310_6_3",
+        "dandavis_A311_6_3",
+        "dandavis_A312_6_3",
+        "dandavis_A313_6_3",
+        "dandavis_A314_6_3",
+        "dandavis_A315_6_3",
+        "dandavis_A316_6_3",
+        "dandavis_A317_6_3",
+        "dandavis_A318_6_3",
+        "dandavis_A319_6_3",
+        "dandavis_A320_6_3",
+        "dandavis_A321_6_3",
+        "dandavis_A322_6_3",
+        "dandavis_A325_6_3",
+        "dandavis_A326_6_3",
+        "dandavis_A327_6_3",
+        "dandavis_A328_6_3",
+        "dandavis_A329_6_3",
+        "dandavis_A330_6_3",
+        "dandavis_A331_6_3",
+        "dandavis_A332_6_3",
+        "dandavis_A333_6_3",
+        "dandavis_A334_6_3",
+        "dandavis_A339_6_3",
+        "dandavis_A346_7_1",
+        "dandavis_A347_7_1",
+        "dandavis_A348_7_1",
+        "dandavis_A47_1_2",
+        "dandavis_A78_2_1",
+        "dandavis_A84_2_1",
+        "dandavis_A85_2_1",
+        "dandavis_A97_2_2"
+      ]
+    },
+    "who_does_it_": {
+      "name": "Who Does it?",
+      "questions": [
+        "dandavis_A133_3_1",
+        "dandavis_A135_3_1",
+        "dandavis_A143_3_2",
+        "dandavis_A144_3_2",
+        "dandavis_A148_3_2",
+        "dandavis_A152_3_2",
+        "dandavis_A153_3_2",
+        "dandavis_A154_3_2",
+        "dandavis_A159_3_2",
+        "dandavis_A163_3_2",
+        "dandavis_A166_3_2",
+        "dandavis_A182_4_1",
+        "dandavis_A186_4_1",
+        "dandavis_A187_4_1",
+        "dandavis_A188_4_1",
+        "dandavis_A196_4_1",
+        "dandavis_A211_4_3",
+        "dandavis_A248_5_2",
+        "dandavis_A269_5_2",
+        "dandavis_A272_5_2",
+        "dandavis_A274_5_2",
+        "dandavis_A276_5_2",
+        "dandavis_A281_6_1",
+        "dandavis_A326_6_3",
+        "dandavis_A335_6_3",
+        "dandavis_A336_6_3",
+        "dandavis_A339_6_3",
+        "dandavis_A352_7_1",
+        "dandavis_A353_7_1",
+        "dandavis_A358_7_1",
+        "dandavis_A35_1_1",
+        "dandavis_A36_1_1",
+        "dandavis_A39_1_2",
+        "dandavis_A47_1_2",
+        "dandavis_A77_2_1",
+        "dandavis_A78_2_1",
+        "dandavis_A85_2_1",
+        "dandavis_A86_2_1",
+        "dandavis_A90_2_1"
+      ]
+    }
+  },
+  "utterances_by_type": {
+    "_FEEDBACK_": [
+      [
+        "dandavis_U3_2_3",
+        "I don't have enough information to talk about that."
+      ],
+      [
+        "dandavis_U4_2_3",
+        "I don't have enough information to talk about that."
+      ],
+      ["dandavis_U5_2_3", "I do not have an answer for that."],
+      [
+        "dandavis_U20_5_1",
+        "This changes pretty quickly, so what I'd tell you today might not be true tomorrow. I would recommend talking to someone local who might know more."
+      ],
+      ["dandavis_U41_6_3", "I hope so"]
+    ],
+    "_IDLE_": [["idle", ""]],
+    "_INTRO_": [
+      [
+        "dandavis_U1_1_1",
+        "Hello I'm Dan Davis and retired to commander in the United States Navy grew up in Colorado and got my degrees from the university of Colorado in quantitative psychology that is working with computers and psychological field and a degree in law"
+      ],
+      [
+        "dandavis_U2_1_1",
+        "I am a retired commander in the United States Navy, I served for 25 years in the Naval Services in cryptological area. I went to the University of Colorado where I got a degree in quantitative psychology where I first wrote Fortran four programs on one of Seymour Cray\ufffds high performance computers. After Law School, I practiced Law for a few years, but I have spend most of my career working for Universities doing high performance computing research. I have worked for Cal-Tech, University of Southern California, and the University of Hawaii. I think that during that time I noticed probably 50% of the people I met were not happy in their careers and their career choice. So I would like to answer questions from you about what might help you with the right career choice."
+      ]
+    ],
+    "_OFF_TOPIC_": [
+      [
+        "dandavis_U6_2_3",
+        "That is a great question, unfortunately I never recorded an answer to that."
+      ],
+      [
+        "dandavis_U7_2_3",
+        "That is an interesting question, but I am here to talk about STEM careers in the Navy. "
+      ],
+      ["dandavis_U8_2_3", "Unfortunately I was never asked that question"],
+      ["dandavis_U9_2_3", "You might have to ask me something else."],
+      [
+        "dandavis_U35_6_2",
+        "That's a great question. Unfortunately, I don't have an answer for that right now."
+      ],
+      ["dandavis_U36_6_2", "I'm not sure I have an answer for that question."],
+      ["dandavis_U37_6_2", "I don't really have an opinion on that."],
+      ["dandavis_U38_6_3", "I see you didn't ask anything there."],
+      ["dandavis_U39_6_3", "You've got to ask me something to get a response."]
+    ],
+    "_PROFANITY_": [
+      [
+        "dandavis_U40_6_3",
+        "No matter what you heard about having a mouth like a sailor, it will actually hurt your career."
+      ]
+    ],
+    "_PROMPT_": [
+      ["dandavis_U10_2_3", "What do you want to talk about? "],
+      ["dandavis_U11_2_3", "What would you like to ask me? "],
+      ["dandavis_U12_2_3", "What do you want to know?"],
+      ["dandavis_U13_5_1", "What do you want to know about me?"],
+      ["dandavis_U14_5_1", "What do you want to know about STEM in the Navy?"],
+      ["dandavis_U15_5_1", "You could ask me about my education."],
+      ["dandavis_U16_5_1", "You could ask me about my job in the Navy."],
+      ["dandavis_U17_5_1", "You could ask me about my background. "],
+      [
+        "dandavis_U18_5_1",
+        "Go ahead, ask me who gave me the best advice about my career."
+      ],
+      [
+        "dandavis_U21_5_1",
+        "I did a lot of technical training in the Navy, so you can ask me about what skills I learned."
+      ],
+      [
+        "dandavis_U22_5_1",
+        "You can ask me about the travelling that I did in the Navy."
+      ],
+      [
+        "dandavis_U23_5_1",
+        "I've made a lot of mistakes in my life, so you can ask me about any of the failures that I've had."
+      ],
+      [
+        "dandavis_U24_5_1",
+        "I've had a lot of mistakes in my life, and I've learned a lot from them. You can ask about anything and I'll try to be as honest as I can."
+      ],
+      [
+        "dandavis_U25_5_1",
+        "I spent four years on active duty in the Marine Corps and I've been in the reserves ever since then, although I transferred from the Corps into the Navy about the time I got my commission. Now, I work for the University of Southern California as a research administer, you can ask me about any of those jobs. "
+      ],
+      [
+        "dandavis_U26_5_2",
+        "I worked on ____ in the Navy, but it is different every day. So you can ask about what I did as a ____."
+      ],
+      [
+        "dandavis_U27_5_2",
+        "When you work for the Navy as long as I did, you get to have lots of stories. Some of them are funny, some of them are interestings, feel free to ask about any of them."
+      ],
+      [
+        "dandavis_U28_5_2",
+        "Good careers are about solving what's important. You can ask me about anything that I think is important."
+      ],
+      [
+        "dandavis_U29_6_2",
+        "I am stored in this machine, I can wait for your questions all day"
+      ],
+      [
+        "dandavis_U30_6_2",
+        "A lot of people ask me about money and military salaries. You can ask me about those things."
+      ],
+      [
+        "dandavis_U31_6_2",
+        "A lot of people ask me about war, exercise, and payment, you can ask me if you want to."
+      ]
+    ],
+    "_REPEAT_": [
+      ["dandavis_U19_5_1", "I might have covered this already..."],
+      [
+        "dandavis_U32_6_2",
+        "I have already answered that question. Please ask me something else."
+      ],
+      [
+        "dandavis_U33_6_2",
+        "I have answered that question before. You can ask me something else"
+      ],
+      [
+        "dandavis_U34_6_2",
+        "I answered this question a while ago. Let\ufffds move on."
+      ]
+    ]
+  }
+}

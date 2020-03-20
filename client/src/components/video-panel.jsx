@@ -28,9 +28,10 @@ const VideoPanel = ({ isMobile }) => {
   };
 
   return (
-    <div className="carousel">
+    <div id="video-panel" className="carousel">
       {Object.keys(mentors).map((id, i) => (
         <div
+          id={`video-thumbnail-${id}`}
           className={`slide video-slide ${id === mentor ? "selected" : ""}`}
           key={`${id}-${i}`}
           onClick={() => onClick(mentors[id])}

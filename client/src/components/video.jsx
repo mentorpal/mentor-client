@@ -121,10 +121,16 @@ const FaveButton = () => {
     return <div />;
   }
 
-  return mentorFaved === mentor ? (
-    <Star className="star-icon" onClick={onClick} style={{ color: "yellow" }} />
+  return mentorFaved && mentorFaved === mentor ? (
+    <Star
+      id="fave-button"
+      className="star-icon"
+      onClick={onClick}
+      style={{ color: "yellow" }}
+    />
   ) : (
     <StarBorder
+      id="fave-button"
       className="star-icon"
       onClick={onClick}
       style={{ color: "grey" }}
