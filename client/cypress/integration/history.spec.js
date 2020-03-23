@@ -1,3 +1,5 @@
+import { addGuestParams } from "./helpers";
+
 describe("History", () => {
   beforeEach(() => {
     cy.server();
@@ -21,7 +23,7 @@ describe("History", () => {
       url: "**/mentor-api/mentors/julianne/data",
       response: "fixture:julianne.json",
     });
-    cy.visit("/");
+    cy.visit("/", { qs: addGuestParams() });
   });
 
   it("does not display in topics list if no questions have been asked", () => {
@@ -37,7 +39,6 @@ describe("History", () => {
   it("displays questions that have been asked via input", () => {
     cy.get("#input-field").type("Hello");
     cy.get("#input-send").click();
-
     cy.get("#topic-8").click();
     cy.get("#scrolling-questions-list").contains("Hello");
   });
@@ -45,7 +46,6 @@ describe("History", () => {
   it("displays questions that have been asked via topic button", () => {
     cy.get("#topic-0").click();
     cy.get("#input-send").click();
-
     cy.get("#topic-8").click();
     cy.get("#scrolling-questions-list").contains("Where were you born?");
   });
@@ -53,13 +53,11 @@ describe("History", () => {
   it("displays most recent questions at the top", () => {
     cy.get("#input-field").type("Hello");
     cy.get("#input-send").click();
-
     cy.get("#topic-8").click();
     cy.get("#scrolling-questions-list")
       .get("li")
       .first()
       .contains("Hello");
-
     cy.get("#input-field").type("World");
     cy.get("#input-send").click();
     cy.get("#scrolling-questions-list")
@@ -73,7 +71,6 @@ describe("History", () => {
     cy.get("#input-send").click();
     cy.get("#topic-8").click();
     cy.get("#scrolling-questions-list").contains("Hello");
-
     cy.get("#input-field").type("World");
     cy.get("#input-send").click();
     cy.get("#scrolling-questions-list").contains("Hello");
@@ -85,7 +82,6 @@ describe("History", () => {
       .get("li")
       .first()
       .contains("World");
-
     cy.get("#input-field").type("Hello");
     cy.get("#input-send").click();
     cy.get("#scrolling-questions-list").contains("Hello");

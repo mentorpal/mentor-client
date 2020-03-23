@@ -1,3 +1,5 @@
+import { addGuestParams } from "./helpers";
+
 describe("Questions list", () => {
   beforeEach(() => {
     cy.server();
@@ -21,7 +23,7 @@ describe("Questions list", () => {
       url: "**/mentor-api/mentors/julianne/data",
       response: "fixture:julianne.json",
     });
-    cy.visit("/");
+    cy.visit("/", { qs: addGuestParams() });
   });
 
   it("displays list of questions for selected topic", () => {

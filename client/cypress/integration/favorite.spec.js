@@ -1,3 +1,5 @@
+import { addGuestParams } from "./helpers";
+
 describe("Favorite", () => {
   beforeEach(() => {
     cy.server();
@@ -24,14 +26,14 @@ describe("Favorite", () => {
   });
 
   it("is not toggled by default", () => {
-    cy.visit("/");
+    cy.visit("/", { qs: addGuestParams() });
     cy.get("#fave-button")
       .invoke("attr", "style")
       .should("contain", "grey");
   });
 
   it("can be toggled", () => {
-    cy.visit("/");
+    cy.visit("/", { qs: addGuestParams() });
     cy.wait(1000);
     cy.get("#fave-button").click();
     cy.get("#fave-button")
@@ -40,11 +42,14 @@ describe("Favorite", () => {
   });
 
   it("is hidden if there is only one mentor", () => {
-    cy.visit("/", {
-      qs: {
-        mentor: "clint",
-      },
-    });
+    cy.visit(
+      "/",
+      addGuestParams({
+        qs: {
+          mentor: "clint",
+        },
+      })
+    );
     cy.get("#fave-button").should("not.exist");
   });
 });

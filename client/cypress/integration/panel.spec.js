@@ -1,3 +1,5 @@
+import { addGuestParams, toGuestUrl } from "./helpers";
+
 describe("Mentor panel", () => {
   beforeEach(() => {
     cy.server();
@@ -21,7 +23,6 @@ describe("Mentor panel", () => {
       url: "**/mentor-api/mentors/julianne/data",
       response: "fixture:julianne.json",
     });
-
     cy.route({
       method: "GET",
       url: "**/mentor-api/mentors/jd_thomas/data",
@@ -40,12 +41,12 @@ describe("Mentor panel", () => {
   });
 
   it("shows if there is more than one mentor", () => {
-    cy.visit("/?mentor=clint&mentor=dan");
+    cy.visit(toGuestUrl("/?mentor=clint&mentor=dan"));
     cy.get("#video-panel");
   });
 
   it("is hidden if there is only one mentor", () => {
-    cy.visit("/?mentor=clint");
+    cy.visit(toGuestUrl("/?mentor=clint"));
     cy.get("#video-panel").should("not.exist");
   });
 
@@ -58,7 +59,9 @@ describe("Mentor panel", () => {
   });
 
   it("loads and displays chosen mentors if mentors specified", () => {
-    cy.visit("/?mentor=jd_thomas&mentor=mario-pais&mentor=dan-burns");
+    cy.visit(
+      toGuestUrl("/?mentor=jd_thomas&mentor=mario-pais&mentor=dan-burns")
+    );
     cy.get("#video-panel").get("#video-thumbnail-jd_thomas");
     cy.get("#video-panel").get("#video-thumbnail-mario-pais");
     cy.get("#video-panel").get("#video-thumbnail-dan-burns");

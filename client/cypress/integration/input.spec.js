@@ -1,3 +1,5 @@
+import { addGuestParams } from "./helpers";
+
 describe("Input field", () => {
   beforeEach(() => {
     cy.server();
@@ -21,7 +23,7 @@ describe("Input field", () => {
       url: "**/mentor-api/mentors/julianne/data",
       response: "fixture:julianne.json",
     });
-    cy.visit("/");
+    cy.visit("/", { qs: addGuestParams() });
   });
 
   it("has a default placeholder message", () => {

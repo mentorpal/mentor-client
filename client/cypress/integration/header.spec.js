@@ -1,3 +1,5 @@
+import { addGuestParams } from "./helpers";
+
 describe("Header", () => {
   beforeEach(() => {
     cy.server();
@@ -24,12 +26,12 @@ describe("Header", () => {
   });
 
   it("shows title for default mentor in panel", () => {
-    cy.visit("/");
+    cy.visit("/", { qs: addGuestParams() });
     cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
   });
 
   it("changes title when selecting a mentor", () => {
-    cy.visit("/");
+    cy.visit("/", { qs: addGuestParams() });
     cy.get("#video-thumbnail-dan").click();
     cy.get("#header").contains(
       "Dan Davis: High Performance Computing Researcher"
@@ -47,9 +49,9 @@ describe("Header", () => {
 
   it("hides title for single mentor (no panel)", () => {
     cy.visit("/", {
-      qs: {
+      qs: addGuestParams({
         mentor: "clint",
-      },
+      }),
     });
     cy.get("#header").should("not.exist");
   });
