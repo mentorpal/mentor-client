@@ -30,10 +30,10 @@ export default function GuestPrompt({ submit }) {
   const [name, setName] = useState("");
 
   function onInput(name) {
-    const polished = name? name.trim(): ''
+    const polished = name ? name.trim() : "";
     setName(polished);
-    if(name.includes('\n')) {
-      submit(polished)
+    if (name.includes("\n")) {
+      submit(polished);
     }
   }
 
