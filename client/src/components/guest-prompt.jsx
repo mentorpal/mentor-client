@@ -29,8 +29,12 @@ export default function GuestPrompt({ submit }) {
   const classes = useStyles();
   const [name, setName] = useState("");
 
-  function onInput(text) {
-    setName(text);
+  function onInput(name) {
+    const polished = name? name.trim(): ''
+    setName(polished);
+    if(name.includes('\n')) {
+      submit(polished)
+    }
   }
 
   return (
@@ -45,8 +49,10 @@ export default function GuestPrompt({ submit }) {
         }}
       >
         <Paper className={classes.paper}>
-          <h2>Enter a guest name:</h2>
+          <h2 id="guest-prompt-header">Enter a guest name:</h2>
           <InputBase
+            id="guest-prompt-input"
+            multiline="true"
             className={classes.inputField}
             value={name}
             placeholder={"guest"}
@@ -55,6 +61,7 @@ export default function GuestPrompt({ submit }) {
             }}
           />
           <Button
+            id="guest-prompt-input-send"
             className={classes.button}
             onClick={() => submit(name)}
             variant="contained"
