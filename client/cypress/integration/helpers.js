@@ -16,6 +16,45 @@ function addGuestParams(query = {}, guestName = "guest") {
     ...(query || {}),
   };
 }
+
+function mockMentorData(cy) {
+  cy.route({
+    method: "GET",
+    url: "**/mentor-api/mentors/clint/data",
+    response: "fixture:clint.json",
+  });
+  cy.route({
+    method: "GET",
+    url: "**/mentor-api/mentors/dan/data",
+    response: "fixture:dan.json",
+  });
+  cy.route({
+    method: "GET",
+    url: "**/mentor-api/mentors/carlos/data",
+    response: "fixture:carlos.json",
+  });
+  cy.route({
+    method: "GET",
+    url: "**/mentor-api/mentors/julianne/data",
+    response: "fixture:julianne.json",
+  });
+  cy.route({
+    method: "GET",
+    url: "**/mentor-api/mentors/jd_thomas/data",
+    response: "fixture:jd_thomas.json",
+  });
+  cy.route({
+    method: "GET",
+    url: "**/mentor-api/mentors/mario-pais/data",
+    response: "fixture:mario-pais.json",
+  });
+  cy.route({
+    method: "GET",
+    url: "**/mentor-api/mentors/dan-burns/data",
+    response: "fixture:dan-burns.json",
+  });
+}
+
 function toGuestUrl(url, guestName) {
   const cmiParam = {
     activityId: "https://fake.org/resources/fake-activity",
@@ -39,7 +78,8 @@ function toGuestUrl(url, guestName) {
 }
 
 module.exports = {
-  defaultRootGuestUrl: toGuestUrl("/", "guest"),
-  toGuestUrl,
   addGuestParams,
+  defaultRootGuestUrl: toGuestUrl("/", "guest"),
+  mockMentorData,
+  toGuestUrl,
 };

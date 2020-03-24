@@ -1,43 +1,10 @@
-import { addGuestParams, toGuestUrl } from "./helpers";
+import { mockMentorData, toGuestUrl } from "./helpers";
 
 describe("Mentor panel", () => {
   beforeEach(() => {
     cy.server();
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/clint/data",
-      response: "fixture:clint.json",
-    });
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/dan/data",
-      response: "fixture:dan.json",
-    });
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/carlos/data",
-      response: "fixture:carlos.json",
-    });
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/julianne/data",
-      response: "fixture:julianne.json",
-    });
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/jd_thomas/data",
-      response: "fixture:jd_thomas.json",
-    });
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/mario-pais/data",
-      response: "fixture:mario-pais.json",
-    });
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/dan-burns/data",
-      response: "fixture:dan-burns.json",
-    });
+
+    mockMentorData(cy);
   });
 
   it("shows if there is more than one mentor", () => {

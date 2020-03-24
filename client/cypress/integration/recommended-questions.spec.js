@@ -1,28 +1,9 @@
-import { addGuestParams } from "./helpers";
+import { addGuestParams, mockMentorData } from "./helpers";
 
 describe("Recommended questions", () => {
   beforeEach(() => {
     cy.server();
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/clint/data",
-      response: "fixture:clint.json",
-    });
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/dan/data",
-      response: "fixture:dan.json",
-    });
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/carlos/data",
-      response: "fixture:carlos.json",
-    });
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/julianne/data",
-      response: "fixture:julianne.json",
-    });
+    mockMentorData(cy);
   });
 
   it("do not appear in topic list if no questions are recommended", () => {
