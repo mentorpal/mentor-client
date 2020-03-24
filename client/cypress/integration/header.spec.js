@@ -1,35 +1,18 @@
+import { addGuestParams, mockMentorData } from "./helpers";
+
 describe("Header", () => {
   beforeEach(() => {
     cy.server();
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/clint/data",
-      response: "fixture:clint.json",
-    });
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/dan/data",
-      response: "fixture:dan.json",
-    });
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/carlos/data",
-      response: "fixture:carlos.json",
-    });
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/julianne/data",
-      response: "fixture:julianne.json",
-    });
+    mockMentorData(cy);
   });
 
   it("shows title for default mentor in panel", () => {
-    cy.visit("/");
+    cy.visit("/", { qs: addGuestParams() });
     cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
   });
 
   it("changes title when selecting a mentor", () => {
-    cy.visit("/");
+    cy.visit("/", { qs: addGuestParams() });
     cy.get("#video-thumbnail-dan").click();
     cy.get("#header").contains(
       "Dan Davis: High Performance Computing Researcher"
@@ -47,9 +30,9 @@ describe("Header", () => {
 
   it("hides title for single mentor (no panel)", () => {
     cy.visit("/", {
-      qs: {
+      qs: addGuestParams({
         mentor: "clint",
-      },
+      }),
     });
     cy.get("#header").should("not.exist");
   });

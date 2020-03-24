@@ -1,27 +1,10 @@
+import { addGuestParams, mockMentorData } from "./helpers";
+
 describe("Input field", () => {
   beforeEach(() => {
     cy.server();
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/clint/data",
-      response: "fixture:clint.json",
-    });
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/dan/data",
-      response: "fixture:dan.json",
-    });
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/carlos/data",
-      response: "fixture:carlos.json",
-    });
-    cy.route({
-      method: "GET",
-      url: "**/mentor-api/mentors/julianne/data",
-      response: "fixture:julianne.json",
-    });
-    cy.visit("/");
+    mockMentorData(cy);
+    cy.visit("/", { qs: addGuestParams() });
   });
 
   it("has a default placeholder message", () => {
