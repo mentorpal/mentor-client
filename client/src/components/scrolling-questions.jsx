@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { List, ListItem, ListItemText } from "@material-ui/core";
+import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import { Whatshot } from "@material-ui/icons";
 import smoothscroll from "smoothscroll-polyfill";
 
@@ -45,25 +45,22 @@ const ScrollingQuestions = ({
           id={question}
           onClick={() => onQuestionSelected(question)}
         >
+          {recommended.includes(question) ? (
+            <ListItemIcon class="recommended-question-icon">
+              <Whatshot />
+            </ListItemIcon>
+          ) : (
+            undefined
+          )}
           <ListItemText
+            primary={question}
             style={{
-              paddingLeft: 0,
+              marginLeft: 5,
               color: questionsAsked.includes(normalizeString(question))
                 ? "gray"
                 : "black",
             }}
-          >
-            {recommended.includes(question) ? (
-              <Whatshot
-                class="recommended-question-icon"
-                style={{ marginRight: "5px" }}
-                fontSize="small"
-              />
-            ) : (
-              undefined
-            )}
-            {question}
-          </ListItemText>
+          />
         </ListItem>
       ))}
     </List>
