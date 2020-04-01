@@ -46,8 +46,9 @@ const ScrollingQuestions = ({
           onClick={() => onQuestionSelected(question)}
         >
           {recommended.includes(question) ? (
-            <ListItemIcon class="recommended-question-icon">
+            <ListItemIcon>
               <Whatshot />
+              <div className="recommended-question-icon"></div>
             </ListItemIcon>
           ) : (
             undefined
