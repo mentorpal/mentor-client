@@ -32,6 +32,8 @@ const ScrollingQuestions = ({
     });
   }, [questions, questionsAsked]);
 
+  console.log("testing");
+
   return (
     <List
       id="scrolling-questions-list"
@@ -44,11 +46,13 @@ const ScrollingQuestions = ({
           key={i}
           id={question}
           onClick={() => onQuestionSelected(question)}
-          style={{ height: 50 }}
         >
           {recommended.includes(question) ? (
             <ListItemIcon>
-              <Whatshot className="recommended-question-icon" />
+              <Whatshot
+                className="recommended-question-icon"
+                style={{ height: 25, width: 25 }}
+              />
             </ListItemIcon>
           ) : (
             undefined
@@ -56,7 +60,6 @@ const ScrollingQuestions = ({
           <ListItemText
             primary={question}
             style={{
-              marginLeft: 5,
               color: questionsAsked.includes(normalizeString(question))
                 ? "gray"
                 : "black",
