@@ -84,6 +84,7 @@ const VideoPlayer = ({ width, height, format = "mobile", playing = false }) => {
     <ReactPlayer
       style={{ backgroundColor: "black" }}
       url={url}
+      muted={Boolean(isIdle)}
       onDuration={setDuration}
       onEnded={onEnded}
       onPlay={onPlay}
