@@ -50,7 +50,7 @@ To run cypress tests locally you need two shells, first make sure the client is 
 cd client && make develop
 ```
 
-...then you can run the full cypress test suitte with
+...then you can run the full cypress test suite with
 
 ```
 cd client && make test-cypress
