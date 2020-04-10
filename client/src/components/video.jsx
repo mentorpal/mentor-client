@@ -60,7 +60,7 @@ const VideoPlayer = ({ width, height, format = "mobile", playing = false }) => {
         : idleUrl(mentor.id, format)
       : videoUrl(mentor.id, mentor.answer_id, format)
     : "";
-  const subtitle_url =
+  const subUrl =
     mentor && !isIdle ? subtitleUrl(mentor.id, mentor.answer_id) : "";
   const showSubtitles = !chromeVersion() || chromeVersion() >= 62;
 
@@ -80,10 +80,13 @@ const VideoPlayer = ({ width, height, format = "mobile", playing = false }) => {
     );
   };
 
+  console.log("will render with video url", url);
+  console.log("will render with subtitleUrl url", subUrl);
   return (
     <ReactPlayer
       style={{ backgroundColor: "black" }}
       url={url}
+      muted={Boolean(isIdle)}
       onDuration={setDuration}
       onEnded={onEnded}
       onPlay={onPlay}
@@ -100,7 +103,7 @@ const VideoPlayer = ({ width, height, format = "mobile", playing = false }) => {
             ? [
                 {
                   kind: "subtitles",
-                  src: subtitle_url,
+                  src: subUrl,
                   srcLang: "en",
                   default: true,
                 },
