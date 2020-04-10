@@ -32,7 +32,9 @@ describe("plays a video in response to a user question", () => {
     });
     cy.route({
       method: "GET",
-      url: "https://video.mentorpal.org/videos/mentors/clint/**/*.mp4",
+      url: "https://video.mentorpal.org/**/*.mp4",
+      // use clint's video for all responses,
+      // not checking anything about the actual video content
       response: "fixture:clint_response.mp4",
     });
   });
@@ -42,23 +44,22 @@ describe("plays a video in response to a user question", () => {
     cy.get("#input-field").type("is the food good");
     cy.get("#input-send").click();
     cy.wait(1000);
+    cy.get("#video-container video").should("exist");
+    cy.get("#video-container video").should(
+      "have.attr",
+      "src",
+      "https://video.mentorpal.org/videos/mentors/clint/web/clintanderson_A141_3_1.mp4"
+    );
 
-    // if I enable this debug. I see the `video` element with the expected src
-    // cy.get("#video-container video").debug()
-
-    // this FAILS every time though
-    // cy.get("#video-container video").should(
+    // TODO: somehow the track is always one render/update
+    //        behind the video. It seems pretty clear in the code
+    //        and console debugging that the value is the same.
+    //        Maybe somehow the ReactPlayer is getting two values
+    //        in rapid succession and keeping the first one for the track?
+    // cy.get("#video-container video track").should(
     //   "have.attr",
     //   "src",
-    //   "https://video.mentorpal.org/videos/mentors/clint/web/clintanderson_A141_3_1.mp4"
+    //   "http://localhost:8000/mentors/tracks/clintanderson_A141_3_1.vtt"
     // );
-
-    // this is just some simpler thing I tried to test
-
-    // cy.get("#video-container video").should(
-    //     "have.attr",
-    //     "videoWidth",
-    //     1280
-    //   );
   });
 });

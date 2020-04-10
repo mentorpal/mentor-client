@@ -14,6 +14,8 @@ import { chromeVersion } from "funcs/funcs";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 
+const showSubtitles = !chromeVersion() || chromeVersion() >= 62;
+
 const Video = ({ height, width, playing = false }) => {
   const mentor = useSelector(state => state.mentorsById[state.curMentor]);
   const mobileWidth = height / 0.895;
@@ -53,16 +55,19 @@ const VideoPlayer = ({ width, height, format = "mobile", playing = false }) => {
   const isIdle = useSelector(state => state.isIdle);
   const mentor = useSelector(state => state.mentorsById[state.curMentor]);
   const idleVideoId = findMentorIdleId(mentor);
-  const url = mentor
-    ? isIdle
-      ? idleVideoId
-        ? videoUrl(mentor.id, idleVideoId, format)
-        : idleUrl(mentor.id, format)
-      : videoUrl(mentor.id, mentor.answer_id, format)
-    : "";
-  const subUrl =
-    mentor && !isIdle ? subtitleUrl(mentor.id, mentor.answer_id) : "";
-  const showSubtitles = !chromeVersion() || chromeVersion() >= 62;
+  const video = {
+    src: mentor
+      ? isIdle
+        ? idleVideoId
+          ? videoUrl(mentor.id, idleVideoId, format)
+          : idleUrl(mentor.id, format)
+        : videoUrl(mentor.id, mentor.answer_id, format)
+      : "",
+    subtitles:
+      mentor && showSubtitles && !isIdle
+        ? subtitleUrl(mentor.id, mentor.answer_id)
+        : "",
+  };
 
   const onEnded = () => {
     dispatch(answerFinished());
@@ -80,12 +85,11 @@ const VideoPlayer = ({ width, height, format = "mobile", playing = false }) => {
     );
   };
 
-  console.log("will render with video url", url);
-  console.log("will render with subtitleUrl url", subUrl);
+  console.log("will render with video url", video);
   return (
     <ReactPlayer
       style={{ backgroundColor: "black" }}
-      url={url}
+      url={video.src}
       muted={Boolean(isIdle)}
       onDuration={setDuration}
       onEnded={onEnded}
@@ -103,7 +107,7 @@ const VideoPlayer = ({ width, height, format = "mobile", playing = false }) => {
             ? [
                 {
                   kind: "subtitles",
-                  src: subUrl,
+                  src: video.subUrl,
                   srcLang: "en",
                   default: true,
                 },
