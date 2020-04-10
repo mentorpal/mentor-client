@@ -45,11 +45,9 @@ describe("plays a video in response to a user question", () => {
     cy.get("#input-send").click();
     cy.wait(1000);
     cy.get("#video-container video").should("exist");
-    cy.get("#video-container video").should(
-      "have.attr",
-      "src",
-      "https://video.mentorpal.org/videos/mentors/clint/web/clintanderson_A141_3_1.mp4"
-    );
+    cy.get("#video-container video")
+      .should("have.attr", "src")
+      .and("match", /.*clintanderson_A141_3_1.mp4$/);
 
     // TODO: somehow the track is always one render/update
     //        behind the video. It seems pretty clear in the code
