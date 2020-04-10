@@ -45,7 +45,6 @@ describe("plays a video in response to a user question", () => {
 
     // if I enable this debug. I see the `video` element with the expected src
     // cy.get("#video-container video").debug()
-    
 
     // this FAILS every time though
     // cy.get("#video-container video").should(
