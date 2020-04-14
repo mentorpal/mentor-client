@@ -55,6 +55,24 @@ function mockMentorData(cy) {
   });
 }
 
+function mockMentorVideos(cy) {
+  cy.route({
+    method: "GET",
+    url: "https://video.mentorpal.org/**/*.mp4",
+    // use clint's video for all responses,
+    // not checking anything about the actual video content
+    response: "fixture:clint_response.mp4",
+  });
+}
+
+function mockMentorVtt(cy) {
+  cy.route({
+    method: "GET",
+    url: "**/*.vtt",
+    response: "fixture:default.vtt",
+  });
+}
+
 function toGuestUrl(url, guestName) {
   const cmiParam = {
     activityId: "https://fake.org/resources/fake-activity",
@@ -81,5 +99,7 @@ module.exports = {
   addGuestParams,
   defaultRootGuestUrl: toGuestUrl("/", "guest"),
   mockMentorData,
+  mockMentorVideos,
+  mockMentorVtt,
   toGuestUrl,
 };

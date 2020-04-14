@@ -3,9 +3,9 @@ import MockAdapter from "axios-mock-adapter";
 import { createStore, applyMiddleware, Store, AnyAction } from "redux";
 import thunk, { ThunkDispatch } from "redux-thunk";
 
-import { sendQuestion } from "@/store/actions";
-import reducer, { initialState } from "@/store/reducer";
-import { MentorQuestionSource, State } from "@/store/types";
+import { sendQuestion } from "store/actions";
+import reducer, { initialState } from "store/reducer";
+import { MentorQuestionSource, State } from "store/types";
 
 // This sets the mock adapter on the default instance
 const mockAxios = new MockAdapter(axios);

@@ -1,9 +1,9 @@
 /* eslint-disable */
-import { actions as cmi5Actions } from "redux-cmi5";
+const cmi5Actions = require("redux-cmi5").actions;
 import { ActionCreator, AnyAction, Dispatch } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 
-import { fetchMentorData, MentorApiData, queryMentor } from "@/api/api";
+import { fetchMentorData, MentorApiData, queryMentor } from "api/api";
 import {
   MentorDataResult,
   MentorQuestionStatus,
@@ -136,8 +136,8 @@ function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
     question: state.curQuestion,
     questionSource: state.curQuestionSource,
     questionIndex: currentQuestionIndex(state),
-    timestampAnswered: new Date(state.curQuestionUpdatedAt),
-    timestampAsked: new Date(mentorData.answerReceivedAt),
+    timestampAnswered: state.curQuestionUpdatedAt,
+    timestampAsked: mentorData.answerReceivedAt,
   };
 }
 
@@ -183,7 +183,6 @@ export const loadMentor: ActionCreator<ThunkAction<
                   ...apiData,
                   answer_id: findIntro(apiData),
                   answerDuration: Number.NaN,
-                  answerReceivedAt: Number.NaN,
                   status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
                   topic_questions: Object.getOwnPropertyNames(
                     apiData.topics_by_id
@@ -385,10 +384,10 @@ export const sendQuestion = (q: {
   }
   // Play favored mentor if an answer exists
   if (state.mentorFaved) {
-    const fave_response = responses.find(response => {
+    const favResponse = responses.find(response => {
       return response.mentor === state.mentorFaved;
     });
-    if (!fave_response.answerIsOffTopic) {
+    if (favResponse && !favResponse.answerIsOffTopic) {
       dispatch(selectMentor(state.mentorFaved, MentorSelectReason.USER_FAV));
       return;
     }

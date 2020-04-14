@@ -1,5 +1,5 @@
-import { reducers as cmi5Reducer } from "redux-cmi5";
-import { normalizeString } from "@/funcs/funcs";
+const cmi5Reducer = require("redux-cmi5").reducers;
+import { normalizeString } from "funcs/funcs";
 import {
   ANSWER_FINISHED,
   MENTOR_FAVED,
@@ -35,7 +35,6 @@ export const initialState: State = cmi5Reducer({
   curMentorReason: MentorSelectReason.NONE,
   curQuestion: "", // question that was last asked
   curQuestionSource: MentorQuestionSource.NONE,
-  curQuestionUpdatedAt: Number.NaN,
   curTopic: "", // topic to show questions for
   mentorFaved: "", // id of the preferred mentor
   isIdle: false,
