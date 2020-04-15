@@ -7,7 +7,7 @@ import { sendQuestion, onInput } from "store/actions";
 
 import Topics from "components/topics";
 import Questions from "components/questions";
-import { MentorQuestionSource } from "@/store/types";
+import { MentorQuestionSource } from "store/types";
 
 const Input = ({ height, ...props }) => {
   const dispatch = useDispatch();

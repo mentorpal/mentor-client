@@ -5,23 +5,37 @@ import smoothscroll from "smoothscroll-polyfill";
 
 import { normalizeString } from "funcs/funcs";
 
-const ScrollingQuestions = ({
-  height,
-  questions,
-  questionsAsked,
-  recommended,
-  onQuestionSelected,
-}) => {
+interface OnQuestionSelected {
+  (question?: string): undefined;
+}
+
+interface ScrollingQuestionsParams {
+  height: number;
+  id: string;
+  questions: string[];
+  questionsAsked: string[];
+  recommended: string[];
+  onQuestionSelected: OnQuestionSelected;
+}
+
+const ScrollingQuestions = (args: ScrollingQuestionsParams) => {
+  const {
+    height,
+    questions,
+    questionsAsked,
+    recommended,
+    onQuestionSelected,
+  } = args;
   useEffect(() => {
     smoothscroll.polyfill();
   }, []);
 
   useEffect(() => {
-    const top_question = questions.find(q => {
+    const topQuestion = questions.find(q => {
       return !questionsAsked.includes(normalizeString(q));
     });
     const parent = document.getElementById("scrolling-questions-list");
-    const node = document.getElementById(top_question);
+    const node = document.getElementById(`${topQuestion}`);
     if (!(parent && node)) {
       return;
     }
@@ -39,7 +53,7 @@ const ScrollingQuestions = ({
       style={{ maxHeight: height }}
       disablePadding
     >
-      {questions.map((question, i) => (
+      {questions.map((question: string, i: number) => (
         <ListItem
           key={i}
           id={question}

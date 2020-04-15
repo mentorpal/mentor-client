@@ -8,7 +8,7 @@ import { CircularProgress } from "@material-ui/core";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 import { addCmi, hasCmi } from "cmiutils";
-import config from "@/config";
+import config from "config";
 import GuestPrompt from "components/guest-prompt";
 import Header from "components/header";
 import Input from "components/input";

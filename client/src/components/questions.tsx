@@ -2,9 +2,9 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
-import ScrollingQuestions from "@/components/scrolling-questions";
+import ScrollingQuestions from "components/scrolling-questions";
 
-import { State, MentorData } from "@/store/types";
+import { State, MentorData } from "store/types";
 
 const theme = createMuiTheme({
   palette: {
@@ -16,7 +16,7 @@ const theme = createMuiTheme({
 
 interface Props {
   height: number;
-  onSelected: () => {};
+  onSelected: () => undefined;
 }
 const Questions = ({ height, onSelected }: Props) => {
   const mentor = useSelector<State, MentorData>(

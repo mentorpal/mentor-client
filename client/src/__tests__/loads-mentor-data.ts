@@ -3,11 +3,11 @@ import MockAdapter from "axios-mock-adapter";
 import { createStore, applyMiddleware, Store, AnyAction } from "redux";
 import thunk, { ThunkDispatch } from "redux-thunk";
 
-import { loadMentor } from "@/store/actions";
-import reducer, { initialState } from "@/store/reducer";
-import { State, MentorData, MentorQuestionStatus } from "@/store/types";
-import { ExpectIntermediateStates, ExpectedState } from "@/test-helpers";
-import { MentorApiData } from "@/api/api";
+import { loadMentor } from "store/actions";
+import reducer, { initialState } from "store/reducer";
+import { State, MentorData, MentorQuestionStatus } from "store/types";
+import { ExpectIntermediateStates, ExpectedState } from "test-helpers";
+import { MentorApiData } from "api/api";
 
 // This sets the mock adapter on the default instance
 const mockAxios = new MockAdapter(axios);
@@ -78,7 +78,6 @@ describe("load mentor data", () => {
       ...expectedApiDataByMentorId["mentor_123"],
       answer_id: "intro_1234",
       answerDuration: Number.NaN,
-      answerReceivedAt: Number.NaN,
       status: MentorQuestionStatus.READY,
       topic_questions: {
         "About Me": ["Who are you and what do you do?"],
@@ -88,7 +87,6 @@ describe("load mentor data", () => {
       ...expectedApiDataByMentorId["mentor_456"],
       answer_id: "intro_222",
       answerDuration: Number.NaN,
-      answerReceivedAt: Number.NaN,
       status: MentorQuestionStatus.READY,
       topic_questions: {
         "About Me": ["How old are you and why?"],

@@ -8,7 +8,7 @@ import { MentorQuestionStatus } from "store/types";
 import VideoThumbnail from "components/video-thumbnail";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
-import { MentorSelectReason } from "@/store/types";
+import { MentorSelectReason } from "store/types";
 
 const VideoPanel = ({ isMobile }) => {
   const dispatch = useDispatch();

@@ -3,27 +3,37 @@ import { useSelector, useDispatch } from "react-redux";
 import { Button, Paper } from "@material-ui/core";
 import { History, Whatshot } from "@material-ui/icons";
 
-import { selectTopic } from "store/actions";
 import { normalizeString } from "funcs/funcs";
+import { selectTopic } from "store/actions";
+import { MentorData, State } from "store/types";
 
-const Topics = ({ onSelected }) => {
+interface TopicsArgs {
+  onSelected: (topic: string) => undefined;
+}
+
+const Topics = (args: TopicsArgs) => {
+  const { onSelected } = args;
   const dispatch = useDispatch();
-  const mentor = useSelector(state => state.mentorsById[state.curMentor]);
-  const curTopic = useSelector(state => state.curTopic);
-  const questionsAsked = useSelector(state => state.questionsAsked);
+  const mentor = useSelector<State, MentorData>(
+    state => state.mentorsById[state.curMentor]
+  );
+  const curTopic = useSelector<State, string>(state => state.curTopic);
+  const questionsAsked = useSelector<State, string[]>(
+    state => state.questionsAsked
+  );
 
   if (!(mentor && mentor.topic_questions)) {
     return <div />;
   }
 
   const { topic_questions } = mentor;
-  const onTopicSelected = topic => {
+  function onTopicSelected(topic: string) {
     dispatch(selectTopic(topic));
     const top_question = topic_questions[topic].find(q => {
       return !questionsAsked.includes(normalizeString(q));
     });
     onSelected(top_question || "");
-  };
+  }
 
   if (!curTopic) {
     const first_topic = Object.keys(topic_questions)[0];

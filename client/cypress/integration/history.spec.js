@@ -1,9 +1,10 @@
-import { addGuestParams, mockMentorData } from "./helpers";
+import { addGuestParams, mockMentorData, mockMentorVideos } from "./helpers";
 
 describe("History", () => {
   beforeEach(() => {
     cy.server();
     mockMentorData(cy);
+    mockMentorVideos(cy);
     cy.visit("/", { qs: addGuestParams() });
   });
 

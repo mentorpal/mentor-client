@@ -35,8 +35,8 @@ export enum ResultStatus {
 
 export function newMentorData(id: string): MentorData {
   return {
+    answerDuration: Number.NaN,
     id: id,
-    answerReceivedAt: Number.NaN,
     name: "",
     questions_by_id: {},
     short_name: "",
@@ -52,7 +52,7 @@ export interface MentorData {
   answer_id?: string;
   answer_text?: string;
   answerDuration: number;
-  answerReceivedAt: number;
+  answerReceivedAt?: Date;
   classifier?: string;
   confidence?: number;
   id: string;
@@ -96,7 +96,7 @@ export interface State {
   curMentorReason: MentorSelectReason;
   curQuestion: string; // question that was last asked
   curQuestionSource: MentorQuestionSource;
-  curQuestionUpdatedAt: number;
+  curQuestionUpdatedAt?: Date;
   curTopic: string; // topic to show questions for
   mentorFaved: string; // id of the preferred mentor
   isIdle: boolean;
@@ -154,6 +154,6 @@ export interface XapiResultExt {
   questionIndex: number;
   questionSource: MentorQuestionSource;
   questionsAsked: string[];
-  timestampAsked: Date;
-  timestampAnswered: Date;
+  timestampAsked?: Date;
+  timestampAnswered?: Date;
 }
