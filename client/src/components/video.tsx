@@ -138,7 +138,11 @@ function VideoPlayer(args: VideoPlayerParams) {
   } = args;
   return (
     <ReactPlayer
-      style={{ backgroundColor: "black", position: "relative", margin: "0 auto" }}
+      style={{
+        backgroundColor: "black",
+        position: "relative",
+        margin: "0 auto",
+      }}
       url={videoUrl}
       muted={Boolean(isIdle)}
       onDuration={setDuration}
