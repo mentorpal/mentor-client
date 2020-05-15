@@ -48,7 +48,7 @@ describe("History", () => {
       .contains("World");
   });
 
-  it("does not readd duplicate questions", () => {
+  it("does not read duplicate questions", () => {
     cy.get("#input-field").type("Hello");
     cy.get("#input-send").click();
     cy.get("#topic-8").click();
