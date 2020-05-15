@@ -11,7 +11,7 @@ export interface CmiParams {
 
 export function addCmi(url: string, cp: CmiParams): string {
   return `${url}${url.includes("?") ? "" : "?"}${
-    url.includes("&") ? "&" : ""
+    url.endsWith("&") ? "" : "&"
   }activityId=${encodeURIComponent(cp.activityId)}&actor=${encodeURIComponent(
     JSON.stringify(cp.actor)
   )}&endpoint=${encodeURIComponent(cp.endpoint)}&fetch=${encodeURIComponent(

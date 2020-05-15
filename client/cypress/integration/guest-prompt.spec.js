@@ -33,6 +33,21 @@ describe("Guest Prompt", () => {
     );
   });
 
+  it("loads a single specific mentor", () => {
+    cy.visit("/?mentor=clint");
+    cy.get("#guest-prompt-input").type("guestuser1");
+    cy.get("#guest-prompt-input-send").click();
+    cy.url().should("include", "actor=");
+    cy.url().should("include", "guestuser1");
+    cy.get("#guest-prompt").should("not.exist");
+    cy.get("#video-container video").should("exist");
+    cy.get("#video-container video").should(
+      "have.attr",
+      "autoplay",
+      "autoplay"
+    );
+  });
+
   it("accepts enter in guest-name input field as submit", () => {
     cy.visit("/");
     cy.get("#guest-prompt-input").type("guestuser2\n");
