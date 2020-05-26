@@ -76,12 +76,6 @@ const Input = ({ height, ...props }) => {
 
   return (
     <div className="flex" style={{ height }}>
-      <div className="content" style={{ height: "60px" }}>
-        <Topics onSelected={onTopicSelected} />
-      </div>
-      <div className="expand">
-        <Questions height={height - 120} onSelected={onQuestionSelected} />
-      </div>
       <div className="footer" style={{ height: "60px" }}>
         <Paper className={classes.root} square>
           <InputBase
@@ -112,6 +106,12 @@ const Input = ({ height, ...props }) => {
             Send{" "}
           </Button>
         </Paper>
+      </div>
+      <div className="content" style={{ height: "60px" }}>
+        <Topics onSelected={onTopicSelected} />
+      </div>
+      <div className="expand">
+        <Questions height={height - 120} onSelected={onQuestionSelected} />
       </div>
     </div>
   );
