@@ -7,6 +7,7 @@ import {
 
 describe("plays a video in response to a user question", () => {
   beforeEach(() => {
+    cy.viewport("iphone-x");
     cy.server();
     mockMentorData(cy);
     mockMentorVideos(cy);

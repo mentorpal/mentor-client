@@ -4,6 +4,7 @@ describe("Header", () => {
   beforeEach(() => {
     cy.server();
     mockMentorData(cy);
+    cy.viewport("iphone-x");
   });
 
   it("shows title for default mentor in panel", () => {

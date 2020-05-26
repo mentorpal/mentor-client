@@ -4,6 +4,7 @@ describe("Recommended questions", () => {
   beforeEach(() => {
     cy.server();
     mockMentorData(cy);
+    cy.viewport("iphone-x");
   });
 
   it("do not appear in topic list if no questions are recommended", () => {

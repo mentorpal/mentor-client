@@ -5,6 +5,7 @@ describe("Input field", () => {
     cy.server();
     mockMentorData(cy);
     cy.visit("/", { qs: addGuestParams() });
+    cy.viewport("iphone-x");
   });
 
   it("has a default placeholder message", () => {

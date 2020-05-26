@@ -76,7 +76,7 @@ const Input = ({ height, ...props }) => {
 
   return (
     <div className="flex" style={{ height }}>
-      <div className="footer" style={{ height: "60px" }}>
+      <div className="content" style={{ height: "60px" }}>
         <Paper className={classes.root} square>
           <InputBase
             id="input-field"

@@ -4,6 +4,7 @@ describe("Guest Prompt", () => {
   beforeEach(() => {
     cy.server();
     mockMentorData(cy);
+    cy.viewport("iphone-x");
   });
 
   it("prompts anonymous user for a guest name", () => {

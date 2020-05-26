@@ -4,6 +4,7 @@ describe("Topics list", () => {
     cy.server();
     mockMentorData(cy);
     cy.visit("/", { qs: addGuestParams() });
+    cy.viewport("iphone-x");
   });
 
   it("shows topics for current mentor", () => {
