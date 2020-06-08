@@ -2,7 +2,7 @@
 	@echo "CMI5_ENDPOINT=https://dev.mentorpal.org/lrs/xapi" >> .env.development
 	@echo "CMI5_FETCH=https://dev.mentorpal.org/lrs/auth/guesttoken" >> .env.development
 	@echo "MENTOR_API_URL=https://dev.mentorpal.org/mentor-api" > .env.development
-	@echo "MENTOR_VIDEO_HOST=https://video.mentorpal.org/videos" >> .env.development
+	@echo "MENTOR_VIDEO_URL=https://video.mentorpal.org/videos" >> .env.development
 	@echo "Set up  a default .env.development file"
 	@echo "that configures MENTOR_API_URL=https://dev.mentorpal.org/mentor-api."
 	@echo "This file should not be committed. "
