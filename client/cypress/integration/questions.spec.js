@@ -111,4 +111,11 @@ describe("Questions list", () => {
       .invoke("attr", "style")
       .should("contain", "gray");
   });
+
+  it("switches to the correct mentor for specific questions", () => {
+    cy.get("#video-thumbnail-dan").click();
+    cy.get("#input-field").type("What is Japan like?");
+    cy.get("#input-send").click();
+    cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
+  });
 });
