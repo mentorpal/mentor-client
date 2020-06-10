@@ -3,8 +3,8 @@ import { mockMentorData, toGuestUrl } from "./helpers";
 describe("Mentor panel", () => {
   beforeEach(() => {
     cy.server();
-
     mockMentorData(cy);
+    cy.viewport("iphone-x");
   });
 
   it("shows if there is more than one mentor", () => {

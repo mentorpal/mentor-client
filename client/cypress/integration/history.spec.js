@@ -6,6 +6,7 @@ describe("History", () => {
     mockMentorData(cy);
     mockMentorVideos(cy);
     cy.visit("/", { qs: addGuestParams() });
+    cy.viewport("iphone-x");
   });
 
   it("does not display in topics list if no questions have been asked", () => {

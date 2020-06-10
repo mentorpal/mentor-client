@@ -4,6 +4,7 @@ describe("Favorite", () => {
   beforeEach(() => {
     cy.server();
     mockMentorData(cy);
+    cy.viewport("iphone-x");
   });
 
   it("is not toggled by default", () => {
