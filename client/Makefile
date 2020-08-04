@@ -18,58 +18,78 @@ develop: .env.development node_modules/gatsby-cli
 
 .PHONY: format
 format: node_modules/prettier
-	yarn run format
+	npm run format
 
 node_modules/cypress:
-	yarn install --frozen-lockfile
+	npm install 
 
 node_modules/eslint:
-	yarn install --frozen-lockfile
+	npm install 
 
 node_modules/gatsby-cli:
-	yarn install --frozen-lockfile
+	npm install 
 
 node_modules/jest:
-	yarn install --frozen-lockfile
+	npm install 
 
 node_modules/jest:
-	yarn install --frozen-lockfile
+	npm install 
 
 node_modules/prettier:
-	yarn install --frozen-lockfile
+	npm install 
 
 node_modules/typescript:
-	yarn install --frozen-lockfile
+	npm install 
 
 .PHONY: test
 test: node_modules/jest
-	yarn run test
+	npm run test
 
 PHONY: test-all
 test-all:
-	$(MAKE) test-audit
+	# $(MAKE) test-audit
 	$(MAKE) test-format
 	$(MAKE) test-lint
+	$(MAKE) test-license
 	# $(MAKE) test-types
 	$(MAKE) test-cypress
 	$(MAKE) test
 
 .PHONY: test-audit
 test-audit:
-	yarn run test:audit
+	npm run test:audit
 
 .PHONY: test-format
 test-format: node_modules/prettier
-	yarn run test:format
+	npm run test:format
 
 .PHONY: test-format
 test-lint: node_modules/eslint
-	yarn run test:lint
+	npm run test:lint
 
 .PHONY: test-types
 test-types: node_modules/typescript
-	yarn run test:types
+	npm run test:types
 
 .PHONY: test-cypress
 test-cypress: node_modules/cypress
 	npm run test:cypress
+
+LICENSE:
+	@echo "you must have a LICENSE file" 1>&2
+	exit 1
+
+LICENSE_HEADER:
+	@echo "you must have a LICENSE_HEADER file" 1>&2
+	exit 1
+
+.PHONY: license
+license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
+	npm run license:fix
+
+.PHONY: test-license
+test-license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
+	npm run test:license
+
+node_modules/license-check-and-add:
+	npm ci
