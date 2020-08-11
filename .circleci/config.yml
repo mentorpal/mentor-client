@@ -25,50 +25,60 @@ jobs:
       - checkout
       - run: 
           name: Install client
-          command: cd client && yarn install --frozen-lockfile
+          command: cd client && npm install
       - run:
           name: Client test format
-          command: cd client && yarn run test:format
+          command: cd client && npm run test:format
   client-audit:
     executor: node
     steps:
       - checkout
       - run:
           name: Audit js
-          command: cd client && yarn run test:audit
+          command: cd client && npm run test:audit
+  client-license:
+    executor: node
+    steps:
+      - checkout
+      - run: 
+          name: Install client
+          command: cd client && npm ci
+      - run:
+          name: License js
+          command: cd client && npm run test:license
   client-lint:
     executor: node
     steps:
       - checkout
       - run: 
           name: Install client
-          command: cd client && yarn install --frozen-lockfile
+          command: cd client && npm install 
       - run:
           name: Client test lint
           command:
-            cd client && yarn run test:lint
+            cd client && npm run test:lint
   client-types:
     executor: node
     steps:
       - checkout
       - run: 
           name: Install client
-          command: cd client && yarn install --frozen-lockfile
+          command: cd client && npm install 
       - run:
           name: Client test types
           command:
-            cd client && yarn run test:types
+            cd client && npm run test:types
   client-test:
     executor: node
     steps:
       - checkout
       - run: 
           name: Install client
-          command: cd client && yarn install --frozen-lockfile
+          command: cd client && npm install 
       - run:
           name: Client test
           command:
-            cd client && yarn run test
+            cd client && npm run test
   build-and-push:
     parameters:
       is-release-tag:
@@ -123,17 +133,18 @@ workflows:
       #     filters: *only-untagged
       - client-lint:
           filters: *only-untagged
+      - client-license:
+          filters: *only-untagged
       # - client-types:
       #     filters: *only-untagged
       - client-test:
           filters: *only-untagged
       - cypress/run:
-          yarn: true
-          start: yarn start
+          start: npm start
           wait-on: 'http://localhost:8000'
           filters: *only-untagged
           working_directory: client
-          cache-key: 'yarn-packages-{{ arch }}-{{ checksum "client/yarn.lock" }}'
+          cache-key: 'npm-packages-{{ arch }}-{{ checksum "client/package-lock.json" }}'
       - approve-build-and-push:
           filters: *only-untagged
           type: approval
@@ -141,6 +152,7 @@ workflows:
             - client-format
             # - client-audit
             - client-lint
+            - client-license
             # - client-types
             - cypress/run
             - client-test
@@ -157,17 +169,18 @@ workflows:
       #     filters: *only-tagged-releases
       - client-lint:
           filters: *only-tagged-releases
+      - client-license:
+          filters: *only-tagged-releases
       # - client-types:
       #     filters: *only-tagged-releases
       - client-test:
           filters: *only-tagged-releases
       - cypress/run:
-          yarn: true
-          start: yarn start
+          start: npm start
           wait-on: 'http://localhost:8000'
           filters: *only-tagged-releases
           working_directory: client
-          cache-key: 'yarn-packages-{{ arch }}-{{ checksum "client/yarn.lock" }}'
+          cache-key: 'npm-packages-{{ arch }}-{{ checksum "client/package-lock.json" }}'
       - build-and-push:
           is-release-tag: true
           filters: *only-tagged-releases
@@ -175,6 +188,7 @@ workflows:
             - client-format
             # - client-audit
             - client-lint
+            - client-license
             # - client-types
             - cypress/run
             - client-test
