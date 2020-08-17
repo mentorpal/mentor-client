@@ -51,4 +51,22 @@ describe("Mentor panel", () => {
     cy.get("#video-thumbnail-dan-burns").click();
     cy.get("#header").contains("Dan Burns: Captain (Retired), Chief Engineer");
   });
+
+  it("picking a mentor sets them as faved", () => {
+    cy.visit("/");
+    cy.get("#guest-prompt-input").type("guest");
+    cy.get("#guest-prompt-input-send").click();
+    cy.get("#video-panel")
+      .get("#video-thumbnail-dan")
+      .click();
+    cy.get("#video-panel")
+      .get("#video-thumbnail-dan")
+      .get(".star-icon");
+    cy.get("#video-panel")
+      .get("#video-thumbnail-carlos")
+      .click();
+    cy.get("#video-panel")
+      .get("#video-thumbnail-carlos")
+      .get(".star-icon");
+  });
 });
