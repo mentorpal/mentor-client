@@ -8,7 +8,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Star } from "@material-ui/icons";
 
-import { selectMentor } from "store/actions";
+import { selectMentor, faveMentor } from "store/actions";
 import { MentorQuestionStatus } from "store/types";
 
 import VideoThumbnail from "components/video-thumbnail";
@@ -20,6 +20,9 @@ const VideoPanel = ({ isMobile }) => {
   const dispatch = useDispatch();
   const mentor = useSelector(state => state.curMentor);
   const mentors = useSelector(state => state.mentorsById);
+  const mentorFaved = useSelector(state => state.mentorFaved);
+  const isIdle = useSelector(state => state.isIdle);
+
   if (!mentor) {
     return <div />;
   }
@@ -29,6 +32,9 @@ const VideoPanel = ({ isMobile }) => {
   const onClick = m => {
     if (m.is_off_topic || m.status === MentorQuestionStatus.ERROR) {
       return;
+    }
+    if (!(isIdle && mentorFaved === m.id)) {
+      dispatch(faveMentor(m.id));
     }
     dispatch(selectMentor(m.id, MentorSelectReason.USER_SELECT));
   };
