@@ -7,7 +7,7 @@ The full terms of this copyright and license should always be found in the root 
 import React, { useState } from "react";
 import ReactPlayer from "react-player";
 
-import { idleUrl, videoUrl } from "api/api";
+import { videoUrl } from "api/api";
 import { MentorQuestionStatus } from "store/types";
 
 function findMentorIdleId(mentor) {
@@ -29,9 +29,7 @@ const VideoThumbnail = ({ mentor, isMobile, width, height }) => {
   };
 
   const idleVideoId = findMentorIdleId(mentor);
-  const url = idleVideoId
-    ? videoUrl(mentor.id, idleVideoId, format)
-    : idleUrl(mentor.id, format);
+  const url = videoUrl(mentor.id, idleVideoId, format);
 
   return (
     <ReactPlayer
@@ -43,7 +41,7 @@ const VideoThumbnail = ({ mentor, isMobile, width, height }) => {
       playing={isPlaying}
       volume={0.0}
       muted
-      controls={false}
+      controls={isPlaying}
       playsinline
       webkit-playsinline="true"
     />

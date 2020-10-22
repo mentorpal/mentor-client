@@ -63,11 +63,11 @@ const Video = (args: VideoParams) => {
       : "mobile";
   const video = {
     src: videoState.mentor
-      ? videoState.isIdle
-        ? videoState.idleVideoId
-          ? videoUrl(videoState.mentor, videoState.idleVideoId, format)
-          : idleUrl(videoState.mentor, format)
-        : videoUrl(videoState.mentor, videoState.answerId, format)
+      ? videoUrl(
+          videoState.mentor,
+          videoState.isIdle ? videoState.idleVideoId : videoState.answerId,
+          format
+        )
       : "",
     subtitles:
       videoState.mentor && subtitlesSupported && !videoState.isIdle
