@@ -43,7 +43,7 @@ const VideoThumbnail = ({ mentor, isMobile, width, height }) => {
       playing={isPlaying}
       volume={0.0}
       muted
-      controls={false}
+      controls={isPlaying}
       playsinline
       webkit-playsinline="true"
     />
