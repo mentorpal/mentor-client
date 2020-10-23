@@ -1,3 +1,7 @@
+CYPRESS_IMAGE?=cypress/base:12
+CYPRESS_DOCKER_ENTRYPOINT?=/bin/bash
+CYPRESS_DOCKER_CACHE=$(PWD)/.cypress-docker
+
 .env.development:
 	@echo "CMI5_ENDPOINT=https://dev.mentorpal.org/lrs/xapi" >> .env.development
 	@echo "CMI5_FETCH=https://dev.mentorpal.org/lrs/auth/guesttoken" >> .env.development
@@ -8,9 +12,33 @@
 	@echo "This file should not be committed. "
 	@echo "Feel free to change to point to a local server if you're running one."
 
+.PHONY: clean-cypress-snapshot-cache
+clean-cypress-snapshot-cache:
+	rm -rf $(CYPRESS_DOCKER_CACHE)
+
 .PHONY: clean
-clean:
+clean: clean-cypress-snapshot-cache
 	rm -rf node_modules .cache public
+
+.PHONY: cypress-docker
+cypress-docker:
+	mkdir -p $(CYPRESS_DOCKER_CACHE)/.npm
+	mkdir -p $(CYPRESS_DOCKER_CACHE)/.gatsby.cache
+	mkdir -p $(CYPRESS_DOCKER_CACHE)/.root.cache
+	docker run \
+		--rm \
+		-it \
+		--entrypoint $(CYPRESS_DOCKER_ENTRYPOINT) \
+		-v $(PWD):/client \
+		-v /client/node_modules \
+		-v /client/public \
+		--mount type=bind,source="$(CYPRESS_DOCKER_CACHE)"/.gatsby.cache,destination=/client/.cache,consistency=delegated \
+		--workdir /client \
+	$(CYPRESS_IMAGE)
+
+.PHONY: cypress-update-snapshots
+cypress-update-snapshots:
+	CYPRESS_DOCKER_ENTRYPOINT=bin/cypress_update_snapshots.sh $(MAKE) cypress-docker
 
 .PHONY: develop
 develop: .env.development node_modules/gatsby-cli

@@ -9,9 +9,11 @@ aliases:
     tags:
       ignore: /.*/
 orbs:
-  cypress: cypress-io/cypress@1
   docker: circleci/docker@0.5.17
 executors:
+  cypress:
+    docker:
+      - image: cypress/base:12
   node:
     docker:
       - image: circleci/node:12.16.1
@@ -79,6 +81,28 @@ jobs:
           name: Client test
           command:
             cd client && npm run test
+  client-cypress:
+    executor: cypress
+    steps:
+      - checkout
+      - run:
+          name: Install client
+          command: cd client && npm ci
+      - run:
+          name: Start gatsby
+          command: cd client && npm run develop
+          background: true
+      - run:
+          name: Wait for gatsby
+          command: cd client && bash ./bin/gatsby_wait_for_ready.sh
+      - run:
+          name: Run cypress
+          command: |
+            cd client
+            npx cypress run --env "CYPRESS_SNAPSHOT_DIFF_DIR=cypress/snapshot/snapshot_failed_diffs"
+      - store_artifacts:
+          path: client/cypress/snapshot/snapshot_failed_diffs
+          destination: snapshot_failed_diffs
   build-and-push:
     parameters:
       is-release-tag:
@@ -135,16 +159,12 @@ workflows:
           filters: *only-untagged
       - client-license:
           filters: *only-untagged
-      # - client-types:
-      #     filters: *only-untagged
+      - client-types:
+          filters: *only-untagged
       - client-test:
           filters: *only-untagged
-      - cypress/run:
-          start: npm start
-          wait-on: 'http://localhost:8000'
+      - client-cypress:
           filters: *only-untagged
-          working_directory: client
-          cache-key: 'npm-packages-{{ arch }}-{{ checksum "client/package-lock.json" }}'
       - approve-build-and-push:
           filters: *only-untagged
           type: approval
@@ -153,8 +173,8 @@ workflows:
             # - client-audit
             - client-lint
             - client-license
-            # - client-types
-            - cypress/run
+            - client-types
+            - client-cypress
             - client-test
       - build-and-push:
           is-release-tag: false
@@ -171,16 +191,12 @@ workflows:
           filters: *only-tagged-releases
       - client-license:
           filters: *only-tagged-releases
-      # - client-types:
-      #     filters: *only-tagged-releases
+      - client-types:
+          filters: *only-tagged-releases
       - client-test:
           filters: *only-tagged-releases
-      - cypress/run:
-          start: npm start
-          wait-on: 'http://localhost:8000'
-          filters: *only-tagged-releases
-          working_directory: client
-          cache-key: 'npm-packages-{{ arch }}-{{ checksum "client/package-lock.json" }}'
+      - client-cypress:
+          filters: *only-untagged
       - build-and-push:
           is-release-tag: true
           filters: *only-tagged-releases
@@ -189,9 +205,6 @@ workflows:
             # - client-audit
             - client-lint
             - client-license
-            # - client-types
-            - cypress/run
+            - client-types
+            - client-cypress
             - client-test
-
-
-  

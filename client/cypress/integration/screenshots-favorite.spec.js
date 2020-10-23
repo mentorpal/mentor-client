@@ -4,28 +4,38 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-// ***********************************************************
-// This example plugins/index.js can be used to load plugins
-//
-// You can change the location of this file or turn off loading
-// the plugins file with the 'pluginsFile' configuration option.
-//
-// You can read more here:
-// https://on.cypress.io/plugins-guide
-// ***********************************************************
+import { addGuestParams, mockMentorData } from "./helpers";
 
-// This function is called when a project is opened or re-opened (e.g. due to
-// the project's config changing)
+function snapname(n) {
+  return `screenshots-favorite-${n}`;
+}
 
-module.exports = (on, config) => {
-  // `on` is used to hook into various events Cypress emits
-  // `config` is the resolved Cypress config
-};
+describe("Favorite", () => {
+  beforeEach(() => {
+    cy.server();
+    cy.viewport("iphone-x");
+    mockMentorData(cy);
+    cy.visit("/", {
+      qs: addGuestParams(),
+    });
+  });
 
-//cypress-image-snapshot
-const {
-  addMatchImageSnapshotPlugin,
-} = require("cypress-image-snapshot/plugin");
-module.exports = (on, config) => {
-  addMatchImageSnapshotPlugin(on, config);
-};
+  it("is not toggled by default", () => {
+    cy.wait(500);
+    cy.matchImageSnapshot(snapname("off"));
+  });
+
+  it("can be toggled", () => {
+    cy.wait(500);
+    cy.get("#fave-button").click();
+    cy.matchImageSnapshot(snapname("on"));
+  });
+
+  it("is hidden if there is only one mentor", () => {
+    cy.visit("/", {
+      qs: addGuestParams({ mentor: "clint" }),
+    });
+    cy.wait(500);
+    cy.matchImageSnapshot(snapname("hidden"));
+  });
+});

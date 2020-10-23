@@ -4,28 +4,10 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-// ***********************************************************
-// This example plugins/index.js can be used to load plugins
-//
-// You can change the location of this file or turn off loading
-// the plugins file with the 'pluginsFile' configuration option.
-//
-// You can read more here:
-// https://on.cypress.io/plugins-guide
-// ***********************************************************
-
-// This function is called when a project is opened or re-opened (e.g. due to
-// the project's config changing)
-
-module.exports = (on, config) => {
-  // `on` is used to hook into various events Cypress emits
-  // `config` is the resolved Cypress config
-};
-
-//cypress-image-snapshot
-const {
-  addMatchImageSnapshotPlugin,
-} = require("cypress-image-snapshot/plugin");
-module.exports = (on, config) => {
-  addMatchImageSnapshotPlugin(on, config);
-};
+declare namespace Cypress {
+  interface Chainable<Subject = any> {
+    matchImageSnapshot(value: string): Chainable<void>;
+    fill(value: string): Chainable<void>;
+  }
+  interface cy extends Chainable<undefined> {}
+}

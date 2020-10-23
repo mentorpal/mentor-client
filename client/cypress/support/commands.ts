@@ -30,18 +30,13 @@ The full terms of this copyright and license should always be found in the root 
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-//cypress-image-snapshot
-import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command';
+import "cypress-fill-command";
+import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command";
+
 addMatchImageSnapshotCommand({
-  failureThreshold: 0.008,
-  failureThresholdType: 'percent',
-  customDiffConfig: { threshold: 0.0 },
-  capture: 'viewport',
+  blackout: ["video"],
+  customDiffDir: Cypress.env("CYPRESS_SNAPSHOT_DIFF_DIR"),
+  comparisonMethod: "ssim",
+  failureThreshold: 0.01,
+  failureThresholdType: "percent",
 });
-Cypress.Commands.add("setResolution", (size) => {
-  if (Cypress._.isArray(size)) {
-     cy.viewport(size[0], size[1]);
-   } else {
-    cy.viewport(size);
-  }
- })

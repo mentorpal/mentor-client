@@ -18,15 +18,53 @@ describe("Favorite", () => {
     cy.get("#fave-button")
       .invoke("attr", "style")
       .should("contain", "grey");
+    cy.get("#video-thumbnail-clint");
   });
 
-  it("can be toggled", () => {
+  it("can be toggled via star button", () => {
     cy.visit("/", { qs: addGuestParams() });
-    cy.wait(1000);
+    cy.wait(500);
+    // favorite current mentor
     cy.get("#fave-button").click();
     cy.get("#fave-button")
       .invoke("attr", "style")
       .should("contain", "yellow");
+    cy.get("#video-thumbnail-clint")
+      .get(".star-icon")
+      .invoke("attr", "style")
+      .should("contain", "yellow");
+    // unfavorite current mentor
+    cy.get("#fave-button").click();
+    cy.get("#fave-button")
+      .invoke("attr", "style")
+      .should("contain", "grey");
+    cy.get("#video-thumbnail-clint")
+      .get(".star-icon")
+      .invoke("attr", "style")
+      .should("contain", "grey");
+  });
+
+  it("can be toggled via mentor panel", () => {
+    cy.visit("/", { qs: addGuestParams() });
+    cy.wait(500);
+    // select dan
+    cy.get("#video-thumbnail-dan").click();
+    cy.get("#video-thumbnail-dan")
+      .get(".star-icon")
+      .invoke("attr", "style")
+      .should("contain", "yellow");
+    // select carlos
+    cy.get("#video-thumbnail-carlos").click();
+    cy.get("#video-thumbnail-carlos")
+      .get(".star-icon")
+      .invoke("attr", "style")
+      .should("contain", "yellow");
+    // unselect carlos
+    cy.get("#video-thumbnail-carlos").click();
+    cy.get("#video-thumbnail-carlos")
+      .get(".star-icon")
+      .invoke("attr", "style")
+      .should("contain", "grey");
   });
 
   it("is hidden if there is only one mentor", () => {

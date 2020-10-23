@@ -144,6 +144,7 @@ function VideoPlayer(args: VideoPlayerParams) {
   } = args;
   return (
     <ReactPlayer
+      id="video-player"
       style={{
         backgroundColor: "black",
         position: "relative",

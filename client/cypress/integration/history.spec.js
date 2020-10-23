@@ -22,12 +22,14 @@ describe("History", () => {
   it("displays in topics list if questions have been asked", () => {
     cy.get("#input-field").type("Hello");
     cy.get("#input-send").click();
+    cy.wait(500);
     cy.get("#topics").contains("History");
   });
 
   it("displays questions that have been asked via input", () => {
     cy.get("#input-field").type("Hello");
     cy.get("#input-send").click();
+    cy.wait(500);
     cy.get("#topic-8").click();
     cy.get("#scrolling-questions-list").contains("Hello");
   });
@@ -35,6 +37,7 @@ describe("History", () => {
   it("displays questions that have been asked via topic button", () => {
     cy.get("#topic-0").click();
     cy.get("#input-send").click();
+    cy.wait(500);
     cy.get("#topic-8").click();
     cy.get("#scrolling-questions-list").contains("Where were you born?");
   });
@@ -42,6 +45,7 @@ describe("History", () => {
   it("displays most recent questions at the top", () => {
     cy.get("#input-field").type("Hello");
     cy.get("#input-send").click();
+    cy.wait(500);
     cy.get("#topic-8").click();
     cy.get("#scrolling-questions-list")
       .get("li")
@@ -58,6 +62,7 @@ describe("History", () => {
   it("does not read duplicate questions", () => {
     cy.get("#input-field").type("Hello");
     cy.get("#input-send").click();
+    cy.wait(500);
     cy.get("#topic-8").click();
     cy.get("#scrolling-questions-list").contains("Hello");
     cy.get("#input-field").type("World");

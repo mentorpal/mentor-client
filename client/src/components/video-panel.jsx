@@ -7,10 +7,8 @@ The full terms of this copyright and license should always be found in the root 
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Star } from "@material-ui/icons";
-
 import { selectMentor, faveMentor } from "store/actions";
 import { MentorQuestionStatus } from "store/types";
-
 import VideoThumbnail from "components/video-thumbnail";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
