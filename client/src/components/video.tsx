@@ -9,10 +9,10 @@ import ReactPlayer from "react-player";
 import { useSelector, useDispatch } from "react-redux";
 import { Star, StarBorder } from "@material-ui/icons";
 
-import { idleUrl, videoUrl, subtitleUrl } from "api/api";
+import { idleUrl, videoUrl, subtitleUrl } from "api";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
-import { chromeVersion } from "funcs/funcs";
+import { chromeVersion } from "utils";
 import {
   answerFinished,
   faveMentor,
@@ -44,7 +44,7 @@ interface VideoParams {
 }
 const Video = (args: VideoParams) => {
   const { height, width, playing = false } = args;
-  const videoState = useSelector<State, VideoState>(state => {
+  const videoState = useSelector<State, VideoState>((state) => {
     const m = state.mentorsById[state.curMentor];
     return {
       answerId: m ? `${m.answer_id}` : "",
@@ -185,11 +185,11 @@ const MemoVideoPlayer = React.memo(VideoPlayer);
 
 function FaveButton() {
   const dispatch = useDispatch();
-  const mentor = useSelector<State, string>(state => state.curMentor);
+  const mentor = useSelector<State, string>((state) => state.curMentor);
   const numMentors = useSelector<State, number>(
-    state => Object.keys(state.mentorsById).length
+    (state) => Object.keys(state.mentorsById).length
   );
-  const mentorFaved = useSelector<State, string>(state => state.mentorFaved);
+  const mentorFaved = useSelector<State, string>((state) => state.mentorFaved);
 
   const onClick = () => {
     dispatch(faveMentor(mentor));

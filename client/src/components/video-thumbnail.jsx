@@ -7,7 +7,7 @@ The full terms of this copyright and license should always be found in the root 
 import React, { useState } from "react";
 import ReactPlayer from "react-player";
 
-import { idleUrl, videoUrl } from "api/api";
+import { idleUrl, videoUrl } from "api";
 import { MentorQuestionStatus } from "store/types";
 
 function findMentorIdleId(mentor) {

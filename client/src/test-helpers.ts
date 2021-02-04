@@ -23,7 +23,7 @@ export class ExpectIntermediateStates<StoreType> {
 
   public subscribe() {
     this.store.subscribe(() => {
-      const nextUnmet = this.expectedStates.find(x => !x.isMet);
+      const nextUnmet = this.expectedStates.find((x) => !x.isMet);
       if (!nextUnmet) {
         return;
       }
@@ -33,7 +33,7 @@ export class ExpectIntermediateStates<StoreType> {
   }
 
   public testExpectations() {
-    this.expectedStates.forEach(inState => {
+    this.expectedStates.forEach((inState) => {
       expect({ message: inState.unmetMessage, isMet: inState.isMet }).toEqual({
         message: inState.unmetMessage,
         isMet: true,

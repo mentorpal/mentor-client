@@ -9,7 +9,7 @@ const cmi5Actions = require("redux-cmi5").actions;
 import { ActionCreator, AnyAction, Dispatch } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 
-import { fetchMentorData, MentorApiData, queryMentor } from "api/api";
+import { fetchMentorData, MentorApiData, queryMentor } from "api";
 import {
   MentorDataResult,
   MentorQuestionStatus,
@@ -147,12 +147,14 @@ function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
   };
 }
 
-export const loadMentor: ActionCreator<ThunkAction<
-  Promise<MentorDataRequestDoneAction>, // The type of the last action to be dispatched - will always be promise<T> for async actions
-  State, // The type for the data within the last action
-  string, // The type of the parameter for the nested function
-  MentorDataRequestDoneAction // The type of the last action to be dispatched
->> = (
+export const loadMentor: ActionCreator<
+  ThunkAction<
+    Promise<MentorDataRequestDoneAction>, // The type of the last action to be dispatched - will always be promise<T> for async actions
+    State, // The type for the data within the last action
+    string, // The type of the parameter for the nested function
+    MentorDataRequestDoneAction // The type of the last action to be dispatched
+  >
+> = (
   mentors: string | string[],
   {
     recommendedQuestions,
@@ -179,10 +181,10 @@ export const loadMentor: ActionCreator<ThunkAction<
       payload: mentorList,
     });
     const dataPromises = Promise.all(
-      mentorList.map(mentorId => {
+      mentorList.map((mentorId) => {
         return new Promise<void>((resolve, reject) => {
           fetchMentorData(mentorId)
-            .then(result => {
+            .then((result) => {
               if (result.status == 200) {
                 const apiData = result.data;
                 const mentorData: MentorData = {
@@ -196,7 +198,7 @@ export const loadMentor: ActionCreator<ThunkAction<
                     (topicQs, topicId) => {
                       const topicData = apiData.topics_by_id[topicId];
                       topicQs[topicData.name] = topicData.questions.map(
-                        t => apiData.questions_by_id[t].question_text
+                        (t) => apiData.questions_by_id[t].question_text
                       );
                       return topicQs;
                     },
@@ -217,7 +219,7 @@ export const loadMentor: ActionCreator<ThunkAction<
                 return reject();
               }
             })
-            .catch(err => {
+            .catch((err) => {
               dispatch<MentorDataResultAction>({
                 type: MENTOR_DATA_RESULT,
                 payload: {
@@ -235,7 +237,7 @@ export const loadMentor: ActionCreator<ThunkAction<
     // find the first of the requested mentors that loaded successfully
     // and select that mentor
     const firstMentor = mentorList.find(
-      id => mentorsById[id].status === MentorQuestionStatus.READY
+      (id) => mentorsById[id].status === MentorQuestionStatus.READY
     );
     if (firstMentor) {
       dispatch(selectMentor(firstMentor, MentorSelectReason.NEXT_READY));
@@ -341,10 +343,10 @@ export const sendQuestion = (q: {
   const mentorIds = Object.keys(state.mentorsById);
   const tick = Date.now();
   // query all the mentors without waiting for the answers one by one
-  const promises = mentorIds.map(mentor => {
+  const promises = mentorIds.map((mentor) => {
     return new Promise<QuestionResponse>((resolve, reject) => {
       queryMentor(mentor, q.question)
-        .then(r => {
+        .then((r) => {
           const { data } = r;
           const response: QuestionResponse = {
             answerId: data.answer_id,
@@ -383,14 +385,14 @@ export const sendQuestion = (q: {
   // ...but still don't move forward till we have all the answers,
   // because we will prefer the user's fav and then highest confidence
   const responses = (
-    await Promise.all<QuestionResponse>(promises.map(p => p.catch(e => e)))
-  ).filter(r => !(r instanceof Error));
+    await Promise.all<QuestionResponse>(promises.map((p) => p.catch((e) => e)))
+  ).filter((r) => !(r instanceof Error));
   if (responses.length === 0) {
     return;
   }
   // Play favored mentor if an answer exists
   if (state.mentorFaved) {
-    const favResponse = responses.find(response => {
+    const favResponse = responses.find((response) => {
       return response.mentor === state.mentorFaved;
     });
     if (favResponse && !favResponse.answerIsOffTopic) {
@@ -432,7 +434,7 @@ export const answerFinished = () => (
     is_off_topic: boolean;
     status: MentorQuestionStatus;
   }[] = [];
-  Object.keys(mentors).forEach(id => {
+  Object.keys(mentors).forEach((id) => {
     responses.push({
       confidence: mentors[id].confidence || -1.0,
       id: mentors[id].id,
@@ -442,7 +444,7 @@ export const answerFinished = () => (
   });
   responses.sort((a, b) => (a.confidence > b.confidence ? -1 : 1));
   // get the most confident answer that has not been given
-  const mentorNext = responses.find(response => {
+  const mentorNext = responses.find((response) => {
     return (
       response.status === MentorQuestionStatus.READY && !response.is_off_topic
     );
@@ -462,12 +464,9 @@ export const answerFinished = () => (
   }, NEXT_MENTOR_DELAY);
 };
 
-export const onInput: ActionCreator<ThunkAction<
-  AnyAction,
-  State,
-  void,
-  NextMentorAction
->> = () => (dispatch: Dispatch) => {
+export const onInput: ActionCreator<
+  ThunkAction<AnyAction, State, void, NextMentorAction>
+> = () => (dispatch: Dispatch) => {
   if (timer) {
     clearTimeout(timer);
     timer = null;

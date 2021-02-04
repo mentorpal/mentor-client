@@ -18,7 +18,7 @@ clean-cypress-snapshot-cache:
 
 .PHONY: clean
 clean: clean-cypress-snapshot-cache
-	rm -rf node_modules .cache public
+	rm -rf .cache public
 
 .PHONY: cypress-docker
 cypress-docker:
@@ -40,8 +40,12 @@ cypress-docker:
 cypress-update-snapshots:
 	CYPRESS_DOCKER_ENTRYPOINT=bin/cypress_update_snapshots.sh $(MAKE) cypress-docker
 
+.PHONY: dependencies-update
+dependencies-update:
+	npm run dependencies-update
+
 .PHONY: develop
-develop: .env.development node_modules/gatsby-cli
+develop: node_modules/gatsby
 	npx gatsby develop
 
 .PHONY: format
@@ -49,39 +53,34 @@ format: node_modules/prettier
 	npm run format
 
 node_modules/cypress:
-	npm install 
+	$(MAKE) install
 
 node_modules/eslint:
-	npm install 
+	$(MAKE) install
 
 node_modules/gatsby-cli:
-	npm install 
-
-node_modules/jest:
-	npm install 
-
-node_modules/jest:
-	npm install 
+	$(MAKE) install
 
 node_modules/prettier:
-	npm install 
+	$(MAKE) install
 
 node_modules/typescript:
-	npm install 
+	$(MAKE) install
+
+PHONY: install
+install:
+	npm ci 
 
 .PHONY: test
-test: node_modules/jest
+test:
 	npm run test
 
 PHONY: test-all
 test-all:
-	# $(MAKE) test-audit
+	$(MAKE) test-audit
 	$(MAKE) test-format
 	$(MAKE) test-lint
-	$(MAKE) test-license
-	# $(MAKE) test-types
-	$(MAKE) test-cypress
-	$(MAKE) test
+	$(MAKE) test-types
 
 .PHONY: test-audit
 test-audit:
@@ -102,22 +101,3 @@ test-types: node_modules/typescript
 .PHONY: test-cypress
 test-cypress: node_modules/cypress
 	npm run test:cypress
-
-LICENSE:
-	@echo "you must have a LICENSE file" 1>&2
-	exit 1
-
-LICENSE_HEADER:
-	@echo "you must have a LICENSE_HEADER file" 1>&2
-	exit 1
-
-.PHONY: license
-license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
-	npm run license:fix
-
-.PHONY: test-license
-test-license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
-	npm run test:license
-
-node_modules/license-check-and-add:
-	npm ci

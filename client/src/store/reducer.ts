@@ -5,7 +5,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 const cmi5Reducer = require("redux-cmi5").reducers;
-import { normalizeString } from "funcs/funcs";
+import { normalizeString } from "utils";
 import {
   ANSWER_FINISHED,
   MENTOR_FAVED,
@@ -121,7 +121,7 @@ function onMentorDataRequested(
     },
     {}
   );
-  Object.getOwnPropertyNames(state.mentorsById).forEach(id => {
+  Object.getOwnPropertyNames(state.mentorsById).forEach((id) => {
     mentorsById[id] = state.mentorsById[id];
   });
   return {

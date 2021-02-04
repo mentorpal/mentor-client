@@ -15,6 +15,7 @@ import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 import { addCmi, hasCmi } from "cmiutils";
 import config from "config";
+import Chat from "components/chat";
 import GuestPrompt from "components/guest-prompt";
 import Header from "components/header";
 import Input from "components/input";
@@ -37,11 +38,11 @@ const theme = createMuiTheme({
 
 const IndexPage = ({ search }) => {
   const dispatch = useDispatch();
-  const mentorsById = useSelector(state => state.mentorsById);
-  const guestName = useSelector(state => state.guestName);
+  const mentorsById = useSelector((state) => state.mentorsById);
+  const guestName = useSelector((state) => state.guestName);
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
-  const { recommended, mentor, guest } = search;
+  const { recommended, mentor, guest, hideVideo } = search;
 
   const isMobile = width < 768;
   const videoHeight = isMobile ? height * 0.5 : Math.min(width * 0.5625, 700);
@@ -159,28 +160,28 @@ const IndexPage = ({ search }) => {
         <script src={withPrefix("cmi5.js")} type="text/javascript" />
       </Helmet>
       <div className="flex" style={{ height: videoHeight }}>
-        {hidePanel ? (
-          undefined
-        ) : (
+        {hidePanel ? undefined : hideVideo ? undefined : (
           <div className="content" style={{ height: "100px" }}>
             <VideoPanel isMobile={isMobile} />
             <Header />
           </div>
         )}
         <div className="expand">
-          <Video
-            height={videoHeight - (hidePanel ? 0 : 100)}
-            width={width}
-            playing={hasSessionUser()}
-          />
+          {hideVideo ? (
+            <Chat height={videoHeight - (hidePanel ? 0 : 100)} />
+          ) : (
+            <Video
+              height={videoHeight - (hidePanel ? 0 : 100)}
+              width={width}
+              playing={hasSessionUser()}
+            />
+          )}
         </div>
       </div>
       <Input height={inputHeight} />
       {!hasSessionUser() ? (
         <GuestPrompt submit={onGuestNameEntered} />
-      ) : (
-        undefined
-      )}
+      ) : undefined}
     </MuiThemeProvider>
   );
 };

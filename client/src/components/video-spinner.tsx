@@ -15,7 +15,7 @@ const LoadingSpinner = (args: {
   height: number;
 }) => {
   const { mentor, width, height } = args;
-  const isMentorQuestionDifferent = useSelector<State, boolean>(state => {
+  const isMentorQuestionDifferent = useSelector<State, boolean>((state) => {
     const m = state.mentorsById[mentor];
     return Boolean(m && state.curQuestion && state.curQuestion !== m.question);
   });

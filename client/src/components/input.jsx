@@ -17,7 +17,7 @@ import { MentorQuestionSource } from "store/types";
 
 const Input = ({ height, ...props }) => {
   const dispatch = useDispatch();
-  const questionState = useSelector(state => state.curQuestion);
+  const questionState = useSelector((state) => state.curQuestion);
   const [questionInput, setQuestionInput] = useState({
     question: "",
     source: MentorQuestionSource.NONE,
@@ -66,7 +66,7 @@ const Input = ({ height, ...props }) => {
   }
 
   // Input field key was entered (check if user hit enter)
-  const onKeyPress = ev => {
+  const onKeyPress = (ev) => {
     if (ev.key !== "Enter") {
       return;
     }
@@ -92,7 +92,7 @@ const Input = ({ height, ...props }) => {
             rows={2}
             rowsMax={2}
             placeholder={questionState || "Ask a question"}
-            onChange={e => {
+            onChange={(e) => {
               onQuestionInputChanged(e.target.value);
             }}
             onClick={onQuestionInputSelected}

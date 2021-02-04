@@ -4,17 +4,28 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React from "react";
-import { useSelector } from "react-redux";
+// ***********************************************************
+// This example plugins/index.js can be used to load plugins
+//
+// You can change the location of this file or turn off loading
+// the plugins file with the 'pluginsFile' configuration option.
+//
+// You can read more here:
+// https://on.cypress.io/plugins-guide
+// ***********************************************************
 
-const Header = () => {
-  const mentor = useSelector((state) => state.mentorsById[state.curMentor]);
+// This function is called when a project is opened or re-opened (e.g. due to
+// the project's config changing)
 
-  return (
-    <div id="header">
-      {mentor ? `${mentor.name}: ${mentor.title}` : undefined}
-    </div>
-  );
+/// <reference types="cypress" />
+
+/**
+ * @type {Cypress.PluginConfig}
+ */
+const {
+  addMatchImageSnapshotPlugin,
+} = require("cypress-image-snapshot/plugin");
+
+module.exports = (on, config) => {
+  addMatchImageSnapshotPlugin(on, config);
 };
-
-export default Header;

@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import { Modal, Button, Paper, InputBase, Backdrop } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
     alignItems: "center",
@@ -62,7 +62,7 @@ export default function GuestPrompt({ submit }) {
             className={classes.inputField}
             value={name}
             placeholder={"guest"}
-            onChange={e => {
+            onChange={(e) => {
               onInput(e.target.value);
             }}
           />

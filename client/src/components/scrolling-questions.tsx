@@ -9,7 +9,7 @@ import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import { Whatshot } from "@material-ui/icons";
 import smoothscroll from "smoothscroll-polyfill";
 
-import { normalizeString } from "funcs/funcs";
+import { normalizeString } from "utils";
 
 interface OnQuestionSelected {
   (question?: string): undefined;
@@ -37,7 +37,7 @@ const ScrollingQuestions = (args: ScrollingQuestionsParams) => {
   }, []);
 
   useEffect(() => {
-    const topQuestion = questions.find(q => {
+    const topQuestion = questions.find((q) => {
       return !questionsAsked.includes(normalizeString(q));
     });
     const parent = document.getElementById("scrolling-questions-list");
@@ -72,9 +72,7 @@ const ScrollingQuestions = (args: ScrollingQuestionsParams) => {
                 style={{ height: 25, width: 25 }}
               />
             </ListItemIcon>
-          ) : (
-            undefined
-          )}
+          ) : undefined}
           <ListItemText
             primary={question}
             style={{

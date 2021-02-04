@@ -26,11 +26,11 @@ interface Props {
 }
 const Questions = ({ height, onSelected }: Props) => {
   const mentor = useSelector<State, MentorData>(
-    state => state.mentorsById[state.curMentor]
+    (state) => state.mentorsById[state.curMentor]
   );
-  const curTopic = useSelector<State, string>(state => state.curTopic);
+  const curTopic = useSelector<State, string>((state) => state.curTopic);
   const questionsAsked = useSelector<State, string[]>(
-    state => state.questionsAsked
+    (state) => state.questionsAsked
   );
 
   if (!(mentor && curTopic && mentor.topic_questions)) {

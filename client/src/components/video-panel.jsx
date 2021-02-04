@@ -16,10 +16,10 @@ import { MentorSelectReason } from "store/types";
 
 const VideoPanel = ({ isMobile }) => {
   const dispatch = useDispatch();
-  const mentor = useSelector(state => state.curMentor);
-  const mentors = useSelector(state => state.mentorsById);
-  const mentorFaved = useSelector(state => state.mentorFaved);
-  const isIdle = useSelector(state => state.isIdle);
+  const mentor = useSelector((state) => state.curMentor);
+  const mentors = useSelector((state) => state.mentorsById);
+  const mentorFaved = useSelector((state) => state.mentorFaved);
+  const isIdle = useSelector((state) => state.isIdle);
 
   if (!mentor) {
     return <div />;
@@ -27,7 +27,7 @@ const VideoPanel = ({ isMobile }) => {
   const height = 50;
   const width = isMobile ? height / 0.895 : height / 0.5625;
 
-  const onClick = m => {
+  const onClick = (m) => {
     if (m.is_off_topic || m.status === MentorQuestionStatus.ERROR) {
       return;
     }
@@ -62,7 +62,7 @@ const VideoPanel = ({ isMobile }) => {
 };
 
 const StarIcon = ({ mentor }) => {
-  const mentorFaved = useSelector(state => state.mentorFaved);
+  const mentorFaved = useSelector((state) => state.mentorFaved);
   if (mentorFaved === mentor.id) {
     return (
       <Star

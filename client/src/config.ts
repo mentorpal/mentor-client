@@ -24,7 +24,7 @@ if (typeof window !== "undefined" && process.env.NODE_ENV !== "test") {
   // i.e. don't run at build time
   axios
     .get(`/config`)
-    .then(result => {
+    .then((result) => {
       if (typeof result.data["CMI5_ENDPOINT"] === "string") {
         config.CMI5_ENDPOINT = result.data["CMI5_ENDPOINT"];
       }
@@ -38,7 +38,7 @@ if (typeof window !== "undefined" && process.env.NODE_ENV !== "test") {
         config.MENTOR_VIDEO_URL = result.data["MENTOR_VIDEO_URL"];
       }
     })
-    .catch(err => {
+    .catch((err) => {
       console.error(err);
     });
 }

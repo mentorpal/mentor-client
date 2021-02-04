@@ -4,17 +4,23 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React from "react";
-import { useSelector } from "react-redux";
+// ***********************************************************
+// This example support/index.js is processed and
+// loaded automatically before your test files.
+//
+// This is a great place to put global configuration and
+// behavior that modifies Cypress.
+//
+// You can change the location of this file or turn off
+// automatically serving support files with the
+// 'supportFile' configuration option.
+//
+// You can read more here:
+// https://on.cypress.io/configuration
+// ***********************************************************
 
-const Header = () => {
-  const mentor = useSelector((state) => state.mentorsById[state.curMentor]);
+// Import commands.js using ES2015 syntax:
+import "./commands";
 
-  return (
-    <div id="header">
-      {mentor ? `${mentor.name}: ${mentor.title}` : undefined}
-    </div>
-  );
-};
-
-export default Header;
+// Alternatively you can use CommonJS syntax:
+// require('./commands')
