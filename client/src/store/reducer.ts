@@ -4,7 +4,6 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-const cmi5Reducer = require("redux-cmi5").reducers;
 import { normalizeString } from "utils";
 import {
   ANSWER_FINISHED,
@@ -36,7 +35,7 @@ import {
   MentorSelectReason,
 } from "./types";
 
-export const initialState: State = cmi5Reducer({
+export const initialState: State = {
   curMentor: "", // id of selected mentor
   curMentorReason: MentorSelectReason.NONE,
   curQuestion: "", // question that was last asked
@@ -48,7 +47,7 @@ export const initialState: State = cmi5Reducer({
   mentorNext: "", // id of the next mentor to speak after the current finishes
   questionsAsked: [],
   guestName: "",
-});
+};
 
 function mentorSelected(state: State, action: MentorSelectedAction): State {
   const mentorId = action.payload.id;
@@ -146,7 +145,7 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
 }
 
 export default function reducer(state = initialState, action: any): State {
-  state = cmi5Reducer(state, action);
+  // state = cmi5Reducer(state, action);
   switch (action.type) {
     case MENTOR_ANSWER_PLAYBACK_STARTED:
       return onMentorAnswerPlaybackStarted(

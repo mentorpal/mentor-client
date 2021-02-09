@@ -38,25 +38,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface ChatMsg {
-  speaker: string;
-  text: string;
-}
-interface AnswerState {
-  mentor: string;
+  isUser: boolean;
   text: string;
 }
 
 export default function Chat(props: { height: number }): JSX.Element {
   const styles = useStyles();
   const [messages, setMessages] = useState<ChatMsg[]>([]);
-  const [lastAnswer, setLastAnswer] = useState<AnswerState>();
   const question = useSelector<State, string>((state) => state.curQuestion);
-  const answer = useSelector<State, AnswerState>((state) => {
+  const answer = useSelector<State, string | undefined>((state) => {
     const m = state.mentorsById[state.curMentor];
-    return {
-      mentor: m?.name || "",
-      text: m?.answer_text || "",
-    };
+    return m ? m.answer_text : undefined;
   });
 
   useEffect(() => {
@@ -66,27 +58,23 @@ export default function Chat(props: { height: number }): JSX.Element {
     setMessages([
       ...messages,
       {
-        speaker: "",
+        isUser: true,
         text: question,
       },
     ]);
   }, [question]);
 
   useEffect(() => {
-    if (!answer.mentor || !answer.text) {
-      return;
-    }
-    if (lastAnswer && lastAnswer.text === answer.text) {
+    if (!answer) {
       return;
     }
     setMessages([
       ...messages,
       {
-        speaker: answer.mentor,
-        text: answer.text,
+        isUser: false,
+        text: answer,
       },
     ]);
-    setLastAnswer(answer);
   }, [answer]);
 
   useEffect(() => {
@@ -119,7 +107,7 @@ export default function Chat(props: { height: number }): JSX.Element {
               id={`chat-msg-${i}`}
               key={`chat-msg-${i}`}
               disableGutters={false}
-              className={message.speaker ? "system" : "user"}
+              className={message.isUser ? "user" : "system"}
               classes={{
                 root: styles.root,
               }}

@@ -5,9 +5,9 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 /* eslint-disable */
-const cmi5Actions = require("redux-cmi5").actions;
 import { ActionCreator, AnyAction, Dispatch } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
+import Cmi5 from "@xapi/cmi5";
 
 import { fetchMentorData, MentorApiData, queryMentor } from "api";
 import {
@@ -250,8 +250,6 @@ export const loadMentor: ActionCreator<
   });
 };
 
-const { sendStatement: sendXapiStatement } = cmi5Actions;
-
 export function mentorAnswerPlaybackStarted(video: {
   mentor: string;
   duration: number;
@@ -269,19 +267,23 @@ export function mentorAnswerPlaybackStarted(video: {
       );
       return;
     }
-    dispatch(
-      sendXapiStatement({
-        verb: "https://mentorpal.org/xapi/verb/answer-playback-started",
-        result: {
-          extensions: {
-            "https://mentorpal.org/xapi/verb/answer-playback-started": toXapiResultExt(
-              mentorData,
-              curState
-            ),
-          },
+    if (!Cmi5.isCmiAvailable) {
+      return;
+    }
+    Cmi5.instance.sendCmi5AllowedStatement({
+      verb: {
+        id: "https://mentorpal.org/xapi/verb/answer-playback-started",
+        display: {},
+      },
+      result: {
+        extensions: {
+          "https://mentorpal.org/xapi/verb/answer-playback-started": toXapiResultExt(
+            mentorData,
+            curState
+          ),
         },
-      })
-    );
+      },
+    });
   };
 }
 
@@ -323,20 +325,18 @@ export const sendQuestion = (q: {
   dispatch: ThunkDispatch<State, void, AnyAction>,
   getState: () => State
 ) => {
-  dispatch(
-    sendXapiStatement({
-      result: {
-        extensions: {
-          "https://mentorpal.org/xapi/verb/asked": {
-            questionIndex: currentQuestionIndex(getState()) + 1,
-            text: q.question,
-            source: q.source,
-          },
+  Cmi5.instance.sendCmi5AllowedStatement({
+    verb: { id: "https://mentorpal.org/xapi/verb/asked", display: {} },
+    result: {
+      extensions: {
+        "https://mentorpal.org/xapi/verb/asked": {
+          questionIndex: currentQuestionIndex(getState()) + 1,
+          text: q.question,
+          source: q.source,
         },
       },
-      verb: "https://mentorpal.org/xapi/verb/asked",
-    })
-  );
+    },
+  });
   dispatch(onInput());
   dispatch(onQuestionSent(q));
   const state = getState();
@@ -360,19 +360,20 @@ export const sendQuestion = (q: {
             questionSource: q.source,
             status: MentorQuestionStatus.ANSWERED,
           };
-          dispatch(
-            sendXapiStatement({
-              result: {
-                extensions: {
-                  "https://mentorpal.org/xapi/verb/answered": {
-                    ...response,
-                    questionIndex: currentQuestionIndex(getState()),
-                  },
+          Cmi5.instance.sendCmi5AllowedStatement({
+            verb: {
+              id: "https://mentorpal.org/xapi/verb/answered",
+              display: {},
+            },
+            result: {
+              extensions: {
+                "https://mentorpal.org/xapi/verb/answered": {
+                  ...response,
+                  questionIndex: currentQuestionIndex(getState()),
                 },
               },
-              verb: "https://mentorpal.org/xapi/verb/answered",
-            })
-          );
+            },
+          });
           dispatch(onQuestionAnswered(response));
           resolve(response);
         })

@@ -8,12 +8,12 @@ import { withPrefix } from "gatsby";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useSelector, useDispatch } from "react-redux";
-import { actions as cmi5Actions } from "redux-cmi5";
 import { v1 as uuidv1 } from "uuid";
 import { CircularProgress } from "@material-ui/core";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import Cmi5 from "@xapi/cmi5";
 
-import { addCmi, hasCmi } from "cmiutils";
+import { addCmi } from "cmiutils";
 import config from "config";
 import Chat from "components/chat";
 import GuestPrompt from "components/guest-prompt";
@@ -25,8 +25,6 @@ import { loadMentor, setGuestName } from "store/actions";
 import withLocation from "wrap-with-location";
 
 import "styles/layout.css";
-
-const { start: cmi5Start } = cmi5Actions;
 
 const theme = createMuiTheme({
   palette: {
@@ -50,23 +48,19 @@ const IndexPage = ({ search }) => {
     ? height * 0.5
     : Math.max(height - videoHeight, 250);
 
-  let globalWindow;
-  if (typeof window !== "undefined") {
-    globalWindow = window; // eslint-disable-line no-undef
-  }
-
   function hasSessionUser() {
-    return Boolean(
-      (globalWindow && hasCmi(globalWindow.location.search)) || guestName
-    );
+    if (typeof window === "undefined") {
+      return Boolean(guestName);
+    }
+    return Boolean(Cmi5.isCmiAvailable || guestName);
   }
 
   function handleWindowResize() {
-    if (typeof globalWindow === `undefined`) {
+    if (typeof window === `undefined`) {
       return;
     }
-    setHeight(globalWindow.innerHeight);
-    setWidth(globalWindow.innerWidth);
+    setHeight(window.innerHeight);
+    setWidth(window.innerWidth);
   }
 
   function setQueryStringWithoutPageReload(qsValue) {
@@ -80,7 +74,7 @@ const IndexPage = ({ search }) => {
   }
 
   function absUrl(u) {
-    if (!globalWindow) {
+    if (typeof window === "undefined") {
       return u;
     }
     return u.startsWith("http")
@@ -94,15 +88,15 @@ const IndexPage = ({ search }) => {
     if (!name) {
       name = "guest";
     }
-    if (!globalWindow) {
+    if (typeof window === "undefined") {
       setQueryStringWithoutPageReload(name);
       dispatch(setGuestName(name));
       return;
     }
     const urlRoot = `${window.location.protocol}//${window.location.host}`;
     const userId = uuidv1();
-    globalWindow.location.href = addCmi(globalWindow.location.href, {
-      activityId: globalWindow.location.href,
+    window.location.href = addCmi(window.location.href, {
+      activityId: window.location.href,
       actor: {
         name: `${name}`,
         account: {
@@ -119,7 +113,9 @@ const IndexPage = ({ search }) => {
   }
 
   useEffect(() => {
-    dispatch(cmi5Start());
+    if (Cmi5.isCmiAvailable) {
+      Cmi5.instance.initialize();
+    }
   }, []);
 
   useEffect(() => {
@@ -140,11 +136,11 @@ const IndexPage = ({ search }) => {
 
   useEffect(() => {
     // Media queries for layout
-    setHeight(globalWindow.innerHeight);
-    setWidth(globalWindow.innerWidth);
-    globalWindow.addEventListener("resize", handleWindowResize);
+    setHeight(window.innerHeight);
+    setWidth(window.innerWidth);
+    window.addEventListener("resize", handleWindowResize);
     return () => {
-      globalWindow.removeEventListener("resize", handleWindowResize);
+      window.removeEventListener("resize", handleWindowResize);
     };
   }, []);
 
@@ -156,9 +152,6 @@ const IndexPage = ({ search }) => {
 
   return (
     <MuiThemeProvider theme={theme}>
-      <Helmet>
-        <script src={withPrefix("cmi5.js")} type="text/javascript" />
-      </Helmet>
       <div className="flex" style={{ height: videoHeight }}>
         {hidePanel ? undefined : hideVideo ? undefined : (
           <div className="content" style={{ height: "100px" }}>
