@@ -24,13 +24,13 @@ describe("Questions list", () => {
     });
 
     it("changes questions when switching topics", () => {
-        cy.get("#topic-1").click();
+        cy.get("#topic-1").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").contains(
             "What qualifications and experience do recruiters"
         );
         cy.get("#scrolling-questions-list").contains("What is Japan like?");
 
-        cy.get("#topic-2").click();
+        cy.get("#topic-2").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").contains(
             "What is your strategy for overcoming your hardships?"
         );
@@ -40,20 +40,20 @@ describe("Questions list", () => {
     });
 
     it("changes questions when switching mentors", () => {
-        cy.get("#video-thumbnail-dan").click();
+        cy.get("#video-thumbnail-dan").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").contains(
             "How is cryptology different outside of the US?"
         );
 
-        cy.get("#video-thumbnail-carlos").click();
+        cy.get("#video-thumbnail-carlos").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").contains("What is Puerto Rico like?");
 
-        cy.get("#video-thumbnail-julianne").click();
+        cy.get("#video-thumbnail-julianne").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").contains(
             "Where were you commissioned?"
         );
 
-        cy.get("#video-thumbnail-clint").click();
+        cy.get("#video-thumbnail-clint").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").contains("What is Japan like?");
     });
 
@@ -64,8 +64,8 @@ describe("Questions list", () => {
             .invoke("attr", "style")
             .should("contain", "black");
 
-        cy.get("#topic-0").click();
-        cy.get("#input-send").click();
+        cy.get("#topic-0").trigger('mouseover').click();
+        cy.get("#input-send").trigger('mouseover').click();
 
         cy.get("#scrolling-questions-list")
             .get(`#${CSS.escape("Where were you born?")}`)
@@ -76,7 +76,7 @@ describe("Questions list", () => {
 
     it("greys out questions that have been asked (via input field)", () => {
         cy.get("#input-field").type("where were you born?");
-        cy.get("#input-send").click();
+        cy.get("#input-send").trigger('mouseover').click();
 
         cy.get("#scrolling-questions-list")
             .get(`#${CSS.escape("Where were you born?")}`)
@@ -87,14 +87,14 @@ describe("Questions list", () => {
 
     it("keeps greyed out questions when switching mentors if new mentor also has it", () => {
         cy.get("#input-field").type("Are you married?");
-        cy.get("#input-send").click();
+        cy.get("#input-send").trigger('mouseover').click();
         cy.get("#scrolling-questions-list")
             .get(`#${CSS.escape("Are you married?")}`)
             .find("div")
             .invoke("attr", "style")
             .should("contain", "gray");
 
-        cy.get("#video-thumbnail-dan").click();
+        cy.get("#video-thumbnail-dan").trigger('mouseover').click();
         cy.get("#scrolling-questions-list")
             .get(`#${CSS.escape("Are you married?")}`)
             .find("div")
@@ -104,14 +104,14 @@ describe("Questions list", () => {
 
     it("keeps greyed out questions when switching topics if new topic also has it", () => {
         cy.get("#input-field").type("Are you married?");
-        cy.get("#input-send").click();
+        cy.get("#input-send").trigger('mouseover').click();
         cy.get("#scrolling-questions-list")
             .get(`#${CSS.escape("Are you married?")}`)
             .find("div")
             .invoke("attr", "style")
             .should("contain", "gray");
 
-        cy.get("#topic-4").click();
+        cy.get("#topic-4").trigger('mouseover').click();
         cy.get("#scrolling-questions-list")
             .get(`#${CSS.escape("Are you married?")}`)
             .find("div")

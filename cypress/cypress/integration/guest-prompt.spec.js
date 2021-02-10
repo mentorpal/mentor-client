@@ -28,7 +28,7 @@ describe("Guest Prompt", () => {
     it("reloads with a guest session on submit name via guest prompt", () => {
         cy.visit("/");
         cy.get("#guest-prompt-input").type("guestuser1");
-        cy.get("#guest-prompt-input-send").click();
+        cy.get("#guest-prompt-input-send").trigger('mouseover').click();
         cy.url().should("include", "actor=");
         cy.url().should("include", "guestuser1");
         cy.get("#guest-prompt").should("not.exist");
@@ -43,7 +43,7 @@ describe("Guest Prompt", () => {
     it("loads a single specific mentor", () => {
         cy.visit("/?mentor=clint");
         cy.get("#guest-prompt-input").type("guestuser1");
-        cy.get("#guest-prompt-input-send").click();
+        cy.get("#guest-prompt-input-send").trigger('mouseover').click();
         cy.url().should("include", "actor=");
         cy.url().should("include", "guestuser1");
         cy.get("#guest-prompt").should("not.exist");

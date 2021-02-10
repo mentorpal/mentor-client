@@ -47,7 +47,7 @@ describe("plays a video in response to a user question", () => {
     it("plays a mentor response and displays subtitles", () => {
         cy.visit(toGuestUrl("/?mentor=clint&mentor=dan"));
         cy.get("#input-field").type("is the food good");
-        cy.get("#input-send").click();
+        cy.get("#input-send").trigger('mouseover').click();
         cy.wait(1000);
         cy.get("#video-container video").should("exist");
         cy.get("#video-container video")

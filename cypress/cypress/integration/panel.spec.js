@@ -43,28 +43,28 @@ describe("Mentor panel", () => {
             "JD Thomas: NPS Student, Lieutenant, AOPS and ASWO"
         );
 
-        cy.get("#video-thumbnail-mario-pais").click();
+        cy.get("#video-thumbnail-mario-pais").trigger('mouseover').click();
         cy.get("#header").contains(
             "Mario Pais: Senior Chief, Lead NECC UMS Instructor"
         );
 
-        cy.get("#video-thumbnail-dan-burns").click();
+        cy.get("#video-thumbnail-dan-burns").trigger('mouseover').click();
         cy.get("#header").contains("Dan Burns: Captain (Retired), Chief Engineer");
     });
 
     it("picking a mentor sets them as faved", () => {
         cy.visit("/");
         cy.get("#guest-prompt-input").type("guest");
-        cy.get("#guest-prompt-input-send").click();
+        cy.get("#guest-prompt-input-send").trigger('mouseover').click();
         cy.get("#video-panel")
             .get("#video-thumbnail-dan")
-            .click();
+            .trigger('mouseover').click();
         cy.get("#video-panel")
             .get("#video-thumbnail-dan")
             .get(".star-icon");
         cy.get("#video-panel")
             .get("#video-thumbnail-carlos")
-            .click();
+            .trigger('mouseover').click();
         cy.get("#video-panel")
             .get("#video-thumbnail-carlos")
             .get(".star-icon");

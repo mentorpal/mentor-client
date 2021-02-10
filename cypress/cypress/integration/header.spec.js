@@ -20,18 +20,18 @@ describe("Header", () => {
 
     it("changes title when selecting a mentor", () => {
         cy.visit("/", { qs: addGuestParams() });
-        cy.get("#video-thumbnail-dan").click();
+        cy.get("#video-thumbnail-dan").trigger('mouseover').click();
         cy.get("#header").contains(
             "Dan Davis: High Performance Computing Researcher"
         );
 
-        cy.get("#video-thumbnail-carlos").click();
+        cy.get("#video-thumbnail-carlos").trigger('mouseover').click();
         cy.get("#header").contains("Carlos Rios: Marine Logistician");
 
-        cy.get("#video-thumbnail-julianne").click();
+        cy.get("#video-thumbnail-julianne").trigger('mouseover').click();
         cy.get("#header").contains("Julianne Nordhagen: Student Naval Aviator");
 
-        cy.get("#video-thumbnail-clint").click();
+        cy.get("#video-thumbnail-clint").trigger('mouseover').click();
         cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
     });
 

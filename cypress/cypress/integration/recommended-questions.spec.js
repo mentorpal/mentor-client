@@ -65,7 +65,7 @@ describe("Recommended questions", () => {
                 recommended: "What is Japan like?",
             }),
         });
-        cy.get("#topic-1").click();
+        cy.get("#topic-1").trigger('mouseover').click();
         cy.get("#scrolling-questions-list")
             .get("li")
             .first()

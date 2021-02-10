@@ -40,13 +40,13 @@ describe("Input field", () => {
 
     it("updates placeholder message to last question asked", () => {
         cy.get("#input-field").type("Hello");
-        cy.get("#input-send").click();
+        cy.get("#input-send").trigger('mouseover').click();
         cy.get("#input-field")
             .invoke("attr", "placeholder")
             .should("contain", "Hello");
 
         cy.get("#input-field").type("Test");
-        cy.get("#input-send").click();
+        cy.get("#input-send").trigger('mouseover').click();
         cy.get("#input-field")
             .invoke("attr", "placeholder")
             .should("contain", "Test");
@@ -54,7 +54,7 @@ describe("Input field", () => {
 
     it("clears text after sending input", () => {
         cy.get("#input-field").type("Hello");
-        cy.get("#input-send").click();
+        cy.get("#input-send").trigger('mouseover').click();
         cy.get("#input-field").should("not.have.value", "Hello");
     });
 
@@ -81,7 +81,7 @@ describe("Input field", () => {
         }).as("askCarlos");
 
         cy.get("#input-field").type("how old are you");
-        cy.get("#input-send").click();
+        cy.get("#input-send").trigger('mouseover').click();
 
         cy.wait(["@askClint", "@askDan", "@askJulianne", "@askCarlos"], {
             responseTimeout: 15000,
