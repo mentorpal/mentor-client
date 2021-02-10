@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  client:
+    container_name: client
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "3000:3000"
+  cypress:
+    container_name: cypress
+    depends_on:
+      - client
+    build:
+      context: cypress
+    environment:
+      - "CYPRESS_BASE_URL=http://client:3000"

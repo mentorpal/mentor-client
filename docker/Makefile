@@ -10,8 +10,7 @@ BUILD=$(DIR)/build
 
 .PHONY clean:
 clean:
-	rm -rf build
-
+	rm -rf build node_modules
 
 build/client:
 	mkdir -p build
@@ -38,7 +37,6 @@ docker-run:
 			-p 3000:3000 \
 		$(DOCKER_IMAGE) 
 
-
 .PHONY docker-run-shell:
 docker-run-shell:
 	docker run \
@@ -49,7 +47,6 @@ docker-run-shell:
 			--entrypoint /bin/bash \
 		$(DOCKER_IMAGE) 
 		
-
 .PHONY exec-shell:
 exec-shell:
 	docker exec \
@@ -62,17 +59,19 @@ format:
 	npm run format
 
 node_modules/eslint:
-	npm install
+	npm ci
+
+node_modules/license-check-and-add:
+	npm ci
 
 node_modules/jest:
-	npm install
-
+	npm ci
 
 node_modules/prettier:
-	npm install
+	npm ci
 
 node_modules/typescript:
-	npm install
+	npm ci
 
 .PHONY: test
 test: node_modules/jest
@@ -95,6 +94,10 @@ test-audit:
 test-format:
 	npm run test:format
 
+.PHONY: test-license
+test-license: node_modules/license-check-and-add
+	npm run test:license
+
 .PHONY: test-lint
 test-lint:
 	npm run test:lint
@@ -102,22 +105,3 @@ test-lint:
 .PHONY: test-types
 test-types: node_modules/typescript
 	npm run test:types
-
-LICENSE:
-	@echo "you must have a LICENSE file" 1>&2
-	exit 1
-
-LICENSE_HEADER:
-	@echo "you must have a LICENSE_HEADER file" 1>&2
-	exit 1
-
-.PHONY: license
-license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
-	npm run license:fix
-
-.PHONY: test-license
-test-license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
-	npm run test:license
-
-node_modules/license-check-and-add:
-	npm ci

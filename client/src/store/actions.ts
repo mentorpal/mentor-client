@@ -92,6 +92,19 @@ export interface NextMentorAction {
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
 
+function sendCmi5Statement(statement: any) {
+  if (!Cmi5.isCmiAvailable) {
+    return;
+  }
+  try {
+    Cmi5.instance
+      .sendCmi5AllowedStatement(statement)
+      .catch((err: Error) => console.error(err));
+  } catch (err2) {
+    console.error(err2);
+  }
+}
+
 function findIntro(mentorData: MentorApiData): string {
   try {
     return mentorData.utterances_by_type._INTRO_[0][0];
@@ -265,28 +278,22 @@ export function mentorAnswerPlaybackStarted(video: {
       );
       return;
     }
-    if (Cmi5.isCmiAvailable) {
-      Cmi5.instance
-        .sendCmi5AllowedStatement({
-          verb: {
-            id: "https://mentorpal.org/xapi/verb/answer-playback-started",
-            display: {
-              "en-US": "answer-playback-started",
-            },
-          },
-          result: {
-            extensions: {
-              "https://mentorpal.org/xapi/verb/answer-playback-started": toXapiResultExt(
-                mentorData,
-                curState
-              ),
-            },
-          },
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    }
+    sendCmi5Statement({
+      verb: {
+        id: "https://mentorpal.org/xapi/verb/answer-playback-started",
+        display: {
+          "en-US": "answer-playback-started",
+        },
+      },
+      result: {
+        extensions: {
+          "https://mentorpal.org/xapi/verb/answer-playback-started": toXapiResultExt(
+            mentorData,
+            curState
+          ),
+        },
+      },
+    });
   };
 }
 
@@ -328,28 +335,24 @@ export const sendQuestion = (q: {
   dispatch: ThunkDispatch<State, void, AnyAction>,
   getState: () => State
 ) => {
-  if (Cmi5.isCmiAvailable) {
-    Cmi5.instance
-      .sendCmi5AllowedStatement({
-        verb: {
-          id: "https://mentorpal.org/xapi/verb/asked",
-          display: {
-            "en-US": "asked",
+  if (Cmi5.isCmiAvailable && Cmi5.instance.isAuthenticated) {
+    sendCmi5Statement({
+      verb: {
+        id: "https://mentorpal.org/xapi/verb/asked",
+        display: {
+          "en-US": "asked",
+        },
+      },
+      result: {
+        extensions: {
+          "https://mentorpal.org/xapi/verb/asked": {
+            questionIndex: currentQuestionIndex(getState()) + 1,
+            text: q.question,
+            source: q.source,
           },
         },
-        result: {
-          extensions: {
-            "https://mentorpal.org/xapi/verb/asked": {
-              questionIndex: currentQuestionIndex(getState()) + 1,
-              text: q.question,
-              source: q.source,
-            },
-          },
-        },
-      })
-      .catch(err => {
-        console.error(err);
-      });
+      },
+    });
   }
   dispatch(onInput());
   dispatch(onQuestionSent(q));
@@ -374,28 +377,22 @@ export const sendQuestion = (q: {
             questionSource: q.source,
             status: MentorQuestionStatus.ANSWERED,
           };
-          if (Cmi5.isCmiAvailable) {
-            Cmi5.instance
-              .sendCmi5AllowedStatement({
-                verb: {
-                  id: "https://mentorpal.org/xapi/verb/answered",
-                  display: {
-                    "en-US": "answered",
-                  },
+          sendCmi5Statement({
+            verb: {
+              id: "https://mentorpal.org/xapi/verb/answered",
+              display: {
+                "en-US": "answered",
+              },
+            },
+            result: {
+              extensions: {
+                "https://mentorpal.org/xapi/verb/answered": {
+                  ...response,
+                  questionIndex: currentQuestionIndex(getState()),
                 },
-                result: {
-                  extensions: {
-                    "https://mentorpal.org/xapi/verb/answered": {
-                      ...response,
-                      questionIndex: currentQuestionIndex(getState()),
-                    },
-                  },
-                },
-              })
-              .catch(err => {
-                console.error(err);
-              });
-          }
+              },
+            },
+          });
           dispatch(onQuestionAnswered(response));
           resolve(response);
         })
