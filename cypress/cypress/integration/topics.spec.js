@@ -4,16 +4,11 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { addGuestParams, mockMentorData } from "../support/helpers";
+import { visitAsGuestWithDefaultSetup } from "../support/helpers";
 describe("Topics list", () => {
-    beforeEach(() => {
-        cy.server();
-        mockMentorData(cy);
-        cy.visit("/", { qs: addGuestParams() });
-        cy.viewport("iphone-x");
-    });
 
     it("shows topics for current mentor", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#topics").contains("About Me");
         cy.get("#topics").contains("About the Job");
         cy.get("#topics").contains("Challenges");
@@ -25,6 +20,7 @@ describe("Topics list", () => {
     });
 
     it("has default topic selected", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#topics")
             .find(".topic-selected")
             .should("have.length", 1);
@@ -32,6 +28,7 @@ describe("Topics list", () => {
     });
 
     it("can select a topic", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#topic-1").trigger('mouseover').click();
         cy.get("#topics")
             .find(".topic-selected")
@@ -76,6 +73,7 @@ describe("Topics list", () => {
     });
 
     it("changes topics when selecting a mentor", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#video-thumbnail-dan").trigger('mouseover').click();
         cy.get("#topics").contains("About Me");
         cy.get("#topics").contains("About the Job");
@@ -108,6 +106,7 @@ describe("Topics list", () => {
     });
 
     it("keeps selected topic when switching mentors if new mentor has it", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#topic-0").find(".topic-selected");
         cy.get("#video-thumbnail-dan").trigger('mouseover').click();
         cy.get("#topic-0").find(".topic-selected");
@@ -119,6 +118,7 @@ describe("Topics list", () => {
     });
 
     it("does not keep selected topic when switching mentors if new mentor does not have it", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#topic-3").trigger('mouseover').click();
         cy.get("#topic-3").find(".topic-selected");
         cy.get("#topic-3").find(".topic-selected");
@@ -128,6 +128,7 @@ describe("Topics list", () => {
     });
 
     it("recommends a topic-relevant question for current mentor when topic is selected", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#topic-1").trigger('mouseover').click();
         cy.get("#input-field").contains(
             "What qualifications and experience do recruiters"
@@ -157,6 +158,7 @@ describe("Topics list", () => {
     });
 
     it("recommends different topic-relevant question for different current mentor", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#video-thumbnail-dan").trigger('mouseover').click();
 
         cy.get("#topic-1").trigger('mouseover').click();
@@ -182,6 +184,7 @@ describe("Topics list", () => {
     });
 
     it("does not recommend a topic question that has already been asked (via manual input)", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field").type("where were you born?");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#topic-0").trigger('mouseover').click();
@@ -189,6 +192,7 @@ describe("Topics list", () => {
     });
 
     it("does not recommend a topic question that has already been asked (via topic button)", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#topic-0").trigger('mouseover').click();
@@ -196,6 +200,7 @@ describe("Topics list", () => {
     });
 
     it("skips topic questions that have already been asked", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field").type("where were you born?");
         cy.get("#input-send").trigger('mouseover').click();
 

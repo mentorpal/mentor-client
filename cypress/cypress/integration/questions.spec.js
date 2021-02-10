@@ -4,17 +4,12 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { addGuestParams, mockMentorData } from "../support/helpers";
+import { visitAsGuestWithDefaultSetup } from "../support/helpers";
 
 describe("Questions list", () => {
-    beforeEach(() => {
-        cy.server();
-        mockMentorData(cy);
-        cy.visit("/", { qs: addGuestParams() });
-        cy.viewport("iphone-x");
-    });
 
     it("displays list of questions for selected topic", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#scrolling-questions-list").contains("Where were you born?");
         cy.get("#scrolling-questions-list").contains("What is Japan like?");
         cy.get("#scrolling-questions-list").contains(
@@ -24,6 +19,7 @@ describe("Questions list", () => {
     });
 
     it("changes questions when switching topics", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#topic-1").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").contains(
             "What qualifications and experience do recruiters"
@@ -40,6 +36,7 @@ describe("Questions list", () => {
     });
 
     it("changes questions when switching mentors", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#video-thumbnail-dan").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").contains(
             "How is cryptology different outside of the US?"
@@ -58,6 +55,7 @@ describe("Questions list", () => {
     });
 
     it("greys out questions that have been asked (via topic button)", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#scrolling-questions-list")
             .get(`#${CSS.escape("Where were you born?")}`)
             .find("div")
@@ -75,6 +73,7 @@ describe("Questions list", () => {
     });
 
     it("greys out questions that have been asked (via input field)", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field").type("where were you born?");
         cy.get("#input-send").trigger('mouseover').click();
 
@@ -86,6 +85,7 @@ describe("Questions list", () => {
     });
 
     it("keeps greyed out questions when switching mentors if new mentor also has it", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field").type("Are you married?");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#scrolling-questions-list")
@@ -103,6 +103,7 @@ describe("Questions list", () => {
     });
 
     it("keeps greyed out questions when switching topics if new topic also has it", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field").type("Are you married?");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#scrolling-questions-list")

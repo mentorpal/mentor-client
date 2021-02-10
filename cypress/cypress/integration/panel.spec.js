@@ -4,26 +4,24 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { mockMentorData, toGuestUrl } from "../support/helpers";
+import { toGuestUrl, mockDefaultSetup } from "../support/helpers";
 
 describe("Mentor panel", () => {
-    beforeEach(() => {
-        cy.server();
-        mockMentorData(cy);
-        cy.viewport("iphone-x");
-    });
 
     it("shows if there is more than one mentor", () => {
+        mockDefaultSetup(cy);
         cy.visit(toGuestUrl("/?mentor=clint&mentor=dan"));
         cy.get("#video-panel");
     });
 
     it("is hidden if there is only one mentor", () => {
+        mockDefaultSetup(cy);
         cy.visit(toGuestUrl("/?mentor=clint"));
         cy.get("#video-panel").should("not.exist");
     });
 
     it("displays 4 default mentors if no mentors specified", () => {
+        mockDefaultSetup(cy);
         cy.visit("/");
         cy.get("#video-panel").get("#video-thumbnail-clint");
         cy.get("#video-panel").get("#video-thumbnail-dan");
@@ -32,6 +30,7 @@ describe("Mentor panel", () => {
     });
 
     it("loads and displays chosen mentors if mentors specified", () => {
+        mockDefaultSetup(cy);
         cy.visit(
             toGuestUrl("/?mentor=jd_thomas&mentor=mario-pais&mentor=dan-burns")
         );
@@ -53,6 +52,7 @@ describe("Mentor panel", () => {
     });
 
     it("picking a mentor sets them as faved", () => {
+        mockDefaultSetup(cy);
         cy.visit("/");
         cy.get("#guest-prompt-input").type("guest");
         cy.get("#guest-prompt-input-send").trigger('mouseover').click();

@@ -5,19 +5,14 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import {
-    mockMentorData,
-    mockMentorVideos,
-    mockMentorVtt,
     toGuestUrl,
+    mockDefaultSetup
 } from "../support/helpers";
 
 describe("plays a video in response to a user question", () => {
-    beforeEach(() => {
-        cy.viewport("iphone-x");
-        cy.server();
-        mockMentorData(cy);
-        mockMentorVideos(cy);
-        mockMentorVtt(cy);
+
+    it("plays a mentor response and displays subtitles", () => {
+        mockDefaultSetup(cy);
         cy.route({
             method: "GET",
             url: "**/mentor-api/questions/?mentor=clint&query=is+the+food+good",
@@ -42,9 +37,6 @@ describe("plays a video in response to a user question", () => {
                 query: "is the food good",
             },
         });
-    });
-
-    it("plays a mentor response and displays subtitles", () => {
         cy.visit(toGuestUrl("/?mentor=clint&mentor=dan"));
         cy.get("#input-field").type("is the food good");
         cy.get("#input-send").trigger('mouseover').click();

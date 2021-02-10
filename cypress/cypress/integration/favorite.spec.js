@@ -4,16 +4,11 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { addGuestParams, mockMentorData } from "../support/helpers";
+import { mockDefaultSetup, addGuestParams } from "../support/helpers";
 
 describe("Favorite", () => {
-    beforeEach(() => {
-        cy.server();
-        mockMentorData(cy);
-        cy.viewport("iphone-x");
-    });
-
     it("is not toggled by default", () => {
+        mockDefaultSetup(cy);
         cy.visit("/", { qs: addGuestParams() });
         cy.get("#fave-button")
             .invoke("attr", "style")
@@ -21,6 +16,7 @@ describe("Favorite", () => {
     });
 
     it("can be toggled", () => {
+        mockDefaultSetup(cy);
         cy.visit("/", { qs: addGuestParams() });
         cy.wait(1000);
         cy.get("#fave-button").trigger('mouseover').click();
@@ -30,6 +26,7 @@ describe("Favorite", () => {
     });
 
     it("is hidden if there is only one mentor", () => {
+        mockDefaultSetup(cy);
         cy.visit(
             "/",
             addGuestParams({

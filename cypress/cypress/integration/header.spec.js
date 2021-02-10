@@ -4,22 +4,17 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { addGuestParams, mockMentorData } from "../support/helpers";
+import { addGuestParams, mockDefaultSetup, visitAsGuestWithDefaultSetup } from "../support/helpers";
 
 describe("Header", () => {
-    beforeEach(() => {
-        cy.server();
-        mockMentorData(cy);
-        cy.viewport("iphone-x");
-    });
 
     it("shows title for default mentor in panel", () => {
-        cy.visit("/", { qs: addGuestParams() });
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
     });
 
     it("changes title when selecting a mentor", () => {
-        cy.visit("/", { qs: addGuestParams() });
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#video-thumbnail-dan").trigger('mouseover').click();
         cy.get("#header").contains(
             "Dan Davis: High Performance Computing Researcher"
@@ -36,6 +31,7 @@ describe("Header", () => {
     });
 
     it("hides title for single mentor (no panel)", () => {
+        mockDefaultSetup(cy);
         cy.visit("/", {
             qs: addGuestParams({
                 mentor: "clint",

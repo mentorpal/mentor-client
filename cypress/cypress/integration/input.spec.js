@@ -4,33 +4,30 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { addGuestParams, mockMentorData } from "../support/helpers";
+import { visitAsGuestWithDefaultSetup } from "../support/helpers";
 
 describe("Input field", () => {
-    beforeEach(() => {
-        cy.server();
-        mockMentorData(cy);
-        cy.visit("/", { qs: addGuestParams() });
-        cy.viewport("iphone-x");
-    });
-
     it("has a default placeholder message", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field")
             .invoke("attr", "placeholder")
             .should("contain", "Ask a question");
     });
 
     it("can be typed into", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field").type("Hello");
         cy.get("#input-field").contains("Hello");
     });
 
     it("enables send button if not empty", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field").type("Hello");
         cy.get("#input-send").should("not.be.disabled");
     });
 
     it("disables send button if empty", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-send").should("be.disabled");
         cy.get("#input-field")
             .type("Hello")
@@ -39,6 +36,7 @@ describe("Input field", () => {
     });
 
     it("updates placeholder message to last question asked", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field").type("Hello");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#input-field")
@@ -53,12 +51,14 @@ describe("Input field", () => {
     });
 
     it("clears text after sending input", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field").type("Hello");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#input-field").should("not.have.value", "Hello");
     });
 
     it("sends api call to get responses from mentors after sending input", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.route({
             method: "GET",
             url: "**/mentor-api/questions/?mentor=clint&query=how+old+are+you",
