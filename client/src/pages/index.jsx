@@ -117,7 +117,9 @@ const IndexPage = ({ search }) => {
 
   useEffect(() => {
     if (Cmi5.isCmiAvailable) {
-      Cmi5.instance.initialize();
+      Cmi5.instance.initialize().catch(e => {
+        console.error(e);
+      });
     }
   }, []);
 
