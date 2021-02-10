@@ -1,3 +1,23 @@
+DOCKER_IMAGE?=mentor-client
+OPENTUTOR_CLIENT_VERSION?=latest
+TEST_E2E_DOCKER_COMPOSE=docker-compose
+
+PHONY: clean
+clean:
+	cd client && $(MAKE) clean
+	cd docker && $(MAKE) clean
+
+PHONY: develop
+develop:
+	cd client && $(MAKE) develop
+
+.PHONY docker-build:
+docker-build:
+	docker build \
+		--file docker/Dockerfile \
+		-t $(DOCKER_IMAGE) \
+	.
+
 PHONY: format
 format:
 	cd client && $(MAKE) format
@@ -18,22 +38,22 @@ test-all:
 PHONY: test-audit
 test-audit:
 	cd client && $(MAKE) test-audit
-	cd node && $(MAKE) test-audit
+	cd docker && $(MAKE) test-audit
 
 PHONY: test-format
 test-format:
 	cd client && $(MAKE) test-format
-	cd node && $(MAKE) test-format
+	cd docker && $(MAKE) test-format
 
 PHONY: test-lint
 test-lint:
 	cd client && $(MAKE) test-lint
-	cd node && $(MAKE) test-lint
+	cd docker && $(MAKE) test-lint
 
 PHONY: test-types
 test-types:
 	cd client && $(MAKE) test-types
-	cd node && $(MAKE) test-types
+	cd docker && $(MAKE) test-types
 
 LICENSE:
 	@echo "you must have a LICENSE file" 1>&2
@@ -45,10 +65,27 @@ LICENSE_HEADER:
 
 .PHONY: license
 license: LICENSE LICENSE_HEADER
-	cd client && $(MAKE) license
-	cd node && $(MAKE) license
+	cd client && npm ci && npm run license:fix
+	cd docker && npm ci && npm run license:fix
 
 .PHONY: test-license
 test-license: LICENSE LICENSE_HEADER
 	cd client && $(MAKE) test-license
-	cd node && $(MAKE) test-license
+	cd docker && $(MAKE) test-license
+
+.PHONY: test-e2e
+test-e2e:
+	$(TEST_E2E_DOCKER_COMPOSE) up -d
+	$(TEST_E2E_DOCKER_COMPOSE) exec cypress npx cypress run
+
+.PHONY: test-e2e-build
+test-e2e-build:
+	$(TEST_E2E_DOCKER_COMPOSE) build
+
+.PHONY: test-e2e-exec
+test-e2e-exec:
+	$(TEST_E2E_DOCKER_COMPOSE) exec -T cypress npx cypress run
+
+.PHONY: test-e2e-up
+test-e2e-up:
+	$(TEST_E2E_DOCKER_COMPOSE) up -d

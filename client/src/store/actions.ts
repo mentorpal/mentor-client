@@ -97,7 +97,7 @@ function sendCmi5Statement(statement: any) {
     return;
   }
   try {
-    Cmi5.instance.sendCmi5AllowedStatement(statement)
+    Cmi5.instance.sendCmi5AllowedStatement(statement);
   } catch (err) {
     console.error(err);
   }
@@ -291,7 +291,7 @@ export function mentorAnswerPlaybackStarted(video: {
           ),
         },
       },
-    })
+    });
   };
 }
 
@@ -350,7 +350,7 @@ export const sendQuestion = (q: {
           },
         },
       },
-    })
+    });
   }
   dispatch(onInput());
   dispatch(onQuestionSent(q));
@@ -390,7 +390,7 @@ export const sendQuestion = (q: {
                 },
               },
             },
-          })
+          });
           dispatch(onQuestionAnswered(response));
           resolve(response);
         })
