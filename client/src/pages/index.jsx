@@ -8,10 +8,10 @@ import { withPrefix } from "gatsby";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useSelector, useDispatch } from "react-redux";
-import { actions as cmi5Actions } from "redux-cmi5";
 import { v1 as uuidv1 } from "uuid";
 import { CircularProgress } from "@material-ui/core";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import Cmi5 from "@xapi/cmi5";
 
 import { addCmi, hasCmi } from "cmiutils";
 import config from "config";
@@ -24,8 +24,6 @@ import { loadMentor, setGuestName } from "store/actions";
 import withLocation from "wrap-with-location";
 
 import "styles/layout.css";
-
-const { start: cmi5Start } = cmi5Actions;
 
 const theme = createMuiTheme({
   palette: {
@@ -118,7 +116,11 @@ const IndexPage = ({ search }) => {
   }
 
   useEffect(() => {
-    dispatch(cmi5Start());
+    if (Cmi5.isCmiAvailable) {
+      Cmi5.instance.initialize().catch(e => {
+        console.error(e);
+      });
+    }
   }, []);
 
   useEffect(() => {

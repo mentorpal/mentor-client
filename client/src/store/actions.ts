@@ -5,9 +5,9 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 /* eslint-disable */
-const cmi5Actions = require("redux-cmi5").actions;
 import { ActionCreator, AnyAction, Dispatch } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
+import Cmi5 from "@xapi/cmi5";
 
 import { fetchMentorData, MentorApiData, queryMentor } from "api/api";
 import {
@@ -248,8 +248,6 @@ export const loadMentor: ActionCreator<ThunkAction<
   });
 };
 
-const { sendStatement: sendXapiStatement } = cmi5Actions;
-
 export function mentorAnswerPlaybackStarted(video: {
   mentor: string;
   duration: number;
@@ -267,19 +265,28 @@ export function mentorAnswerPlaybackStarted(video: {
       );
       return;
     }
-    dispatch(
-      sendXapiStatement({
-        verb: "https://mentorpal.org/xapi/verb/answer-playback-started",
-        result: {
-          extensions: {
-            "https://mentorpal.org/xapi/verb/answer-playback-started": toXapiResultExt(
-              mentorData,
-              curState
-            ),
+    if (Cmi5.isCmiAvailable) {
+      Cmi5.instance
+        .sendCmi5AllowedStatement({
+          verb: {
+            id: "https://mentorpal.org/xapi/verb/answer-playback-started",
+            display: {
+              "en-US": "answer-playback-started",
+            },
           },
-        },
-      })
-    );
+          result: {
+            extensions: {
+              "https://mentorpal.org/xapi/verb/answer-playback-started": toXapiResultExt(
+                mentorData,
+                curState
+              ),
+            },
+          },
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    }
   };
 }
 
@@ -321,20 +328,29 @@ export const sendQuestion = (q: {
   dispatch: ThunkDispatch<State, void, AnyAction>,
   getState: () => State
 ) => {
-  dispatch(
-    sendXapiStatement({
-      result: {
-        extensions: {
-          "https://mentorpal.org/xapi/verb/asked": {
-            questionIndex: currentQuestionIndex(getState()) + 1,
-            text: q.question,
-            source: q.source,
+  if (Cmi5.isCmiAvailable) {
+    Cmi5.instance
+      .sendCmi5AllowedStatement({
+        verb: {
+          id: "https://mentorpal.org/xapi/verb/asked",
+          display: {
+            "en-US": "asked",
           },
         },
-      },
-      verb: "https://mentorpal.org/xapi/verb/asked",
-    })
-  );
+        result: {
+          extensions: {
+            "https://mentorpal.org/xapi/verb/asked": {
+              questionIndex: currentQuestionIndex(getState()) + 1,
+              text: q.question,
+              source: q.source,
+            },
+          },
+        },
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }
   dispatch(onInput());
   dispatch(onQuestionSent(q));
   const state = getState();
@@ -358,19 +374,28 @@ export const sendQuestion = (q: {
             questionSource: q.source,
             status: MentorQuestionStatus.ANSWERED,
           };
-          dispatch(
-            sendXapiStatement({
-              result: {
-                extensions: {
-                  "https://mentorpal.org/xapi/verb/answered": {
-                    ...response,
-                    questionIndex: currentQuestionIndex(getState()),
+          if (Cmi5.isCmiAvailable) {
+            Cmi5.instance
+              .sendCmi5AllowedStatement({
+                verb: {
+                  id: "https://mentorpal.org/xapi/verb/answered",
+                  display: {
+                    "en-US": "answered",
                   },
                 },
-              },
-              verb: "https://mentorpal.org/xapi/verb/answered",
-            })
-          );
+                result: {
+                  extensions: {
+                    "https://mentorpal.org/xapi/verb/answered": {
+                      ...response,
+                      questionIndex: currentQuestionIndex(getState()),
+                    },
+                  },
+                },
+              })
+              .catch(err => {
+                console.error(err);
+              });
+          }
           dispatch(onQuestionAnswered(response));
           resolve(response);
         })
