@@ -101,11 +101,25 @@ function toGuestUrl(url, guestName) {
   }, urlBase);
 }
 
+function mockDefaultSetup(cy) {
+  cy.server();
+  mockMentorData(cy);
+  mockMentorVideos(cy);
+  cy.viewport("iphone-x");
+}
+
+function visitAsGuestWithDefaultSetup(cy, url = "/") {
+  mockDefaultSetup(cy);
+  cy.visit(url, { qs: addGuestParams() });
+}
+
 module.exports = {
   addGuestParams,
   defaultRootGuestUrl: toGuestUrl("/", "guest"),
+  mockDefaultSetup,
   mockMentorData,
   mockMentorVideos,
   mockMentorVtt,
   toGuestUrl,
+  visitAsGuestWithDefaultSetup,
 };
