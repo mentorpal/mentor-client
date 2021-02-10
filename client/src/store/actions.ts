@@ -270,7 +270,9 @@ export function mentorAnswerPlaybackStarted(video: {
         .sendCmi5AllowedStatement({
           verb: {
             id: "https://mentorpal.org/xapi/verb/answer-playback-started",
-            display: {},
+            display: {
+              "en-US": "answer-playback-started",
+            },
           },
           result: {
             extensions: {
@@ -329,7 +331,12 @@ export const sendQuestion = (q: {
   if (Cmi5.isCmiAvailable) {
     Cmi5.instance
       .sendCmi5AllowedStatement({
-        verb: { id: "https://mentorpal.org/xapi/verb/asked", display: {} },
+        verb: {
+          id: "https://mentorpal.org/xapi/verb/asked",
+          display: {
+            "en-US": "asked",
+          },
+        },
         result: {
           extensions: {
             "https://mentorpal.org/xapi/verb/asked": {
@@ -372,7 +379,9 @@ export const sendQuestion = (q: {
               .sendCmi5AllowedStatement({
                 verb: {
                   id: "https://mentorpal.org/xapi/verb/answered",
-                  display: {},
+                  display: {
+                    "en-US": "answered",
+                  },
                 },
                 result: {
                   extensions: {
