@@ -101,11 +101,50 @@ function toGuestUrl(url, guestName) {
   }, urlBase);
 }
 
+function mockDefaultSetup(cy) {
+  cy.server();
+  mockMentorData(cy);
+  mockMentorVideos(cy);
+  mockApiQuestions(cy);
+  cy.viewport("iphone-x");
+}
+
+function visitAsGuestWithDefaultSetup(cy, url = "/") {
+  mockDefaultSetup(cy);
+  cy.visit(url, { qs: addGuestParams() });
+}
+
+function mockApiQuestions(cy) {
+  cy.route({
+    method: "GET",
+    url: "**/mentor-api/questions/?mentor=clint&query=*",
+    response: "fixture:clint_response.json",
+  });
+  cy.route({
+    method: "GET",
+    url: "**/mentor-api/questions/?mentor=dan&query=*",
+    response: "fixture:clint_response.json",
+  });
+  cy.route({
+    method: "GET",
+    url: "**/mentor-api/questions/?mentor=julianne&query=*",
+    response: "fixture:clint_response.json",
+  });
+  cy.route({
+    method: "GET",
+    url: "**/mentor-api/questions/?mentor=carlos&query=*",
+    response: "fixture:clint_response.json",
+  });
+}
+
 module.exports = {
   addGuestParams,
   defaultRootGuestUrl: toGuestUrl("/", "guest"),
+  mockDefaultSetup,
+  mockApiQuestions,
   mockMentorData,
   mockMentorVideos,
   mockMentorVtt,
   toGuestUrl,
+  visitAsGuestWithDefaultSetup,
 };

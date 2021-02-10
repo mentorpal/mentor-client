@@ -97,9 +97,11 @@ function sendCmi5Statement(statement: any) {
     return;
   }
   try {
-    Cmi5.instance.sendCmi5AllowedStatement(statement);
-  } catch (err) {
-    console.error(err);
+    Cmi5.instance
+      .sendCmi5AllowedStatement(statement)
+      .catch((err: Error) => console.error(err));
+  } catch (err2) {
+    console.error(err2);
   }
 }
 
