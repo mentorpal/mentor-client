@@ -53,13 +53,11 @@ cd client && make develop
 ...then you can run the full cypress test suite with
 
 ```
-cd client && make test-cypress
+cd cypress && make test-cypress
 ```
 
-The standard `.only` suffix in the test spec files doesn't seem to work, so if you want to run a single test, launch the cypress client instead
-
 ```
-cd client && npm run cy:open
+cd cypress && npm run cy:open
 ```
 
 ...then in the cypress browser window, click a spec to run it.

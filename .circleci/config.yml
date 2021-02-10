@@ -143,7 +143,7 @@ workflows:
           start: npm start
           wait-on: 'http://localhost:8000'
           filters: *only-untagged
-          working_directory: client
+          working_directory: cypress
           cache-key: 'npm-packages-{{ arch }}-{{ checksum "client/package-lock.json" }}'
       - approve-build-and-push:
           filters: *only-untagged
@@ -179,7 +179,7 @@ workflows:
           start: npm start
           wait-on: 'http://localhost:8000'
           filters: *only-tagged-releases
-          working_directory: client
+          working_directory: cypress
           cache-key: 'npm-packages-{{ arch }}-{{ checksum "client/package-lock.json" }}'
       - build-and-push:
           is-release-tag: true

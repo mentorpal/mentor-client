@@ -4,18 +4,18 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { addGuestParams } from "./helpers";
+import { addGuestParams } from "../support/helpers";
 
 describe("Cypress", () => {
-  it("is working", () => {
-    expect(true).to.equal(true);
-  });
+    it("is working", () => {
+        expect(true).to.equal(true);
+    });
 
-  it("visits the app at localhost:8000", () => {
-    cy.visit("http://localhost:8000", { qs: addGuestParams() });
-  });
+    it("visits the app at localhost:8000", () => {
+        cy.visit("http://localhost:8000", { qs: addGuestParams() });
+    });
 
-  it("visits the app at base URL", () => {
-    cy.visit("/", { qs: addGuestParams() });
-  });
+    it("visits the app at base URL", () => {
+        cy.visit("/", { qs: addGuestParams() });
+    });
 });

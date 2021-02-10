@@ -20,9 +20,6 @@ develop: .env.development node_modules/gatsby-cli
 format: node_modules/prettier
 	npm run format
 
-node_modules/cypress:
-	npm install 
-
 node_modules/eslint:
 	npm install 
 
@@ -52,7 +49,6 @@ test-all:
 	$(MAKE) test-lint
 	$(MAKE) test-license
 	# $(MAKE) test-types
-	$(MAKE) test-cypress
 	$(MAKE) test
 
 .PHONY: test-audit
@@ -70,10 +66,6 @@ test-lint: node_modules/eslint
 .PHONY: test-types
 test-types: node_modules/typescript
 	npm run test:types
-
-.PHONY: test-cypress
-test-cypress: node_modules/cypress
-	npm run test:cypress
 
 LICENSE:
 	@echo "you must have a LICENSE file" 1>&2

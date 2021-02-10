@@ -11,13 +11,3 @@
 !src/*/*.jsx
 !src/*/*.ts
 !src/*/*.tsx
-
-!cypress/
-!cypress/*.js
-!cypress/*.jsx
-!cypress/*.ts
-!cypress/*.tsx
-!cypress/*/*.js
-!cypress/*/*.jsx
-!cypress/*/*.ts
-!cypress/*/*.tsx
