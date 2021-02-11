@@ -15,6 +15,7 @@ import Cmi5 from "@xapi/cmi5";
 
 import { addCmi, hasCmi } from "cmiutils";
 import config from "config";
+import Chat from "components/chat";
 import GuestPrompt from "components/guest-prompt";
 import Header from "components/header";
 import Input from "components/input";
@@ -39,7 +40,7 @@ const IndexPage = ({ search }) => {
   const guestName = useSelector(state => state.guestName);
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
-  const { recommended, mentor, guest } = search;
+  const { recommended, mentor, guest, hideVideo } = search;
 
   const isMobile = width < 768;
   const videoHeight = isMobile ? height * 0.5 : Math.min(width * 0.5625, 700);
@@ -161,11 +162,8 @@ const IndexPage = ({ search }) => {
 
   return (
     <MuiThemeProvider theme={theme}>
-      <Helmet>
-        <script src={withPrefix("cmi5.js")} type="text/javascript" />
-      </Helmet>
       <div className="flex" style={{ height: videoHeight }}>
-        {hidePanel ? (
+        {hidePanel || hideVideo ? (
           undefined
         ) : (
           <div className="content" style={{ height: "100px" }}>
@@ -174,11 +172,15 @@ const IndexPage = ({ search }) => {
           </div>
         )}
         <div className="expand">
-          <Video
-            height={videoHeight - (hidePanel ? 0 : 100)}
-            width={width}
-            playing={hasSessionUser()}
-          />
+          {hideVideo ? (
+            <Chat height={videoHeight - (hidePanel ? 0 : 100)} />
+          ) : (
+            <Video
+              height={videoHeight - (hidePanel ? 0 : 100)}
+              width={width}
+              playing={hasSessionUser()}
+            />
+          )}
         </div>
       </div>
       <Input height={inputHeight} />

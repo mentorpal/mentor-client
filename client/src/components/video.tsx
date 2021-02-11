@@ -9,10 +9,10 @@ import ReactPlayer from "react-player";
 import { useSelector, useDispatch } from "react-redux";
 import { Star, StarBorder } from "@material-ui/icons";
 
-import { idleUrl, videoUrl, subtitleUrl } from "api/api";
+import { idleUrl, videoUrl, subtitleUrl } from "api";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
-import { chromeVersion } from "funcs/funcs";
+import { chromeVersion } from "utils";
 import {
   answerFinished,
   faveMentor,
