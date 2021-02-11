@@ -30,13 +30,28 @@ describe("Header", () => {
         cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
     });
 
-    it("hides title for single mentor (no panel)", () => {
+    it("shows title for a single mentor", () => {
         mockDefaultSetup(cy);
         cy.visit("/", {
             qs: addGuestParams({
-                mentor: "clint",
+                mentor: "clint"
             }),
         });
-        cy.get("#header").should("not.exist");
+        cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
+    });
+
+    it("shows alternate header with customHeader image", () => {
+        mockDefaultSetup(cy);
+        cy.intercept("https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png", { fixture: "uscheader.png" })
+        cy.visit("/", {
+            qs: addGuestParams({
+                mentor: "clint",
+                customHeader: "https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png",
+            }),
+        });
+        cy.get('#header').should('not.contain', "Clinton Anderson: Nuclear Electrician's Mate");
+        cy.get("#header img")
+            .should("have.attr", "src")
+            .and("eq", "https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png");
     });
 });

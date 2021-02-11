@@ -4,20 +4,18 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import "styles/chat.css";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { animateScroll } from "react-scroll";
 import { List, ListItem, ListItemText } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { MentorData, State } from "store/types";
+import { State } from "store/types";
+import withLocation from "wrap-with-location";
 
 const useStyles = makeStyles(theme => ({
   root: {
     width: "auto",
-    paddingTop: 0,
-    paddingBottom: 0,
   },
   body: {
     width: "100%",
@@ -41,7 +39,7 @@ interface ChatMsg {
   text: string;
 }
 
-export default function Chat(props: { height: number }): JSX.Element {
+function Chat(props: { height: number; search: any }): JSX.Element {
   const styles = useStyles();
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const intro = useSelector<State, string | undefined>(state => {
@@ -57,6 +55,22 @@ export default function Chat(props: { height: number }): JSX.Element {
     const m = state.mentorsById[state.curMentor];
     return m ? m.answer_text : undefined;
   });
+
+  const { customStyles } = props.search;
+  let ChatTheme = React.lazy(() => import("styles/chat-theme"));
+  if (customStyles) {
+    ChatTheme = React.lazy(() => import("styles/chat-override-theme"));
+  }
+  const ThemeSelector = (props: { children: any }) => {
+    return (
+      <>
+        <React.Suspense fallback={<></>}>
+          <ChatTheme />
+        </React.Suspense>
+        {props.children}
+      </>
+    );
+  };
 
   useEffect(() => {
     if (!intro) {
@@ -104,29 +118,35 @@ export default function Chat(props: { height: number }): JSX.Element {
   });
 
   return (
-    <div
-      id="chat-thread"
-      className={styles.body}
-      style={{ height: props.height - 20 }}
-    >
-      <List id="thread" className={styles.list} disablePadding={true}>
-        {messages.map((message, i) => {
-          return (
-            <ListItem
-              id={`chat-msg-${i}`}
-              key={`chat-msg-${i}`}
-              disableGutters={false}
-              className={message.isUser ? "user" : "system"}
-              classes={{
-                root: styles.root,
-              }}
-              style={{ paddingRight: 16 }}
-            >
-              <ListItemText primary={message.text} />
-            </ListItem>
-          );
-        })}
-      </List>
-    </div>
+    <ThemeSelector>
+      <div
+        id="chat-thread"
+        className={styles.body}
+        style={{ height: props.height }}
+      >
+        <div style={{ height: props.height - 22, paddingTop: 1 }}>
+          <List id="thread" className={styles.list} disablePadding={true}>
+            {messages.map((message, i) => {
+              return (
+                <ListItem
+                  id={`chat-msg-${i}`}
+                  key={`chat-msg-${i}`}
+                  disableGutters={false}
+                  className={message.isUser ? "user" : "system"}
+                  classes={{
+                    root: styles.root,
+                  }}
+                  style={{ paddingRight: 16 }}
+                >
+                  <ListItemText primary={message.text} />
+                </ListItem>
+              );
+            })}
+          </List>
+        </div>
+      </div>
+    </ThemeSelector>
   );
 }
+
+export default withLocation(Chat);
