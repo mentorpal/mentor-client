@@ -20,7 +20,7 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini 
 WORKDIR /app
 COPY docker .
-COPY --from=builder /build/client/public /app/public/mentorpanel
+COPY --from=builder /build/client/public /app/public/chat
 RUN npm ci --production 
 RUN chmod +x /app/entrypoint.sh
 ENTRYPOINT ["/tini", "--", "/app/entrypoint.sh"]
