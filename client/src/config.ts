@@ -23,7 +23,7 @@ to test serving those videos
 if (typeof window !== "undefined" && process.env.NODE_ENV !== "test") {
   // i.e. don't run at build time
   axios
-    .get(`/config`)
+    .get(`/chat/config`)
     .then(result => {
       if (typeof result.data["CMI5_ENDPOINT"] === "string") {
         config.CMI5_ENDPOINT = result.data["CMI5_ENDPOINT"];

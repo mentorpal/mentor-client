@@ -15,8 +15,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
-app.use("/", express.static(path.join(__dirname, "public", "mentorpanel")));
-app.get("/config", (req, res) => {
+app.use("/", express.static(path.join(__dirname, "public", "chat")));
+app.get("/chat/config", (req, res) => {
     res.send({
         CMI5_ENDPOINT: process.env.CMI5_ENDPOINT || "/lrs/xapi",
         CMI5_FETCH: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
