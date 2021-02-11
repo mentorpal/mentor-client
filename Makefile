@@ -37,7 +37,6 @@ test-all:
 PHONY: test-audit
 test-audit:
 	cd client && $(MAKE) test-audit
-	cd docker && $(MAKE) test-audit
 
 PHONY: test-format
 test-format:
@@ -62,12 +61,10 @@ LICENSE_HEADER:
 .PHONY: license
 license: LICENSE LICENSE_HEADER
 	cd client && npm ci && npm run license:fix
-	cd docker && npm ci && npm run license:fix
 
 .PHONY: test-license
 test-license: LICENSE LICENSE_HEADER
 	cd client && $(MAKE) test-license
-	cd docker && $(MAKE) test-license
 
 .PHONY: test-e2e
 test-e2e:
