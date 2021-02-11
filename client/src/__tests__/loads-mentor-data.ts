@@ -13,7 +13,7 @@ import { loadMentor } from "store/actions";
 import reducer, { initialState } from "store/reducer";
 import { State, MentorData, MentorQuestionStatus } from "store/types";
 import { ExpectIntermediateStates, ExpectedState } from "test-helpers";
-import { MentorApiData } from "api/api";
+import { MentorApiData } from "api";
 
 // This sets the mock adapter on the default instance
 const mockAxios = new MockAdapter(axios);

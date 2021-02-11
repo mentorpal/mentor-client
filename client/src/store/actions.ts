@@ -9,7 +9,7 @@ import { ActionCreator, AnyAction, Dispatch } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import Cmi5 from "@xapi/cmi5";
 
-import { fetchMentorData, MentorApiData, queryMentor } from "api/api";
+import { fetchMentorData, MentorApiData, queryMentor } from "api";
 import {
   MentorDataResult,
   MentorQuestionStatus,

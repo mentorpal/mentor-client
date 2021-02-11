@@ -62,10 +62,10 @@ describe("Input field", () => {
         mockMentorVideos(cy);
         cy.viewport("iphone-x");
 
-        cy.intercept("**/mentor-api/questions/?mentor=clint&query=how+old+are+you", { fixture: "clint_response.json" }).as("askClint");
-        cy.intercept("**/mentor-api/questions/?mentor=dan&query=how+old+are+you", { fixture: "clint_response.json" }).as("askDan");
-        cy.intercept("**/mentor-api/questions/?mentor=julianne&query=how+old+are+you", { fixture: "clint_response.json" }).as("askJulianne");
-        cy.intercept("**/mentor-api/questions/?mentor=carlos&query=how+old+are+you", { fixture: "clint_response.json" }).as("askCarlos");
+        cy.intercept("**/questions/?mentor=clint&query=how+old+are+you", { fixture: "clint_response.json" }).as("askClint");
+        cy.intercept("**/questions/?mentor=dan&query=how+old+are+you", { fixture: "clint_response.json" }).as("askDan");
+        cy.intercept("**/questions/?mentor=julianne&query=how+old+are+you", { fixture: "clint_response.json" }).as("askJulianne");
+        cy.intercept("**/questions/?mentor=carlos&query=how+old+are+you", { fixture: "clint_response.json" }).as("askCarlos");
 
         cy.get("#input-field").type("how old are you");
         cy.get("#input-send").trigger('mouseover').click();

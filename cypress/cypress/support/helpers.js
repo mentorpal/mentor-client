@@ -24,17 +24,17 @@ function addGuestParams(query = {}, guestName = "guest") {
 }
 
 function mockMentorData(cy) {
-    cy.intercept("**/mentor-api/mentors/clint/data", { fixture: "clint.json" });
-    cy.intercept("**/mentor-api/mentors/dan/data", { fixture: "dan.json" });
-    cy.intercept("**/mentor-api/mentors/carlos/data", { fixture: "carlos.json" });
-    cy.intercept("**/mentor-api/mentors/julianne/data", { fixture: "julianne.json" });
-    cy.intercept("**/mentor-api/mentors/jd_thomas/data", { fixture: "jd_thomas.json" });
-    cy.intercept("**/mentor-api/mentors/mario-pais/data", { fixture: "mario-pais.json" });
-    cy.intercept("**/mentor-api/mentors/dan-burns/data", { fixture: "dan-burns.json" });
+    cy.intercept("**/mentors/clint/data", { fixture: "clint.json" });
+    cy.intercept("**/mentors/dan/data", { fixture: "dan.json" });
+    cy.intercept("**/mentors/carlos/data", { fixture: "carlos.json" });
+    cy.intercept("**/mentors/julianne/data", { fixture: "julianne.json" });
+    cy.intercept("**/mentors/jd_thomas/data", { fixture: "jd_thomas.json" });
+    cy.intercept("**/mentors/mario-pais/data", { fixture: "mario-pais.json" });
+    cy.intercept("**/mentors/dan-burns/data", { fixture: "dan-burns.json" });
 }
 
 function mockMentorVideos(cy) {
-    cy.intercept("https://video.mentorpal.org/**/*.mp4", { fixture: "clint_response.mp4" });
+    cy.intercept("**/*.mp4", { fixture: "clint_response.mp4" });
 }
 
 function mockMentorVtt(cy) {
@@ -42,7 +42,7 @@ function mockMentorVtt(cy) {
 }
 
 function mockApiQuestions(cy) {
-    cy.intercept("**/mentor-api/questions/?mentor=*&query=*", { fixture: "clint_response.json" });
+    cy.intercept("**/questions/?mentor=*&query=*", { fixture: "clint_response.json" });
 }
 
 function toGuestUrl(url, guestName) {

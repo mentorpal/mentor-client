@@ -9,7 +9,7 @@ import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import { Whatshot } from "@material-ui/icons";
 import smoothscroll from "smoothscroll-polyfill";
 
-import { normalizeString } from "funcs/funcs";
+import { normalizeString } from "utils";
 
 interface OnQuestionSelected {
   (question?: string): undefined;

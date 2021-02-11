@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Button, Paper } from "@material-ui/core";
 import { History, Whatshot } from "@material-ui/icons";
 
-import { normalizeString } from "funcs/funcs";
+import { normalizeString } from "utils";
 import { selectTopic } from "store/actions";
 import { MentorData, State } from "store/types";
 
