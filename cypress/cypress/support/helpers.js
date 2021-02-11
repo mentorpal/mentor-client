@@ -24,59 +24,25 @@ function addGuestParams(query = {}, guestName = "guest") {
 }
 
 function mockMentorData(cy) {
-    cy.route({
-        method: "GET",
-        url: "**/mentor-api/mentors/clint/data",
-        response: "fixture:clint.json",
-    });
-    cy.route({
-        method: "GET",
-        url: "**/mentor-api/mentors/dan/data",
-        response: "fixture:dan.json",
-    });
-    cy.route({
-        method: "GET",
-        url: "**/mentor-api/mentors/carlos/data",
-        response: "fixture:carlos.json",
-    });
-    cy.route({
-        method: "GET",
-        url: "**/mentor-api/mentors/julianne/data",
-        response: "fixture:julianne.json",
-    });
-    cy.route({
-        method: "GET",
-        url: "**/mentor-api/mentors/jd_thomas/data",
-        response: "fixture:jd_thomas.json",
-    });
-    cy.route({
-        method: "GET",
-        url: "**/mentor-api/mentors/mario-pais/data",
-        response: "fixture:mario-pais.json",
-    });
-    cy.route({
-        method: "GET",
-        url: "**/mentor-api/mentors/dan-burns/data",
-        response: "fixture:dan-burns.json",
-    });
+    cy.intercept("**/mentor-api/mentors/clint/data", { fixture: "clint.json" });
+    cy.intercept("**/mentor-api/mentors/dan/data", { fixture: "dan.json" });
+    cy.intercept("**/mentor-api/mentors/carlos/data", { fixture: "carlos.json" });
+    cy.intercept("**/mentor-api/mentors/julianne/data", { fixture: "julianne.json" });
+    cy.intercept("**/mentor-api/mentors/jd_thomas/data", { fixture: "jd_thomas.json" });
+    cy.intercept("**/mentor-api/mentors/mario-pais/data", { fixture: "mario-pais.json" });
+    cy.intercept("**/mentor-api/mentors/dan-burns/data", { fixture: "dan-burns.json" });
 }
 
 function mockMentorVideos(cy) {
-    cy.route({
-        method: "GET",
-        url: "https://video.mentorpal.org/**/*.mp4",
-        // use clint's video for all responses,
-        // not checking anything about the actual video content
-        response: "fixture:clint_response.mp4",
-    });
+    cy.intercept("https://video.mentorpal.org/**/*.mp4", { fixture: "clint_response.mp4" });
 }
 
 function mockMentorVtt(cy) {
-    cy.route({
-        method: "GET",
-        url: "**/*.vtt",
-        response: "fixture:default.vtt",
-    });
+    cy.intercept("**/*.vtt", { fixture: "default.vtt" });
+}
+
+function mockApiQuestions(cy) {
+    cy.intercept("**/mentor-api/questions/?mentor=*&query=*", { fixture: "clint_response.json" });
 }
 
 function toGuestUrl(url, guestName) {
@@ -113,29 +79,6 @@ function mockDefaultSetup(cy) {
 function visitAsGuestWithDefaultSetup(cy, url = "/") {
     mockDefaultSetup(cy);
     cy.visit(url, { qs: addGuestParams() });
-}
-
-function mockApiQuestions(cy) {
-    cy.route({
-        method: "GET",
-        url: "**/mentor-api/questions/?mentor=clint&query=*",
-        response: "fixture:clint_response.json",
-    });
-    cy.route({
-        method: "GET",
-        url: "**/mentor-api/questions/?mentor=dan&query=*",
-        response: "fixture:clint_response.json",
-    });
-    cy.route({
-        method: "GET",
-        url: "**/mentor-api/questions/?mentor=julianne&query=*",
-        response: "fixture:clint_response.json",
-    });
-    cy.route({
-        method: "GET",
-        url: "**/mentor-api/questions/?mentor=carlos&query=*",
-        response: "fixture:clint_response.json",
-    });
 }
 
 module.exports = {
