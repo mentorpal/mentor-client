@@ -9,7 +9,7 @@ import axios from "axios";
 const config = {
   CMI5_ENDPOINT: process.env.CMI5_ENDPOINT || "/lrs/xapi",
   CMI5_FETCH: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
-  MENTOR_API_URL: process.env.MENTOR_API_URL || "/classifier", // eslint-disable-line no-undef
+  MENTOR_API_URL: process.env.MENTOR_API_URL || "/classifier",
   MENTOR_VIDEO_URL: process.env.MENTOR_VIDEO_URL || "/videos",
 };
 

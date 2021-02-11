@@ -4,9 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { withPrefix } from "gatsby";
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet";
 import { useSelector, useDispatch } from "react-redux";
 import { v1 as uuidv1 } from "uuid";
 import { CircularProgress } from "@material-ui/core";
@@ -42,11 +40,13 @@ const IndexPage = ({ search }) => {
   const [width, setWidth] = useState(0);
   const { recommended, mentor, guest, hideVideo } = search;
 
+  const hidePanel = Object.getOwnPropertyNames(mentorsById).length < 2;
   const isMobile = width < 768;
   const videoHeight = isMobile ? height * 0.5 : Math.min(width * 0.5625, 700);
   const inputHeight = isMobile
     ? height * 0.5
     : Math.max(height - videoHeight, 250);
+  const headerHeight = hidePanel || hideVideo ? 50 : 100;
 
   let globalWindow;
   if (typeof window !== "undefined") {
@@ -158,25 +158,23 @@ const IndexPage = ({ search }) => {
     return <CircularProgress />;
   }
 
-  const hidePanel = Object.getOwnPropertyNames(mentorsById).length < 2;
-
   return (
     <MuiThemeProvider theme={theme}>
       <div className="flex" style={{ height: videoHeight }}>
-        {hidePanel || hideVideo ? (
-          undefined
-        ) : (
-          <div className="content" style={{ height: "100px" }}>
+        <div className="content" style={{ height: headerHeight }}>
+          {hidePanel || hideVideo ? (
+            undefined
+          ) : (
             <VideoPanel isMobile={isMobile} />
-            <Header />
-          </div>
-        )}
+          )}
+          <Header />
+        </div>
         <div className="expand">
           {hideVideo ? (
-            <Chat height={videoHeight - (hidePanel ? 0 : 100)} />
+            <Chat height={videoHeight - headerHeight} />
           ) : (
             <Video
-              height={videoHeight - (hidePanel ? 0 : 100)}
+              height={videoHeight - headerHeight}
               width={width}
               playing={hasSessionUser()}
             />

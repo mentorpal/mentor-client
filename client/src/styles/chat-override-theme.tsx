@@ -4,39 +4,9 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { Typography } from "@material-ui/core";
 import React from "react";
-import { useSelector } from "react-redux";
+import "styles/chat.overrides.css";
 
-import withLocation from "wrap-with-location";
+const Theme = () => <React.Fragment></React.Fragment>;
 
-const Header = ({ search }) => {
-  const mentor = useSelector(state => state.mentorsById[state.curMentor]);
-  const { customHeader } = search;
-
-  if (customHeader) {
-    return (
-      <div id="header" style={{ padding: "2px 4px" }}>
-        <img src={customHeader} style={{ height: 50 }} />
-      </div>
-    );
-  }
-
-  return (
-    <div
-      id="header"
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        height: 50,
-      }}
-    >
-      <Typography>
-        {mentor ? `${mentor.name}: ${mentor.title}` : undefined}
-      </Typography>
-    </div>
-  );
-};
-
-export default withLocation(Header);
+export default Theme;
