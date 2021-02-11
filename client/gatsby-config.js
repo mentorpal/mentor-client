@@ -1,7 +1,7 @@
 module.exports = {
-  pathPrefix: `/mentorpanel`,
+  pathPrefix: `/chat`,
   siteMetadata: {
-    title: `MentorPanel`,
+    title: `Chat`,
     description: ``,
     author: `@gatsbyjs`,
   },
