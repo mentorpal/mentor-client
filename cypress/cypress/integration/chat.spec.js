@@ -14,7 +14,7 @@ describe("Chat", () => {
         cy.get("#chat-thread").should("not.exist");
     });
 
-    it("replaces video is hideVideo=true", () => {
+    it("replaces video if hideVideo=true", () => {
         cy.server();
         cy.intercept("**/mentors/clint/data", { fixture: "clint.json" });
         cy.intercept("**/questions/?mentor=*&query=*", { fixture: "clint_response.json" });
@@ -36,5 +36,52 @@ describe("Chat", () => {
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#chat-msg-1").contains("how old are you");
         cy.get("#chat-msg-2").contains("I'm thirty seven years old.");
-    })
+    });
+
+    // TODO:
+    // for some reason this test passes locally but fails in docker... maybe React.lazy doesn't work?
+    it.skip("shows default chat styles", () => {
+        cy.server();
+        cy.intercept("**/mentors/clint/data", { fixture: "clint.json" });
+        cy.intercept("**/questions/?mentor=*&query=*", { fixture: "clint_response.json" });
+        cy.viewport("iphone-x");
+        cy.visit(
+            "/", {
+                qs: {
+                    ...addGuestParams(),
+                    mentor: "clint",
+                    hideVideo: "true",
+                }
+            }
+        );
+
+        cy.get("#input-field").type("how old are you");
+        cy.get("#input-send").trigger('mouseover').click();
+        cy.get("#chat-msg-1")
+            .invoke('css', 'background')
+            .should('contain', 'rgb(0, 132, 255)')
+    });
+
+    it("shows alternate chat styles if customStyles=true", () => {
+        cy.server();
+        cy.intercept("**/mentors/clint/data", { fixture: "clint.json" });
+        cy.intercept("**/questions/?mentor=*&query=*", { fixture: "clint_response.json" });
+        cy.viewport("iphone-x");
+        cy.visit(
+            "/", {
+                qs: {
+                    ...addGuestParams(),
+                    mentor: "clint",
+                    hideVideo: "true",
+                    customStyles: "true"
+                }
+            }
+        );
+
+        cy.get("#input-field").type("how old are you");
+        cy.get("#input-send").trigger('mouseover').click();
+        cy.get("#chat-msg-1")
+            .invoke('css', 'background')
+            .should('contain', 'rgb(75, 10, 6)')
+    });
 });
