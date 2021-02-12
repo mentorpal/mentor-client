@@ -71,4 +71,4 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: docker tag "uscictdocker/mentor-client:${{ steps.tag.outputs.image_tag }}" "uscictdocker/mentor-client:latest"
       - name: docker push
-        run: docker push uscictdocker/mentor-client
+        run: docker push --all-tags uscictdocker/mentor-client
