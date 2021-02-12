@@ -1,5 +1,4 @@
 DOCKER_IMAGE?=mentor-client
-OPENTUTOR_CLIENT_VERSION?=latest
 TEST_E2E_DOCKER_COMPOSE=docker-compose
 
 PHONY: clean
