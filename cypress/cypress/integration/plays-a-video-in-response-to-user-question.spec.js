@@ -13,7 +13,6 @@ import {
 describe("plays a video in response to a user question", () => {
 
     it("plays a mentor response and displays subtitles", () => {
-        cy.server();
         mockMentorData(cy);
         mockMentorVideos(cy);
         cy.viewport("iphone-x");

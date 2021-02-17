@@ -58,7 +58,6 @@ describe("Input field", () => {
     });
 
     it("sends api call to get responses from mentors after sending input", () => {
-        cy.server();
         mockMentorData(cy);
         mockMentorVideos(cy);
         cy.viewport("iphone-x");

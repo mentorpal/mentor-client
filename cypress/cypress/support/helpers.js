@@ -68,7 +68,6 @@ function toGuestUrl(url, guestName) {
 }
 
 function mockDefaultSetup(cy) {
-    cy.server();
     mockMentorData(cy);
     mockMentorVideos(cy);
     mockApiQuestions(cy);
