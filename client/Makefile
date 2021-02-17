@@ -44,11 +44,10 @@ test: node_modules/jest
 
 PHONY: test-all
 test-all:
-	# $(MAKE) test-audit
+	$(MAKE) test-audit
 	$(MAKE) test-format
 	$(MAKE) test-lint
-	$(MAKE) test-license
-	# $(MAKE) test-types
+	$(MAKE) test-types
 	$(MAKE) test
 
 .PHONY: test-audit
@@ -66,22 +65,3 @@ test-lint: node_modules/eslint
 .PHONY: test-types
 test-types: node_modules/typescript
 	npm run test:types
-
-LICENSE:
-	@echo "you must have a LICENSE file" 1>&2
-	exit 1
-
-LICENSE_HEADER:
-	@echo "you must have a LICENSE_HEADER file" 1>&2
-	exit 1
-
-.PHONY: license
-license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
-	npm run license:fix
-
-.PHONY: test-license
-test-license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
-	npm run test:license
-
-node_modules/license-check-and-add:
-	npm ci

@@ -4,7 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { visitAsGuestWithDefaultSetup } from "../support/helpers";
+import { mockMentorData, mockMentorVideos, visitAsGuestWithDefaultSetup } from "../support/helpers";
 
 describe("Input field", () => {
     it("has a default placeholder message", () => {
@@ -58,27 +58,14 @@ describe("Input field", () => {
     });
 
     it("sends api call to get responses from mentors after sending input", () => {
-        visitAsGuestWithDefaultSetup(cy, "/");
-        cy.route({
-            method: "GET",
-            url: "**/mentor-api/questions/?mentor=clint&query=how+old+are+you",
-            response: "fixture:clint_response.json",
-        }).as("askClint");
-        cy.route({
-            method: "GET",
-            url: "**/mentor-api/questions/?mentor=dan&query=how+old+are+you",
-            response: "fixture:clint_response.json",
-        }).as("askDan");
-        cy.route({
-            method: "GET",
-            url: "**/mentor-api/questions/?mentor=julianne&query=how+old+are+you",
-            response: "fixture:clint_response.json",
-        }).as("askJulianne");
-        cy.route({
-            method: "GET",
-            url: "**/mentor-api/questions/?mentor=carlos&query=how+old+are+you",
-            response: "fixture:clint_response.json",
-        }).as("askCarlos");
+        mockMentorData(cy);
+        mockMentorVideos(cy);
+        cy.viewport("iphone-x");
+
+        cy.intercept("**/mentor-api/questions/?mentor=clint&query=how+old+are+you", { fixture: "clint_response.json" }).as("askClint");
+        cy.intercept("**/mentor-api/questions/?mentor=dan&query=how+old+are+you", { fixture: "clint_response.json" }).as("askDan");
+        cy.intercept("**/mentor-api/questions/?mentor=julianne&query=how+old+are+you", { fixture: "clint_response.json" }).as("askJulianne");
+        cy.intercept("**/mentor-api/questions/?mentor=carlos&query=how+old+are+you", { fixture: "clint_response.json" }).as("askCarlos");
 
         cy.get("#input-field").type("how old are you");
         cy.get("#input-send").trigger('mouseover').click();
