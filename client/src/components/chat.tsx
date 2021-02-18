@@ -12,6 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { State } from "store/types";
 import withLocation from "wrap-with-location";
+import "styles/chat-theme";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -37,129 +38,92 @@ const useStyles = makeStyles(theme => ({
 interface ChatMsg {
   isUser: boolean;
   text: string;
-  receivedAt: string;
 }
 
-function Chat(props: { height: number; search: any }): JSX.Element {
-  const styles = useStyles();
-  const [messages, setMessages] = useState<ChatMsg[]>([]);
-  const intro = useSelector<State, string>(state => {
-    try {
-      const m = state.mentorsById[state.curMentor];
-      return m.utterances_by_type["_INTRO_"][0][1];
-    } catch (err) {
-      return "";
-    }
-  });
-  const question = useSelector<State, ChatMsg | undefined>(state => {
-    return state.curQuestion
-      ? {
-          isUser: true,
-          text: state.curQuestion,
-          receivedAt: state.curQuestionUpdatedAt?.toString() || "",
-        }
-      : undefined;
-  });
-  const answer = useSelector<State, ChatMsg | undefined>(state => {
-    const m = state.mentorsById[state.curMentor];
-    return m
-      ? {
-          isUser: false,
-          text: m.answer_text || "",
-          receivedAt: m.answerReceivedAt?.toString() || "",
-        }
-      : undefined;
-  });
-  const [lastQuestion, setLastQuestion] = useState<ChatMsg>();
-  const [lastAnswer, setLastAnswer] = useState<ChatMsg>();
-
-  const { customStyles } = props.search;
-  let ChatTheme = React.lazy(() => import("styles/chat-theme"));
-  if (customStyles) {
-    ChatTheme = React.lazy(() => import("styles/chat-override-theme"));
-  }
-  const ThemeSelector = (props: { children: any }) => {
-    return (
-      <>
-        <React.Suspense fallback={<></>}>
-          <ChatTheme />
-        </React.Suspense>
-        {props.children}
-      </>
-    );
-  };
+function ChatThread(props: { styles: any; messages: ChatMsg[] }): JSX.Element {
+  const { styles, messages } = props;
 
   useEffect(() => {
     animateScroll.scrollToBottom({
       containerId: "thread",
     });
-  });
-
-  useEffect(() => {
-    if (!intro) {
-      return;
-    }
-    setMessages([
-      ...messages,
-      {
-        isUser: false,
-        text: intro,
-        receivedAt: "",
-      },
-    ]);
-  }, [intro]);
-
-  useEffect(() => {
-    if (
-      !question ||
-      (lastQuestion && lastQuestion.receivedAt === question.receivedAt)
-    ) {
-      return;
-    }
-    setMessages([...messages, question]);
-    setLastQuestion(question);
-  }, [question]);
-
-  useEffect(() => {
-    if (
-      !answer ||
-      (lastAnswer && lastAnswer.receivedAt === answer.receivedAt)
-    ) {
-      return;
-    }
-    setMessages([...messages, answer]);
-    setLastAnswer(answer);
-  }, [answer]);
+  }, [messages]);
 
   return (
-    <ThemeSelector>
-      <div
-        id="chat-thread"
-        className={styles.body}
-        style={{ height: props.height }}
-      >
-        <div style={{ height: props.height - 22, paddingTop: 1 }}>
-          <List id="thread" className={styles.list} disablePadding={true}>
-            {messages.map((message, i) => {
-              return (
-                <ListItem
-                  id={`chat-msg-${i}`}
-                  key={`chat-msg-${i}`}
-                  disableGutters={false}
-                  className={message.isUser ? "user" : "system"}
-                  classes={{
-                    root: styles.root,
-                  }}
-                  style={{ paddingRight: 16 }}
-                >
-                  <ListItemText primary={message.text} />
-                </ListItem>
-              );
-            })}
-          </List>
-        </div>
+    <List id="thread" className={styles.list} disablePadding={true}>
+      {messages.map((message, i) => {
+        return (
+          <ListItem
+            id={`chat-msg-${i}`}
+            key={`chat-msg-${i}`}
+            disableGutters={false}
+            className={message.isUser ? "user" : "system"}
+            classes={{
+              root: styles.root,
+            }}
+            style={{ paddingRight: 16 }}
+          >
+            <ListItemText primary={message.text} />
+          </ListItem>
+        );
+      })}
+    </List>
+  );
+}
+
+function Chat(props: { height: number; search: any }): JSX.Element {
+  const styles = useStyles();
+  const state = useSelector<State, State>(state => state);
+  const [messages, setMessages] = useState<ChatMsg[]>([]);
+  const [lastQuestionAt, setLastQuestionAt] = useState<Date>();
+  const [lastAnswerAt, setLastAnswerAt] = useState<Date>();
+
+  useEffect(() => {
+    if (lastQuestionAt !== state.curQuestionUpdatedAt) {
+      setMessages([
+        ...messages,
+        {
+          isUser: true,
+          text: state.curQuestion,
+        },
+      ]);
+      setLastQuestionAt(state.curQuestionUpdatedAt);
+    }
+    const mentor = state.mentorsById[state.curMentor];
+    if (!mentor) {
+      return;
+    }
+    if (messages.length === 0) {
+      setMessages([
+        ...messages,
+        {
+          isUser: false,
+          text: mentor.utterances_by_type["_INTRO_"][0][1],
+        },
+      ]);
+    }
+    if (lastAnswerAt !== mentor.answerReceivedAt) {
+      setMessages([
+        ...messages,
+        {
+          isUser: false,
+          text: mentor.answer_text || "",
+        },
+      ]);
+      setLastAnswerAt(mentor.answerReceivedAt);
+    }
+  }, [state]);
+
+  return (
+    <div
+      id="chat-thread"
+      className={styles.body}
+      style={{ height: props.height }}
+    >
+      <div style={{ height: props.height - 22, paddingTop: 1 }}>
+        <ChatThread styles={styles} messages={messages} />
       </div>
-    </ThemeSelector>
+    </div>
   );
 }
 

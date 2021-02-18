@@ -40,7 +40,7 @@ describe("Header", () => {
         cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
     });
 
-    it("shows alternate header with customHeader image", () => {
+    it.skip("shows alternate header with customHeader image", () => {
         mockDefaultSetup(cy);
         cy.intercept("https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png", { fixture: "uscheader.png" })
         cy.visit("/", {
