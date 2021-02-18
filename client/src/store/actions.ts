@@ -198,6 +198,11 @@ export const loadMentor: ActionCreator<ThunkAction<
             .then(result => {
               if (result.status == 200) {
                 const apiData = result.data;
+                Object.keys(apiData.topics_by_id).forEach(k => {
+                  if (apiData.topics_by_id[k].questions.length < 1) {
+                    delete apiData.topics_by_id[k];
+                  }
+                });
                 const mentorData: MentorData = {
                   ...apiData,
                   answer_id: findIntro(apiData),

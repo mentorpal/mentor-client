@@ -37,24 +37,41 @@ const useStyles = makeStyles(theme => ({
 interface ChatMsg {
   isUser: boolean;
   text: string;
+  receivedAt: string;
 }
 
 function Chat(props: { height: number; search: any }): JSX.Element {
   const styles = useStyles();
   const [messages, setMessages] = useState<ChatMsg[]>([]);
-  const intro = useSelector<State, string | undefined>(state => {
+  const intro = useSelector<State, string>(state => {
     try {
       const m = state.mentorsById[state.curMentor];
       return m.utterances_by_type["_INTRO_"][0][1];
     } catch (err) {
-      return undefined;
+      return "";
     }
   });
-  const question = useSelector<State, string>(state => state.curQuestion);
-  const answer = useSelector<State, string | undefined>(state => {
-    const m = state.mentorsById[state.curMentor];
-    return m ? m.answer_text : undefined;
+  const question = useSelector<State, ChatMsg | undefined>(state => {
+    return state.curQuestion
+      ? {
+          isUser: true,
+          text: state.curQuestion,
+          receivedAt: state.curQuestionUpdatedAt?.toString() || "",
+        }
+      : undefined;
   });
+  const answer = useSelector<State, ChatMsg | undefined>(state => {
+    const m = state.mentorsById[state.curMentor];
+    return m
+      ? {
+          isUser: false,
+          text: m.answer_text || "",
+          receivedAt: m.answerReceivedAt?.toString() || "",
+        }
+      : undefined;
+  });
+  const [lastQuestion, setLastQuestion] = useState<ChatMsg>();
+  const [lastAnswer, setLastAnswer] = useState<ChatMsg>();
 
   const { customStyles } = props.search;
   let ChatTheme = React.lazy(() => import("styles/chat-theme"));
@@ -73,6 +90,12 @@ function Chat(props: { height: number; search: any }): JSX.Element {
   };
 
   useEffect(() => {
+    animateScroll.scrollToBottom({
+      containerId: "thread",
+    });
+  });
+
+  useEffect(() => {
     if (!intro) {
       return;
     }
@@ -80,42 +103,33 @@ function Chat(props: { height: number; search: any }): JSX.Element {
       ...messages,
       {
         isUser: false,
-        text: `${intro}\nWhat would you like to ask me?`,
+        text: intro,
+        receivedAt: "",
       },
     ]);
   }, [intro]);
 
   useEffect(() => {
-    if (!question) {
+    if (
+      !question ||
+      (lastQuestion && lastQuestion.receivedAt === question.receivedAt)
+    ) {
       return;
     }
-    setMessages([
-      ...messages,
-      {
-        isUser: true,
-        text: question,
-      },
-    ]);
+    setMessages([...messages, question]);
+    setLastQuestion(question);
   }, [question]);
 
   useEffect(() => {
-    if (!answer) {
+    if (
+      !answer ||
+      (lastAnswer && lastAnswer.receivedAt === answer.receivedAt)
+    ) {
       return;
     }
-    setMessages([
-      ...messages,
-      {
-        isUser: false,
-        text: answer,
-      },
-    ]);
+    setMessages([...messages, answer]);
+    setLastAnswer(answer);
   }, [answer]);
-
-  useEffect(() => {
-    animateScroll.scrollToBottom({
-      containerId: "thread",
-    });
-  });
 
   return (
     <ThemeSelector>
