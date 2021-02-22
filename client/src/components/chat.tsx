@@ -120,7 +120,11 @@ function Chat(props: { height: number; search: any }): JSX.Element {
     <div
       id="chat-thread"
       className={styles.root}
-      style={{ height: props.height, display: "flex", justifyContent: "center" }}
+      style={{
+        height: props.height,
+        display: "flex",
+        justifyContent: "center",
+      }}
     >
       <div className={styles.chat} style={{ height: props.height - 22 }}>
         <ChatThread styles={styles} messages={messages} />

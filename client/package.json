@@ -85,6 +85,9 @@
     "typescript": "^3.7.5",
     "webpack": "4.x"
   },
+  "resolutions": {
+    "socket.io": ">=2.4.0"
+  },
   "keywords": [
     "gatsby"
   ],
