@@ -42,10 +42,10 @@ const IndexPage = ({ search }) => {
 
   const hidePanel = Object.getOwnPropertyNames(mentorsById).length < 2;
   const isMobile = width < 768;
-  const videoHeight = isMobile ? height * 0.5 : Math.min(width * 0.5625, 700);
+  const videoHeight = isMobile ? height * 0.5 : Math.min(width * 0.5625, height * 0.7);
   const inputHeight = isMobile
     ? height * 0.5
-    : Math.max(height - videoHeight, 250);
+    : Math.max(height - videoHeight, 300);
   const headerHeight = hidePanel || hideVideo ? 50 : 100;
 
   let globalWindow;

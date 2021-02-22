@@ -18,8 +18,10 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: "auto",
   },
-  body: {
+  chat: {
+    paddingTop: 1,
     width: "100%",
+    maxWidth: 1000,
   },
   list: {
     padding: 10,
@@ -117,10 +119,10 @@ function Chat(props: { height: number; search: any }): JSX.Element {
   return (
     <div
       id="chat-thread"
-      className={styles.body}
-      style={{ height: props.height }}
+      className={styles.root}
+      style={{ height: props.height, display: "flex", justifyContent: "center" }}
     >
-      <div style={{ height: props.height - 22, paddingTop: 1 }}>
+      <div className={styles.chat} style={{ height: props.height - 22 }}>
         <ChatThread styles={styles} messages={messages} />
       </div>
     </div>
