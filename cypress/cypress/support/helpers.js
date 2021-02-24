@@ -67,7 +67,8 @@ function toGuestUrl(url, guestName) {
     }, urlBase);
 }
 
-function mockDefaultSetup(cy) {
+function mockDefaultSetup(cy, config = {}) {
+    cy.intercept("**/config", { DEFAULT_MENTORS: "clint,dan,carlos,julianne", ...config });
     mockMentorData(cy);
     mockMentorVideos(cy);
     mockApiQuestions(cy);

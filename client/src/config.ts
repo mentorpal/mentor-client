@@ -5,12 +5,19 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import axios from "axios";
+import { withPrefix } from "gatsby";
+import yn from "yn";
 
 const config = {
   CMI5_ENDPOINT: process.env.CMI5_ENDPOINT || "/lrs/xapi",
   CMI5_FETCH: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
   MENTOR_API_URL: process.env.MENTOR_API_URL || "/classifier",
   MENTOR_VIDEO_URL: process.env.MENTOR_VIDEO_URL || "/videos",
+
+  DISABLE_CMI5: yn(process.env.DISABLE_CMI5 || false), // move to graphql
+  USE_CHAT_INTERFACE: yn(process.env.USE_CHAT_INTERFACE || false), // move to graphql
+  HEADER_LOGO: process.env.HEADER_LOGO, // move to graphql
+  DEFAULT_MENTORS: process.env.DEFAULT_MENTORS?.split(",") || [], // move to graphql
 };
 
 /*
@@ -23,7 +30,7 @@ to test serving those videos
 if (typeof window !== "undefined" && process.env.NODE_ENV !== "test") {
   // i.e. don't run at build time
   axios
-    .get(`/chat/config`)
+    .get(withPrefix("config"))
     .then(result => {
       if (typeof result.data["CMI5_ENDPOINT"] === "string") {
         config.CMI5_ENDPOINT = result.data["CMI5_ENDPOINT"];
@@ -36,6 +43,18 @@ if (typeof window !== "undefined" && process.env.NODE_ENV !== "test") {
       }
       if (typeof result.data["MENTOR_VIDEO_URL"] === "string") {
         config.MENTOR_VIDEO_URL = result.data["MENTOR_VIDEO_URL"];
+      }
+      if (typeof result.data["DISABLE_CMI5"] === "boolean") {
+        config.DISABLE_CMI5 = result.data["DISABLE_CMI5"];
+      }
+      if (typeof result.data["USE_CHAT_INTERFACE"] === "boolean") {
+        config.USE_CHAT_INTERFACE = result.data["USE_CHAT_INTERFACE"];
+      }
+      if (typeof result.data["HEADER_LOGO"] === "string") {
+        config.HEADER_LOGO = result.data["HEADER_LOGO"];
+      }
+      if (typeof result.data["DEFAULT_MENTORS"] === "string") {
+        config.DEFAULT_MENTORS = result.data["DEFAULT_MENTORS"].split(",");
       }
     })
     .catch(err => {

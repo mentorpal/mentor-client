@@ -6,12 +6,11 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { v1 as uuidv1 } from "uuid";
 import { CircularProgress } from "@material-ui/core";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import Cmi5 from "@xapi/cmi5";
 
-import { addCmi, hasCmi } from "cmiutils";
+import { hasCmi } from "cmiutils";
 import config from "config";
 import Chat from "components/chat";
 import GuestPrompt from "components/guest-prompt";
@@ -38,7 +37,7 @@ const IndexPage = ({ search }) => {
   const guestName = useSelector(state => state.guestName);
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
-  const { recommended, mentor, guest, hideVideo } = search;
+  const { recommended, mentor, guest } = search;
 
   const hidePanel = Object.getOwnPropertyNames(mentorsById).length < 2;
   const isMobile = width < 768;
@@ -48,7 +47,7 @@ const IndexPage = ({ search }) => {
   const inputHeight = isMobile
     ? height * 0.5
     : Math.max(height - videoHeight, 300);
-  const headerHeight = hidePanel || hideVideo ? 50 : 100;
+  const headerHeight = hidePanel || config.USE_CHAT_INTERFACE ? 50 : 100;
 
   let globalWindow;
   if (typeof window !== "undefined") {
@@ -57,7 +56,9 @@ const IndexPage = ({ search }) => {
 
   function hasSessionUser() {
     return Boolean(
-      (globalWindow && hasCmi(globalWindow.location.search)) || guestName
+      config.DISABLE_CMI5 ||
+        (globalWindow && hasCmi(globalWindow.location.search)) ||
+        guestName
     );
   }
 
@@ -69,57 +70,8 @@ const IndexPage = ({ search }) => {
     setWidth(globalWindow.innerWidth);
   }
 
-  function setQueryStringWithoutPageReload(qsValue) {
-    let url = `${window.location.protocol}//${window.location.host}${window.location.pathname}${window.location.search}`;
-    if (window.location.search) {
-      url += `&guest=${qsValue}`;
-    } else {
-      url += `?guest=${qsValue}`;
-    }
-    window.history.pushState({ path: url }, "", url);
-  }
-
-  function absUrl(u) {
-    if (!globalWindow) {
-      return u;
-    }
-    return u.startsWith("http")
-      ? u
-      : `${window.location.protocol}//${window.location.host}${
-          u.startsWith("/") ? "" : "/"
-        }${u}`;
-  }
-
-  function onGuestNameEntered(name) {
-    if (!name) {
-      name = "guest";
-    }
-    if (!globalWindow) {
-      setQueryStringWithoutPageReload(name);
-      dispatch(setGuestName(name));
-      return;
-    }
-    const urlRoot = `${window.location.protocol}//${window.location.host}`;
-    const userId = uuidv1();
-    globalWindow.location.href = addCmi(globalWindow.location.href, {
-      activityId: globalWindow.location.href,
-      actor: {
-        name: `${name}`,
-        account: {
-          name: `${userId}`,
-          homePage: `${urlRoot}/guests`,
-        },
-      },
-      endpoint: absUrl(config.CMI5_ENDPOINT),
-      fetch: `${absUrl(config.CMI5_FETCH)}${
-        config.CMI5_FETCH.includes("?") ? "" : "?"
-      }&username=${encodeURIComponent(name)}&userid=${userId}`,
-      registration: uuidv1(),
-    });
-  }
-
   useEffect(() => {
-    if (Cmi5.isCmiAvailable) {
+    if (!config.DISABLE_CMI5 && Cmi5.isCmiAvailable) {
       try {
         Cmi5.instance.initialize().catch(e => {
           console.error(e);
@@ -135,7 +87,7 @@ const IndexPage = ({ search }) => {
       ? Array.isArray(mentor)
         ? mentor
         : [mentor]
-      : ["clint", "dan", "carlos", "julianne"];
+      : config.DEFAULT_MENTORS;
     dispatch(
       loadMentor(mentorList, {
         recommendedQuestions: recommended,
@@ -164,7 +116,7 @@ const IndexPage = ({ search }) => {
     <MuiThemeProvider theme={theme}>
       <div className="flex" style={{ height: videoHeight }}>
         <div className="content" style={{ height: headerHeight }}>
-          {hidePanel || hideVideo ? (
+          {hidePanel || config.USE_CHAT_INTERFACE ? (
             undefined
           ) : (
             <VideoPanel isMobile={isMobile} />
@@ -172,7 +124,7 @@ const IndexPage = ({ search }) => {
           <Header />
         </div>
         <div className="expand">
-          {hideVideo ? (
+          {config.USE_CHAT_INTERFACE ? (
             <Chat height={videoHeight - headerHeight} />
           ) : (
             <Video
@@ -184,11 +136,7 @@ const IndexPage = ({ search }) => {
         </div>
       </div>
       <Input height={inputHeight} />
-      {!hasSessionUser() ? (
-        <GuestPrompt submit={onGuestNameEntered} />
-      ) : (
-        undefined
-      )}
+      {!hasSessionUser() ? <GuestPrompt /> : undefined}
     </MuiThemeProvider>
   );
 };

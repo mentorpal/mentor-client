@@ -12,7 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { State } from "store/types";
 import withLocation from "wrap-with-location";
-import "styles/chat-theme";
+import "styles/chat-override-theme";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,7 +21,6 @@ const useStyles = makeStyles(theme => ({
   chat: {
     paddingTop: 1,
     width: "100%",
-    maxWidth: 1000,
   },
   list: {
     padding: 10,
@@ -63,7 +62,7 @@ function ChatThread(props: { styles: any; messages: ChatMsg[] }): JSX.Element {
             classes={{
               root: styles.root,
             }}
-            style={{ paddingRight: 16 }}
+            style={{ paddingRight: 16, maxWidth: 750 }}
           >
             <ListItemText primary={message.text} />
           </ListItem>

@@ -5,6 +5,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 require("dotenv").config();
+const yn = require("yn");
 const express = require("express");
 const path = require("path");
 const app = express();
@@ -20,8 +21,13 @@ app.get("/chat/config", (req, res) => {
   res.send({
     CMI5_ENDPOINT: process.env.CMI5_ENDPOINT || "/lrs/xapi",
     CMI5_FETCH: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
-    MENTOR_API_URL: process.env.MENTOR_API_URL || "/mentor-api",
+    MENTOR_API_URL: process.env.MENTOR_API_URL || "/classifier",
     MENTOR_VIDEO_URL: process.env.MENTOR_VIDEO_URL || "/videos",
+
+    DISABLE_CMI5: yn(process.env.DISABLE_CMI5 || false), // move to graphql
+    USE_CHAT_INTERFACE: yn(process.env.USE_CHAT_INTERFACE || false), // move to graphql
+    HEADER_LOGO: process.env.HEADER_LOGO, // move to graphql
+    DEFAULT_MENTORS: process.env.DEFAULT_MENTORS?.split(",") || [], // move to graphql
   });
 });
 app.get(/lrs\/*/, (req, res, next) => {

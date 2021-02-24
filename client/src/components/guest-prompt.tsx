@@ -5,8 +5,11 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import React, { useState } from "react";
+import { v1 as uuidv1 } from "uuid";
 import { Modal, Button, Paper, InputBase, Backdrop } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import addCmi from "cmiutils";
+import config from "config";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -31,15 +34,46 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function GuestPrompt({ submit }) {
+export default function GuestPrompt(): JSX.Element {
   const classes = useStyles();
   const [name, setName] = useState("");
 
-  function onInput(name) {
+  function absUrl(u: string) {
+    return u.startsWith("http")
+      ? u
+      : `${window.location.protocol}//${window.location.host}${
+          u.startsWith("/") ? "" : "/"
+        }${u}`;
+  }
+
+  function onGuestNameEntered(name: string) {
+    if (!name) {
+      name = "guest";
+    }
+    const urlRoot = `${window.location.protocol}//${window.location.host}`;
+    const userId = uuidv1();
+    window.location.href = addCmi(window.location.href, {
+      activityId: window.location.href,
+      actor: {
+        name: `${name}`,
+        account: {
+          name: `${userId}`,
+          homePage: `${urlRoot}/guests`,
+        },
+      },
+      endpoint: absUrl(config.CMI5_ENDPOINT),
+      fetch: `${absUrl(config.CMI5_FETCH)}${
+        config.CMI5_FETCH.includes("?") ? "" : "?"
+      }&username=${encodeURIComponent(name)}&userid=${userId}`,
+      registration: uuidv1(),
+    });
+  }
+
+  function onInput(name: string) {
     const polished = name ? name.trim() : "";
     setName(polished);
     if (name.includes("\n")) {
-      submit(polished);
+      onGuestNameEntered(polished);
     }
   }
 
@@ -47,7 +81,7 @@ export default function GuestPrompt({ submit }) {
     <div id="guest-prompt">
       <Modal
         open={true}
-        onClose={() => submit(name)}
+        onClose={() => onGuestNameEntered(name)}
         className={classes.modal}
         BackdropComponent={Backdrop}
         BackdropProps={{
@@ -58,7 +92,7 @@ export default function GuestPrompt({ submit }) {
           <h2 id="guest-prompt-header">Enter a guest name:</h2>
           <InputBase
             id="guest-prompt-input"
-            multiline="true"
+            multiline={true}
             className={classes.inputField}
             value={name}
             placeholder={"guest"}
@@ -69,7 +103,7 @@ export default function GuestPrompt({ submit }) {
           <Button
             id="guest-prompt-input-send"
             className={classes.button}
-            onClick={() => submit(name)}
+            onClick={() => onGuestNameEntered(name)}
             variant="contained"
             color="primary"
           >

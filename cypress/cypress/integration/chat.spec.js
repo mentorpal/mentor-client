@@ -4,31 +4,30 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { mockDefaultSetup, addGuestParams } from "../support/helpers";
+import { mockDefaultSetup } from "../support/helpers";
 
 describe("Chat", () => {
-    it("does not show if hideVideo is not set", () => {
+    it("does not show if USE_CHAT_INTERFACE env is not set", () => {
         mockDefaultSetup(cy);
-        cy.visit("/", { qs: addGuestParams() });
+        cy.intercept("**/config", { DEFAULT_MENTORS: "clint", DISABLE_CMI5: true });
+        cy.visit("/");
         cy.get("#video-container").should("exist");
         cy.get("#chat-thread").should("not.exist");
     });
 
-    it("replaces video if hideVideo=true", () => {
-        cy.server();
+    it("does not show if USE_CHAT_INTERFACE env is set false", () => {
+        mockDefaultSetup(cy, { DEFAULT_MENTORS: "clint", DISABLE_CMI5: true, USE_CHAT_INTERFACE: false });
+        cy.visit("/");
+        cy.get("#video-container").should("exist");
+        cy.get("#chat-thread").should("not.exist");
+    });
+
+    it("replaces video if USE_CHAT_INTERFACE env is set true", () => {
         cy.intercept("**/mentors/clint/data", { fixture: "clint.json" });
         cy.intercept("**/questions/?mentor=*&query=*", { fixture: "clint_response.json" });
+        cy.intercept("**/config", { DEFAULT_MENTORS: "clint", DISABLE_CMI5: true, USE_CHAT_INTERFACE: true });
         cy.viewport("iphone-x");
-        cy.visit(
-            "/", {
-                qs: {
-                    ...addGuestParams(),
-                    mentor: "clint",
-                    hideVideo: "true",
-                }
-            }
-        );
-
+        cy.visit("/");
         cy.get("#chat-thread").should("exist");
         cy.get("#video-container").should("not.exist");
         cy.get("#chat-msg-0").contains("My name is EMC Clint Anderson. I was born in California and I have lived there most of my life. I graduated from Paramount and a couple of years after I finished high school, I joined the US Navy. I was an Electrician's Mate. I served on an aircraft carrier for eight years and then afterwards, I went to the United States Navy Reserve. During that time I started going to school with some of the abundant benefits that the military reserve has given me and I started working with various companies.");
@@ -36,50 +35,5 @@ describe("Chat", () => {
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#chat-msg-1").contains("how old are you");
         cy.get("#chat-msg-2").contains("I'm thirty seven years old.");
-    });
-
-    it.skip("shows default chat styles", () => {
-        cy.server();
-        cy.intercept("**/mentors/clint/data", { fixture: "clint.json" });
-        cy.intercept("**/questions/?mentor=*&query=*", { fixture: "clint_response.json" });
-        cy.viewport("iphone-x");
-        cy.visit(
-            "/", {
-                qs: {
-                    ...addGuestParams(),
-                    mentor: "clint",
-                    hideVideo: "true",
-                }
-            }
-        );
-
-        cy.get("#input-field").type("how old are you");
-        cy.get("#input-send").trigger('mouseover').click();
-        cy.get("#chat-msg-1")
-            .invoke('css', 'background')
-            .should('contain', 'rgb(0, 132, 255)')
-    });
-
-    it.skip("shows alternate chat styles if customStyles=true", () => {
-        cy.server();
-        cy.intercept("**/mentors/clint/data", { fixture: "clint.json" });
-        cy.intercept("**/questions/?mentor=*&query=*", { fixture: "clint_response.json" });
-        cy.viewport("iphone-x");
-        cy.visit(
-            "/", {
-                qs: {
-                    ...addGuestParams(),
-                    mentor: "clint",
-                    hideVideo: "true",
-                    customStyles: "true"
-                }
-            }
-        );
-
-        cy.get("#input-field").type("how old are you");
-        cy.get("#input-send").trigger('mouseover').click();
-        cy.get("#chat-msg-1")
-            .invoke('css', 'background')
-            .should('contain', 'rgb(75, 10, 6)')
     });
 });

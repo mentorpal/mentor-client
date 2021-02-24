@@ -4,21 +4,37 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { Typography } from "@material-ui/core";
 import React from "react";
 import { useSelector } from "react-redux";
+import { Grid, Hidden, Typography } from "@material-ui/core";
+import config from "config";
+import { MentorData, State } from "store/types";
 
-import withLocation from "wrap-with-location";
+function Header(): JSX.Element {
+  const mentor = useSelector<State, MentorData>(
+    state => state.mentorsById[state.curMentor]
+  );
 
-const Header = ({ search }) => {
-  const mentor = useSelector(state => state.mentorsById[state.curMentor]);
-  const { customHeader } = search;
-
-  if (customHeader) {
+  if (config.HEADER_LOGO) {
     return (
-      <div id="header" style={{ padding: "2px 4px" }}>
-        <img src={customHeader} style={{ height: 50 }} />
-      </div>
+      <Grid
+        id="header"
+        container
+        direction="row"
+        alignItems="center"
+        style={{ padding: "2px 4px", height: 50 }}
+      >
+        <Grid item style={{ position: "absolute", textAlign: "left" }}>
+          <img src={config.HEADER_LOGO} style={{ height: 50 }} />
+        </Grid>
+        <Hidden only="xs">
+          <Grid item sm={12}>
+            <Typography>
+              {mentor ? `${mentor.name}: ${mentor.title}` : undefined}
+            </Typography>
+          </Grid>
+        </Hidden>
+      </Grid>
     );
   }
 
@@ -37,6 +53,6 @@ const Header = ({ search }) => {
       </Typography>
     </div>
   );
-};
+}
 
-export default withLocation(Header);
+export default Header;

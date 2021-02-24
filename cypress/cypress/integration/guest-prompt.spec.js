@@ -8,6 +8,12 @@ import { mockDefaultSetup } from "../support/helpers";
 
 describe("Guest Prompt", () => {
 
+    it("does not prompt if DISABLE_CMI5 env is set true", () => {
+        mockDefaultSetup(cy, { DISABLE_CMI5: true });
+        cy.visit("/");
+        cy.get("#guest-prompt").should("not.exist");
+    });
+
     it("prompts anonymous user for a guest name", () => {
         mockDefaultSetup(cy);
         cy.visit("/");

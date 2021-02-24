@@ -20,8 +20,9 @@ describe("Mentor panel", () => {
         cy.get("#video-panel").should("not.exist");
     });
 
-    it("displays 4 default mentors if no mentors specified", () => {
+    it("displays 4 default mentors if no mentors specified and DEFAULT_MENTORS is set to clint,dan,carlos,julianne", () => {
         mockDefaultSetup(cy);
+        cy.intercept("**/config", { DEFAULT_MENTORS: "clint,dan,carlos,julianne" });
         cy.visit("/");
         cy.get("#video-panel").get("#video-thumbnail-clint");
         cy.get("#video-panel").get("#video-thumbnail-dan");
