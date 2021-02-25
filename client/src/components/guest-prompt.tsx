@@ -9,7 +9,8 @@ import { v1 as uuidv1 } from "uuid";
 import { Modal, Button, Paper, InputBase, Backdrop } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import addCmi from "cmiutils";
-import config from "config";
+import { useSelector } from "react-redux";
+import { Config, State } from "store/types";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -37,6 +38,7 @@ const useStyles = makeStyles(theme => ({
 export default function GuestPrompt(): JSX.Element {
   const classes = useStyles();
   const [name, setName] = useState("");
+  const config = useSelector<State, Config>(state => state.config);
 
   function absUrl(u: string) {
     return u.startsWith("http")
@@ -61,9 +63,9 @@ export default function GuestPrompt(): JSX.Element {
           homePage: `${urlRoot}/guests`,
         },
       },
-      endpoint: absUrl(config.CMI5_ENDPOINT),
-      fetch: `${absUrl(config.CMI5_FETCH)}${
-        config.CMI5_FETCH.includes("?") ? "" : "?"
+      endpoint: absUrl(config.cmi5Endpoint),
+      fetch: `${absUrl(config.cmi5Fetch)}${
+        config.cmi5Fetch.includes("?") ? "" : "?"
       }&username=${encodeURIComponent(name)}&userid=${userId}`,
       registration: uuidv1(),
     });

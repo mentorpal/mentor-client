@@ -42,12 +42,10 @@ describe("Mentor panel", () => {
         cy.get("#header").contains(
             "JD Thomas: NPS Student, Lieutenant, AOPS and ASWO"
         );
-
         cy.get("#video-thumbnail-mario-pais").trigger('mouseover').click();
         cy.get("#header").contains(
             "Mario Pais: Senior Chief, Lead NECC UMS Instructor"
         );
-
         cy.get("#video-thumbnail-dan-burns").trigger('mouseover').click();
         cy.get("#header").contains("Dan Burns: Captain (Retired), Chief Engineer");
     });
@@ -55,8 +53,6 @@ describe("Mentor panel", () => {
     it("picking a mentor sets them as faved", () => {
         mockDefaultSetup(cy);
         cy.visit("/");
-        cy.get("#guest-prompt-input").type("guest");
-        cy.get("#guest-prompt-input-send").trigger('mouseover').click();
         cy.get("#video-panel")
             .get("#video-thumbnail-dan")
             .trigger('mouseover').click();

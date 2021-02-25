@@ -10,8 +10,7 @@ describe("Input field", () => {
     it("has a default placeholder message", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field")
-            .invoke("attr", "placeholder")
-            .should("contain", "Ask a question");
+            .should("have.attr", "placeholder", "Ask a question");
     });
 
     it("can be typed into", () => {
@@ -40,14 +39,13 @@ describe("Input field", () => {
         cy.get("#input-field").type("Hello");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#input-field")
-            .invoke("attr", "placeholder")
+            .should("have.attr", "placeholder")
             .should("contain", "Hello");
 
         cy.get("#input-field").type("Test");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#input-field")
-            .invoke("attr", "placeholder")
-            .should("contain", "Test");
+            .should("have.attr", "placeholder", "Test");
     });
 
     it("clears text after sending input", () => {

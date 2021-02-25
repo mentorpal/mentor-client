@@ -8,13 +8,12 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Paper } from "@material-ui/core";
 import { History, Whatshot } from "@material-ui/icons";
-
 import { normalizeString } from "utils";
 import { selectTopic } from "store/actions";
 import { MentorData, State } from "store/types";
 
 interface TopicsArgs {
-  onSelected: (topic: string) => undefined;
+  onSelected: (topic: string) => void;
 }
 
 const Topics = (args: TopicsArgs) => {

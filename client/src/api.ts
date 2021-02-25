@@ -5,7 +5,8 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import axios, { AxiosResponse } from "axios";
-import config from "config";
+import { withPrefix } from "gatsby";
+import { Config } from "store/types";
 
 export interface MentorApiData {
   id: string;
@@ -40,31 +41,46 @@ export interface QuestionApiData {
 export const videoUrl = (
   mentor: string,
   answerId: string,
-  format: string
+  format: string,
+  config: Config
 ): string => {
-  return `${config.MENTOR_VIDEO_URL}/mentors/${mentor}/${format}/${answerId}.mp4`;
+  return `${config.urlVideo}/mentors/${mentor}/${format}/${answerId}.mp4`;
 };
 
-export const idleUrl = (mentor: string, format: string): string => {
-  return `${config.MENTOR_VIDEO_URL}/mentors/${mentor}/${format}/idle.mp4`;
+export const idleUrl = (
+  mentor: string,
+  format: string,
+  config: Config
+): string => {
+  return `${config.urlVideo}/mentors/${mentor}/${format}/idle.mp4`;
 };
 
 // TODO: don't pass mentor here, pass mentorId and answerId
-export const subtitleUrl = (mentor: string, answerId: string): string => {
-  return `${config.MENTOR_API_URL}/mentors/${mentor}/tracks/${answerId}.vtt`;
+export const subtitleUrl = (
+  mentor: string,
+  answerId: string,
+  config: Config
+): string => {
+  return `${config.urlClassifier}/mentors/${mentor}/tracks/${answerId}.vtt`;
 };
 
+export async function fetchConfig(): Promise<AxiosResponse<Config>> {
+  return await axios.get<Config>(withPrefix("config"));
+}
+
 export async function fetchMentorData(
-  mentorId: string
+  mentorId: string,
+  config: Config
 ): Promise<AxiosResponse<MentorApiData>> {
-  return await axios.get(`${config.MENTOR_API_URL}/mentors/${mentorId}/data`);
+  return await axios.get(`${config.urlClassifier}/mentors/${mentorId}/data`);
 }
 
 export const queryMentor = async (
   mentorId: string,
-  question: string
+  question: string,
+  config: Config
 ): Promise<AxiosResponse<QuestionApiData>> => {
-  return await axios.get(`${config.MENTOR_API_URL}/questions/`, {
+  return await axios.get(`${config.urlClassifier}/questions/`, {
     params: {
       mentor: mentorId,
       query: question,
@@ -72,8 +88,12 @@ export const queryMentor = async (
   });
 };
 
-export async function giveFeedback(feedbackId: string, feedback: string) {
-  return await axios.post(config.MENTOR_GRAPHQL_URL, {
+export async function giveFeedback(
+  feedbackId: string,
+  feedback: string,
+  config: Config
+) {
+  return await axios.post(config.urlGraphql, {
     query: `
       mutation {
         userQuestionSetFeedback(id: "${feedbackId}", feedback: "${feedback}") {

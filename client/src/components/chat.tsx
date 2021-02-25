@@ -13,15 +13,13 @@ import {
   List,
   ListItem,
   ListItemAvatar,
-  ListItemText,
   Popover,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
-
-import { Feedback, State } from "store/types";
+import { Config, Feedback, State } from "store/types";
 import withLocation from "wrap-with-location";
 import { giveFeedback } from "api";
 import "styles/chat-override-theme";
@@ -65,6 +63,7 @@ function ChatThread(props: {
 }): JSX.Element {
   const { styles, messages } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const config = useSelector<State, Config>(s => s.config);
 
   useEffect(() => {
     animateScroll.scrollToBottom({
@@ -81,7 +80,7 @@ function ChatThread(props: {
   }
 
   function handleSelectFeedback(idx: number, id: string, feedback: Feedback) {
-    giveFeedback(id, feedback);
+    giveFeedback(id, feedback, config);
     setAnchorEl(null);
     props.onFeedback(idx, feedback);
   }
@@ -145,9 +144,11 @@ function ChatThread(props: {
               className={styles.popover}
             >
               <div
-                onClick={() =>
-                  handleSelectFeedback(i, message.feedbackId!, Feedback.GOOD)
-                }
+                onClick={() => {
+                  if (message.feedbackId) {
+                    handleSelectFeedback(i, message.feedbackId, Feedback.GOOD);
+                  }
+                }}
               >
                 <ListItemAvatar>
                   <Avatar
@@ -159,9 +160,11 @@ function ChatThread(props: {
                 </ListItemAvatar>
               </div>
               <div
-                onClick={() =>
-                  handleSelectFeedback(i, message.feedbackId!, Feedback.BAD)
-                }
+                onClick={() => {
+                  if (message.feedbackId) {
+                    handleSelectFeedback(i, message.feedbackId, Feedback.BAD);
+                  }
+                }}
               >
                 <ListItemAvatar>
                   <Avatar

@@ -9,19 +9,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { CircularProgress } from "@material-ui/core";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import Cmi5 from "@xapi/cmi5";
-
 import { hasCmi } from "cmiutils";
-import config from "config";
 import Chat from "components/chat";
 import GuestPrompt from "components/guest-prompt";
 import Header from "components/header";
 import Input from "components/input";
 import Video from "components/video";
 import VideoPanel from "components/video-panel";
-import { loadMentor, setGuestName } from "store/actions";
+import { loadConfig, loadMentor, setGuestName } from "store/actions";
 import withLocation from "wrap-with-location";
-
 import "styles/layout.css";
+import { Config, LoadStatus, MentorData, MODE_CHAT, State } from "store/types";
 
 const theme = createMuiTheme({
   palette: {
@@ -31,13 +29,29 @@ const theme = createMuiTheme({
   },
 });
 
-const IndexPage = ({ search }) => {
+interface IndexSearch {
+  guest: string;
+  mentor: string[];
+  recommended: string[];
+}
+
+interface IndexParams {
+  search: IndexSearch;
+}
+
+const IndexPage = (props: IndexParams) => {
   const dispatch = useDispatch();
-  const mentorsById = useSelector(state => state.mentorsById);
-  const guestName = useSelector(state => state.guestName);
+  const config = useSelector<State, Config>(state => state.config);
+  const configLoadStatus = useSelector<State, LoadStatus>(
+    state => state.configLoadStatus
+  );
+  const mentorsById = useSelector<State, Record<string, MentorData>>(
+    state => state.mentorsById
+  );
+  const guestName = useSelector<State, string>(state => state.guestName);
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
-  const { recommended, mentor, guest } = search;
+  const { recommended, mentor, guest } = props.search;
 
   const hidePanel = Object.getOwnPropertyNames(mentorsById).length < 2;
   const isMobile = width < 768;
@@ -47,16 +61,16 @@ const IndexPage = ({ search }) => {
   const inputHeight = isMobile
     ? height * 0.5
     : Math.max(height - videoHeight, 300);
-  const headerHeight = hidePanel || config.USE_CHAT_INTERFACE ? 50 : 100;
+  const headerHeight = hidePanel || config.modeDefault === MODE_CHAT ? 50 : 100;
 
-  let globalWindow;
+  let globalWindow: Window;
   if (typeof window !== "undefined") {
     globalWindow = window; // eslint-disable-line no-undef
   }
 
   function hasSessionUser() {
     return Boolean(
-      config.DISABLE_CMI5 ||
+      !config.cmi5Enabled ||
         (globalWindow && hasCmi(globalWindow.location.search)) ||
         guestName
     );
@@ -70,8 +84,21 @@ const IndexPage = ({ search }) => {
     setWidth(globalWindow.innerWidth);
   }
 
+  function isConfigLoadComplete(s: LoadStatus) {
+    return s === LoadStatus.LOADED || s === LoadStatus.LOAD_FAILED;
+  }
+
   useEffect(() => {
-    if (!config.DISABLE_CMI5 && Cmi5.isCmiAvailable) {
+    if (configLoadStatus === LoadStatus.NONE) {
+      dispatch(loadConfig());
+    }
+  }, [configLoadStatus]);
+
+  useEffect(() => {
+    if (!isConfigLoadComplete(configLoadStatus)) {
+      return;
+    }
+    if (config.cmi5Enabled && Cmi5.isCmiAvailable) {
       try {
         Cmi5.instance.initialize().catch(e => {
           console.error(e);
@@ -80,23 +107,26 @@ const IndexPage = ({ search }) => {
         console.error(err2);
       }
     }
-  }, []);
+  }, [configLoadStatus]);
 
   useEffect(() => {
+    if (!isConfigLoadComplete(configLoadStatus)) {
+      return;
+    }
     const mentorList = mentor
       ? Array.isArray(mentor)
         ? mentor
         : [mentor]
-      : config.DEFAULT_MENTORS;
+      : config.mentorsDefault;
     dispatch(
-      loadMentor(mentorList, {
+      loadMentor(config, mentorList, {
         recommendedQuestions: recommended,
       })
     );
     if (guest) {
       dispatch(setGuestName(guest));
     }
-  }, [mentor, recommended, guest]);
+  }, [configLoadStatus, mentor, recommended, guest]);
 
   useEffect(() => {
     // Media queries for layout
@@ -108,15 +138,24 @@ const IndexPage = ({ search }) => {
     };
   }, []);
 
-  if (mentorsById === {} || height === 0 || width === 0) {
-    return <CircularProgress />;
+  if (
+    !isConfigLoadComplete(configLoadStatus) ||
+    mentorsById === {} ||
+    height === 0 ||
+    width === 0
+  ) {
+    return (
+      <div>
+        <CircularProgress id="loading" />
+      </div>
+    );
   }
 
   return (
     <MuiThemeProvider theme={theme}>
       <div className="flex" style={{ height: videoHeight }}>
         <div className="content" style={{ height: headerHeight }}>
-          {hidePanel || config.USE_CHAT_INTERFACE ? (
+          {hidePanel || config.modeDefault === MODE_CHAT ? (
             undefined
           ) : (
             <VideoPanel isMobile={isMobile} />
@@ -124,7 +163,7 @@ const IndexPage = ({ search }) => {
           <Header />
         </div>
         <div className="expand">
-          {config.USE_CHAT_INTERFACE ? (
+          {config.modeDefault === MODE_CHAT ? (
             <Chat height={videoHeight - headerHeight} />
           ) : (
             <Video

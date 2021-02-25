@@ -4,34 +4,40 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { mockDefaultSetup, visitAsGuestWithDefaultSetup } from "../support/helpers";
+import {
+  mockDefaultSetup,
+  visitAsGuestWithDefaultSetup,
+  MODE_CHAT,
+} from "../support/helpers";
 
 describe("Config", () => {
-    it("disables cmi5 guest prompt if DISABLE_CMI5=true", () => {
-        mockDefaultSetup(cy, { DISABLE_CMI5: true });
-        cy.intercept("**/config", { DISABLE_CMI5: true });
-        cy.visit("/");
-        cy.get("#guest-prompt").should("not.exist");
-    });
+  it("disables cmi5 guest prompt if config.cmi5Enabled=false", () => {
+    mockDefaultSetup(cy, { cmi5Enabled: false });
+    cy.visit("/");
+    cy.get("#guest-prompt").should("not.exist");
+  });
 
-    it("loads a single default mentor if DEFAULT_MENTORS=clint", () => {
-        mockDefaultSetup(cy, { DEFAULT_MENTORS: "clint" });
-        visitAsGuestWithDefaultSetup(cy, "/");
-        cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
-        cy.get("#video-panel").should("not.exist");
-    });
+  it("loads a single default mentor if mentorsDefault specifies", () => {
+    mockDefaultSetup(cy, { mentorsDefault: ["clint"] });
+    visitAsGuestWithDefaultSetup(cy, "/");
+    cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
+    cy.get("#video-panel").should("not.exist");
+  });
 
-    it("loads multiple default mentors if DEFAULT_MENTORS=clint,dan", () => {
-        mockDefaultSetup(cy, { DEFAULT_MENTORS: "clint,dan" });
-        visitAsGuestWithDefaultSetup(cy, "/");
-        cy.get("#video-panel").get("#video-thumbnail-clint");
-        cy.get("#video-panel").get("#video-thumbnail-dan");
-    });
+  it("loads multiple default mentors if mentorsDefault specifies", () => {
+    mockDefaultSetup(cy, { mentorsDefault: ["clint", "dan"] });
+    visitAsGuestWithDefaultSetup(cy, "/");
+    cy.get("#video-panel").get("#video-thumbnail-clint");
+    cy.get("#video-panel").get("#video-thumbnail-dan");
+  });
 
-    it("shows chat instead of video if USE_CHAT_INTERFACE=true", () => {
-        mockDefaultSetup(cy, { DEFAULT_MENTORS: "clint", USE_CHAT_INTERFACE: true });
-        visitAsGuestWithDefaultSetup(cy, "/");
-        cy.get("#chat-thread").should("exist");
-        cy.get("#video-container").should("not.exist");
+  it("shows chat instead of video if modeDefault=chat", () => {
+    mockDefaultSetup(cy, {
+      mentorsDefault: ["clint"],
+      modeDefault: MODE_CHAT,
     });
+    visitAsGuestWithDefaultSetup(cy, "/");
+    cy.get("#chat-thread").should("exist");
+    cy.get("#video-container").should("not.exist");
+  });
 });

@@ -17,26 +17,28 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 app.use("/", express.static(path.join(__dirname, "public", "chat")));
+
 app.get("/chat/config", (req, res) => {
   res.send({
-    CMI5_ENDPOINT: process.env.CMI5_ENDPOINT || "/lrs/xapi",
-    CMI5_FETCH: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
-    MENTOR_GRAPHQL_URL: process.env.MENTOR_GRAPHQL_URL || "/graphql",
-    MENTOR_API_URL: process.env.MENTOR_API_URL || "/classifier",
-    MENTOR_VIDEO_URL: process.env.MENTOR_VIDEO_URL || "/videos",
-
-    DISABLE_CMI5: yn(process.env.DISABLE_CMI5 || false), // move to graphql
-    USE_CHAT_INTERFACE: yn(process.env.USE_CHAT_INTERFACE || false), // move to graphql
-    HEADER_LOGO: process.env.HEADER_LOGO, // move to graphql
-    DEFAULT_MENTORS: process.env.DEFAULT_MENTORS?.split(",") || [], // move to graphql
+    cmi5Enabled: yn(process.env.CMI5_ENABLED || false),
+    cmi5Endpoint: process.env.CMI5_ENDPOINT || "/lrs/xapi",
+    cmit5Fetch: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
+    mentorsDefault: (process.env.DEFAULT_MENTORS || "").split(","),
+    modeDefault: process.env.MODE_DEFAULT || "chat",
+    styleHeaderLogo: process.env.HEADER_LOGO || "",
+    urlGraphql: process.env.MENTOR_GRAPHQL_URL || "/graphql",
+    urlClassifier: process.env.MENTOR_API_URL || "/classifier",
+    urlVideo: process.env.MENTOR_VIDEO_URL || "/videos",
   });
 });
+
 app.get(/lrs\/*/, (req, res, next) => {
   if (!process.env.LRS_URL) {
     return next(new Error("LRS_URL not set in env"));
   }
   return res.redirect(301, process.env.LRS_URL + req.url.replace(/^\/lrs/, ""));
 });
+
 app.get(/mentor-api\/*/, (req, res, next) => {
   if (!process.env.MENTOR_API_URL) {
     return next(new Error("MENTOR_API_URL not set in env"));
@@ -46,6 +48,7 @@ app.get(/mentor-api\/*/, (req, res, next) => {
     process.env.MENTOR_API_URL + req.url.replace(/^\/mentor-api/, "")
   );
 });
+
 app.get(/videos\/*/, (req, res, next) => {
   if (!process.env.MENTOR_VIDEO_URL) {
     return next(new Error("MENTOR_VIDEO_URL not set in env"));
