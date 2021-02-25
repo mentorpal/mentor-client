@@ -7,6 +7,7 @@ The full terms of this copyright and license should always be found in the root 
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { animateScroll } from "react-scroll";
+import ReactMarkdown from "react-markdown";
 import {
   Avatar,
   List,
@@ -22,8 +23,8 @@ import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
 
 import { Feedback, State } from "store/types";
 import withLocation from "wrap-with-location";
-import "styles/chat-override-theme";
 import { giveFeedback } from "api";
+import "styles/chat-override-theme";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -85,6 +86,14 @@ function ChatThread(props: {
     props.onFeedback(idx, feedback);
   }
 
+  function LinkRenderer(props: any) {
+    return (
+      <a href={props.href} target="_blank" rel="noreferrer">
+        {props.children}
+      </a>
+    );
+  }
+
   return (
     <List id="thread" className={styles.list} disablePadding={true}>
       {messages.map((message, i) => {
@@ -99,7 +108,10 @@ function ChatThread(props: {
             }}
             style={{ paddingRight: 16, maxWidth: 750 }}
           >
-            <ListItemText primary={message.text} />
+            <ReactMarkdown
+              source={message.text}
+              renderers={{ link: LinkRenderer }}
+            />
             {message.feedbackId ? (
               <div className={styles.icon} onClick={handleFeedbackClick}>
                 <ListItemAvatar>
