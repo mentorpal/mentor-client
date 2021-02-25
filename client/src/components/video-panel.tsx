@@ -7,29 +7,33 @@ The full terms of this copyright and license should always be found in the root 
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Star } from "@material-ui/icons";
-
-import { selectMentor, faveMentor } from "store/actions";
-import { MentorQuestionStatus } from "store/types";
-
 import VideoThumbnail from "components/video-thumbnail";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
-import { MentorSelectReason } from "store/types";
+import { selectMentor, faveMentor } from "store/actions";
+import {
+  MentorData,
+  MentorQuestionStatus,
+  MentorSelectReason,
+  State,
+} from "store/types";
 
-const VideoPanel = ({ isMobile }) => {
+const VideoPanel = (props: { isMobile: boolean }) => {
+  const { isMobile } = props;
   const dispatch = useDispatch();
-  const mentor = useSelector(state => state.curMentor);
-  const mentors = useSelector(state => state.mentorsById);
-  const mentorFaved = useSelector(state => state.mentorFaved);
-  const isIdle = useSelector(state => state.isIdle);
-
+  const mentor = useSelector<State, string>(state => state.curMentor);
+  const mentors = useSelector<State, Record<string, MentorData>>(
+    state => state.mentorsById
+  );
+  const mentorFaved = useSelector<State, string>(state => state.mentorFaved);
+  const isIdle = useSelector<State, boolean>(state => state.isIdle);
   if (!mentor) {
     return <div />;
   }
   const height = 50;
   const width = isMobile ? height / 0.895 : height / 0.5625;
 
-  const onClick = m => {
+  const onClick = (m: MentorData) => {
     if (m.is_off_topic || m.status === MentorQuestionStatus.ERROR) {
       return;
     }
@@ -54,8 +58,8 @@ const VideoPanel = ({ isMobile }) => {
             height={height}
             width={width}
           />
-          <LoadingSpinner mentor={mentors[id]} height={height} width={width} />
-          <MessageStatus mentor={mentors[id]} />
+          <LoadingSpinner mentor={id} height={height} width={width} />
+          <MessageStatus mentor={id} />
           <StarIcon mentor={mentors[id]} />
         </div>
       ))}
@@ -63,8 +67,9 @@ const VideoPanel = ({ isMobile }) => {
   );
 };
 
-const StarIcon = ({ mentor }) => {
-  const mentorFaved = useSelector(state => state.mentorFaved);
+const StarIcon = (props: { mentor: MentorData }) => {
+  const { mentor } = props;
+  const mentorFaved = useSelector<State, string>(state => state.mentorFaved);
   if (mentorFaved === mentor.id) {
     return (
       <Star

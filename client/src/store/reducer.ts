@@ -23,6 +23,10 @@ import {
   MentorAnswerPlaybackStartedAction,
   QuestionSentAction,
   GUEST_NAME_SET,
+  ConfigLoadSucceededAction,
+  CONFIG_LOAD_FAILED,
+  CONFIG_LOAD_STARTED,
+  CONFIG_LOAD_SUCCEEDED,
 } from "./actions";
 import {
   MentorData,
@@ -33,9 +37,23 @@ import {
   ResultStatus,
   State,
   MentorSelectReason,
+  LoadStatus,
+  MODE_VIDEO
 } from "./types";
 
 export const initialState: State = {
+  config: {
+    cmi5Enabled: false,
+    cmi5Endpoint: process.env.CMI5_ENDPOINT || "/lrs/xapi",
+    cmi5Fetch: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
+    mentorsDefault: [],
+    modeDefault: MODE_VIDEO,
+    urlGraphql: process.env.MENTOR_GRAPHQL_URL || "/graphql",
+    urlClassifier: process.env.MENTOR_API_URL || "/classifier",
+    urlVideo: process.env.MENTOR_VIDEO_URL || "/videos",
+    styleHeaderLogo: "",
+  },
+  configLoadStatus: LoadStatus.NONE,
   curMentor: "", // id of selected mentor
   curMentorReason: MentorSelectReason.NONE,
   curQuestion: "", // question that was last asked
@@ -144,8 +162,39 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
   };
 }
 
+function onConfigLoadStarted(state: State): State {
+  return {
+    ...state,
+    configLoadStatus: LoadStatus.LOAD_IN_PROGRESS,
+  };
+}
+
+function onConfigLoadFailed(state: State): State {
+  return {
+    ...state,
+    configLoadStatus: LoadStatus.LOAD_FAILED,
+  };
+}
+
+function onConfigLoadSucceeded(
+  state: State,
+  action: ConfigLoadSucceededAction
+): State {
+  return {
+    ...state,
+    config: action.payload,
+    configLoadStatus: LoadStatus.LOADED,
+  };
+}
+
 export default function reducer(state = initialState, action: any): State {
   switch (action.type) {
+    case CONFIG_LOAD_FAILED:
+      return onConfigLoadFailed(state);
+    case CONFIG_LOAD_STARTED:
+      return onConfigLoadStarted(state);
+    case CONFIG_LOAD_SUCCEEDED:
+      return onConfigLoadSucceeded(state, action as ConfigLoadSucceededAction);
     case MENTOR_ANSWER_PLAYBACK_STARTED:
       return onMentorAnswerPlaybackStarted(
         state,

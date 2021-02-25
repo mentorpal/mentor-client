@@ -7,15 +7,14 @@ The full terms of this copyright and license should always be found in the root 
 import React from "react";
 import { useSelector } from "react-redux";
 import { Grid, Hidden, Typography } from "@material-ui/core";
-import config from "config";
-import { MentorData, State } from "store/types";
+import { Config, MentorData, State } from "store/types";
 
 function Header(): JSX.Element {
   const mentor = useSelector<State, MentorData>(
     state => state.mentorsById[state.curMentor]
   );
-
-  if (config.HEADER_LOGO) {
+  const config = useSelector<State, Config>(state => state.config);
+  if (config.styleHeaderLogo) {
     return (
       <Grid
         id="header"
@@ -25,7 +24,7 @@ function Header(): JSX.Element {
         style={{ padding: "2px 4px", height: 50 }}
       >
         <Grid item style={{ position: "absolute", textAlign: "left" }}>
-          <img src={config.HEADER_LOGO} style={{ height: 50 }} />
+          <img src={config.styleHeaderLogo} style={{ height: 50 }} />
         </Grid>
         <Hidden only="xs">
           <Grid item sm={12}>

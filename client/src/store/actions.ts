@@ -8,8 +8,7 @@ The full terms of this copyright and license should always be found in the root 
 import { ActionCreator, AnyAction, Dispatch } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import Cmi5 from "@xapi/cmi5";
-
-import { fetchMentorData, MentorApiData, queryMentor } from "api";
+import { fetchConfig, fetchMentorData, MentorApiData, queryMentor } from "api";
 import {
   MentorDataResult,
   MentorQuestionStatus,
@@ -23,11 +22,15 @@ import {
   State,
   XapiResultExt,
   XapiResultAnswerStatusByMentorId,
+  Config,
 } from "./types";
 
 const RESPONSE_CUTOFF = -100;
 
 export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished playing
+export const CONFIG_LOAD_FAILED = "CONFIG_LOAD_FAILED";
+export const CONFIG_LOAD_STARTED = "CONFIG_LOAD_STARTED";
+export const CONFIG_LOAD_SUCCEEDED = "CONFIG_LOAD_SUCCEEDED";
 export const MENTOR_ANSWER_PLAYBACK_STARTED = "MENTOR_ANSWER_PLAYBACK_STARTED";
 export const MENTOR_DATA_REQUESTED = "MENTOR_DATA_REQUESTED";
 export const MENTOR_DATA_RESULT = "MENTOR_DATA_RESULT";
@@ -43,6 +46,20 @@ export const QUESTION_RESULT = "QUESTION_RESULT";
 export const QUESTION_SENT = "QUESTION_SENT"; // question input was sent
 export const TOPIC_SELECTED = "TOPIC_SELECTED";
 export const GUEST_NAME_SET = "GUEST_NAME_SET";
+
+export interface ConfigLoadStartedAction {
+  type: typeof CONFIG_LOAD_STARTED;
+}
+
+export interface ConfigLoadFailedAction {
+  type: typeof CONFIG_LOAD_FAILED;
+  errors: string[];
+}
+
+export interface ConfigLoadSucceededAction {
+  type: typeof CONFIG_LOAD_SUCCEEDED;
+  payload: Config;
+}
 
 export interface MentorAnswerPlaybackStartedAction {
   type: typeof MENTOR_ANSWER_PLAYBACK_STARTED;
@@ -91,6 +108,31 @@ export interface NextMentorAction {
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
+
+export const loadConfig = () => async (
+  dispatch: ThunkDispatch<
+    State,
+    void,
+    ConfigLoadStartedAction | ConfigLoadSucceededAction | ConfigLoadFailedAction
+  >
+) => {
+  dispatch({
+    type: CONFIG_LOAD_STARTED,
+  });
+  try {
+    const configResponse = await fetchConfig();
+    return dispatch({
+      type: CONFIG_LOAD_SUCCEEDED,
+      payload: configResponse.data,
+    });
+  } catch (err) {
+    console.error(err);
+    return dispatch({
+      type: CONFIG_LOAD_FAILED,
+      errors: [err.message],
+    });
+  }
+};
 
 function sendCmi5Statement(statement: any) {
   if (!Cmi5.isCmiAvailable) {
@@ -166,6 +208,7 @@ export const loadMentor: ActionCreator<ThunkAction<
   string, // The type of the parameter for the nested function
   MentorDataRequestDoneAction // The type of the last action to be dispatched
 >> = (
+  config: Config,
   mentors: string | string[],
   {
     recommendedQuestions,
@@ -179,14 +222,13 @@ export const loadMentor: ActionCreator<ThunkAction<
   try {
     const mentorList = Array.isArray(mentors)
       ? (mentors as Array<string>)
-      : [mentors as string];
+      : [`${mentors}`];
     const recommendedQuestionList: string[] | undefined =
       Array.isArray(recommendedQuestions) && recommendedQuestions.length > 0
         ? (recommendedQuestions as string[])
         : typeof recommendedQuestions === "string"
         ? [recommendedQuestions as string]
         : undefined;
-
     dispatch<MentorDataRequestedAction>({
       type: MENTOR_DATA_REQUESTED,
       payload: mentorList,
@@ -194,7 +236,7 @@ export const loadMentor: ActionCreator<ThunkAction<
     const dataPromises = Promise.all(
       mentorList.map(mentorId => {
         return new Promise<void>((resolve, reject) => {
-          fetchMentorData(mentorId)
+          fetchMentorData(mentorId, config)
             .then(result => {
               if (result.status == 200) {
                 const apiData = result.data;
@@ -333,10 +375,13 @@ export const setGuestName = (name: string) => ({
 const currentQuestionIndex = (state: { questionsAsked: { length: any } }) =>
   Array.isArray(state.questionsAsked) ? state.questionsAsked.length : -1;
 
-export const sendQuestion = (q: {
-  question: string;
-  source: MentorQuestionSource;
-}) => async (
+export const sendQuestion = (
+  q: {
+    question: string;
+    source: MentorQuestionSource;
+    config: Config;
+  },
+) => async (
   dispatch: ThunkDispatch<State, void, AnyAction>,
   getState: () => State
 ) => {
@@ -367,7 +412,7 @@ export const sendQuestion = (q: {
   // query all the mentors without waiting for the answers one by one
   const promises = mentorIds.map(mentor => {
     return new Promise<QuestionResponse>((resolve, reject) => {
-      queryMentor(mentor, q.question)
+      queryMentor(mentor, q.question, q.config)
         .then(r => {
           const { data } = r;
           const response: QuestionResponse = {
