@@ -36,4 +36,18 @@ describe("Chat", () => {
         cy.get("#chat-msg-1").contains("how old are you");
         cy.get("#chat-msg-2").contains("I'm thirty seven years old.");
     });
+
+    it("can open external links in chat with markdown", () => {
+        cy.intercept("**/mentors/clint/data", { fixture: "clint.json" });
+        cy.intercept("**/questions/?mentor=*&query=*", { fixture: "clint_response_with_markdown.json" });
+        cy.intercept("**/config", { DEFAULT_MENTORS: "clint", DISABLE_CMI5: true, USE_CHAT_INTERFACE: true });
+        cy.viewport("iphone-x");
+        cy.visit("/");
+        cy.get("#chat-thread").should("exist");
+        cy.get("#input-field").type("test");
+        cy.get("#input-send").trigger('mouseover').click();
+        cy.get("#chat-msg-2").contains("Click here");
+        cy.get("#chat-msg-2 a").should('have.attr', 'href', 'https://www.google.com')
+        cy.get("#chat-msg-2 a").should('have.attr', 'target', '_blank')
+    });
 });
