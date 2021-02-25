@@ -181,6 +181,7 @@ export default function reducer(state = initialState, action: any): State {
         answer_id: response.answerId,
         answer_text: response.answerText,
         answerReceivedAt: new Date(Date.now()),
+        answerFeedbackId: response.answerFeedbackId,
         classifier: response.answerClassifier,
         confidence: response.answerConfidence,
         is_off_topic: response.answerIsOffTopic,

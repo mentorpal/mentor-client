@@ -4,6 +4,13 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
+
+export enum Feedback {
+  GOOD = "GOOD",
+  BAD = "BAD",
+  NEUTRAL = "NEUTRAL",
+}
+
 export enum MentorQuestionStatus {
   NONE = "NONE",
   ANSWERED = "ANSWERED",
@@ -59,6 +66,7 @@ export interface MentorData {
   answer_text?: string;
   answerDuration: number;
   answerReceivedAt?: Date;
+  answerFeedbackId?: string;
   classifier?: string;
   confidence?: number;
   id: string;
@@ -121,6 +129,7 @@ export interface QuestionResponse {
   answerConfidence: number;
   answerIsOffTopic: boolean;
   answerResponseTimeSecs: number;
+  answerFeedbackId: string;
   mentor: string;
   question: string;
   questionSource: MentorQuestionSource;

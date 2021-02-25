@@ -11,6 +11,7 @@ import yn from "yn";
 const config = {
   CMI5_ENDPOINT: process.env.CMI5_ENDPOINT || "/lrs/xapi",
   CMI5_FETCH: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
+  MENTOR_GRAPHQL_URL: process.env.MENTOR_GRAPHQL_URL || "/graphql",
   MENTOR_API_URL: process.env.MENTOR_API_URL || "/classifier",
   MENTOR_VIDEO_URL: process.env.MENTOR_VIDEO_URL || "/videos",
 
@@ -37,6 +38,9 @@ if (typeof window !== "undefined" && process.env.NODE_ENV !== "test") {
       }
       if (typeof result.data["CMI5_FETCH"] === "string") {
         config.CMI5_FETCH = result.data["CMI5_FETCH"];
+      }
+      if (typeof result.data["MENTOR_GRAPHQL_URL"] === "string") {
+        config.MENTOR_GRAPHQL_URL = result.data["MENTOR_GRAPHQL_URL"];
       }
       if (typeof result.data["MENTOR_API_URL"] === "string") {
         config.MENTOR_API_URL = result.data["MENTOR_API_URL"];

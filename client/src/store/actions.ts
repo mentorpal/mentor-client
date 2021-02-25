@@ -376,6 +376,7 @@ export const sendQuestion = (q: {
             answerClassifier: data.classifier,
             answerConfidence: data.confidence,
             answerIsOffTopic: data.confidence <= RESPONSE_CUTOFF,
+            answerFeedbackId: data.feedback_id,
             answerResponseTimeSecs: Number(Date.now() - tick) / 1000,
             mentor,
             question: q.question,

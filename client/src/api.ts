@@ -34,6 +34,7 @@ export interface QuestionApiData {
   answer_text: string;
   confidence: number;
   classifier: string;
+  feedback_id: string;
 }
 
 export const videoUrl = (
@@ -63,7 +64,6 @@ export const queryMentor = async (
   mentorId: string,
   question: string
 ): Promise<AxiosResponse<QuestionApiData>> => {
-  // const res =
   return await axios.get(`${config.MENTOR_API_URL}/questions/`, {
     params: {
       mentor: mentorId,
@@ -71,3 +71,15 @@ export const queryMentor = async (
     },
   });
 };
+
+export async function giveFeedback(feedbackId: string, feedback: string) {
+  return await axios.post(config.MENTOR_GRAPHQL_URL, {
+    query: `
+      mutation {
+        userQuestionSetFeedback(id: "${feedbackId}", feedback: "${feedback}") {
+          _id
+        }
+      }
+    `,
+  });
+}

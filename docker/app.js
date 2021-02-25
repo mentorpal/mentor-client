@@ -21,6 +21,7 @@ app.get("/chat/config", (req, res) => {
   res.send({
     CMI5_ENDPOINT: process.env.CMI5_ENDPOINT || "/lrs/xapi",
     CMI5_FETCH: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
+    MENTOR_GRAPHQL_URL: process.env.MENTOR_GRAPHQL_URL || "/graphql",
     MENTOR_API_URL: process.env.MENTOR_API_URL || "/classifier",
     MENTOR_VIDEO_URL: process.env.MENTOR_VIDEO_URL || "/videos",
 

@@ -7,12 +7,23 @@ The full terms of this copyright and license should always be found in the root 
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { animateScroll } from "react-scroll";
-import { List, ListItem, ListItemText } from "@material-ui/core";
+import {
+  Avatar,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Popover,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import ThumbDownIcon from "@material-ui/icons/ThumbDown";
+import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
 
-import { State } from "store/types";
+import { Feedback, State } from "store/types";
 import withLocation from "wrap-with-location";
 import "styles/chat-override-theme";
+import { giveFeedback } from "api";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,21 +45,45 @@ const useStyles = makeStyles(theme => ({
     position: "absolute",
     right: -40,
   },
+  popover: {
+    width: 64,
+  },
 }));
 
 interface ChatMsg {
   isUser: boolean;
   text: string;
+  feedback?: Feedback;
+  feedbackId?: string;
 }
 
-function ChatThread(props: { styles: any; messages: ChatMsg[] }): JSX.Element {
+function ChatThread(props: {
+  styles: any;
+  messages: ChatMsg[];
+  onFeedback: (i: number, val: Feedback) => void;
+}): JSX.Element {
   const { styles, messages } = props;
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   useEffect(() => {
     animateScroll.scrollToBottom({
       containerId: "thread",
     });
   }, [messages]);
+
+  function handleFeedbackClick(event: any) {
+    setAnchorEl(event.currentTarget);
+  }
+
+  function handleFeedbackClose() {
+    setAnchorEl(null);
+  }
+
+  function handleSelectFeedback(idx: number, id: string, feedback: Feedback) {
+    giveFeedback(id, feedback);
+    setAnchorEl(null);
+    props.onFeedback(idx, feedback);
+  }
 
   return (
     <List id="thread" className={styles.list} disablePadding={true}>
@@ -65,6 +100,67 @@ function ChatThread(props: { styles: any; messages: ChatMsg[] }): JSX.Element {
             style={{ paddingRight: 16, maxWidth: 750 }}
           >
             <ListItemText primary={message.text} />
+            {message.feedbackId ? (
+              <div className={styles.icon} onClick={handleFeedbackClick}>
+                <ListItemAvatar>
+                  <Avatar className={styles.avatar}>
+                    {message.feedback === Feedback.GOOD ? (
+                      <ThumbUpIcon />
+                    ) : message.feedback === Feedback.BAD ? (
+                      <ThumbDownIcon />
+                    ) : (
+                      <ThumbsUpDownIcon />
+                    )}
+                  </Avatar>
+                </ListItemAvatar>
+              </div>
+            ) : (
+              undefined
+            )}
+            <Popover
+              open={Boolean(anchorEl)}
+              anchorEl={anchorEl}
+              onClose={handleFeedbackClose}
+              anchorOrigin={{
+                vertical: "center",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "center",
+                horizontal: "left",
+              }}
+              elevation={0}
+              className={styles.popover}
+            >
+              <div
+                onClick={() =>
+                  handleSelectFeedback(i, message.feedbackId!, Feedback.GOOD)
+                }
+              >
+                <ListItemAvatar>
+                  <Avatar
+                    className={styles.avatar}
+                    style={{ background: "green" }}
+                  >
+                    <ThumbUpIcon />
+                  </Avatar>
+                </ListItemAvatar>
+              </div>
+              <div
+                onClick={() =>
+                  handleSelectFeedback(i, message.feedbackId!, Feedback.BAD)
+                }
+              >
+                <ListItemAvatar>
+                  <Avatar
+                    className={styles.avatar}
+                    style={{ background: "red" }}
+                  >
+                    <ThumbDownIcon />
+                  </Avatar>
+                </ListItemAvatar>
+              </div>
+            </Popover>
           </ListItem>
         );
       })}
@@ -109,11 +205,17 @@ function Chat(props: { height: number; search: any }): JSX.Element {
         {
           isUser: false,
           text: mentor.answer_text || "",
+          feedbackId: mentor.answerFeedbackId,
         },
       ]);
       setLastAnswerAt(mentor.answerReceivedAt);
     }
   }, [state]);
+
+  function onFeedback(idx: number, feedback: Feedback) {
+    messages[idx].feedback = feedback;
+    setMessages(messages);
+  }
 
   return (
     <div
@@ -126,7 +228,11 @@ function Chat(props: { height: number; search: any }): JSX.Element {
       }}
     >
       <div className={styles.chat} style={{ height: props.height - 22 }}>
-        <ChatThread styles={styles} messages={messages} />
+        <ChatThread
+          styles={styles}
+          messages={messages}
+          onFeedback={onFeedback}
+        />
       </div>
     </div>
   );
