@@ -56,7 +56,11 @@ export const idleUrl = (
 };
 
 // TODO: don't pass mentor here, pass mentorId and answerId
-export const subtitleUrl = (mentor: string, answerId: string, config: Config): string => {
+export const subtitleUrl = (
+  mentor: string,
+  answerId: string,
+  config: Config
+): string => {
   return `${config.urlClassifier}/mentors/${mentor}/tracks/${answerId}.vtt`;
 };
 
@@ -65,7 +69,8 @@ export async function fetchConfig(): Promise<AxiosResponse<Config>> {
 }
 
 export async function fetchMentorData(
-  mentorId: string, config: Config
+  mentorId: string,
+  config: Config
 ): Promise<AxiosResponse<MentorApiData>> {
   return await axios.get(`${config.urlClassifier}/mentors/${mentorId}/data`);
 }
@@ -83,7 +88,11 @@ export const queryMentor = async (
   });
 };
 
-export async function giveFeedback(feedbackId: string, feedback: string, config: Config) {
+export async function giveFeedback(
+  feedbackId: string,
+  feedback: string,
+  config: Config
+) {
   return await axios.post(config.urlGraphql, {
     query: `
       mutation {

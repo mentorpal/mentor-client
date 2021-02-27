@@ -375,13 +375,11 @@ export const setGuestName = (name: string) => ({
 const currentQuestionIndex = (state: { questionsAsked: { length: any } }) =>
   Array.isArray(state.questionsAsked) ? state.questionsAsked.length : -1;
 
-export const sendQuestion = (
-  q: {
-    question: string;
-    source: MentorQuestionSource;
-    config: Config;
-  },
-) => async (
+export const sendQuestion = (q: {
+  question: string;
+  source: MentorQuestionSource;
+  config: Config;
+}) => async (
   dispatch: ThunkDispatch<State, void, AnyAction>,
   getState: () => State
 ) => {

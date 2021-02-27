@@ -38,7 +38,7 @@ import {
   State,
   MentorSelectReason,
   LoadStatus,
-  MODE_VIDEO
+  MODE_VIDEO,
 } from "./types";
 
 export const initialState: State = {

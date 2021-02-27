@@ -18,9 +18,9 @@ export enum LoadStatus {
   LOAD_FAILED = "LOAD_FAILED",
 }
 
-export const MODE_CHAT = "chat"
+export const MODE_CHAT = "chat";
 export const MODE_VIDEO = "video";
-export type Mode = typeof MODE_CHAT | typeof MODE_VIDEO
+export type Mode = typeof MODE_CHAT | typeof MODE_VIDEO;
 
 export interface Config {
   cmi5Enabled: boolean;
