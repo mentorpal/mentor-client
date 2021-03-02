@@ -10,6 +10,7 @@ describe("Questions list", () => {
 
     it("displays list of questions for selected topic", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").contains("Where were you born?");
         cy.get("#scrolling-questions-list").contains("What is Japan like?");
         cy.get("#scrolling-questions-list").contains(
@@ -37,6 +38,7 @@ describe("Questions list", () => {
 
     it("changes questions when switching mentors", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#video-thumbnail-dan").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").contains(
             "How is cryptology different outside of the US?"
@@ -56,6 +58,7 @@ describe("Questions list", () => {
 
     it("greys out questions that have been asked (via topic button)", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#scrolling-questions-list")
             .get(`#${CSS.escape("Where were you born?")}`)
             .find("div")
@@ -74,6 +77,7 @@ describe("Questions list", () => {
 
     it("greys out questions that have been asked (via input field)", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#input-field").type("where were you born?");
         cy.get("#input-send").trigger('mouseover').click();
 
@@ -86,6 +90,7 @@ describe("Questions list", () => {
 
     it("keeps greyed out questions when switching mentors if new mentor also has it", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#input-field").type("Are you married?");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#scrolling-questions-list")

@@ -15,7 +15,6 @@ interface OnQuestionSelected {
 }
 
 interface ScrollingQuestionsParams {
-  height: number;
   id: string;
   questions: string[];
   questionsAsked: string[];
@@ -24,13 +23,7 @@ interface ScrollingQuestionsParams {
 }
 
 const ScrollingQuestions = (args: ScrollingQuestionsParams) => {
-  const {
-    height,
-    questions,
-    questionsAsked,
-    recommended,
-    onQuestionSelected,
-  } = args;
+  const { questions, questionsAsked, recommended, onQuestionSelected } = args;
   useEffect(() => {
     smoothscroll.polyfill();
   }, []);
@@ -55,7 +48,7 @@ const ScrollingQuestions = (args: ScrollingQuestionsParams) => {
     <List
       id="scrolling-questions-list"
       className="scroll"
-      style={{ maxHeight: height }}
+      style={{ height: 200 }}
       disablePadding
     >
       {questions.map((question: string, i: number) => (

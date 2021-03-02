@@ -5,9 +5,9 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import React, { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { useSelector } from "react-redux";
 import { animateScroll } from "react-scroll";
-import ReactMarkdown from "react-markdown";
 import {
   Avatar,
   List,
@@ -19,33 +19,35 @@ import { makeStyles } from "@material-ui/core/styles";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
-import { Config, Feedback, State } from "store/types";
-import withLocation from "wrap-with-location";
+
 import { giveFeedback } from "api";
+import { Config, Feedback, State } from "store/types";
 import "styles/chat-override-theme";
 
 const useStyles = makeStyles(theme => ({
   root: {
     width: "auto",
   },
-  chat: {
-    paddingTop: 1,
-    width: "100%",
-  },
   list: {
+    marginTop: 1,
     padding: 10,
   },
   avatar: {
-    color: "#fff",
     width: theme.spacing(4),
     height: theme.spacing(4),
+  },
+  GOOD: {
+    backgroundColor: "#0084ff",
+  },
+  BAD: {
+    backgroundColor: "#E63535",
   },
   icon: {
     position: "absolute",
     right: -40,
   },
   popover: {
-    width: 64,
+    width: theme.spacing(8),
   },
 }));
 
@@ -56,139 +58,14 @@ interface ChatMsg {
   feedbackId?: string;
 }
 
-function ChatThread(props: {
-  styles: any;
-  messages: ChatMsg[];
-  onFeedback: (i: number, val: Feedback) => void;
-}): JSX.Element {
-  const { styles, messages } = props;
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const config = useSelector<State, Config>(s => s.config);
-
-  useEffect(() => {
-    animateScroll.scrollToBottom({
-      containerId: "thread",
-    });
-  }, [messages]);
-
-  function handleFeedbackClick(event: any) {
-    setAnchorEl(event.currentTarget);
-  }
-
-  function handleFeedbackClose() {
-    setAnchorEl(null);
-  }
-
-  function handleSelectFeedback(idx: number, id: string, feedback: Feedback) {
-    giveFeedback(id, feedback, config);
-    setAnchorEl(null);
-    props.onFeedback(idx, feedback);
-  }
-
-  function LinkRenderer(props: any) {
-    return (
-      <a href={props.href} target="_blank" rel="noreferrer">
-        {props.children}
-      </a>
-    );
-  }
-
-  return (
-    <List id="thread" className={styles.list} disablePadding={true}>
-      {messages.map((message, i) => {
-        return (
-          <ListItem
-            id={`chat-msg-${i}`}
-            key={`chat-msg-${i}`}
-            disableGutters={false}
-            className={message.isUser ? "user" : "system"}
-            classes={{
-              root: styles.root,
-            }}
-            style={{ paddingRight: 16, maxWidth: 750 }}
-          >
-            <ReactMarkdown
-              source={message.text}
-              renderers={{ link: LinkRenderer }}
-            />
-            {message.feedbackId ? (
-              <div className={styles.icon} onClick={handleFeedbackClick}>
-                <ListItemAvatar>
-                  <Avatar className={styles.avatar}>
-                    {message.feedback === Feedback.GOOD ? (
-                      <ThumbUpIcon />
-                    ) : message.feedback === Feedback.BAD ? (
-                      <ThumbDownIcon />
-                    ) : (
-                      <ThumbsUpDownIcon />
-                    )}
-                  </Avatar>
-                </ListItemAvatar>
-              </div>
-            ) : (
-              undefined
-            )}
-            <Popover
-              open={Boolean(anchorEl)}
-              anchorEl={anchorEl}
-              onClose={handleFeedbackClose}
-              anchorOrigin={{
-                vertical: "center",
-                horizontal: "right",
-              }}
-              transformOrigin={{
-                vertical: "center",
-                horizontal: "left",
-              }}
-              elevation={0}
-              className={styles.popover}
-            >
-              <div
-                onClick={() => {
-                  if (message.feedbackId) {
-                    handleSelectFeedback(i, message.feedbackId, Feedback.GOOD);
-                  }
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar
-                    className={styles.avatar}
-                    style={{ background: "green" }}
-                  >
-                    <ThumbUpIcon />
-                  </Avatar>
-                </ListItemAvatar>
-              </div>
-              <div
-                onClick={() => {
-                  if (message.feedbackId) {
-                    handleSelectFeedback(i, message.feedbackId, Feedback.BAD);
-                  }
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar
-                    className={styles.avatar}
-                    style={{ background: "red" }}
-                  >
-                    <ThumbDownIcon />
-                  </Avatar>
-                </ListItemAvatar>
-              </div>
-            </Popover>
-          </ListItem>
-        );
-      })}
-    </List>
-  );
-}
-
-function Chat(props: { height: number; search: any }): JSX.Element {
+function Chat(): JSX.Element {
   const styles = useStyles();
-  const state = useSelector<State, State>(state => state);
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [lastQuestionAt, setLastQuestionAt] = useState<Date>();
   const [lastAnswerAt, setLastAnswerAt] = useState<Date>();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const state = useSelector<State, State>(state => state);
+  const config = useSelector<State, Config>(s => s.config);
 
   useEffect(() => {
     if (lastQuestionAt !== state.curQuestionUpdatedAt) {
@@ -227,30 +104,128 @@ function Chat(props: { height: number; search: any }): JSX.Element {
     }
   }, [state]);
 
-  function onFeedback(idx: number, feedback: Feedback) {
+  useEffect(() => {
+    animateScroll.scrollToBottom({
+      containerId: "chat-thread",
+    });
+  }, [messages]);
+
+  function handleFeedbackClick(event: any) {
+    setAnchorEl(event.currentTarget);
+  }
+
+  function handleFeedbackClose() {
+    setAnchorEl(null);
+  }
+
+  function handleSelectFeedback(idx: number, id: string, feedback: Feedback) {
+    giveFeedback(id, feedback, config);
+    setAnchorEl(null);
     messages[idx].feedback = feedback;
     setMessages(messages);
   }
 
+  function LinkRenderer(props: any) {
+    return (
+      <a href={props.href} target="_blank" rel="noreferrer">
+        {props.children}
+      </a>
+    );
+  }
+
   return (
-    <div
-      id="chat-thread"
-      className={styles.root}
-      style={{
-        height: props.height,
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      <div className={styles.chat} style={{ height: props.height - 22 }}>
-        <ChatThread
-          styles={styles}
-          messages={messages}
-          onFeedback={onFeedback}
-        />
-      </div>
-    </div>
+    <List id="chat-thread" className={styles.list} disablePadding={true}>
+      {messages.map((message, i) => {
+        return (
+          <ListItem
+            id={`chat-msg-${i}`}
+            key={`chat-msg-${i}`}
+            disableGutters={false}
+            className={message.isUser ? "user" : "system"}
+            classes={{ root: styles.root }}
+            style={{
+              paddingRight: 16,
+              maxWidth: 750,
+              marginRight: message.feedbackId ? 10 : 0,
+            }}
+          >
+            <ReactMarkdown
+              source={message.text}
+              renderers={{ link: LinkRenderer }}
+            />
+            {message.feedbackId ? (
+              <div className={styles.icon} onClick={handleFeedbackClick}>
+                <ListItemAvatar>
+                  <Avatar
+                    className={[
+                      styles.avatar,
+                      message.feedback === Feedback.GOOD
+                        ? styles.GOOD
+                        : message.feedback === Feedback.BAD
+                        ? styles.BAD
+                        : undefined,
+                    ].join(" ")}
+                  >
+                    {message.feedback === Feedback.GOOD ? (
+                      <ThumbUpIcon />
+                    ) : message.feedback === Feedback.BAD ? (
+                      <ThumbDownIcon />
+                    ) : (
+                      <ThumbsUpDownIcon />
+                    )}
+                  </Avatar>
+                </ListItemAvatar>
+              </div>
+            ) : (
+              undefined
+            )}
+            <Popover
+              className={styles.popover}
+              open={Boolean(anchorEl)}
+              anchorEl={anchorEl}
+              onClose={handleFeedbackClose}
+              anchorOrigin={{
+                vertical: "center",
+                horizontal: "left",
+              }}
+              transformOrigin={{
+                vertical: "center",
+                horizontal: "left",
+              }}
+              elevation={0}
+            >
+              <div
+                onClick={() => {
+                  if (message.feedbackId) {
+                    handleSelectFeedback(i, message.feedbackId, Feedback.GOOD);
+                  }
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar className={[styles.avatar, styles.GOOD].join(" ")}>
+                    <ThumbUpIcon />
+                  </Avatar>
+                </ListItemAvatar>
+              </div>
+              <div
+                onClick={() => {
+                  if (message.feedbackId) {
+                    handleSelectFeedback(i, message.feedbackId, Feedback.BAD);
+                  }
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar className={[styles.avatar, styles.BAD].join(" ")}>
+                    <ThumbDownIcon />
+                  </Avatar>
+                </ListItemAvatar>
+              </div>
+            </Popover>
+          </ListItem>
+        );
+      })}
+    </List>
   );
 }
 
-export default withLocation(Chat);
+export default Chat;

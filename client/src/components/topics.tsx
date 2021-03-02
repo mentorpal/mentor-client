@@ -33,20 +33,15 @@ const Topics = (args: TopicsArgs) => {
 
   const { topic_questions } = mentor;
   function onTopicSelected(topic: string) {
+    if (curTopic === topic) {
+      dispatch(selectTopic(""));
+      return;
+    }
     dispatch(selectTopic(topic));
     const top_question = topic_questions[topic].find(q => {
       return !questionsAsked.includes(normalizeString(q));
     });
     onSelected(top_question || "");
-  }
-
-  if (!curTopic) {
-    const first_topic = Object.keys(topic_questions)[0];
-    if (first_topic === "Recommended") {
-      onTopicSelected(first_topic);
-    } else {
-      dispatch(selectTopic(first_topic));
-    }
   }
 
   return (

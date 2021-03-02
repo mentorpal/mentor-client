@@ -18,11 +18,7 @@ const theme = createMuiTheme({
   typography: { useNextVariants: true },
 });
 
-interface Props {
-  height: number;
-  onSelected: (question: string) => void;
-}
-const Questions = ({ height, onSelected }: Props) => {
+function Questions(props: { onSelected: (question: string) => void }) {
   const mentor = useSelector<State, MentorData>(
     state => state.mentorsById[state.curMentor]
   );
@@ -30,6 +26,7 @@ const Questions = ({ height, onSelected }: Props) => {
   const questionsAsked = useSelector<State, string[]>(
     state => state.questionsAsked
   );
+  const { onSelected } = props;
 
   if (!(mentor && curTopic && mentor.topic_questions)) {
     return <div id="questions" />;
@@ -60,7 +57,6 @@ const Questions = ({ height, onSelected }: Props) => {
     <MuiThemeProvider theme={theme}>
       <ScrollingQuestions
         id="questions"
-        height={height}
         questions={ordered_questions}
         questionsAsked={questionsAsked}
         recommended={recommended}
@@ -68,6 +64,6 @@ const Questions = ({ height, onSelected }: Props) => {
       />
     </MuiThemeProvider>
   );
-};
+}
 
 export default Questions;

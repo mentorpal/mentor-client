@@ -7,7 +7,11 @@ The full terms of this copyright and license should always be found in the root 
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { CircularProgress } from "@material-ui/core";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import {
+  MuiThemeProvider,
+  createMuiTheme,
+  makeStyles,
+} from "@material-ui/core/styles";
 import Cmi5 from "@xapi/cmi5";
 import { hasCmi } from "cmiutils";
 import Chat from "components/chat";
@@ -17,9 +21,9 @@ import Input from "components/input";
 import Video from "components/video";
 import VideoPanel from "components/video-panel";
 import { loadConfig, loadMentor, setGuestName } from "store/actions";
+import { Config, LoadStatus, MentorData, MODE_CHAT, State } from "store/types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
-import { Config, LoadStatus, MentorData, MODE_CHAT, State } from "store/types";
 
 const theme = createMuiTheme({
   palette: {
@@ -29,18 +33,29 @@ const theme = createMuiTheme({
   },
 });
 
-interface IndexSearch {
-  guest: string;
-  mentor: string[];
-  recommended: string[];
-}
+const useStyles = makeStyles(theme => ({
+  flexRoot: {
+    height: "100vh",
+    display: "flex",
+    flexFlow: "column nowrap",
+    flexDirection: "column",
+    alignItems: "stretch",
+    margin: 0,
+  },
+  flexFixedChild: {
+    flex: "none",
+  },
+  flexExpandChild: {
+    flex: "auto",
+    overflowY: "scroll",
+  },
+}));
 
-interface IndexParams {
-  search: IndexSearch;
-}
-
-const IndexPage = (props: IndexParams) => {
+function IndexPage(props: {
+  search: { recommended?: string[]; mentor?: string; guest?: string };
+}): JSX.Element {
   const dispatch = useDispatch();
+  const styles = useStyles();
   const config = useSelector<State, Config>(state => state.config);
   const configLoadStatus = useSelector<State, LoadStatus>(
     state => state.configLoadStatus
@@ -58,30 +73,22 @@ const IndexPage = (props: IndexParams) => {
   const videoHeight = isMobile
     ? height * 0.5
     : Math.min(width * 0.5625, height * 0.7);
-  const inputHeight = isMobile
-    ? height * 0.5
-    : Math.max(height - videoHeight, 300);
   const headerHeight = hidePanel || config.modeDefault === MODE_CHAT ? 50 : 100;
-
-  let globalWindow: Window;
-  if (typeof window !== "undefined") {
-    globalWindow = window; // eslint-disable-line no-undef
-  }
 
   function hasSessionUser() {
     return Boolean(
       !config.cmi5Enabled ||
-        (globalWindow && hasCmi(globalWindow.location.search)) ||
+        (typeof window !== "undefined" && hasCmi(window.location.search)) ||
         guestName
     );
   }
 
   function handleWindowResize() {
-    if (typeof globalWindow === `undefined`) {
+    if (typeof window === "undefined") {
       return;
     }
-    setHeight(globalWindow.innerHeight);
-    setWidth(globalWindow.innerWidth);
+    setHeight(window.innerHeight);
+    setWidth(window.innerWidth);
   }
 
   function isConfigLoadComplete(s: LoadStatus) {
@@ -129,12 +136,15 @@ const IndexPage = (props: IndexParams) => {
   }, [configLoadStatus, mentor, recommended, guest]);
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
     // Media queries for layout
-    setHeight(globalWindow.innerHeight);
-    setWidth(globalWindow.innerWidth);
-    globalWindow.addEventListener("resize", handleWindowResize);
+    setHeight(window.innerHeight);
+    setWidth(window.innerWidth);
+    window.addEventListener("resize", handleWindowResize);
     return () => {
-      globalWindow.removeEventListener("resize", handleWindowResize);
+      window.removeEventListener("resize", handleWindowResize);
     };
   }, []);
 
@@ -153,8 +163,8 @@ const IndexPage = (props: IndexParams) => {
 
   return (
     <MuiThemeProvider theme={theme}>
-      <div className="flex" style={{ height: videoHeight }}>
-        <div className="content" style={{ height: headerHeight }}>
+      <div className={styles.flexRoot}>
+        <div className={styles.flexFixedChild}>
           {hidePanel || config.modeDefault === MODE_CHAT ? (
             undefined
           ) : (
@@ -162,9 +172,9 @@ const IndexPage = (props: IndexParams) => {
           )}
           <Header />
         </div>
-        <div className="expand">
+        <div className={styles.flexExpandChild}>
           {config.modeDefault === MODE_CHAT ? (
-            <Chat height={videoHeight - headerHeight} />
+            <Chat />
           ) : (
             <Video
               height={videoHeight - headerHeight}
@@ -173,11 +183,13 @@ const IndexPage = (props: IndexParams) => {
             />
           )}
         </div>
+        <div className={styles.flexFixedChild}>
+          <Input />
+        </div>
+        {!hasSessionUser() ? <GuestPrompt /> : undefined}
       </div>
-      <Input height={inputHeight} />
-      {!hasSessionUser() ? <GuestPrompt /> : undefined}
     </MuiThemeProvider>
   );
-};
+}
 
 export default withLocation(IndexPage);
