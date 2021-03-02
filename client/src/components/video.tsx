@@ -8,7 +8,6 @@ import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import { useSelector, useDispatch } from "react-redux";
 import { Star, StarBorder } from "@material-ui/icons";
-
 import { idleUrl, videoUrl, subtitleUrl } from "api";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
@@ -18,7 +17,7 @@ import {
   faveMentor,
   mentorAnswerPlaybackStarted,
 } from "store/actions";
-import { MentorData, State } from "store/types";
+import { Config, MentorData, State } from "store/types";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
@@ -54,6 +53,7 @@ const Video = (args: VideoParams) => {
     };
   });
   const dispatch = useDispatch();
+  const config = useSelector<State, Config>(s => s.config);
   const [duration, setDuration] = useState(Number.NaN);
   const mobileWidth = Math.round(height / 0.895);
   const webWidth = Math.round(height / 0.5625);
@@ -65,13 +65,13 @@ const Video = (args: VideoParams) => {
     src: videoState.mentor
       ? videoState.isIdle
         ? videoState.idleVideoId
-          ? videoUrl(videoState.mentor, videoState.idleVideoId, format)
-          : idleUrl(videoState.mentor, format)
-        : videoUrl(videoState.mentor, videoState.answerId, format)
+          ? videoUrl(videoState.mentor, videoState.idleVideoId, format, config)
+          : idleUrl(videoState.mentor, format, config)
+        : videoUrl(videoState.mentor, videoState.answerId, format, config)
       : "",
     subtitles:
       videoState.mentor && subtitlesSupported && !videoState.isIdle
-        ? subtitleUrl(videoState.mentor, videoState.answerId)
+        ? subtitleUrl(videoState.mentor, videoState.answerId, config)
         : "",
   };
 

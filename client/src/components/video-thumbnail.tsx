@@ -6,11 +6,11 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useState } from "react";
 import ReactPlayer from "react-player";
-
 import { idleUrl, videoUrl } from "api";
-import { MentorQuestionStatus } from "store/types";
+import { Config, MentorData, MentorQuestionStatus, State } from "store/types";
+import { useSelector } from "react-redux";
 
-function findMentorIdleId(mentor) {
+function findMentorIdleId(mentor: MentorData) {
   try {
     return mentor.utterances_by_type["_IDLE_"][0][0];
   } catch (err) {
@@ -18,8 +18,15 @@ function findMentorIdleId(mentor) {
   }
 }
 
-const VideoThumbnail = ({ mentor, isMobile, width, height }) => {
+const VideoThumbnail = (props: {
+  mentor: MentorData;
+  isMobile: boolean;
+  width: number;
+  height: number;
+}) => {
+  const { mentor, isMobile, width, height } = props;
   const [isPlaying, setPlaying] = useState(true);
+  const config = useSelector<State, Config>(s => s.config);
   const format = isMobile ? "mobile" : "web";
   const isDisabled =
     mentor.is_off_topic || mentor.status === MentorQuestionStatus.ERROR;
@@ -30,8 +37,8 @@ const VideoThumbnail = ({ mentor, isMobile, width, height }) => {
 
   const idleVideoId = findMentorIdleId(mentor);
   const url = idleVideoId
-    ? videoUrl(mentor.id, idleVideoId, format)
-    : idleUrl(mentor.id, format);
+    ? videoUrl(mentor.id, idleVideoId, format, config)
+    : idleUrl(mentor.id, format, config);
 
   return (
     <ReactPlayer

@@ -4,48 +4,62 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { addGuestParams, mockDefaultSetup, visitAsGuestWithDefaultSetup } from "../support/helpers";
+import {
+  addGuestParams,
+  mockDefaultSetup,
+  visitAsGuestWithDefaultSetup,
+} from "../support/helpers";
 
 describe("Header", () => {
+  it("shows title for default mentor in panel", () => {
+    visitAsGuestWithDefaultSetup(cy, "/");
+    cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
+  });
 
-    it("shows title for default mentor in panel", () => {
-        visitAsGuestWithDefaultSetup(cy, "/");
-        cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
+  it("changes title when selecting a mentor", () => {
+    visitAsGuestWithDefaultSetup(cy, "/");
+    cy.get("#video-thumbnail-dan").trigger("mouseover").click();
+    cy.get("#header").contains(
+      "Dan Davis: High Performance Computing Researcher"
+    );
+
+    cy.get("#video-thumbnail-carlos").trigger("mouseover").click();
+    cy.get("#header").contains("Carlos Rios: Marine Logistician");
+
+    cy.get("#video-thumbnail-julianne").trigger("mouseover").click();
+    cy.get("#header").contains("Julianne Nordhagen: Student Naval Aviator");
+
+    cy.get("#video-thumbnail-clint").trigger("mouseover").click();
+    cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
+  });
+
+  it("shows title for a single mentor", () => {
+    mockDefaultSetup(cy);
+    cy.visit("/", {
+      qs: addGuestParams({
+        mentor: "clint",
+      }),
     });
+    cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
+  });
 
-    it("changes title when selecting a mentor", () => {
-        visitAsGuestWithDefaultSetup(cy, "/");
-        cy.get("#video-thumbnail-dan").trigger('mouseover').click();
-        cy.get("#header").contains(
-            "Dan Davis: High Performance Computing Researcher"
-        );
-
-        cy.get("#video-thumbnail-carlos").trigger('mouseover').click();
-        cy.get("#header").contains("Carlos Rios: Marine Logistician");
-
-        cy.get("#video-thumbnail-julianne").trigger('mouseover').click();
-        cy.get("#header").contains("Julianne Nordhagen: Student Naval Aviator");
-
-        cy.get("#video-thumbnail-clint").trigger('mouseover').click();
-        cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
+  it("shows alternate header with logo if config.styleHeaderLogo is set", () => {
+    mockDefaultSetup(cy, {
+      cmi5Enabled: false,
+      mentorsDefault: ["clint"],
+      styleHeaderLogo:
+        "https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png",
     });
-
-    it("shows title for a single mentor", () => {
-        mockDefaultSetup(cy);
-        cy.visit("/", {
-            qs: addGuestParams({
-                mentor: "clint"
-            }),
-        });
-        cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
-    });
-
-    it("shows alternate header with logo if HEADER_LOGO env is set", () => {
-        mockDefaultSetup(cy, { DISABLE_CMI5: true, DEFAULT_MENTORS: "clint", HEADER_LOGO: "https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png" });
-        cy.intercept("https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png", { fixture: "uscheader.png" })
-        cy.visit("/");
-        cy.get("#header img")
-            .should("have.attr", "src")
-            .and("eq", "https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png");
-    });
+    cy.intercept(
+      "https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png",
+      { fixture: "uscheader.png" }
+    );
+    cy.visit("/");
+    cy.get("#header img")
+      .should("have.attr", "src")
+      .and(
+        "eq",
+        "https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png"
+      );
+  });
 });

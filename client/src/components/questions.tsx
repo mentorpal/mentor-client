@@ -7,9 +7,7 @@ The full terms of this copyright and license should always be found in the root 
 import React from "react";
 import { useSelector } from "react-redux";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-
 import ScrollingQuestions from "components/scrolling-questions";
-
 import { State, MentorData } from "store/types";
 
 const theme = createMuiTheme({
@@ -22,7 +20,7 @@ const theme = createMuiTheme({
 
 interface Props {
   height: number;
-  onSelected: () => undefined;
+  onSelected: (question: string) => void;
 }
 const Questions = ({ height, onSelected }: Props) => {
   const mentor = useSelector<State, MentorData>(

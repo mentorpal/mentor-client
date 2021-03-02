@@ -37,23 +37,23 @@ jobs:
         run: cd docker && npm run test:format
       - name: Docker - lint
         run: cd docker && npm run test:lint
-  # test-e2e:
-  #   name: test e2e
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: build + run app in docker-compose
-  #       run: docker-compose up -d
-  #     - name: check services running
-  #       run: docker ps
-  #     - name: cypress - run tests
-  #       run: make test-e2e-exec
+  test-e2e:
+    name: test e2e
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: build + run app in docker-compose
+        run: docker-compose up -d
+      - name: check services running
+        run: docker ps
+      - name: cypress - run tests
+        run: make test-e2e-exec
   publish-check:
     name: publish check
     needs:
       - test-client
       - test-docker
-      # - test-e2e
+      - test-e2e
     runs-on: ubuntu-latest
     outputs:
       is_release: ${{ steps.is_release.outputs.is_release }}
@@ -70,7 +70,7 @@ jobs:
       - publish-check
       - test-client
       - test-docker
-      # - test-e2e
+      - test-e2e
     if: needs.publish-check.outputs.is_release || github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v2

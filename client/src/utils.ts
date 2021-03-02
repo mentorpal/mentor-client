@@ -4,19 +4,19 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-export const normalizeString = str => {
-  return str
+export function normalizeString(s: string): string {
+  return s
     .replace(/\W+/g, "")
     .normalize()
     .toLowerCase();
-};
+}
 
-export const chromeVersion = () => {
+export function chromeVersion(): number {
   // eslint-disable-next-line no-undef
   if (typeof navigator === `undefined`) {
-    return false;
+    return 0;
   }
   // eslint-disable-next-line no-undef
   const raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
-  return raw ? parseInt(raw[2], 10) : false;
-};
+  return raw ? parseInt(raw[2], 10) : 0;
+}

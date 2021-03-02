@@ -8,23 +8,25 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Divider, Paper, InputBase } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-
 import { sendQuestion, onInput } from "store/actions";
-
 import Topics from "components/topics";
 import Questions from "components/questions";
-import { MentorQuestionSource } from "store/types";
+import { Config, MentorQuestionSource, State } from "store/types";
 
-const Input = ({ height, ...props }) => {
+const Input = (props: { height: number; classes: any }) => {
   const dispatch = useDispatch();
-  const questionState = useSelector(state => state.curQuestion);
+  const config = useSelector<State, Config>(s => s.config);
+  const questionState = useSelector<State, string>(state => state.curQuestion);
   const [questionInput, setQuestionInput] = useState({
     question: "",
     source: MentorQuestionSource.NONE,
   });
-  const { classes } = props;
+  const { classes, height } = props;
 
-  function handleQuestionChanged(question, source) {
+  function handleQuestionChanged(
+    question: string,
+    source: MentorQuestionSource
+  ) {
     setQuestionInput({
       question: question || "",
       source: source || MentorQuestionSource.NONE,
@@ -32,11 +34,11 @@ const Input = ({ height, ...props }) => {
     dispatch(onInput());
   }
 
-  function handleQuestionSend(question, source) {
+  function handleQuestionSend(question: string, source: MentorQuestionSource) {
     if (!question) {
       return;
     }
-    dispatch(sendQuestion({ question, source }));
+    dispatch(sendQuestion({ question, source, config }));
     setQuestionInput({ question: "", source: MentorQuestionSource.NONE });
     window.focus();
   }
@@ -46,33 +48,33 @@ const Input = ({ height, ...props }) => {
     handleQuestionSend(questionInput.question, questionInput.source);
   };
 
-  function onQuestionSelected(question) {
+  function onQuestionSelected(question: string): void {
     handleQuestionChanged(question, MentorQuestionSource.TOPIC_LIST);
     handleQuestionSend(question, MentorQuestionSource.TOPIC_LIST);
   }
 
   // Input field should be updated (user typed a question or selected a topic)
-  function onQuestionInputChanged(question) {
+  function onQuestionInputChanged(question: string): void {
     handleQuestionChanged(question, MentorQuestionSource.USER);
   }
 
   // Input field was clicked on
-  const onQuestionInputSelected = () => {
+  function onQuestionInputSelected(): void {
     handleQuestionChanged(questionInput.question, questionInput.source);
-  };
+  }
 
-  function onTopicSelected(question) {
+  function onTopicSelected(question: string): void {
     handleQuestionChanged(question, MentorQuestionSource.TOPIC_LIST);
   }
 
   // Input field key was entered (check if user hit enter)
-  const onKeyPress = ev => {
+  function onKeyPress(ev: React.KeyboardEvent<HTMLInputElement>): void {
     if (ev.key !== "Enter") {
       return;
     }
     ev.preventDefault();
     onQuestionInputSend();
-  };
+  }
 
   // Input field keyboard was lowered
   const onBlur = () => {
@@ -103,7 +105,9 @@ const Input = ({ height, ...props }) => {
           <Button
             id="input-send"
             className={classes.button}
-            onClick={() => onQuestionInputSend()}
+            onClick={() => {
+              onQuestionInputSend();
+            }}
             disabled={!questionInput.question}
             variant="contained"
             color="primary"
