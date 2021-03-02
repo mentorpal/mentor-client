@@ -299,6 +299,9 @@ export const loadMentor: ActionCreator<ThunkAction<
     );
     if (firstMentor) {
       dispatch(selectMentor(firstMentor, MentorSelectReason.NEXT_READY));
+      dispatch(
+        selectTopic(Object.keys(mentorsById[firstMentor].topic_questions)[0])
+      );
     }
   } catch (err) {
     console.error(`Failed to load mentor data for id ${mentors}`, err);

@@ -187,14 +187,17 @@ describe("Topics list", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field").type("where were you born?");
         cy.get("#input-send").trigger('mouseover').click();
+        cy.get("#topic-1").trigger('mouseover').click();
         cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#input-field").contains("What is Japan like");
     });
 
     it("does not recommend a topic question that has already been asked (via topic button)", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#topic-1").trigger('mouseover').click();
         cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#input-send").trigger('mouseover').click();
+        cy.get("#topic-1").trigger('mouseover').click();
         cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#input-field").contains("What is Japan like");
     });
@@ -207,6 +210,7 @@ describe("Topics list", () => {
         cy.get("#input-field").type("what is Japan like?");
         cy.get("#input-send").trigger('mouseover').click();
 
+        cy.get("#topic-1").trigger('mouseover').click();
         cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#input-field").contains("What do you do in computer");
     });
