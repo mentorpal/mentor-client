@@ -62,6 +62,7 @@ describe("Questions list", () => {
             .invoke("attr", "style")
             .should("contain", "black");
 
+        cy.get("#topic-1").trigger('mouseover').click();
         cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#input-send").trigger('mouseover').click();
 

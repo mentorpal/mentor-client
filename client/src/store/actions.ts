@@ -8,7 +8,7 @@ The full terms of this copyright and license should always be found in the root 
 import { ActionCreator, AnyAction, Dispatch } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import Cmi5 from "@xapi/cmi5";
-import { fetchConfig, fetchMentorData, MentorApiData, queryMentor } from "api";
+import { fetchConfig, fetchMentor, getUtterance, queryMentor } from "api";
 import {
   MentorDataResult,
   MentorQuestionStatus,
@@ -23,7 +23,12 @@ import {
   XapiResultExt,
   XapiResultAnswerStatusByMentorId,
   Config,
-} from "./types";
+  UtteranceName,
+  Mentor,
+  Status,
+  TopicQuestions,
+  MentorType,
+} from "../types";
 
 const RESPONSE_CUTOFF = -100;
 
@@ -46,6 +51,7 @@ export const QUESTION_RESULT = "QUESTION_RESULT";
 export const QUESTION_SENT = "QUESTION_SENT"; // question input was sent
 export const TOPIC_SELECTED = "TOPIC_SELECTED";
 export const GUEST_NAME_SET = "GUEST_NAME_SET";
+export const RECOMMENDED_QUESTIONS_SET = "RECOMMENDED_QUESTIONS_SET";
 
 export interface ConfigLoadStartedAction {
   type: typeof CONFIG_LOAD_STARTED;
@@ -147,19 +153,6 @@ function sendCmi5Statement(statement: any) {
   }
 }
 
-function findIntro(mentorData: MentorApiData): string {
-  try {
-    return mentorData.utterances_by_type._INTRO_[0][0];
-  } catch (err) {
-    console.error("no _INTRO_ in mentor data: ", mentorData);
-  }
-  const allIds = Object.getOwnPropertyNames(mentorData.questions_by_id);
-  if (allIds.length > 0) {
-    return allIds[0];
-  }
-  return "intro";
-}
-
 function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
   return {
     answerClassifier: mentorData.classifier || "",
@@ -177,7 +170,7 @@ function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
           answerId: state.mentorsById[cur].answer_id || "",
           confidence: Number(state.mentorsById[cur].confidence),
           isOffTopic: Boolean(state.mentorsById[cur].is_off_topic),
-          mentor: state.mentorsById[cur].id,
+          mentor: state.mentorsById[cur].mentor._id,
           status: state.mentorsById[cur].status,
           responseTimeSecs: Number(mentorData.response_time) / 1000,
         };
@@ -186,10 +179,10 @@ function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
       {}
     ),
     answerText: mentorData.answer_text || "",
-    mentorCur: mentorData.id,
+    mentorCur: mentorData.mentor._id,
     mentorCurReason: state.curMentorReason,
     mentorCurStatus: mentorData.status,
-    mentorCurIsFav: state.mentorFaved === mentorData.id,
+    mentorCurIsFav: state.mentorFaved === mentorData.mentor._id,
     mentorFaved: state.mentorFaved,
     mentorNext: state.mentorNext,
     mentorTopicDisplayed: state.curTopic,
@@ -207,98 +200,84 @@ export const loadMentor: ActionCreator<ThunkAction<
   State, // The type for the data within the last action
   string, // The type of the parameter for the nested function
   MentorDataRequestDoneAction // The type of the last action to be dispatched
->> = (
-  config: Config,
-  mentors: string | string[],
-  {
-    recommendedQuestions,
-  }: {
-    recommendedQuestions?: string[] | string | undefined;
-  } = {}
-) => async (
+>> = (config: Config, mentors: string[], subject?: string) => async (
   dispatch: ThunkDispatch<State, void, AnyAction>,
   getState: () => State
 ) => {
   try {
-    const mentorList = Array.isArray(mentors)
-      ? (mentors as Array<string>)
-      : [`${mentors}`];
-    const recommendedQuestionList: string[] | undefined =
-      Array.isArray(recommendedQuestions) && recommendedQuestions.length > 0
-        ? (recommendedQuestions as string[])
-        : typeof recommendedQuestions === "string"
-        ? [recommendedQuestions as string]
-        : undefined;
     dispatch<MentorDataRequestedAction>({
       type: MENTOR_DATA_REQUESTED,
-      payload: mentorList,
+      payload: mentors,
     });
-    const dataPromises = Promise.all(
-      mentorList.map(mentorId => {
-        return new Promise<void>((resolve, reject) => {
-          fetchMentorData(mentorId, config)
-            .then(result => {
-              if (result.status == 200) {
-                const apiData = result.data;
-                Object.keys(apiData.topics_by_id).forEach(k => {
-                  if (apiData.topics_by_id[k].questions.length < 1) {
-                    delete apiData.topics_by_id[k];
-                  }
-                });
-                const mentorData: MentorData = {
-                  ...apiData,
-                  answer_id: findIntro(apiData),
-                  answerDuration: Number.NaN,
-                  status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
-                  topic_questions: Object.getOwnPropertyNames(
-                    apiData.topics_by_id
-                  ).reduce<{ [typeName: string]: string[] }>(
-                    (topicQs, topicId) => {
-                      const topicData = apiData.topics_by_id[topicId];
-                      topicQs[topicData.name] = topicData.questions.map(
-                        t => apiData.questions_by_id[t].question_text
-                      );
-                      return topicQs;
-                    },
-                    Array.isArray(recommendedQuestionList)
-                      ? { Recommended: recommendedQuestionList }
-                      : {}
-                  ),
-                };
-                dispatch<MentorDataResultAction>({
-                  type: MENTOR_DATA_RESULT,
-                  payload: {
-                    data: mentorData,
-                    status: ResultStatus.SUCCEEDED,
-                  },
-                });
-                return resolve();
-              } else {
-                return reject();
-              }
-            })
-            .catch(err => {
-              dispatch<MentorDataResultAction>({
-                type: MENTOR_DATA_RESULT,
-                payload: {
-                  data: undefined,
-                  status: ResultStatus.FAILED,
-                },
-              });
-              return reject(err);
-            });
+    for (const mentorId of mentors) {
+      let result = await fetchMentor(config, mentorId, subject);
+      if (result.status === 200) {
+        let mentor: Mentor = result.data.data!.mentor;
+        if (mentors.length > 1 && mentor.mentorType === MentorType.CHAT) {
+          continue;
+        }
+        if (!subject && mentor.defaultSubject) {
+          result = await fetchMentor(
+            config,
+            mentorId,
+            mentor.defaultSubject._id
+          );
+          mentor = result.data.data!.mentor;
+        }
+
+        const topicQuestions: TopicQuestions[] = [];
+        const recommendedQuestions = getState().recommendedQuestions;
+        if (recommendedQuestions.length > 0) {
+          topicQuestions.push({
+            topic: "Recommended",
+            questions: recommendedQuestions,
+          });
+        }
+        for (const topic of mentor.topics) {
+          topicQuestions.push({
+            topic: topic.name,
+            questions: mentor.answers
+              .filter(
+                a =>
+                  a.question.topics.find(t => t._id === topic._id) !== undefined
+              )
+              .map(a => a.question.question),
+          });
+        }
+        topicQuestions.push({ topic: "History", questions: [] });
+        const mentorData: MentorData = {
+          mentor: mentor,
+          topic_questions: topicQuestions,
+          status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
+          answer_id: getUtterance(mentor, UtteranceName.INTRO)?._id,
+          answerDuration: Number.NaN,
+        };
+        dispatch<MentorDataResultAction>({
+          type: MENTOR_DATA_RESULT,
+          payload: {
+            data: mentorData,
+            status: ResultStatus.SUCCEEDED,
+          },
         });
-      })
-    );
-    await dataPromises;
+      } else {
+        dispatch<MentorDataResultAction>({
+          type: MENTOR_DATA_RESULT,
+          payload: {
+            data: undefined,
+            status: ResultStatus.FAILED,
+          },
+        });
+      }
+    }
     const mentorsById = getState().mentorsById;
     // find the first of the requested mentors that loaded successfully
     // and select that mentor
-    const firstMentor = mentorList.find(
+    const firstMentor = mentors.find(
       id => mentorsById[id].status === MentorQuestionStatus.READY
     );
     if (firstMentor) {
       dispatch(selectMentor(firstMentor, MentorSelectReason.NEXT_READY));
+      dispatch(selectTopic(mentorsById[firstMentor].topic_questions[0].topic));
     }
   } catch (err) {
     console.error(`Failed to load mentor data for id ${mentors}`, err);
@@ -370,6 +349,11 @@ export const faveMentor = (mentor_id: any) => ({
 export const setGuestName = (name: string) => ({
   name,
   type: GUEST_NAME_SET,
+});
+
+export const setRecommendedQuestions = (recommendedQuestions: string[]) => ({
+  recommendedQuestions,
+  type: RECOMMENDED_QUESTIONS_SET,
 });
 
 const currentQuestionIndex = (state: { questionsAsked: { length: any } }) =>
@@ -506,7 +490,7 @@ export const answerFinished = () => (
   Object.keys(mentors).forEach(id => {
     responses.push({
       confidence: mentors[id].confidence || -1.0,
-      id: mentors[id].id,
+      id: mentors[id].mentor._id,
       is_off_topic: mentors[id].is_off_topic || false,
       status: mentors[id].status,
     });

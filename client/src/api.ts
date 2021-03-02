@@ -6,87 +6,94 @@ The full terms of this copyright and license should always be found in the root 
 */
 import axios, { AxiosResponse } from "axios";
 import { withPrefix } from "gatsby";
-import { Config } from "store/types";
-
-export interface MentorApiData {
-  id: string;
-  name: string;
-  questions_by_id: {
-    [question_id: string]: {
-      question_text: string;
-    };
-  };
-  short_name: string;
-  title: string;
-  topics_by_id: {
-    [topic_id: string]: {
-      name: string;
-      questions: string[];
-    };
-  };
-  utterances_by_type: {
-    [utterance_type: string]: string[][];
-  };
-}
-
-export interface QuestionApiData {
-  query: string;
-  answer_id: string;
-  answer_text: string;
-  confidence: number;
-  classifier: string;
-  feedback_id: string;
-}
-
-export const videoUrl = (
-  mentor: string,
-  answerId: string,
-  format: string,
-  config: Config
-): string => {
-  return `${config.urlVideo}/mentors/${mentor}/${format}/${answerId}.mp4`;
-};
-
-export const idleUrl = (
-  mentor: string,
-  format: string,
-  config: Config
-): string => {
-  return `${config.urlVideo}/mentors/${mentor}/${format}/idle.mp4`;
-};
-
-// TODO: don't pass mentor here, pass mentorId and answerId
-export const subtitleUrl = (
-  mentor: string,
-  answerId: string,
-  config: Config
-): string => {
-  return `${config.urlClassifier}/mentors/${mentor}/tracks/${answerId}.vtt`;
-};
+import {
+  Answer,
+  Config,
+  Mentor,
+  QuestionApiData,
+  Status,
+  UtteranceName,
+} from "types";
 
 export async function fetchConfig(): Promise<AxiosResponse<Config>> {
-  return await axios.get<Config>(withPrefix("config"));
+  return await axios.get<Config>(process.env.CONFIG || withPrefix("config"));
 }
 
-export async function fetchMentorData(
-  mentorId: string,
-  config: Config
-): Promise<AxiosResponse<MentorApiData>> {
-  return await axios.get(`${config.urlClassifier}/mentors/${mentorId}/data`);
+export function getUtterance(
+  mentor: Mentor,
+  utterance: UtteranceName
+): Answer | undefined {
+  return mentor.utterances.find(a => a.question.name === utterance);
 }
 
-export const queryMentor = async (
+export function videoUrl(
   mentorId: string,
-  question: string,
+  answerId: string,
   config: Config
-): Promise<AxiosResponse<QuestionApiData>> => {
-  return await axios.get(`${config.urlClassifier}/questions/`, {
-    params: {
-      mentor: mentorId,
-      query: question,
-    },
+): string {
+  return `${config.urlVideo}/mentors/${mentorId}/${answerId}.mp4`;
+}
+
+export function idleUrl(mentor: Mentor, config: Config): string {
+  const idle = getUtterance(mentor, UtteranceName.IDLE);
+  return idle ? videoUrl(mentor._id, idle._id, config) : "";
+}
+
+export function subtitleUrl(
+  mentorId: string,
+  answerId: string,
+  config: Config
+): string {
+  return `${config.urlClassifier}/mentors/${mentorId}/tracks/${answerId}.vtt`;
+}
+
+export async function fetchMentor(
+  config: Config,
+  mentorId: string,
+  subject?: string,
+  topic?: string
+) {
+  return await axios.post(config.urlGraphql, {
+    query: `
+      query {
+        mentor(id: "${mentorId}") {
+          _id
+          name
+          firstName
+          title
+          mentorType
+          defaultSubject {
+            _id
+          }
+          topics(subject: "${subject || ""}") {
+            _id
+            name
+          }
+          utterances(status: "${Status.COMPLETE}") {
+            _id
+            transcript
+            question {
+              question
+              name
+            }
+          }
+          answers(subject: "${subject || ""}", topic: "${topic ||
+      ""}", status: "${Status.COMPLETE}") {
+            _id
+            transcript
+            question {
+              question
+              topics {
+                _id
+                name
+              }
+            }
+          }
+        }
+      }
+    `,
   });
-};
+}
 
 export async function giveFeedback(
   feedbackId: string,
@@ -101,5 +108,18 @@ export async function giveFeedback(
         }
       }
     `,
+  });
+}
+
+export async function queryMentor(
+  mentorId: string,
+  question: string,
+  config: Config
+): Promise<AxiosResponse<QuestionApiData>> {
+  return await axios.get(`${config.urlClassifier}/questions/`, {
+    params: {
+      mentor: mentorId,
+      query: question,
+    },
   });
 }

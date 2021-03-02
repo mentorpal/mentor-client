@@ -30,6 +30,7 @@ describe("History", () => {
     it("displays questions that have been asked via topic button", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#topic-0").trigger('mouseover').click();
+        cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#topic-8").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").contains("Where were you born?");

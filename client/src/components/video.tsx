@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import { useSelector, useDispatch } from "react-redux";
 import { Star, StarBorder } from "@material-ui/icons";
-import { idleUrl, videoUrl, subtitleUrl } from "api";
+import { videoUrl, subtitleUrl, idleUrl } from "api";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import { chromeVersion } from "utils";
@@ -17,17 +17,9 @@ import {
   faveMentor,
   mentorAnswerPlaybackStarted,
 } from "store/actions";
-import { Config, MentorData, State } from "store/types";
+import { Config, MentorData, State } from "types";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
-
-function findMentorIdleId(mentor: MentorData) {
-  try {
-    return mentor.utterances_by_type["_IDLE_"][0][0];
-  } catch (err) {
-    return "";
-  }
-}
 
 interface VideoState {
   answerId: string;
@@ -36,42 +28,29 @@ interface VideoState {
   mentor: string;
 }
 
-interface VideoParams {
-  height: number;
-  playing?: boolean;
-  width: number;
-}
-const Video = (args: VideoParams) => {
-  const { height, width, playing = false } = args;
-  const videoState = useSelector<State, VideoState>(state => {
-    const m = state.mentorsById[state.curMentor];
-    return {
-      answerId: m ? `${m.answer_id}` : "",
-      idleVideoId: m ? findMentorIdleId(m) : "",
-      isIdle: state.isIdle,
-      mentor: state.curMentor,
-    };
-  });
+function Video(args: { playing?: boolean }) {
+  const { playing = false } = args;
   const dispatch = useDispatch();
+  const curMentor = useSelector<State, string>(state => state.curMentor);
+  const mentorsById = useSelector<State, Record<string, MentorData>>(
+    state => state.mentorsById
+  );
+  const isIdle = useSelector<State, boolean>(state => state.isIdle);
   const config = useSelector<State, Config>(s => s.config);
   const [duration, setDuration] = useState(Number.NaN);
-  const mobileWidth = Math.round(height / 0.895);
-  const webWidth = Math.round(height / 0.5625);
-  const format =
-    Math.abs(width - mobileWidth) > Math.abs(width - webWidth)
-      ? "web"
-      : "mobile";
+
+  if (!curMentor) {
+    return <div />;
+  }
+  const mentor = mentorsById[curMentor];
+
   const video = {
-    src: videoState.mentor
-      ? videoState.isIdle
-        ? videoState.idleVideoId
-          ? videoUrl(videoState.mentor, videoState.idleVideoId, format, config)
-          : idleUrl(videoState.mentor, format, config)
-        : videoUrl(videoState.mentor, videoState.answerId, format, config)
-      : "",
+    src: isIdle
+      ? videoUrl(curMentor, mentor.answer_id || "", config)
+      : idleUrl(mentor.mentor, config),
     subtitles:
-      videoState.mentor && subtitlesSupported && !videoState.isIdle
-        ? subtitleUrl(videoState.mentor, videoState.answerId, config)
+      subtitlesSupported && !isIdle
+        ? subtitleUrl(curMentor, mentor.answer_id || "", config)
         : "",
   };
 
@@ -80,22 +59,21 @@ const Video = (args: VideoParams) => {
   }
 
   function onPlay() {
-    if (videoState.isIdle) {
+    if (isIdle) {
       return;
     }
     dispatch(
       mentorAnswerPlaybackStarted({
-        mentor: videoState.mentor,
+        mentor: curMentor,
         duration: duration,
       })
     );
   }
 
   return (
-    <div id="video-container" style={{ width }}>
+    <div id="video-container">
       <MemoVideoPlayer
-        height={height}
-        isIdle={Boolean(videoState.isIdle)}
+        isIdle={Boolean(isIdle)}
         onEnded={onEnded}
         onPlay={onPlay}
         playing={Boolean(playing)}
@@ -103,21 +81,15 @@ const Video = (args: VideoParams) => {
         subtitlesOn={Boolean(subtitlesSupported)}
         subtitlesUrl={video.subtitles}
         videoUrl={video.src}
-        width={Math.min(width, format === "mobile" ? mobileWidth : webWidth)}
       />
       <FaveButton />
-      <LoadingSpinner
-        mentor={videoState.mentor}
-        height={height}
-        width={width}
-      />
-      <MessageStatus mentor={videoState.mentor} />
+      <LoadingSpinner mentor={curMentor} />
+      <MessageStatus mentor={curMentor} />
     </div>
   );
-};
+}
 
 interface VideoPlayerParams {
-  height: number;
   isIdle: boolean;
   onEnded: () => void;
   onPlay: () => void;
@@ -126,12 +98,10 @@ interface VideoPlayerParams {
   subtitlesOn: boolean;
   subtitlesUrl: string;
   videoUrl: string;
-  width: number;
 }
 
 function VideoPlayer(args: VideoPlayerParams) {
   const {
-    height,
     isIdle,
     onEnded,
     onPlay,
@@ -140,7 +110,6 @@ function VideoPlayer(args: VideoPlayerParams) {
     subtitlesOn,
     subtitlesUrl,
     videoUrl,
-    width,
   } = args;
   return (
     <ReactPlayer
@@ -155,8 +124,6 @@ function VideoPlayer(args: VideoPlayerParams) {
       onEnded={onEnded}
       onPlay={onPlay}
       loop={isIdle}
-      width={width}
-      height={height}
       controls={!isIdle}
       playing={Boolean(playing)}
       playsinline

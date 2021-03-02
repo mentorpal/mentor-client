@@ -10,15 +10,11 @@ import {
   MENTOR_FAVED,
   MENTOR_ANSWER_PLAYBACK_STARTED,
   MENTOR_NEXT,
-  MENTOR_DATA_REQUESTED,
-  MENTOR_DATA_RESULT,
   MENTOR_SELECTED,
   QUESTION_ANSWERED,
   QUESTION_ERROR,
   QUESTION_SENT,
   TOPIC_SELECTED,
-  MentorDataResultAction,
-  MentorDataRequestedAction,
   MentorSelectedAction,
   MentorAnswerPlaybackStartedAction,
   QuestionSentAction,
@@ -27,19 +23,23 @@ import {
   CONFIG_LOAD_FAILED,
   CONFIG_LOAD_STARTED,
   CONFIG_LOAD_SUCCEEDED,
+  MentorDataResultAction,
+  MENTOR_DATA_RESULT,
+  MentorDataRequestedAction,
+  MENTOR_DATA_REQUESTED,
+  RECOMMENDED_QUESTIONS_SET,
 } from "./actions";
 import {
   MentorData,
   MentorQuestionSource,
   MentorQuestionStatus,
-  newMentorData,
   QuestionResponse,
-  ResultStatus,
   State,
   MentorSelectReason,
   LoadStatus,
-  MODE_VIDEO,
-} from "./types";
+  ResultStatus,
+  MentorType,
+} from "../types";
 
 export const initialState: State = {
   config: {
@@ -47,13 +47,13 @@ export const initialState: State = {
     cmi5Endpoint: process.env.CMI5_ENDPOINT || "/lrs/xapi",
     cmi5Fetch: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
     mentorsDefault: [],
-    modeDefault: MODE_VIDEO,
     urlGraphql: process.env.MENTOR_GRAPHQL_URL || "/graphql",
     urlClassifier: process.env.MENTOR_API_URL || "/classifier",
     urlVideo: process.env.MENTOR_VIDEO_URL || "/videos",
-    styleHeaderLogo: "",
+    styleHeaderLogo: process.env.HEADER_LOGO || "",
   },
   configLoadStatus: LoadStatus.NONE,
+  guestName: "",
   curMentor: "", // id of selected mentor
   curMentorReason: MentorSelectReason.NONE,
   curQuestion: "", // question that was last asked
@@ -63,8 +63,8 @@ export const initialState: State = {
   isIdle: false,
   mentorsById: {},
   mentorNext: "", // id of the next mentor to speak after the current finishes
+  recommendedQuestions: [],
   questionsAsked: [],
-  guestName: "",
 };
 
 function mentorSelected(state: State, action: MentorSelectedAction): State {
@@ -112,12 +112,12 @@ function onMentorDataResult(
     const mentor = action.payload.data as MentorData;
     return {
       ...state,
-      curMentor: mentor.id, // TODO: why is the current mentor any random last that loaded?
+      curMentor: mentor.mentor._id, // TODO: why is the current mentor any random last that loaded?
       isIdle: false,
       mentorsById: {
         ...state.mentorsById,
-        [mentor.id]: {
-          ...state.mentorsById[mentor.id],
+        [mentor.mentor._id]: {
+          ...state.mentorsById[mentor.mentor._id],
           ...mentor,
           status: MentorQuestionStatus.READY,
         },
@@ -133,7 +133,21 @@ function onMentorDataRequested(
 ): State {
   const mentorsById = action.payload.reduce<{ [mentorId: string]: MentorData }>(
     (mentorsByIdAcc, mentorId) => {
-      mentorsByIdAcc[mentorId] = newMentorData(mentorId);
+      mentorsByIdAcc[mentorId] = {
+        mentor: {
+          _id: mentorId,
+          name: "",
+          firstName: "",
+          title: "",
+          mentorType: MentorType.CHAT,
+          topics: [],
+          answers: [],
+          utterances: [],
+        },
+        topic_questions: [],
+        status: MentorQuestionStatus.NONE,
+        answerDuration: Number.NaN,
+      };
       return mentorsByIdAcc;
     },
     {}
@@ -220,11 +234,6 @@ export default function reducer(state = initialState, action: any): State {
       return onQuestionSent(state, action as QuestionSentAction);
     case QUESTION_ANSWERED: {
       const response = action.mentor as QuestionResponse;
-      const history =
-        state.mentorsById[response.mentor].topic_questions.History || [];
-      if (!history.includes(response.question)) {
-        history.push(response.question);
-      }
       const mentor: MentorData = {
         ...state.mentorsById[response.mentor],
         answer_id: response.answerId,
@@ -237,11 +246,13 @@ export default function reducer(state = initialState, action: any): State {
         question: response.question,
         response_time: response.answerResponseTimeSecs,
         status: MentorQuestionStatus.READY,
-        topic_questions: {
-          ...state.mentorsById[response.mentor].topic_questions,
-          History: history,
-        },
       };
+      const history = mentor.topic_questions.length - 1;
+      if (
+        !mentor.topic_questions[history].questions.includes(response.question)
+      ) {
+        mentor.topic_questions[history].questions.push(response.question);
+      }
       return {
         ...state,
         isIdle: false,
@@ -278,6 +289,11 @@ export default function reducer(state = initialState, action: any): State {
       return {
         ...state,
         guestName: action.name,
+      };
+    case RECOMMENDED_QUESTIONS_SET:
+      return {
+        ...state,
+        recommendedQuestions: action.recommendedQuestions,
       };
     default:
       return state;

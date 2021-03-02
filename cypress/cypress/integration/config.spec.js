@@ -7,7 +7,6 @@ The full terms of this copyright and license should always be found in the root 
 import {
   mockDefaultSetup,
   visitAsGuestWithDefaultSetup,
-  MODE_CHAT,
 } from "../support/helpers";
 
 describe("Config", () => {
@@ -29,15 +28,5 @@ describe("Config", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("#video-panel").get("#video-thumbnail-clint");
     cy.get("#video-panel").get("#video-thumbnail-dan");
-  });
-
-  it("shows chat instead of video if modeDefault=chat", () => {
-    mockDefaultSetup(cy, {
-      mentorsDefault: ["clint"],
-      modeDefault: MODE_CHAT,
-    });
-    visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("#chat-thread").should("exist");
-    cy.get("#video-container").should("not.exist");
   });
 });

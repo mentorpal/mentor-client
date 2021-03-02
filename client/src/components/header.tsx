@@ -6,34 +6,42 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React from "react";
 import { useSelector } from "react-redux";
-import { Grid, Hidden, Typography } from "@material-ui/core";
-import { Config, MentorData, State } from "store/types";
+import { Hidden, Typography } from "@material-ui/core";
+import { Config, MentorData, State } from "types";
 
 function Header(): JSX.Element {
-  const mentor = useSelector<State, MentorData>(
-    state => state.mentorsById[state.curMentor]
+  const curMentor = useSelector<State, string>(state => state.curMentor);
+  const mentorsById = useSelector<State, Record<string, MentorData>>(
+    state => state.mentorsById
   );
   const config = useSelector<State, Config>(state => state.config);
+
+  if (!curMentor) {
+    return <div />;
+  }
+  const mentor = mentorsById[curMentor].mentor;
+
   if (config.styleHeaderLogo) {
     return (
-      <Grid
+      <div
         id="header"
-        container
-        direction="row"
-        alignItems="center"
-        style={{ padding: "2px 4px", height: 50 }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: 50,
+        }}
       >
-        <Grid item style={{ position: "absolute", textAlign: "left" }}>
-          <img src={config.styleHeaderLogo} style={{ height: 50 }} />
-        </Grid>
+        <img
+          src={config.styleHeaderLogo}
+          style={{ position: "absolute", left: 0, height: 50 }}
+        />
         <Hidden only="xs">
-          <Grid item sm={12}>
-            <Typography>
-              {mentor ? `${mentor.name}: ${mentor.title}` : undefined}
-            </Typography>
-          </Grid>
+          <Typography>
+            {mentor.name}: {mentor.title}
+          </Typography>
         </Hidden>
-      </Grid>
+      </div>
     );
   }
 
@@ -48,7 +56,7 @@ function Header(): JSX.Element {
       }}
     >
       <Typography>
-        {mentor ? `${mentor.name}: ${mentor.title}` : undefined}
+        {mentor.name}: {mentor.title}
       </Typography>
     </div>
   );

@@ -8,7 +8,8 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import ScrollingQuestions from "components/scrolling-questions";
-import { State, MentorData } from "store/types";
+import { State, MentorData } from "types";
+import withLocation from "wrap-with-location";
 
 const theme = createMuiTheme({
   palette: {
@@ -18,11 +19,12 @@ const theme = createMuiTheme({
   typography: { useNextVariants: true },
 });
 
-interface Props {
-  height: number;
+function Questions(props: {
   onSelected: (question: string) => void;
-}
-const Questions = ({ height, onSelected }: Props) => {
+  search: {
+    subject?: string;
+  };
+}) {
   const mentor = useSelector<State, MentorData>(
     state => state.mentorsById[state.curMentor]
   );
@@ -30,26 +32,27 @@ const Questions = ({ height, onSelected }: Props) => {
   const questionsAsked = useSelector<State, string[]>(
     state => state.questionsAsked
   );
+  const recommendedQuestions = useSelector<State, string[]>(
+    state => state.recommendedQuestions
+  );
 
-  if (!(mentor && curTopic && mentor.topic_questions)) {
-    return <div id="questions" />;
-  }
-
-  const questions = mentor.topic_questions[curTopic] || [];
-  const recommended = mentor.topic_questions.Recommended || [];
-
-  const ordered_questions = questions.slice();
+  const questions =
+    mentor.topic_questions.find(tq => tq.topic === curTopic)?.questions || [];
+  const orderedQuestions = questions.slice();
   if (curTopic === "History") {
-    ordered_questions.reverse();
+    orderedQuestions.reverse();
   } else {
-    ordered_questions.sort((a, b) => {
-      if (recommended.includes(a) && recommended.includes(b)) {
-        return ordered_questions.indexOf(a) - ordered_questions.indexOf(b);
+    orderedQuestions.sort((a: string, b: string) => {
+      if (
+        recommendedQuestions.includes(a) &&
+        recommendedQuestions.includes(b)
+      ) {
+        return orderedQuestions.indexOf(a) - orderedQuestions.indexOf(b);
       }
-      if (recommended.includes(a)) {
+      if (recommendedQuestions.includes(a)) {
         return -1;
       }
-      if (recommended.includes(b)) {
+      if (recommendedQuestions.includes(b)) {
         return 1;
       }
       return 0;
@@ -60,14 +63,13 @@ const Questions = ({ height, onSelected }: Props) => {
     <MuiThemeProvider theme={theme}>
       <ScrollingQuestions
         id="questions"
-        height={height}
-        questions={ordered_questions}
+        questions={orderedQuestions}
         questionsAsked={questionsAsked}
-        recommended={recommended}
-        onQuestionSelected={onSelected}
+        recommended={recommendedQuestions}
+        onQuestionSelected={props.onSelected}
       />
     </MuiThemeProvider>
   );
-};
+}
 
-export default Questions;
+export default withLocation(Questions);
