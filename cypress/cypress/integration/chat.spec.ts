@@ -56,4 +56,24 @@ describe("Chat", () => {
     );
     cy.get("#chat-msg-2 a").should("have.attr", "target", "_blank");
   });
+
+  it.only("can give feedback on classifier answer", () => {
+    cy.intercept("**/mentors/clint/data", { fixture: "clint.json" });
+    cy.intercept("**/questions/?mentor=*&query=*", {
+      fixture: "clint_response_with_feedback.json",
+    });
+    mockConfig(cy, {
+      cmi5Enabled: false,
+      mentorsDefault: ["clint"],
+      modeDefault: MODE_CHAT,
+    });
+    cy.viewport("iphone-x");
+    cy.visit("/");
+    cy.get("#chat-thread").should("exist");
+    cy.get("#input-field").type("test");
+    cy.get("#input-send").trigger("mouseover").click();
+    cy.get("#chat-msg-2").contains("Give me feedback");
+    cy.get("#chat-msg-2 #feedback-btn #neutral").should("exist");
+    cy.get("#chat-msg-2 #feedback-btn").trigger("mouseover").click();
+  })
 });
