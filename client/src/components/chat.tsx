@@ -56,57 +56,15 @@ interface ChatMsg {
   feedbackId?: string;
 }
 
-function Chat(): JSX.Element {
-  const styles = useStyles();
-  const [messages, setMessages] = useState<ChatMsg[]>([]);
-  const [lastQuestionAt, setLastQuestionAt] = useState<Date>();
-  const [lastAnswerAt, setLastAnswerAt] = useState<Date>();
+function ChatItem(props: {
+  message: ChatMsg;
+  i: number;
+  styles: any;
+  onSendFeedback: (id: string, feedback: Feedback) => void;
+}): JSX.Element {
+  const { message, i, styles, onSendFeedback } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const state = useSelector<State, State>(state => state);
   const config = useSelector<State, Config>(s => s.config);
-
-  useEffect(() => {
-    if (lastQuestionAt !== state.curQuestionUpdatedAt) {
-      setMessages([
-        ...messages,
-        {
-          isUser: true,
-          text: state.curQuestion,
-        },
-      ]);
-      setLastQuestionAt(state.curQuestionUpdatedAt);
-    }
-    const mentor = state.mentorsById[state.curMentor];
-    if (!mentor) {
-      return;
-    }
-    if (messages.length === 0) {
-      setMessages([
-        ...messages,
-        {
-          isUser: false,
-          text: mentor.utterances_by_type["_INTRO_"][0][1],
-        },
-      ]);
-    }
-    if (lastAnswerAt !== mentor.answerReceivedAt) {
-      setMessages([
-        ...messages,
-        {
-          isUser: false,
-          text: mentor.answer_text || "",
-          feedbackId: mentor.answerFeedbackId,
-        },
-      ]);
-      setLastAnswerAt(mentor.answerReceivedAt);
-    }
-  }, [state]);
-
-  useEffect(() => {
-    animateScroll.scrollToBottom({
-      containerId: "chat-thread",
-    });
-  }, [messages]);
 
   function handleFeedbackClick(event: any) {
     setAnchorEl(event.currentTarget);
@@ -119,11 +77,7 @@ function Chat(): JSX.Element {
   function handleSelectFeedback(id: string, feedback: Feedback) {
     giveFeedback(id, feedback, config);
     setAnchorEl(null);
-    const idx = messages.findIndex(f => f.feedbackId === id);
-    if (idx !== -1) {
-      messages[idx].feedback = feedback;
-    }
-    setMessages(messages);
+    onSendFeedback(id, feedback);
   }
 
   function LinkRenderer(props: any) {
@@ -135,129 +89,186 @@ function Chat(): JSX.Element {
   }
 
   return (
+    <ListItem
+      id={`chat-msg-${i}`}
+      disableGutters={false}
+      className={message.isUser ? "user" : "system"}
+      classes={{ root: styles.root }}
+      style={{
+        paddingRight: 16,
+        maxWidth: 750,
+        marginRight: message.feedbackId ? 10 : 0,
+      }}
+    >
+      <ReactMarkdown source={message.text} renderers={{ link: LinkRenderer }} />
+      {message.feedbackId ? (
+        <div
+          id="feedback-btn"
+          className={styles.icon}
+          onClick={handleFeedbackClick}
+        >
+          <ListItemAvatar>
+            <Avatar
+              className={[
+                styles.avatar,
+                message.feedback === Feedback.GOOD
+                  ? styles.GOOD
+                  : message.feedback === Feedback.BAD
+                  ? styles.BAD
+                  : undefined,
+              ].join(" ")}
+            >
+              {message.feedback === Feedback.GOOD ? (
+                <ThumbUpIcon id="good" />
+              ) : message.feedback === Feedback.BAD ? (
+                <ThumbDownIcon id="bad" />
+              ) : (
+                <ThumbsUpDownIcon id="neutral" />
+              )}
+            </Avatar>
+          </ListItemAvatar>
+        </div>
+      ) : (
+        undefined
+      )}
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handleFeedbackClose}
+        anchorOrigin={{
+          vertical: "center",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "center",
+          horizontal: "center",
+        }}
+        elevation={0}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography>Did this answer your question?</Typography>
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <div
+              onClick={() => {
+                if (message.feedbackId) {
+                  handleSelectFeedback(message.feedbackId, Feedback.GOOD);
+                }
+              }}
+            >
+              <ListItemAvatar>
+                <Avatar className={[styles.avatar, styles.GOOD].join(" ")}>
+                  <ThumbUpIcon />
+                </Avatar>
+              </ListItemAvatar>
+            </div>
+            <div
+              onClick={() => {
+                if (message.feedbackId) {
+                  handleSelectFeedback(message.feedbackId, Feedback.NEUTRAL);
+                }
+              }}
+            >
+              <ListItemAvatar>
+                <Avatar className={styles.avatar}>
+                  <ThumbsUpDownIcon />
+                </Avatar>
+              </ListItemAvatar>
+            </div>
+            <div
+              onClick={() => {
+                if (message.feedbackId) {
+                  handleSelectFeedback(message.feedbackId, Feedback.BAD);
+                }
+              }}
+            >
+              <ListItemAvatar>
+                <Avatar className={[styles.avatar, styles.BAD].join(" ")}>
+                  <ThumbDownIcon />
+                </Avatar>
+              </ListItemAvatar>
+            </div>
+          </div>
+        </div>
+      </Popover>
+    </ListItem>
+  );
+}
+
+function Chat(): JSX.Element {
+  const styles = useStyles();
+  const [messages, setMessages] = useState<ChatMsg[]>([]);
+  const [lastQuestionAt, setLastQuestionAt] = useState<Date>();
+  const [lastAnswerAt, setLastAnswerAt] = useState<Date>();
+  const state = useSelector<State, State>(state => state);
+
+  useEffect(() => {
+    const _messages = [...messages];
+    let updated = false;
+    if (lastQuestionAt !== state.curQuestionUpdatedAt) {
+      updated = true;
+      _messages.push({
+        isUser: true,
+        text: state.curQuestion,
+      });
+      setLastQuestionAt(state.curQuestionUpdatedAt);
+    }
+    const mentor = state.mentorsById[state.curMentor];
+    if (mentor) {
+      if (messages.length === 0) {
+        updated = true;
+        _messages.push({
+          isUser: false,
+          text: mentor.utterances_by_type["_INTRO_"][0][1],
+        });
+      }
+      if (lastAnswerAt !== mentor.answerReceivedAt) {
+        updated = true;
+        _messages.push({
+          isUser: false,
+          text: mentor.answer_text || "",
+          feedbackId: mentor.answerFeedbackId,
+        });
+        setLastAnswerAt(mentor.answerReceivedAt);
+      }
+    }
+    if (updated) {
+      setMessages(_messages);
+    }
+  }, [state]);
+
+  useEffect(() => {
+    animateScroll.scrollToBottom({
+      containerId: "chat-thread",
+    });
+  }, [messages]);
+
+  function onSendFeedback(id: string, feedback: Feedback) {
+    const idx = messages.findIndex(f => f.feedbackId === id);
+    if (idx !== -1) {
+      messages[idx].feedback = feedback;
+    }
+    setMessages(messages);
+  }
+
+  console.log(messages);
+
+  return (
     <List id="chat-thread" className={styles.list} disablePadding={true}>
       {messages.map((message, i) => {
         return (
-          <ListItem
-            id={`chat-msg-${i}`}
+          <ChatItem
             key={`chat-msg-${i}`}
-            disableGutters={false}
-            className={message.isUser ? "user" : "system"}
-            classes={{ root: styles.root }}
-            style={{
-              paddingRight: 16,
-              maxWidth: 750,
-              marginRight: message.feedbackId ? 10 : 0,
-            }}
-          >
-            <ReactMarkdown
-              source={message.text}
-              renderers={{ link: LinkRenderer }}
-            />
-            {message.feedbackId ? (
-              <div
-                id="feedback-btn"
-                className={styles.icon}
-                onClick={handleFeedbackClick}
-              >
-                <ListItemAvatar>
-                  <Avatar
-                    className={[
-                      styles.avatar,
-                      message.feedback === Feedback.GOOD
-                        ? styles.GOOD
-                        : message.feedback === Feedback.BAD
-                        ? styles.BAD
-                        : undefined,
-                    ].join(" ")}
-                  >
-                    {message.feedback === Feedback.GOOD ? (
-                      <ThumbUpIcon id="good" />
-                    ) : message.feedback === Feedback.BAD ? (
-                      <ThumbDownIcon id="bad" />
-                    ) : (
-                      <ThumbsUpDownIcon id="neutral" />
-                    )}
-                  </Avatar>
-                </ListItemAvatar>
-              </div>
-            ) : (
-              undefined
-            )}
-            <Popover
-              open={Boolean(anchorEl)}
-              anchorEl={anchorEl}
-              onClose={handleFeedbackClose}
-              anchorOrigin={{
-                vertical: "center",
-                horizontal: "center",
-              }}
-              transformOrigin={{
-                vertical: "center",
-                horizontal: "center",
-              }}
-              elevation={0}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <Typography>Did this answer your question?</Typography>
-                <div style={{ display: "flex", flexDirection: "row" }}>
-                  <div
-                    id="good-btn"
-                    onClick={() => {
-                      if (message.feedbackId) {
-                        handleSelectFeedback(message.feedbackId, Feedback.GOOD);
-                      }
-                    }}
-                  >
-                    <ListItemAvatar>
-                      <Avatar
-                        className={[styles.avatar, styles.GOOD].join(" ")}
-                      >
-                        <ThumbUpIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                  </div>
-                  <div
-                    id="neutral-btn"
-                    onClick={() => {
-                      if (message.feedbackId) {
-                        handleSelectFeedback(
-                          message.feedbackId,
-                          Feedback.NEUTRAL
-                        );
-                      }
-                    }}
-                  >
-                    <ListItemAvatar>
-                      <Avatar className={styles.avatar}>
-                        <ThumbsUpDownIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                  </div>
-                  <div
-                    id="bad-btn"
-                    onClick={() => {
-                      if (message.feedbackId) {
-                        handleSelectFeedback(message.feedbackId, Feedback.BAD);
-                      }
-                    }}
-                  >
-                    <ListItemAvatar>
-                      <Avatar className={[styles.avatar, styles.BAD].join(" ")}>
-                        <ThumbDownIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                  </div>
-                </div>
-              </div>
-            </Popover>
-          </ListItem>
+            message={message}
+            i={i}
+            styles={styles}
+            onSendFeedback={onSendFeedback}
+          />
         );
       })}
     </List>
