@@ -65,7 +65,7 @@ export const subtitleUrl = (
 };
 
 export async function fetchConfig(): Promise<AxiosResponse<Config>> {
-  return await axios.get<Config>(withPrefix("config"));
+  return await axios.get<Config>(process.env.CONFIG || withPrefix("config"));
 }
 
 export async function fetchMentorData(

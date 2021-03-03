@@ -39,6 +39,7 @@ import {
   MentorSelectReason,
   LoadStatus,
   MODE_VIDEO,
+  Mode,
 } from "./types";
 
 export const initialState: State = {
@@ -47,11 +48,11 @@ export const initialState: State = {
     cmi5Endpoint: process.env.CMI5_ENDPOINT || "/lrs/xapi",
     cmi5Fetch: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
     mentorsDefault: [],
-    modeDefault: MODE_VIDEO,
+    modeDefault: (process.env.MODE_DEFAULT as Mode) || MODE_VIDEO,
     urlGraphql: process.env.MENTOR_GRAPHQL_URL || "/graphql",
     urlClassifier: process.env.MENTOR_API_URL || "/classifier",
     urlVideo: process.env.MENTOR_VIDEO_URL || "/videos",
-    styleHeaderLogo: "",
+    styleHeaderLogo: process.env.HEADER_LOGO || "",
   },
   configLoadStatus: LoadStatus.NONE,
   curMentor: "", // id of selected mentor
