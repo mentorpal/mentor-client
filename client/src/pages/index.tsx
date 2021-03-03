@@ -36,6 +36,7 @@ const theme = createMuiTheme({
 const useStyles = makeStyles(theme => ({
   flexRoot: {
     height: "100vh",
+    minHeight: "-webkit-fill-available",
     display: "flex",
     flexFlow: "column nowrap",
     flexDirection: "column",
@@ -172,17 +173,17 @@ function IndexPage(props: {
           )}
           <Header />
         </div>
-        <div className={styles.flexExpandChild}>
-          {config.modeDefault === MODE_CHAT ? (
-            <Chat />
-          ) : (
-            <Video
-              height={videoHeight - headerHeight}
-              width={width}
-              playing={hasSessionUser()}
-            />
-          )}
-        </div>
+        {/* <div className={styles.flexExpandChild}> */}
+        {config.modeDefault === MODE_CHAT ? (
+          <Chat />
+        ) : (
+          <Video
+            height={videoHeight - headerHeight}
+            width={width}
+            playing={hasSessionUser()}
+          />
+        )}
+        {/* </div> */}
         <div className={styles.flexFixedChild}>
           <Input />
         </div>

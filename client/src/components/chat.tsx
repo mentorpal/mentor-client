@@ -256,8 +256,6 @@ function Chat(): JSX.Element {
     setMessages(messages);
   }
 
-  console.log(messages);
-
   return (
     <List id="chat-thread" className={styles.list} disablePadding={true}>
       {messages.map((message, i) => {
