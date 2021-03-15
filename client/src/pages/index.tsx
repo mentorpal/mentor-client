@@ -4,7 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { CircularProgress } from "@material-ui/core";
 import {
@@ -21,7 +21,7 @@ import Input from "components/input";
 import Video from "components/video";
 import VideoPanel from "components/video-panel";
 import { loadConfig, loadMentor, setGuestName } from "store/actions";
-import { Config, LoadStatus, MentorData, MODE_CHAT, State } from "store/types";
+import { Config, LoadStatus, MentorData, MentorType, State } from "store/types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
 
@@ -53,7 +53,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function IndexPage(props: {
-  search: { recommended?: string[]; mentor?: string; guest?: string };
+  search: {
+    recommended?: string[];
+    mentor?: string;
+    guest?: string;
+  };
 }): JSX.Element {
   const dispatch = useDispatch();
   const styles = useStyles();
@@ -61,22 +65,14 @@ function IndexPage(props: {
   const configLoadStatus = useSelector<State, LoadStatus>(
     state => state.configLoadStatus
   );
+  const guestName = useSelector<State, string>(state => state.guestName);
+  const curMentor = useSelector<State, string>(state => state.curMentor);
   const mentorsById = useSelector<State, Record<string, MentorData>>(
     state => state.mentorsById
   );
-  const guestName = useSelector<State, string>(state => state.guestName);
-  const [height, setHeight] = useState(0);
-  const [width, setWidth] = useState(0);
   const { recommended, mentor, guest } = props.search;
 
-  const hidePanel = Object.getOwnPropertyNames(mentorsById).length < 2;
-  const isMobile = width < 768;
-  const videoHeight = isMobile
-    ? height * 0.5
-    : Math.min(width * 0.5625, height * 0.7);
-  const headerHeight = hidePanel || config.modeDefault === MODE_CHAT ? 50 : 100;
-
-  function hasSessionUser() {
+  function hasSessionUser(): boolean {
     return Boolean(
       !config.cmi5Enabled ||
         (typeof window !== "undefined" && hasCmi(window.location.search)) ||
@@ -84,25 +80,24 @@ function IndexPage(props: {
     );
   }
 
-  function handleWindowResize() {
-    if (typeof window === "undefined") {
-      return;
-    }
-    setHeight(window.innerHeight);
-    setWidth(window.innerWidth);
+  function isConfigLoadComplete(s: LoadStatus): boolean {
+    return s === LoadStatus.LOADED || s === LoadStatus.LOAD_FAILED;
   }
 
-  function isConfigLoadComplete(s: LoadStatus) {
-    return s === LoadStatus.LOADED || s === LoadStatus.LOAD_FAILED;
+  function getChatType(): JSX.Element {
+    if (
+      Object.getOwnPropertyNames(mentorsById).length < 2 ||
+      mentorsById[curMentor].mentor.mentorType === MentorType.CHAT
+    ) {
+      return <Chat />;
+    }
+    return <Video playing={hasSessionUser()} />;
   }
 
   useEffect(() => {
     if (configLoadStatus === LoadStatus.NONE) {
       dispatch(loadConfig());
     }
-  }, [configLoadStatus]);
-
-  useEffect(() => {
     if (!isConfigLoadComplete(configLoadStatus)) {
       return;
     }
@@ -136,25 +131,7 @@ function IndexPage(props: {
     }
   }, [configLoadStatus, mentor, recommended, guest]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    // Media queries for layout
-    setHeight(window.innerHeight);
-    setWidth(window.innerWidth);
-    window.addEventListener("resize", handleWindowResize);
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
-  }, []);
-
-  if (
-    !isConfigLoadComplete(configLoadStatus) ||
-    mentorsById === {} ||
-    height === 0 ||
-    width === 0
-  ) {
+  if (!isConfigLoadComplete(configLoadStatus)) {
     return (
       <div>
         <CircularProgress id="loading" />
@@ -166,24 +143,10 @@ function IndexPage(props: {
     <MuiThemeProvider theme={theme}>
       <div className={styles.flexRoot}>
         <div className={styles.flexFixedChild}>
-          {hidePanel || config.modeDefault === MODE_CHAT ? (
-            undefined
-          ) : (
-            <VideoPanel isMobile={isMobile} />
-          )}
+          <VideoPanel />
           <Header />
         </div>
-        {/* <div className={styles.flexExpandChild}> */}
-        {config.modeDefault === MODE_CHAT ? (
-          <Chat />
-        ) : (
-          <Video
-            height={videoHeight - headerHeight}
-            width={width}
-            playing={hasSessionUser()}
-          />
-        )}
-        {/* </div> */}
+        {getChatType()}
         <div className={styles.flexFixedChild}>
           <Input />
         </div>

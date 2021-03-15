@@ -24,7 +24,6 @@ app.get("/chat/config", (req, res) => {
     cmi5Endpoint: process.env.CMI5_ENDPOINT || "/lrs/xapi",
     cmit5Fetch: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
     mentorsDefault: (process.env.DEFAULT_MENTORS || "").split(","),
-    modeDefault: process.env.MODE_DEFAULT || "chat",
     styleHeaderLogo: process.env.HEADER_LOGO || "",
     urlGraphql: process.env.MENTOR_GRAPHQL_URL || "/graphql",
     urlClassifier: process.env.MENTOR_API_URL || "/classifier",

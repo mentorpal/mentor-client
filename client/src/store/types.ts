@@ -5,6 +5,67 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 
+interface SubjectData {
+  id: string;
+  name: string;
+  topics: TopicData[];
+  questions: QuestionData[];
+}
+
+export interface TopicData {
+  id: string;
+  name: string;
+  questions: QuestionData[];
+}
+
+interface QuestionData {
+  id: string;
+  question_text: string;
+}
+
+export interface MentorApiData {
+  id: string;
+  name: string;
+  firstName: string;
+  title: string;
+  mentorType: string;
+  subjects_by_id: SubjectData[];
+  topics_by_id: TopicData[];
+  questions_by_id: {
+    [question_id: string]: {
+      question_text: string;
+    };
+  };
+  utterances_by_type: {
+    [utterance_type: string]: string[][];
+  };
+}
+
+export interface QuestionApiData {
+  query: string;
+  answer_id: string;
+  answer_text: string;
+  confidence: number;
+  classifier: string;
+  feedback_id: string;
+}
+
+export interface Config {
+  cmi5Enabled: boolean;
+  cmi5Endpoint: string;
+  cmi5Fetch: string;
+  mentorsDefault: string[];
+  urlClassifier: string;
+  urlGraphql: string;
+  urlVideo: string;
+  styleHeaderLogo: string;
+}
+
+export enum MentorType {
+  VIDEO = "VIDEO",
+  CHAT = "CHAT",
+}
+
 export enum Feedback {
   GOOD = "GOOD",
   BAD = "BAD",
@@ -16,22 +77,6 @@ export enum LoadStatus {
   LOAD_IN_PROGRESS = "LOAD_IN_PROGRESS",
   LOADED = "LOADED",
   LOAD_FAILED = "LOAD_FAILED",
-}
-
-export const MODE_CHAT = "chat";
-export const MODE_VIDEO = "video";
-export type Mode = typeof MODE_CHAT | typeof MODE_VIDEO;
-
-export interface Config {
-  cmi5Enabled: boolean;
-  cmi5Endpoint: string;
-  cmi5Fetch: string;
-  mentorsDefault: string[];
-  modeDefault: Mode;
-  urlClassifier: string;
-  urlGraphql: string;
-  urlVideo: string;
-  styleHeaderLogo: string;
 }
 
 export enum MentorQuestionStatus {
@@ -71,52 +116,39 @@ export enum ResultStatus {
 
 export function newMentorData(id: string): MentorData {
   return {
+    mentor: {
+      id: id,
+      name: "",
+      firstName: "",
+      title: "",
+      mentorType: "",
+      subjects_by_id: [],
+      topics_by_id: [],
+      questions_by_id: {},
+      utterances_by_type: {},
+    },
+    question_history: [],
+    recommended_questions: [],
     answerDuration: Number.NaN,
-    id: id,
-    name: "",
-    questions_by_id: {},
-    short_name: "",
     status: MentorQuestionStatus.NONE,
-    title: "",
-    topics_by_id: {},
-    topic_questions: {},
-    utterances_by_type: {},
   };
 }
 
 export interface MentorData {
+  mentor: MentorApiData;
+  status: MentorQuestionStatus;
+  answerDuration: number;
+  question_history: string[];
+  recommended_questions: string[];
   answer_id?: string;
   answer_text?: string;
-  answerDuration: number;
   answerReceivedAt?: Date;
   answerFeedbackId?: string;
   classifier?: string;
   confidence?: number;
-  id: string;
   is_off_topic?: boolean;
-  name: string;
   question?: string;
-  questions_by_id: {
-    [question_id: string]: {
-      question_text: string;
-    };
-  };
   response_time?: number;
-  short_name: string;
-  status: MentorQuestionStatus;
-  title: string;
-  topics_by_id: {
-    [topic_id: string]: {
-      name: string;
-      questions: string[];
-    };
-  };
-  topic_questions: {
-    [topic_id: string]: string[];
-  };
-  utterances_by_type: {
-    [utterance_type: string]: string[][];
-  };
 }
 
 export interface MentorDataResult {

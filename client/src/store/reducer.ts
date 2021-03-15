@@ -38,8 +38,6 @@ import {
   State,
   MentorSelectReason,
   LoadStatus,
-  MODE_VIDEO,
-  Mode,
 } from "./types";
 
 export const initialState: State = {
@@ -48,7 +46,6 @@ export const initialState: State = {
     cmi5Endpoint: process.env.CMI5_ENDPOINT || "/lrs/xapi",
     cmi5Fetch: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
     mentorsDefault: [],
-    modeDefault: (process.env.MODE_DEFAULT as Mode) || MODE_VIDEO,
     urlGraphql: process.env.MENTOR_GRAPHQL_URL || "/graphql",
     urlClassifier: process.env.MENTOR_API_URL || "/classifier",
     urlVideo: process.env.MENTOR_VIDEO_URL || "/videos",
@@ -113,12 +110,12 @@ function onMentorDataResult(
     const mentor = action.payload.data as MentorData;
     return {
       ...state,
-      curMentor: mentor.id, // TODO: why is the current mentor any random last that loaded?
+      curMentor: mentor.mentor.id, // TODO: why is the current mentor any random last that loaded?
       isIdle: false,
       mentorsById: {
         ...state.mentorsById,
-        [mentor.id]: {
-          ...state.mentorsById[mentor.id],
+        [mentor.mentor.id]: {
+          ...state.mentorsById[mentor.mentor.id],
           ...mentor,
           status: MentorQuestionStatus.READY,
         },
@@ -221,8 +218,7 @@ export default function reducer(state = initialState, action: any): State {
       return onQuestionSent(state, action as QuestionSentAction);
     case QUESTION_ANSWERED: {
       const response = action.mentor as QuestionResponse;
-      const history =
-        state.mentorsById[response.mentor].topic_questions.History || [];
+      const history = state.mentorsById[response.mentor].question_history || [];
       if (!history.includes(response.question)) {
         history.push(response.question);
       }
@@ -238,10 +234,7 @@ export default function reducer(state = initialState, action: any): State {
         question: response.question,
         response_time: response.answerResponseTimeSecs,
         status: MentorQuestionStatus.READY,
-        topic_questions: {
-          ...state.mentorsById[response.mentor].topic_questions,
-          History: history,
-        },
+        question_history: history,
       };
       return {
         ...state,

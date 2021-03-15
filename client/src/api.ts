@@ -6,62 +6,22 @@ The full terms of this copyright and license should always be found in the root 
 */
 import axios, { AxiosResponse } from "axios";
 import { withPrefix } from "gatsby";
-import { Config } from "store/types";
-
-export interface MentorApiData {
-  id: string;
-  name: string;
-  questions_by_id: {
-    [question_id: string]: {
-      question_text: string;
-    };
-  };
-  short_name: string;
-  title: string;
-  topics_by_id: {
-    [topic_id: string]: {
-      name: string;
-      questions: string[];
-    };
-  };
-  utterances_by_type: {
-    [utterance_type: string]: string[][];
-  };
-}
-
-export interface QuestionApiData {
-  query: string;
-  answer_id: string;
-  answer_text: string;
-  confidence: number;
-  classifier: string;
-  feedback_id: string;
-}
+import { Config, MentorApiData, QuestionApiData } from "store/types";
 
 export const videoUrl = (
-  mentor: string,
+  mentorId: string,
   answerId: string,
-  format: string,
   config: Config
 ): string => {
-  return `${config.urlVideo}/mentors/${mentor}/${format}/${answerId}.mp4`;
+  return `${config.urlVideo}/mentors/${mentorId}/${answerId}.mp4`;
 };
 
-export const idleUrl = (
-  mentor: string,
-  format: string,
-  config: Config
-): string => {
-  return `${config.urlVideo}/mentors/${mentor}/${format}/idle.mp4`;
-};
-
-// TODO: don't pass mentor here, pass mentorId and answerId
 export const subtitleUrl = (
-  mentor: string,
+  mentorId: string,
   answerId: string,
   config: Config
 ): string => {
-  return `${config.urlClassifier}/mentors/${mentor}/tracks/${answerId}.vtt`;
+  return `${config.urlClassifier}/mentors/${mentorId}/tracks/${answerId}.vtt`;
 };
 
 export async function fetchConfig(): Promise<AxiosResponse<Config>> {

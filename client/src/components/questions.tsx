@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import ScrollingQuestions from "components/scrolling-questions";
 import { State, MentorData } from "store/types";
+import withLocation from "wrap-with-location";
 
 const theme = createMuiTheme({
   palette: {
@@ -18,7 +19,12 @@ const theme = createMuiTheme({
   typography: { useNextVariants: true },
 });
 
-function Questions(props: { onSelected: (question: string) => void }) {
+function Questions(props: {
+  onSelected: (question: string) => void;
+  search: {
+    subject?: string;
+  };
+}) {
   const mentor = useSelector<State, MentorData>(
     state => state.mentorsById[state.curMentor]
   );
@@ -28,18 +34,30 @@ function Questions(props: { onSelected: (question: string) => void }) {
   );
   const { onSelected } = props;
 
-  if (!(mentor && curTopic && mentor.topic_questions)) {
+  if (!(mentor && curTopic)) {
     return <div id="questions" />;
   }
 
-  const questions = mentor.topic_questions[curTopic] || [];
-  const recommended = mentor.topic_questions.Recommended || [];
+  let questions: string[] = [];
+  if (curTopic === "history") {
+    questions = mentor.question_history;
+  } else if (curTopic === "recommended") {
+    questions = mentor.recommended_questions;
+  } else {
+    const topic = props.search.subject
+      ? mentor.mentor.subjects_by_id
+          .find(s => s.id === props.search.subject)
+          ?.topics.find(t => t.id === curTopic)
+      : mentor.mentor.topics_by_id.find(t => t.id === curTopic);
+    questions.push(...(topic?.questions.map(q => q.question_text) || []));
+  }
+  const recommended = mentor.recommended_questions;
 
   const ordered_questions = questions.slice();
   if (curTopic === "History") {
     ordered_questions.reverse();
   } else {
-    ordered_questions.sort((a, b) => {
+    ordered_questions.sort((a: string, b: string) => {
       if (recommended.includes(a) && recommended.includes(b)) {
         return ordered_questions.indexOf(a) - ordered_questions.indexOf(b);
       }
@@ -66,4 +84,4 @@ function Questions(props: { onSelected: (question: string) => void }) {
   );
 }
 
-export default Questions;
+export default withLocation(Questions);

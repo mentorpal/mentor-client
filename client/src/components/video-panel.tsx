@@ -15,62 +15,14 @@ import {
   MentorData,
   MentorQuestionStatus,
   MentorSelectReason,
+  MentorType,
   State,
 } from "store/types";
 
-const VideoPanel = (props: { isMobile: boolean }) => {
-  const { isMobile } = props;
-  const dispatch = useDispatch();
-  const mentor = useSelector<State, string>(state => state.curMentor);
-  const mentors = useSelector<State, Record<string, MentorData>>(
-    state => state.mentorsById
-  );
+function StarIcon(props: { mentorId: string }): JSX.Element {
+  const { mentorId } = props;
   const mentorFaved = useSelector<State, string>(state => state.mentorFaved);
-  const isIdle = useSelector<State, boolean>(state => state.isIdle);
-  if (!mentor) {
-    return <div />;
-  }
-  const height = 50;
-  const width = isMobile ? height / 0.895 : height / 0.5625;
-
-  const onClick = (m: MentorData) => {
-    if (m.is_off_topic || m.status === MentorQuestionStatus.ERROR) {
-      return;
-    }
-    if (!(isIdle && mentorFaved === m.id)) {
-      dispatch(faveMentor(m.id));
-    }
-    dispatch(selectMentor(m.id, MentorSelectReason.USER_SELECT));
-  };
-
-  return (
-    <div id="video-panel" className="carousel">
-      {Object.keys(mentors).map((id, i) => (
-        <div
-          id={`video-thumbnail-${id}`}
-          className={`slide video-slide ${id === mentor ? "selected" : ""}`}
-          key={`${id}-${i}`}
-          onClick={() => onClick(mentors[id])}
-        >
-          <VideoThumbnail
-            mentor={mentors[id]}
-            isMobile={isMobile}
-            height={height}
-            width={width}
-          />
-          <LoadingSpinner mentor={id} height={height} width={width} />
-          <MessageStatus mentor={id} />
-          <StarIcon mentor={mentors[id]} />
-        </div>
-      ))}
-    </div>
-  );
-};
-
-const StarIcon = (props: { mentor: MentorData }) => {
-  const { mentor } = props;
-  const mentorFaved = useSelector<State, string>(state => state.mentorFaved);
-  if (mentorFaved === mentor.id) {
+  if (mentorFaved === mentorId) {
     return (
       <Star
         className="star-icon"
@@ -80,6 +32,58 @@ const StarIcon = (props: { mentor: MentorData }) => {
     );
   }
   return <div />;
-};
+}
+
+function VideoPanel(): JSX.Element {
+  const dispatch = useDispatch();
+  const mentor = useSelector<State, MentorData>(
+    state => state.mentorsById[state.curMentor]
+  );
+  const mentorsById = useSelector<State, Record<string, MentorData>>(
+    state => state.mentorsById
+  );
+  const mentorFaved = useSelector<State, string>(state => state.mentorFaved);
+  const isIdle = useSelector<State, boolean>(state => state.isIdle);
+  if (!mentor) {
+    return <div />;
+  }
+
+  const onClick = (m: MentorData) => {
+    if (m.is_off_topic || m.status === MentorQuestionStatus.ERROR) {
+      return;
+    }
+    if (!(isIdle && mentorFaved === m.mentor.id)) {
+      dispatch(faveMentor(m.mentor.id));
+    }
+    dispatch(selectMentor(m.mentor.id, MentorSelectReason.USER_SELECT));
+  };
+
+  if (
+    Object.getOwnPropertyNames(mentorsById).length < 2 ||
+    mentor.mentor.mentorType === MentorType.CHAT
+  ) {
+    return <div />;
+  }
+
+  return (
+    <div id="video-panel" className="carousel">
+      {Object.keys(mentorsById).map((id, i) => (
+        <div
+          id={`video-thumbnail-${id}`}
+          className={`slide video-slide ${
+            id === mentor.mentor.id ? "selected" : ""
+          }`}
+          key={`${id}-${i}`}
+          onClick={() => onClick(mentorsById[id])}
+        >
+          <VideoThumbnail mentor={mentorsById[id]} />
+          <LoadingSpinner mentor={id} />
+          <MessageStatus mentor={id} />
+          <StarIcon mentorId={id} />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default VideoPanel;

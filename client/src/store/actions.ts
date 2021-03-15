@@ -8,7 +8,7 @@ The full terms of this copyright and license should always be found in the root 
 import { ActionCreator, AnyAction, Dispatch } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import Cmi5 from "@xapi/cmi5";
-import { fetchConfig, fetchMentorData, MentorApiData, queryMentor } from "api";
+import { fetchConfig, fetchMentorData, queryMentor } from "api";
 import {
   MentorDataResult,
   MentorQuestionStatus,
@@ -23,6 +23,7 @@ import {
   XapiResultExt,
   XapiResultAnswerStatusByMentorId,
   Config,
+  MentorApiData,
 } from "./types";
 
 const RESPONSE_CUTOFF = -100;
@@ -177,7 +178,7 @@ function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
           answerId: state.mentorsById[cur].answer_id || "",
           confidence: Number(state.mentorsById[cur].confidence),
           isOffTopic: Boolean(state.mentorsById[cur].is_off_topic),
-          mentor: state.mentorsById[cur].id,
+          mentor: state.mentorsById[cur].mentor.id,
           status: state.mentorsById[cur].status,
           responseTimeSecs: Number(mentorData.response_time) / 1000,
         };
@@ -186,10 +187,10 @@ function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
       {}
     ),
     answerText: mentorData.answer_text || "",
-    mentorCur: mentorData.id,
+    mentorCur: mentorData.mentor.id,
     mentorCurReason: state.curMentorReason,
     mentorCurStatus: mentorData.status,
-    mentorCurIsFav: state.mentorFaved === mentorData.id,
+    mentorCurIsFav: state.mentorFaved === mentorData.mentor.id,
     mentorFaved: state.mentorFaved,
     mentorNext: state.mentorNext,
     mentorTopicDisplayed: state.curTopic,
@@ -223,12 +224,12 @@ export const loadMentor: ActionCreator<ThunkAction<
     const mentorList = Array.isArray(mentors)
       ? (mentors as Array<string>)
       : [`${mentors}`];
-    const recommendedQuestionList: string[] | undefined =
+    const recommendedQuestionList: string[] =
       Array.isArray(recommendedQuestions) && recommendedQuestions.length > 0
         ? (recommendedQuestions as string[])
         : typeof recommendedQuestions === "string"
         ? [recommendedQuestions as string]
-        : undefined;
+        : [];
     dispatch<MentorDataRequestedAction>({
       type: MENTOR_DATA_REQUESTED,
       payload: mentorList,
@@ -240,30 +241,13 @@ export const loadMentor: ActionCreator<ThunkAction<
             .then(result => {
               if (result.status == 200) {
                 const apiData = result.data;
-                Object.keys(apiData.topics_by_id).forEach(k => {
-                  if (apiData.topics_by_id[k].questions.length < 1) {
-                    delete apiData.topics_by_id[k];
-                  }
-                });
                 const mentorData: MentorData = {
-                  ...apiData,
+                  mentor: apiData,
+                  question_history: [],
+                  recommended_questions: recommendedQuestionList,
+                  status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
                   answer_id: findIntro(apiData),
                   answerDuration: Number.NaN,
-                  status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
-                  topic_questions: Object.getOwnPropertyNames(
-                    apiData.topics_by_id
-                  ).reduce<{ [typeName: string]: string[] }>(
-                    (topicQs, topicId) => {
-                      const topicData = apiData.topics_by_id[topicId];
-                      topicQs[topicData.name] = topicData.questions.map(
-                        t => apiData.questions_by_id[t].question_text
-                      );
-                      return topicQs;
-                    },
-                    Array.isArray(recommendedQuestionList)
-                      ? { Recommended: recommendedQuestionList }
-                      : {}
-                  ),
                 };
                 dispatch<MentorDataResultAction>({
                   type: MENTOR_DATA_RESULT,
@@ -299,9 +283,6 @@ export const loadMentor: ActionCreator<ThunkAction<
     );
     if (firstMentor) {
       dispatch(selectMentor(firstMentor, MentorSelectReason.NEXT_READY));
-      dispatch(
-        selectTopic(Object.keys(mentorsById[firstMentor].topic_questions)[0])
-      );
     }
   } catch (err) {
     console.error(`Failed to load mentor data for id ${mentors}`, err);
@@ -509,7 +490,7 @@ export const answerFinished = () => (
   Object.keys(mentors).forEach(id => {
     responses.push({
       confidence: mentors[id].confidence || -1.0,
-      id: mentors[id].id,
+      id: mentors[id].mentor.id,
       is_off_topic: mentors[id].is_off_topic || false,
       status: mentors[id].status,
     });

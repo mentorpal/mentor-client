@@ -224,7 +224,7 @@ function Chat(): JSX.Element {
         updated = true;
         _messages.push({
           isUser: false,
-          text: mentor.utterances_by_type["_INTRO_"][0][1],
+          text: mentor.mentor.utterances_by_type["_INTRO_"][0][1],
         });
       }
       if (lastAnswerAt !== mentor.answerReceivedAt) {

@@ -15,6 +15,10 @@ function Header(): JSX.Element {
   );
   const config = useSelector<State, Config>(state => state.config);
 
+  if (!mentor) {
+    return <div />;
+  }
+
   if (config.styleHeaderLogo) {
     return (
       <div
@@ -32,7 +36,9 @@ function Header(): JSX.Element {
         />
         <Hidden only="xs">
           <Typography>
-            {mentor ? `${mentor.name}: ${mentor.title}` : undefined}
+            {mentor
+              ? `${mentor.mentor.name}: ${mentor.mentor.title}`
+              : undefined}
           </Typography>
         </Hidden>
       </div>
@@ -50,7 +56,7 @@ function Header(): JSX.Element {
       }}
     >
       <Typography>
-        {mentor ? `${mentor.name}: ${mentor.title}` : undefined}
+        {mentor ? `${mentor.mentor.name}: ${mentor.mentor.title}` : undefined}
       </Typography>
     </div>
   );
