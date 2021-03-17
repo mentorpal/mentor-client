@@ -7,11 +7,7 @@ The full terms of this copyright and license should always be found in the root 
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { CircularProgress } from "@material-ui/core";
-import {
-  MuiThemeProvider,
-  createMuiTheme,
-  makeStyles,
-} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Cmi5 from "@xapi/cmi5";
 import { hasCmi } from "cmiutils";
 import Chat from "components/chat";
@@ -29,14 +25,6 @@ import {
 import { Config, LoadStatus, MentorData, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
-
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: "#1b6a9c",
-    },
-  },
-});
 
 const useStyles = makeStyles(theme => ({
   flexRoot: {
@@ -138,24 +126,22 @@ function IndexPage(props: {
   }
 
   return (
-    <MuiThemeProvider theme={theme}>
-      <div className={styles.flexRoot}>
-        <div className={styles.flexFixedChild}>
-          <VideoPanel />
-          <Header />
-        </div>
-        {Object.keys(mentorsById).length < 2 ||
-        mentorsById[curMentor].mentor.mentorType === MentorType.CHAT ? (
-          <Chat />
-        ) : (
-          <Video playing={hasSessionUser()} />
-        )}
-        <div className={styles.flexFixedChild}>
-          <Input />
-        </div>
-        {!hasSessionUser() ? <GuestPrompt /> : undefined}
+    <div className={styles.flexRoot}>
+      <div className={styles.flexFixedChild}>
+        <VideoPanel />
+        <Header />
       </div>
-    </MuiThemeProvider>
+      {Object.keys(mentorsById).length < 2 ||
+      mentorsById[curMentor].mentor.mentorType === MentorType.CHAT ? (
+        <Chat />
+      ) : (
+        <Video playing={hasSessionUser()} />
+      )}
+      <div className={styles.flexFixedChild}>
+        <Input />
+      </div>
+      {!hasSessionUser() ? <GuestPrompt /> : undefined}
+    </div>
   );
 }
 
