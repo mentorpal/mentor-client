@@ -4,8 +4,10 @@ module.exports = {
     title: `Chat`,
     description: ``,
     author: `@gatsbyjs`,
+    siteUrl: `https://uscquestions.mentorpal.org/chat`,
   },
   plugins: [
+    `gatsby-plugin-sitemap`,
     `gatsby-plugin-react-helmet`,
     `gatsby-transformer-sharp`,
     `gatsby-transformer-csv`,
