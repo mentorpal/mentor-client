@@ -4,13 +4,22 @@ module.exports = {
     title: `Chat`,
     description: ``,
     author: `@gatsbyjs`,
+    siteUrl: `https://uscquestions.mentorpal.org/chat`,
   },
   plugins: [
+    `gatsby-plugin-sitemap`,
     `gatsby-plugin-react-helmet`,
     `gatsby-transformer-sharp`,
     `gatsby-transformer-csv`,
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-sharp`,
+    {
+      resolve: "gatsby-plugin-htaccess",
+      options: {
+        https: true,
+        www: true,
+      },
+    },
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
