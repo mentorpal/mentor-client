@@ -10,11 +10,11 @@ import { Button, Paper } from "@material-ui/core";
 import { History, Whatshot } from "@material-ui/icons";
 import { normalizeString } from "utils";
 import { selectTopic } from "store/actions";
-import { MentorData, State, TopicData } from "store/types";
+import { MentorData, State } from "types";
 import withLocation from "wrap-with-location";
 
 function Topics(args: {
-  onSelected: (topic: string) => void;
+  onSelected: (question: string) => void;
   search: {
     subject?: string;
   };
@@ -29,45 +29,15 @@ function Topics(args: {
     state => state.questionsAsked
   );
 
-  if (!mentor) {
-    return <div />;
-  }
-
-  const topics: TopicData[] = [];
-  if (mentor.recommended_questions.length > 0) {
-    topics.push({
-      id: "recommended",
-      name: "Recommended",
-      questions: [],
-    });
-  }
-  if (args.search.subject) {
-    topics.push(
-      ...(mentor.mentor.subjects_by_id.find(s => s.id === args.search.subject)
-        ?.topics || [])
-    );
-  } else {
-    topics.push(...mentor.mentor.topics_by_id);
-  }
-  if (mentor.question_history.length > 0) {
-    topics.push({
-      id: "history",
-      name: "History",
-      questions: [],
-    });
-  }
-
-  function onTopicSelected(topic: string) {
+  async function onTopicSelected(topic: string) {
     if (curTopic === topic) {
       dispatch(selectTopic(""));
       return;
     }
     dispatch(selectTopic(topic));
-    const top_question = topics
-      .find(t => t.id === topic)
-      ?.questions.find(
-        q => !questionsAsked.includes(normalizeString(q.question_text))
-      )?.question_text;
+    const top_question = mentor.topic_questions
+      .find(tq => tq.topic === topic)
+      ?.questions.find(q => !questionsAsked.includes(normalizeString(q)));
     if (top_question) {
       onSelected(top_question);
     }
@@ -76,26 +46,26 @@ function Topics(args: {
   return (
     <Paper elevation={2} square>
       <div id="topics" className="carousel">
-        {topics.map((topic, i) => {
+        {mentor.topic_questions.map((tq, i) => {
           return (
             <div id={`topic-${i}`} className="slide topic-slide" key={i}>
               <Button
-                className={curTopic === topic.id ? "topic-selected" : ""}
+                className={curTopic === tq.topic ? "topic-selected" : ""}
                 variant="contained"
-                color={curTopic === topic.id ? "primary" : "default"}
-                onClick={() => onTopicSelected(topic.id)}
+                color={curTopic === tq.topic ? "primary" : "default"}
+                onClick={() => onTopicSelected(tq.topic)}
               >
-                {topic.id === "history" ? (
+                {tq.topic === "History" ? (
                   <History style={{ marginRight: "5px" }} />
                 ) : (
                   undefined
                 )}
-                {topic.id === "recommended" ? (
+                {tq.topic === "Recommended" ? (
                   <Whatshot style={{ marginRight: "5px" }} />
                 ) : (
                   undefined
                 )}
-                {topic.name}
+                {tq.topic}
               </Button>
             </div>
           );

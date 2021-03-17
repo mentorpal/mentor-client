@@ -6,43 +6,28 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useState } from "react";
 import ReactPlayer from "react-player";
-import { videoUrl } from "api";
-import { Config, MentorData, MentorQuestionStatus, State } from "store/types";
+import { idleUrl } from "api";
+import { Config, MentorData, MentorQuestionStatus, State } from "types";
 import { useSelector } from "react-redux";
 
-function findMentorIdleId(mentor: MentorData) {
-  try {
-    return mentor.mentor.utterances_by_type["_IDLE_"][0][0];
-  } catch (err) {
-    return undefined;
-  }
-}
-
-function VideoThumbnail(props: { mentor: MentorData }) {
-  const { mentor } = props;
+function VideoThumbnail(props: { mentor: string }) {
   const [isPlaying, setPlaying] = useState(true);
   const config = useSelector<State, Config>(s => s.config);
+  const mentorsById = useSelector<State, Record<string, MentorData>>(
+    state => state.mentorsById
+  );
+
+  const mentor = mentorsById[props.mentor];
   const isDisabled =
     mentor.is_off_topic || mentor.status === MentorQuestionStatus.ERROR;
-
-  function onStart() {
-    setPlaying(false);
-  }
-
-  const idleVideoId = findMentorIdleId(mentor);
-  const url = videoUrl(
-    mentor.mentor.id,
-    idleVideoId ? idleVideoId : "idle",
-    config
-  );
 
   return (
     <ReactPlayer
       style={{ opacity: isDisabled ? "0.25" : "1", backgroundColor: "black" }}
-      url={url}
+      url={idleUrl(mentor.mentor, config)}
       height={50}
       width={100}
-      onStart={onStart}
+      onStart={() => setPlaying(false)}
       playing={isPlaying}
       volume={0.0}
       muted

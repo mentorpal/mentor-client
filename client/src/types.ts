@@ -5,40 +5,31 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 
-interface SubjectData {
-  id: string;
-  name: string;
-  topics: TopicData[];
-  questions: QuestionData[];
-}
-
-export interface TopicData {
-  id: string;
-  name: string;
-  questions: QuestionData[];
-}
-
-interface QuestionData {
-  id: string;
-  question_text: string;
-}
-
-export interface MentorApiData {
-  id: string;
+export interface Mentor {
+  _id: string;
   name: string;
   firstName: string;
   title: string;
-  mentorType: string;
-  subjects_by_id: SubjectData[];
-  topics_by_id: TopicData[];
-  questions_by_id: {
-    [question_id: string]: {
-      question_text: string;
-    };
-  };
-  utterances_by_type: {
-    [utterance_type: string]: string[][];
-  };
+  mentorType: MentorType;
+  topics: Topic[];
+  answers: Answer[];
+  utterances: Answer[];
+}
+
+export interface Topic {
+  _id: string;
+  name: string;
+}
+
+export interface Answer {
+  _id: string;
+  transcript: string;
+  question: Question;
+}
+
+export interface Question {
+  question: string;
+  name: string;
 }
 
 export interface QuestionApiData {
@@ -59,6 +50,27 @@ export interface Config {
   urlGraphql: string;
   urlVideo: string;
   styleHeaderLogo: string;
+}
+
+export enum QuestionType {
+  UTTERANCE = "UTTERANCE",
+  QUESTION = "QUESTION",
+}
+
+export enum Status {
+  INCOMPLETE = "INCOMPLETE",
+  COMPLETE = "COMPLETE",
+}
+
+export enum UtteranceName {
+  IDLE = "_IDLE_",
+  INTRO = "_INTRO_",
+  OFF_TOPIC = "_OFF_TOPIC_",
+  PROMPT = "_PROMPT_",
+  FEEDBACK = "_FEEDBACK_",
+  REPEAT = "_REPEAT_",
+  REPEAT_BUMP = "_REPEAT_BUMP_",
+  PROFANIY = "_PROFANITY_",
 }
 
 export enum MentorType {
@@ -102,11 +114,6 @@ export enum MentorSelectReason {
   USER_SELECT = "USER_SELECT",
 }
 
-export interface MentorSelection {
-  id: string;
-  reason: MentorSelectReason;
-}
-
 export enum ResultStatus {
   NONE = "NONE",
   IN_PROGRESS = "IN_PROGRESS",
@@ -114,32 +121,22 @@ export enum ResultStatus {
   FAILED = "FAILED",
 }
 
-export function newMentorData(id: string): MentorData {
-  return {
-    mentor: {
-      id: id,
-      name: "",
-      firstName: "",
-      title: "",
-      mentorType: "",
-      subjects_by_id: [],
-      topics_by_id: [],
-      questions_by_id: {},
-      utterances_by_type: {},
-    },
-    question_history: [],
-    recommended_questions: [],
-    answerDuration: Number.NaN,
-    status: MentorQuestionStatus.NONE,
-  };
+export interface MentorSelection {
+  id: string;
+  reason: MentorSelectReason;
+}
+
+export interface TopicQuestions {
+  topic: string;
+  questions: string[];
 }
 
 export interface MentorData {
-  mentor: MentorApiData;
+  mentor: Mentor;
+  topic_questions: TopicQuestions[];
   status: MentorQuestionStatus;
   answerDuration: number;
-  question_history: string[];
-  recommended_questions: string[];
+
   answer_id?: string;
   answer_text?: string;
   answerReceivedAt?: Date;
@@ -173,8 +170,9 @@ export interface State {
   isIdle: boolean;
   mentorsById: Record<string, MentorData>;
   mentorNext: string; // id of the next mentor to speak after the current finishes
-  questionsAsked: string[];
   guestName: string;
+  questionsAsked: string[];
+  recommendedQuestions: string[];
 }
 
 export interface QuestionResponse {

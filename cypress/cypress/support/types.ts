@@ -4,28 +4,56 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add("login", (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+export interface Mentor {
+  _id: string;
+  name: string;
+  firstName: string;
+  title: string;
+  mentorType: MentorType;
+  topics: Topic[];
+  answers: Answer[];
+  utterances: Answer[];
+}
+
+export interface Topic {
+  _id: string;
+  name: string;
+}
+
+export interface Answer {
+  _id: string;
+  transcript: string;
+  question: Question;
+}
+
+export interface Question {
+  question: string;
+  name: string;
+}
+
+export enum MentorType {
+  VIDEO = "VIDEO",
+  CHAT = "CHAT",
+}
+
+export enum QuestionType {
+  UTTERANCE = "UTTERANCE",
+  QUESTION = "QUESTION",
+}
+
+export enum Status {
+  INCOMPLETE = "INCOMPLETE",
+  COMPLETE = "COMPLETE",
+}
+
+export enum UtteranceName {
+  IDLE = "_IDLE_",
+  INTRO = "_INTRO_",
+  OFF_TOPIC = "_OFF_TOPIC_",
+  PROMPT = "_PROMPT_",
+  FEEDBACK = "_FEEDBACK_",
+  REPEAT = "_REPEAT_",
+  REPEAT_BUMP = "_REPEAT_BUMP_",
+  PROFANIY = "_PROFANITY_",
+}

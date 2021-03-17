@@ -17,52 +17,34 @@ import {
   MentorSelectReason,
   MentorType,
   State,
-} from "store/types";
-
-function StarIcon(props: { mentorId: string }): JSX.Element {
-  const { mentorId } = props;
-  const mentorFaved = useSelector<State, string>(state => state.mentorFaved);
-  if (mentorFaved === mentorId) {
-    return (
-      <Star
-        className="star-icon"
-        fontSize="small"
-        style={{ color: "yellow" }}
-      />
-    );
-  }
-  return <div />;
-}
+} from "types";
 
 function VideoPanel(): JSX.Element {
   const dispatch = useDispatch();
-  const mentor = useSelector<State, MentorData>(
-    state => state.mentorsById[state.curMentor]
-  );
+  const mentor = useSelector<State, string>(state => state.curMentor);
   const mentorsById = useSelector<State, Record<string, MentorData>>(
     state => state.mentorsById
   );
   const mentorFaved = useSelector<State, string>(state => state.mentorFaved);
   const isIdle = useSelector<State, boolean>(state => state.isIdle);
-  if (!mentor) {
+
+  if (
+    !mentor ||
+    Object.getOwnPropertyNames(mentorsById).length < 2 ||
+    mentorsById[mentor].mentor?.mentorType === MentorType.CHAT
+  ) {
     return <div />;
   }
 
-  const onClick = (m: MentorData) => {
+  function onClick(mId: string) {
+    const m = mentorsById[mId];
     if (m.is_off_topic || m.status === MentorQuestionStatus.ERROR) {
       return;
     }
-    if (!(isIdle && mentorFaved === m.mentor.id)) {
-      dispatch(faveMentor(m.mentor.id));
+    if (!(isIdle && mentorFaved === mId)) {
+      dispatch(faveMentor(mId));
     }
-    dispatch(selectMentor(m.mentor.id, MentorSelectReason.USER_SELECT));
-  };
-
-  if (
-    Object.getOwnPropertyNames(mentorsById).length < 2 ||
-    mentor.mentor.mentorType === MentorType.CHAT
-  ) {
-    return <div />;
+    dispatch(selectMentor(mId, MentorSelectReason.USER_SELECT));
   }
 
   return (
@@ -70,16 +52,22 @@ function VideoPanel(): JSX.Element {
       {Object.keys(mentorsById).map((id, i) => (
         <div
           id={`video-thumbnail-${id}`}
-          className={`slide video-slide ${
-            id === mentor.mentor.id ? "selected" : ""
-          }`}
+          className={`slide video-slide ${id === mentor ? "selected" : ""}`}
           key={`${id}-${i}`}
-          onClick={() => onClick(mentorsById[id])}
+          onClick={() => onClick(id)}
         >
-          <VideoThumbnail mentor={mentorsById[id]} />
+          <VideoThumbnail mentor={id} />
           <LoadingSpinner mentor={id} />
           <MessageStatus mentor={id} />
-          <StarIcon mentorId={id} />
+          {mentorFaved === id ? (
+            <Star
+              className="star-icon"
+              fontSize="small"
+              style={{ color: "yellow" }}
+            />
+          ) : (
+            <div />
+          )}
         </div>
       ))}
     </div>

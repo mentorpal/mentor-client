@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import { useSelector, useDispatch } from "react-redux";
 import { Star, StarBorder } from "@material-ui/icons";
-import { videoUrl, subtitleUrl } from "api";
+import { videoUrl, subtitleUrl, idleUrl } from "api";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import { chromeVersion } from "utils";
@@ -17,17 +17,9 @@ import {
   faveMentor,
   mentorAnswerPlaybackStarted,
 } from "store/actions";
-import { Config, MentorData, State } from "store/types";
+import { Config, MentorData, State } from "types";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
-
-function findMentorIdleId(mentor: MentorData) {
-  try {
-    return mentor.mentor.utterances_by_type["_IDLE_"][0][0];
-  } catch (err) {
-    return "";
-  }
-}
 
 interface VideoState {
   answerId: string;
@@ -36,29 +28,29 @@ interface VideoState {
   mentor: string;
 }
 
-const Video = (args: { playing?: boolean }) => {
+function Video(args: { playing?: boolean }) {
   const { playing = false } = args;
-  const videoState = useSelector<State, VideoState>(state => {
-    const m = state.mentorsById[state.curMentor];
-    return {
-      answerId: m ? `${m.answer_id}` : "",
-      idleVideoId: m ? findMentorIdleId(m) : "",
-      isIdle: state.isIdle,
-      mentor: state.curMentor,
-    };
-  });
   const dispatch = useDispatch();
+  const curMentor = useSelector<State, string>(state => state.curMentor);
+  const mentorsById = useSelector<State, Record<string, MentorData>>(
+    state => state.mentorsById
+  );
+  const isIdle = useSelector<State, boolean>(state => state.isIdle);
   const config = useSelector<State, Config>(s => s.config);
   const [duration, setDuration] = useState(Number.NaN);
+
+  if (!curMentor) {
+    return <div />;
+  }
+  const mentor = mentorsById[curMentor];
+
   const video = {
-    src: videoState.mentor
-      ? videoState.isIdle
-        ? videoUrl(videoState.mentor, videoState.idleVideoId, config)
-        : videoUrl(videoState.mentor, videoState.answerId, config)
-      : "",
+    src: isIdle
+      ? videoUrl(curMentor, mentor.answer_id || "", config)
+      : idleUrl(mentor.mentor, config),
     subtitles:
-      videoState.mentor && subtitlesSupported && !videoState.isIdle
-        ? subtitleUrl(videoState.mentor, videoState.answerId, config)
+      subtitlesSupported && !isIdle
+        ? subtitleUrl(curMentor, mentor.answer_id || "", config)
         : "",
   };
 
@@ -67,12 +59,12 @@ const Video = (args: { playing?: boolean }) => {
   }
 
   function onPlay() {
-    if (videoState.isIdle) {
+    if (isIdle) {
       return;
     }
     dispatch(
       mentorAnswerPlaybackStarted({
-        mentor: videoState.mentor,
+        mentor: curMentor,
         duration: duration,
       })
     );
@@ -81,7 +73,7 @@ const Video = (args: { playing?: boolean }) => {
   return (
     <div id="video-container">
       <MemoVideoPlayer
-        isIdle={Boolean(videoState.isIdle)}
+        isIdle={Boolean(isIdle)}
         onEnded={onEnded}
         onPlay={onPlay}
         playing={Boolean(playing)}
@@ -91,11 +83,11 @@ const Video = (args: { playing?: boolean }) => {
         videoUrl={video.src}
       />
       <FaveButton />
-      <LoadingSpinner mentor={videoState.mentor} />
-      <MessageStatus mentor={videoState.mentor} />
+      <LoadingSpinner mentor={curMentor} />
+      <MessageStatus mentor={curMentor} />
     </div>
   );
-};
+}
 
 interface VideoPlayerParams {
   isIdle: boolean;

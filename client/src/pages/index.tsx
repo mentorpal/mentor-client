@@ -20,8 +20,13 @@ import Header from "components/header";
 import Input from "components/input";
 import Video from "components/video";
 import VideoPanel from "components/video-panel";
-import { loadConfig, loadMentor, setGuestName } from "store/actions";
-import { Config, LoadStatus, MentorData, MentorType, State } from "store/types";
+import {
+  loadConfig,
+  loadMentor,
+  setGuestName,
+  setRecommendedQuestions,
+} from "store/actions";
+import { Config, LoadStatus, MentorData, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
 
@@ -54,9 +59,10 @@ const useStyles = makeStyles(theme => ({
 
 function IndexPage(props: {
   search: {
-    recommended?: string[];
-    mentor?: string;
+    mentor?: string | string[];
+    recommendedQuestions?: string | string[];
     guest?: string;
+    subject?: string;
   };
 }): JSX.Element {
   const dispatch = useDispatch();
@@ -70,7 +76,7 @@ function IndexPage(props: {
   const mentorsById = useSelector<State, Record<string, MentorData>>(
     state => state.mentorsById
   );
-  const { recommended, mentor, guest } = props.search;
+  const { mentor, guest, subject, recommendedQuestions } = props.search;
 
   function hasSessionUser(): boolean {
     return Boolean(
@@ -82,16 +88,6 @@ function IndexPage(props: {
 
   function isConfigLoadComplete(s: LoadStatus): boolean {
     return s === LoadStatus.LOADED || s === LoadStatus.LOAD_FAILED;
-  }
-
-  function getChatType(): JSX.Element {
-    if (
-      Object.getOwnPropertyNames(mentorsById).length < 2 ||
-      mentorsById[curMentor].mentor.mentorType === MentorType.CHAT
-    ) {
-      return <Chat />;
-    }
-    return <Video playing={hasSessionUser()} />;
   }
 
   useEffect(() => {
@@ -116,22 +112,24 @@ function IndexPage(props: {
     if (!isConfigLoadComplete(configLoadStatus)) {
       return;
     }
+    const recommendedQuestionList = recommendedQuestions
+      ? Array.isArray(recommendedQuestions)
+        ? recommendedQuestions
+        : [recommendedQuestions]
+      : [];
+    dispatch(setRecommendedQuestions(recommendedQuestionList));
     const mentorList = mentor
       ? Array.isArray(mentor)
         ? mentor
         : [mentor]
       : config.mentorsDefault;
-    dispatch(
-      loadMentor(config, mentorList, {
-        recommendedQuestions: recommended,
-      })
-    );
+    dispatch(loadMentor(config, mentorList, subject));
     if (guest) {
       dispatch(setGuestName(guest));
     }
-  }, [configLoadStatus, mentor, recommended, guest]);
+  }, [configLoadStatus, mentor, guest, subject, recommendedQuestions]);
 
-  if (!isConfigLoadComplete(configLoadStatus)) {
+  if (!isConfigLoadComplete(configLoadStatus) || !curMentor) {
     return (
       <div>
         <CircularProgress id="loading" />
@@ -146,7 +144,12 @@ function IndexPage(props: {
           <VideoPanel />
           <Header />
         </div>
-        {getChatType()}
+        {Object.keys(mentorsById).length < 2 ||
+        mentorsById[curMentor].mentor.mentorType === MentorType.CHAT ? (
+          <Chat />
+        ) : (
+          <Video playing={hasSessionUser()} />
+        )}
         <div className={styles.flexFixedChild}>
           <Input />
         </div>

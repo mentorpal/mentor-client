@@ -12,7 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Topics from "components/topics";
 import Questions from "components/questions";
 import { sendQuestion, onInput } from "store/actions";
-import { Config, MentorQuestionSource, State } from "store/types";
+import { Config, MentorQuestionSource, State } from "types";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -41,8 +41,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Input() {
-  const classes = useStyles();
   const dispatch = useDispatch();
+  const classes = useStyles();
   const config = useSelector<State, Config>(s => s.config);
   const curTopic = useSelector<State, string>(state => state.curTopic);
   const curQuestion = useSelector<State, string>(state => state.curQuestion);

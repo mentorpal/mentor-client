@@ -6,47 +6,87 @@ The full terms of this copyright and license should always be found in the root 
 */
 import axios, { AxiosResponse } from "axios";
 import { withPrefix } from "gatsby";
-import { Config, MentorApiData, QuestionApiData } from "store/types";
-
-export const videoUrl = (
-  mentorId: string,
-  answerId: string,
-  config: Config
-): string => {
-  return `${config.urlVideo}/mentors/${mentorId}/${answerId}.mp4`;
-};
-
-export const subtitleUrl = (
-  mentorId: string,
-  answerId: string,
-  config: Config
-): string => {
-  return `${config.urlClassifier}/mentors/${mentorId}/tracks/${answerId}.vtt`;
-};
+import {
+  Answer,
+  Config,
+  Mentor,
+  QuestionApiData,
+  Status,
+  UtteranceName,
+} from "types";
 
 export async function fetchConfig(): Promise<AxiosResponse<Config>> {
   return await axios.get<Config>(process.env.CONFIG || withPrefix("config"));
 }
 
-export async function fetchMentorData(
-  mentorId: string,
-  config: Config
-): Promise<AxiosResponse<MentorApiData>> {
-  return await axios.get(`${config.urlClassifier}/mentors/${mentorId}/data`);
+export function getUtterance(
+  mentor: Mentor,
+  utterance: UtteranceName
+): Answer | undefined {
+  return mentor.utterances.find(a => a.question.name === utterance);
 }
 
-export const queryMentor = async (
+export function videoUrl(
   mentorId: string,
-  question: string,
+  answerId: string,
   config: Config
-): Promise<AxiosResponse<QuestionApiData>> => {
-  return await axios.get(`${config.urlClassifier}/questions/`, {
-    params: {
-      mentor: mentorId,
-      query: question,
-    },
+): string {
+  return `${config.urlVideo}/mentors/${mentorId}/${answerId}.mp4`;
+}
+
+export function idleUrl(mentor: Mentor, config: Config): string {
+  const idle = getUtterance(mentor, UtteranceName.IDLE);
+  return idle ? videoUrl(mentor._id, idle._id, config) : "";
+}
+
+export function subtitleUrl(
+  mentorId: string,
+  answerId: string,
+  config: Config
+): string {
+  return `${config.urlClassifier}/mentors/${mentorId}/tracks/${answerId}.vtt`;
+}
+
+export async function fetchMentor(
+  config: Config,
+  mentorId: string,
+  subject?: string,
+  topic?: string
+) {
+  return await axios.post(config.urlGraphql, {
+    query: `
+      query {
+        mentor(id: "${mentorId}") {
+          _id
+          name
+          firstName
+          title
+          mentorType
+          topics(subject: "${subject || ""}") {
+            _id
+            name
+          }
+          utterances(status: "${Status.COMPLETE}") {
+            _id
+            transcript
+            question {
+              question
+              name
+            }
+          }
+          answers(subject: "${subject || ""}", topic: "${topic ||
+      ""}", status: "${Status.COMPLETE}") {
+            _id
+            transcript
+            question {
+              question
+            }
+          }
+        }
+      }
+    `,
   });
-};
+}
 
 export async function giveFeedback(
   feedbackId: string,
@@ -61,5 +101,18 @@ export async function giveFeedback(
         }
       }
     `,
+  });
+}
+
+export async function queryMentor(
+  mentorId: string,
+  question: string,
+  config: Config
+): Promise<AxiosResponse<QuestionApiData>> {
+  return await axios.get(`${config.urlClassifier}/questions/`, {
+    params: {
+      mentor: mentorId,
+      query: question,
+    },
   });
 }

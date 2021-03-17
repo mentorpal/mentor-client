@@ -5,13 +5,12 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import { mockConfig } from "../support/helpers";
-import { mockDefaultSetup, MODE_CHAT, MODE_VIDEO } from "../support/helpers.ts";
+import { mockDefaultSetup } from "../support/helpers";
 
 describe("Chat", () => {
   it("does not show if config.modeDefault is video", () => {
     mockDefaultSetup(cy, {
       mentorsDefault: ["clint"],
-      modeDefault: MODE_VIDEO,
     });
     cy.visit("/");
     cy.get("#video-container").should("exist");
@@ -19,7 +18,7 @@ describe("Chat", () => {
   });
 
   it("replaces video config.modeDefault is chat", () => {
-    mockDefaultSetup(cy, { mentorsDefault: ["clint"], modeDefault: MODE_CHAT });
+    mockDefaultSetup(cy, { mentorsDefault: ["clint"] });
     cy.viewport("iphone-x");
     cy.visit("/");
     cy.get("#chat-thread").should("exist");
@@ -41,7 +40,6 @@ describe("Chat", () => {
     mockConfig(cy, {
       cmi5Enabled: false,
       mentorsDefault: ["clint"],
-      modeDefault: MODE_CHAT,
     });
     cy.viewport("iphone-x");
     cy.visit("/");
@@ -57,7 +55,7 @@ describe("Chat", () => {
     cy.get("#chat-msg-2 a").should("have.attr", "target", "_blank");
   });
 
-  it.only("can give feedback on classifier answer", () => {
+  it("can give feedback on classifier answer", () => {
     cy.intercept("**/mentors/clint/data", { fixture: "clint.json" });
     cy.intercept("**/questions/?mentor=*&query=*", {
       fixture: "clint_response_with_feedback.json",
@@ -65,7 +63,6 @@ describe("Chat", () => {
     mockConfig(cy, {
       cmi5Enabled: false,
       mentorsDefault: ["clint"],
-      modeDefault: MODE_CHAT,
     });
     cy.viewport("iphone-x");
     cy.visit("/");
