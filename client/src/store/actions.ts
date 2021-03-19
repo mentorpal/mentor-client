@@ -209,9 +209,19 @@ export const loadMentor: ActionCreator<ThunkAction<
       payload: mentors,
     });
     for (const mentorId of mentors) {
-      const result = await fetchMentor(config, mentorId, subject);
-      if (result.status == 200) {
-        const apiData: Mentor = result.data.data!.mentor;
+      let result = await fetchMentor(config, mentorId, subject);
+      if (result.status === 200 && !subject) {
+        const mentor: Mentor = result.data.data!.mentor;
+        if (mentor.defaultSubject) {
+          result = await fetchMentor(
+            config,
+            mentorId,
+            mentor.defaultSubject._id
+          );
+        }
+      }
+      if (result.status === 200) {
+        const mentor: Mentor = result.data.data!.mentor;
         const topicQuestions: TopicQuestions[] = [];
         const recommendedQuestions = getState().recommendedQuestions;
         if (recommendedQuestions.length > 0) {
@@ -220,27 +230,23 @@ export const loadMentor: ActionCreator<ThunkAction<
             questions: recommendedQuestions,
           });
         }
-        for (const topic of apiData.topics) {
-          const result2 = await fetchMentor(
-            config,
-            mentorId,
-            subject,
-            topic._id
-          );
-          if (result2.status == 200) {
-            const apiData2: Mentor = result2.data.data!.mentor;
-            topicQuestions.push({
-              topic: topic.name,
-              questions: apiData2.answers.map(a => a.question.question),
-            });
-          }
+        for (const topic of mentor.topics) {
+          topicQuestions.push({
+            topic: topic.name,
+            questions: mentor.answers
+              .filter(
+                a =>
+                  a.question.topics.find(t => t._id === topic._id) !== undefined
+              )
+              .map(a => a.question.question),
+          });
         }
         topicQuestions.push({ topic: "History", questions: [] });
         const mentorData: MentorData = {
-          mentor: apiData,
+          mentor: mentor,
           topic_questions: topicQuestions,
           status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
-          answer_id: getUtterance(apiData, UtteranceName.INTRO)?._id,
+          answer_id: getUtterance(mentor, UtteranceName.INTRO)?._id,
           answerDuration: Number.NaN,
         };
         dispatch<MentorDataResultAction>({

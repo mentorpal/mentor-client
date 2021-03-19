@@ -11,9 +11,14 @@ export interface Mentor {
   firstName: string;
   title: string;
   mentorType: MentorType;
+  defaultSubject?: Subject;
   topics: Topic[];
-  answers: Answer[];
   utterances: Answer[];
+  answers: Answer[];
+}
+
+export interface Subject {
+  _id: string;
 }
 
 export interface Topic {
@@ -30,6 +35,7 @@ export interface Answer {
 export interface Question {
   question: string;
   name: string;
+  topics: Topic[];
 }
 
 export interface QuestionApiData {

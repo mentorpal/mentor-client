@@ -24,18 +24,17 @@ const storeObj = createStore(store, applyMiddleware(...[thunk, logger]));
 
 export const wrapRootElement = ({ element }) => (
   <MuiThemeProvider theme={theme}>
-    <Provider store={storeObj}>{element}</Provider>;
+    <Provider store={storeObj}>{element}</Provider>
   </MuiThemeProvider>
 );
 
 export const onRouteUpdate = ({ location, prevLocation }) => {
   if (
     typeof window !== "undefined" &&
-    !window.location.protocol.toLowerCase().startsWith("https")
+    !window.location.protocol.toLowerCase().startsWith("https") &&
+    !window.location.hostname.toLowerCase() === "localhost"
   ) {
-    const port = window.location.port ? `:${window.location.port}` : "";
-    const redirect = `https://${window.location.hostname}${port}${window.location.pathname}${window.location.search}`;
-    console.log(redirect);
+    const redirect = `https://${window.location.host}${window.location.pathname}${window.location.search}`;
     window.location.href = redirect;
   }
 };

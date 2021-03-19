@@ -62,6 +62,9 @@ export async function fetchMentor(
           firstName
           title
           mentorType
+          defaultSubject {
+            _id
+          }
           topics(subject: "${subject || ""}") {
             _id
             name
@@ -80,6 +83,10 @@ export async function fetchMentor(
             transcript
             question {
               question
+              topics {
+                _id
+                name
+              }
             }
           }
         }
