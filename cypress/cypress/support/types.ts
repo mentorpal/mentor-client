@@ -4,25 +4,56 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import reducer from "./reducer";
-import { MentorSelectReason, MentorQuestionSource } from "./types";
 
-describe("reducer", () => {
-  it("should return the initial state", () => {
-    const initial = reducer(undefined, {});
-    delete initial.curQuestionUpdatedAt;
-    expect(reducer(undefined, {})).toEqual({
-      curMentor: "", // id of selected mentor
-      curMentorReason: MentorSelectReason.NONE,
-      curQuestion: "", // question that was last asked
-      curQuestionSource: MentorQuestionSource.NONE,
-      curTopic: "", // topic to show questions for
-      mentorFaved: "", // id of the preferred mentor
-      isIdle: false,
-      mentorsById: {},
-      mentorNext: "", // id of the next mentor to speak after the current finishes,
-      questionsAsked: [],
-      guestName: "",
-    });
-  });
-});
+export interface Mentor {
+  _id: string;
+  name: string;
+  firstName: string;
+  title: string;
+  mentorType: MentorType;
+  topics: Topic[];
+  answers: Answer[];
+  utterances: Answer[];
+}
+
+export interface Topic {
+  _id: string;
+  name: string;
+}
+
+export interface Answer {
+  _id: string;
+  transcript: string;
+  question: Question;
+}
+
+export interface Question {
+  question: string;
+  name: string;
+}
+
+export enum MentorType {
+  VIDEO = "VIDEO",
+  CHAT = "CHAT",
+}
+
+export enum QuestionType {
+  UTTERANCE = "UTTERANCE",
+  QUESTION = "QUESTION",
+}
+
+export enum Status {
+  INCOMPLETE = "INCOMPLETE",
+  COMPLETE = "COMPLETE",
+}
+
+export enum UtteranceName {
+  IDLE = "_IDLE_",
+  INTRO = "_INTRO_",
+  OFF_TOPIC = "_OFF_TOPIC_",
+  PROMPT = "_PROMPT_",
+  FEEDBACK = "_FEEDBACK_",
+  REPEAT = "_REPEAT_",
+  REPEAT_BUMP = "_REPEAT_BUMP_",
+  PROFANIY = "_PROFANITY_",
+}

@@ -4,14 +4,10 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { CircularProgress } from "@material-ui/core";
-import {
-  MuiThemeProvider,
-  createMuiTheme,
-  makeStyles,
-} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Cmi5 from "@xapi/cmi5";
 import { hasCmi } from "cmiutils";
 import Chat from "components/chat";
@@ -20,23 +16,18 @@ import Header from "components/header";
 import Input from "components/input";
 import Video from "components/video";
 import VideoPanel from "components/video-panel";
-import { loadConfig, loadMentor, setGuestName } from "store/actions";
-import { Config, LoadStatus, MentorData, MODE_CHAT, State } from "store/types";
+import {
+  loadConfig,
+  loadMentor,
+  setGuestName,
+  setRecommendedQuestions,
+} from "store/actions";
+import { Config, LoadStatus, MentorData, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: "#1b6a9c",
-    },
-  },
-});
-
 const useStyles = makeStyles(theme => ({
   flexRoot: {
-    height: "100vh",
-    minHeight: "-webkit-fill-available",
     display: "flex",
     flexFlow: "column nowrap",
     flexDirection: "column",
@@ -44,16 +35,43 @@ const useStyles = makeStyles(theme => ({
     margin: 0,
   },
   flexFixedChild: {
-    flex: "none",
+    flexGrow: 0,
   },
   flexExpandChild: {
-    flex: "auto",
-    overflowY: "scroll",
+    flexGrow: 1,
   },
 }));
 
+const useResize = (myRef: any) => {
+  const [width, setWidth] = React.useState<number>(0);
+  const [height, setHeight] = React.useState<number>(0);
+
+  const handleResize = () => {
+    console.log(myRef.current.offsetHeight);
+    setWidth(myRef.current.offsetWidth);
+    setHeight(myRef.current.offsetHeight);
+  };
+
+  useEffect(() => {
+    myRef.current && myRef.current.addEventListener("resize", handleResize);
+    if (myRef.current) {
+      handleResize();
+    }
+    return () => {
+      myRef.current.removeEventListener("resize", handleResize);
+    };
+  }, [myRef]);
+
+  return { width, height };
+};
+
 function IndexPage(props: {
-  search: { recommended?: string[]; mentor?: string; guest?: string };
+  search: {
+    mentor?: string | string[];
+    recommendedQuestions?: string | string[];
+    guest?: string;
+    subject?: string;
+  };
 }): JSX.Element {
   const dispatch = useDispatch();
   const styles = useStyles();
@@ -61,22 +79,19 @@ function IndexPage(props: {
   const configLoadStatus = useSelector<State, LoadStatus>(
     state => state.configLoadStatus
   );
+  const guestName = useSelector<State, string>(state => state.guestName);
+  const curMentor = useSelector<State, string>(state => state.curMentor);
   const mentorsById = useSelector<State, Record<string, MentorData>>(
     state => state.mentorsById
   );
-  const guestName = useSelector<State, string>(state => state.guestName);
-  const [height, setHeight] = useState(0);
-  const [width, setWidth] = useState(0);
-  const { recommended, mentor, guest } = props.search;
 
-  const hidePanel = Object.getOwnPropertyNames(mentorsById).length < 2;
-  const isMobile = width < 768;
-  const videoHeight = isMobile
-    ? height * 0.5
-    : Math.min(width * 0.5625, height * 0.7);
-  const headerHeight = hidePanel || config.modeDefault === MODE_CHAT ? 50 : 100;
+  const [windowHeight, setWindowHeight] = React.useState<number>(0);
+  const [chatHeight, setChatHeight] = React.useState<number>(0);
+  const curTopic = useSelector<State, string>(state => state.curTopic);
 
-  function hasSessionUser() {
+  const { mentor, guest, subject, recommendedQuestions } = props.search;
+
+  function hasSessionUser(): boolean {
     return Boolean(
       !config.cmi5Enabled ||
         (typeof window !== "undefined" && hasCmi(window.location.search)) ||
@@ -84,25 +99,46 @@ function IndexPage(props: {
     );
   }
 
-  function handleWindowResize() {
-    if (typeof window === "undefined") {
-      return;
-    }
-    setHeight(window.innerHeight);
-    setWidth(window.innerWidth);
-  }
-
-  function isConfigLoadComplete(s: LoadStatus) {
+  function isConfigLoadComplete(s: LoadStatus): boolean {
     return s === LoadStatus.LOADED || s === LoadStatus.LOAD_FAILED;
   }
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleResize = () => setWindowHeight(window.innerHeight);
+    window.addEventListener("resize", handleResize);
+    setWindowHeight(window.innerHeight);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isConfigLoadComplete(configLoadStatus) || !curMentor) {
+      return;
+    }
+    const headerHeight = 50;
+    const panelHeight =
+      Object.getOwnPropertyNames(mentorsById).length > 1 ? 50 : 0;
+    const inputHeight = 130;
+    const questionsHeight = curTopic ? 200 : 0;
+    setChatHeight(
+      Math.max(
+        0,
+        windowHeight -
+          headerHeight -
+          panelHeight -
+          inputHeight -
+          questionsHeight -
+          21
+      )
+    );
+  });
 
   useEffect(() => {
     if (configLoadStatus === LoadStatus.NONE) {
       dispatch(loadConfig());
     }
-  }, [configLoadStatus]);
-
-  useEffect(() => {
     if (!isConfigLoadComplete(configLoadStatus)) {
       return;
     }
@@ -121,40 +157,24 @@ function IndexPage(props: {
     if (!isConfigLoadComplete(configLoadStatus)) {
       return;
     }
+    const recommendedQuestionList = recommendedQuestions
+      ? Array.isArray(recommendedQuestions)
+        ? recommendedQuestions
+        : [recommendedQuestions]
+      : [];
+    dispatch(setRecommendedQuestions(recommendedQuestionList));
     const mentorList = mentor
       ? Array.isArray(mentor)
         ? mentor
         : [mentor]
       : config.mentorsDefault;
-    dispatch(
-      loadMentor(config, mentorList, {
-        recommendedQuestions: recommended,
-      })
-    );
+    dispatch(loadMentor(config, mentorList, subject));
     if (guest) {
       dispatch(setGuestName(guest));
     }
-  }, [configLoadStatus, mentor, recommended, guest]);
+  }, [configLoadStatus, mentor, guest, subject, recommendedQuestions]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    // Media queries for layout
-    setHeight(window.innerHeight);
-    setWidth(window.innerWidth);
-    window.addEventListener("resize", handleWindowResize);
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
-  }, []);
-
-  if (
-    !isConfigLoadComplete(configLoadStatus) ||
-    mentorsById === {} ||
-    height === 0 ||
-    width === 0
-  ) {
+  if (!isConfigLoadComplete(configLoadStatus) || !curMentor) {
     return (
       <div>
         <CircularProgress id="loading" />
@@ -163,33 +183,24 @@ function IndexPage(props: {
   }
 
   return (
-    <MuiThemeProvider theme={theme}>
-      <div className={styles.flexRoot}>
-        <div className={styles.flexFixedChild}>
-          {hidePanel || config.modeDefault === MODE_CHAT ? (
-            undefined
-          ) : (
-            <VideoPanel isMobile={isMobile} />
-          )}
-          <Header />
-        </div>
-        {/* <div className={styles.flexExpandChild}> */}
-        {config.modeDefault === MODE_CHAT ? (
-          <Chat />
-        ) : (
-          <Video
-            height={videoHeight - headerHeight}
-            width={width}
-            playing={hasSessionUser()}
-          />
-        )}
-        {/* </div> */}
-        <div className={styles.flexFixedChild}>
-          <Input />
-        </div>
-        {!hasSessionUser() ? <GuestPrompt /> : undefined}
+    <div className={styles.flexRoot} style={{ height: windowHeight }}>
+      <div className={styles.flexFixedChild}>
+        <VideoPanel />
+        <Header />
       </div>
-    </MuiThemeProvider>
+      <div className={styles.flexExpandChild}>
+        {Object.keys(mentorsById).length < 2 ||
+        mentorsById[curMentor].mentor.mentorType === MentorType.CHAT ? (
+          <Chat height={chatHeight} />
+        ) : (
+          <Video playing={hasSessionUser()} />
+        )}
+      </div>
+      <div className={styles.flexFixedChild}>
+        <Input />
+      </div>
+      {!hasSessionUser() ? <GuestPrompt /> : undefined}
+    </div>
   );
 }
 

@@ -10,7 +10,7 @@ import { Modal, Button, Paper, InputBase, Backdrop } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import addCmi from "cmiutils";
 import { useSelector } from "react-redux";
-import { Config, State } from "store/types";
+import { Config, State } from "types";
 
 const useStyles = makeStyles(theme => ({
   modal: {

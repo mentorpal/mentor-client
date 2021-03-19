@@ -49,11 +49,11 @@ html, body {
 }
 
 .carousel .video-slide {
-    padding: 5px;
+    margin: 5px;
 }
 
 .carousel .topic-slide {
-    padding: 10px;
+    margin: 10px;
 }
 
 .carousel .selected {

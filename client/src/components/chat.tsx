@@ -21,8 +21,8 @@ import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
 
-import { giveFeedback } from "api";
-import { Config, Feedback, State } from "store/types";
+import { giveFeedback, getUtterance } from "api";
+import { Config, Feedback, State, UtteranceName } from "types";
 import "styles/chat-override-theme";
 
 const useStyles = makeStyles(theme => ({
@@ -200,7 +200,7 @@ function ChatItem(props: {
   );
 }
 
-function Chat(): JSX.Element {
+function Chat(props: { height: number }): JSX.Element {
   const styles = useStyles();
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [lastQuestionAt, setLastQuestionAt] = useState<Date>();
@@ -224,7 +224,8 @@ function Chat(): JSX.Element {
         updated = true;
         _messages.push({
           isUser: false,
-          text: mentor.utterances_by_type["_INTRO_"][0][1],
+          text:
+            getUtterance(mentor.mentor, UtteranceName.INTRO)?.transcript || "",
         });
       }
       if (lastAnswerAt !== mentor.answerReceivedAt) {
@@ -257,7 +258,12 @@ function Chat(): JSX.Element {
   }
 
   return (
-    <List id="chat-thread" className={styles.list} disablePadding={true}>
+    <List
+      id="chat-thread"
+      className={styles.list}
+      style={{ height: props.height }}
+      disablePadding={true}
+    >
       {messages.map((message, i) => {
         return (
           <ChatItem

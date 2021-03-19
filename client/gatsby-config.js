@@ -4,13 +4,31 @@ module.exports = {
     title: `Chat`,
     description: ``,
     author: `@gatsbyjs`,
+    siteUrl: `https:uscquestions.mentorpal.org/chat`,
   },
   plugins: [
+    `gatsby-plugin-sitemap`,
     `gatsby-plugin-react-helmet`,
     `gatsby-transformer-sharp`,
     `gatsby-transformer-csv`,
     `gatsby-plugin-react-helmet`,
     `gatsby-plugin-sharp`,
+    {
+      resolve: "gatsby-plugin-htaccess",
+      options: {
+        RewriteBase: "/chat/",
+        https: true,
+        SymLinksIfOwnerMatch: true,
+        host: "uscquestions.mentorpal.org",
+        redirect: [
+          "RewriteRule ^not-existing-url/?$ /existing-url [R=301,L,NE]",
+          {
+            from: "http:uscquestions.mentorpal.org/chat",
+            to: "https:uscquestions.mentorpal.org/chat",
+          },
+        ],
+      },
+    },
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
