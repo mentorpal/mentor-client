@@ -200,7 +200,7 @@ function ChatItem(props: {
   );
 }
 
-function Chat(): JSX.Element {
+function Chat(props: { height: number }): JSX.Element {
   const styles = useStyles();
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [lastQuestionAt, setLastQuestionAt] = useState<Date>();
@@ -258,7 +258,12 @@ function Chat(): JSX.Element {
   }
 
   return (
-    <List id="chat-thread" className={styles.list} disablePadding={true}>
+    <List
+      id="chat-thread"
+      className={styles.list}
+      style={{ height: props.height }}
+      disablePadding={true}
+    >
       {messages.map((message, i) => {
         return (
           <ChatItem

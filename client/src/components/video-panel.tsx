@@ -15,7 +15,6 @@ import {
   MentorData,
   MentorQuestionStatus,
   MentorSelectReason,
-  MentorType,
   State,
 } from "types";
 
@@ -28,11 +27,7 @@ function VideoPanel(): JSX.Element {
   const mentorFaved = useSelector<State, string>(state => state.mentorFaved);
   const isIdle = useSelector<State, boolean>(state => state.isIdle);
 
-  if (
-    !mentor ||
-    Object.getOwnPropertyNames(mentorsById).length < 2 ||
-    mentorsById[mentor].mentor?.mentorType === MentorType.CHAT
-  ) {
+  if (!mentor || Object.getOwnPropertyNames(mentorsById).length < 2) {
     return <div />;
   }
 
@@ -48,7 +43,7 @@ function VideoPanel(): JSX.Element {
   }
 
   return (
-    <div id="video-panel" className="carousel">
+    <div id="video-panel" className="carousel" style={{ height: 50 }}>
       {Object.keys(mentorsById).map((id, i) => (
         <div
           id={`video-thumbnail-${id}`}

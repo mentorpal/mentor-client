@@ -16,14 +16,13 @@ import { Config, MentorQuestionSource, State } from "types";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    height: 60,
-    padding: "2px 4px",
     display: "flex",
     alignItems: "center",
     boxShadow: "0 -3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
   },
   inputField: {
     flex: 1,
+    margin: "2px 4px",
     paddingLeft: "8px",
     borderStyle: "solid",
     borderWidth: "1px",
@@ -112,7 +111,7 @@ function Input() {
 
   return (
     <div>
-      <Paper className={classes.root} square>
+      <Paper className={classes.root} square style={{ height: 60 }}>
         <InputBase
           id="input-field"
           className={classes.inputField}

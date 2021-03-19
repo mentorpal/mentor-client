@@ -20,7 +20,7 @@ const theme = createMuiTheme({
   },
 });
 
-const storeObj = createStore(store, applyMiddleware(...[thunk, logger]));
+const storeObj = createStore(store, applyMiddleware(...[thunk]));
 
 export const wrapRootElement = ({ element }) => (
   <MuiThemeProvider theme={theme}>
@@ -31,8 +31,7 @@ export const wrapRootElement = ({ element }) => (
 export const onRouteUpdate = ({ location, prevLocation }) => {
   if (
     typeof window !== "undefined" &&
-    !window.location.protocol.toLowerCase().startsWith("https") &&
-    !window.location.hostname.toLowerCase() === "localhost"
+    !window.location.protocol.toLowerCase().startsWith("https")
   ) {
     const redirect = `https://${window.location.host}${window.location.pathname}${window.location.search}`;
     window.location.href = redirect;

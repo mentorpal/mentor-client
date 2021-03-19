@@ -28,8 +28,6 @@ import "styles/layout.css";
 
 const useStyles = makeStyles(theme => ({
   flexRoot: {
-    height: "100vh",
-    minHeight: "-webkit-fill-available",
     display: "flex",
     flexFlow: "column nowrap",
     flexDirection: "column",
@@ -37,13 +35,35 @@ const useStyles = makeStyles(theme => ({
     margin: 0,
   },
   flexFixedChild: {
-    flex: "none",
+    flexGrow: 0,
   },
   flexExpandChild: {
-    flex: "auto",
-    overflowY: "scroll",
+    flexGrow: 1,
   },
 }));
+
+const useResize = (myRef: any) => {
+  const [width, setWidth] = React.useState<number>(0);
+  const [height, setHeight] = React.useState<number>(0);
+
+  const handleResize = () => {
+    console.log(myRef.current.offsetHeight);
+    setWidth(myRef.current.offsetWidth);
+    setHeight(myRef.current.offsetHeight);
+  };
+
+  useEffect(() => {
+    myRef.current && myRef.current.addEventListener("resize", handleResize);
+    if (myRef.current) {
+      handleResize();
+    }
+    return () => {
+      myRef.current.removeEventListener("resize", handleResize);
+    };
+  }, [myRef]);
+
+  return { width, height };
+};
 
 function IndexPage(props: {
   search: {
@@ -64,6 +84,11 @@ function IndexPage(props: {
   const mentorsById = useSelector<State, Record<string, MentorData>>(
     state => state.mentorsById
   );
+
+  const [windowHeight, setWindowHeight] = React.useState<number>(0);
+  const [chatHeight, setChatHeight] = React.useState<number>(0);
+  const curTopic = useSelector<State, string>(state => state.curTopic);
+
   const { mentor, guest, subject, recommendedQuestions } = props.search;
 
   function hasSessionUser(): boolean {
@@ -77,6 +102,38 @@ function IndexPage(props: {
   function isConfigLoadComplete(s: LoadStatus): boolean {
     return s === LoadStatus.LOADED || s === LoadStatus.LOAD_FAILED;
   }
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleResize = () => setWindowHeight(window.innerHeight);
+    window.addEventListener("resize", handleResize);
+    setWindowHeight(window.innerHeight);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isConfigLoadComplete(configLoadStatus) || !curMentor) {
+      return;
+    }
+    const headerHeight = 50;
+    const panelHeight =
+      Object.getOwnPropertyNames(mentorsById).length > 1 ? 50 : 0;
+    const inputHeight = 130;
+    const questionsHeight = curTopic ? 200 : 0;
+    setChatHeight(
+      Math.max(
+        0,
+        windowHeight -
+          headerHeight -
+          panelHeight -
+          inputHeight -
+          questionsHeight -
+          21
+      )
+    );
+  });
 
   useEffect(() => {
     if (configLoadStatus === LoadStatus.NONE) {
@@ -126,17 +183,19 @@ function IndexPage(props: {
   }
 
   return (
-    <div className={styles.flexRoot}>
+    <div className={styles.flexRoot} style={{ height: windowHeight }}>
       <div className={styles.flexFixedChild}>
         <VideoPanel />
         <Header />
       </div>
-      {Object.keys(mentorsById).length < 2 ||
-      mentorsById[curMentor].mentor.mentorType === MentorType.CHAT ? (
-        <Chat />
-      ) : (
-        <Video playing={hasSessionUser()} />
-      )}
+      <div className={styles.flexExpandChild}>
+        {Object.keys(mentorsById).length < 2 ||
+        mentorsById[curMentor].mentor.mentorType === MentorType.CHAT ? (
+          <Chat height={chatHeight} />
+        ) : (
+          <Video playing={hasSessionUser()} />
+        )}
+      </div>
       <div className={styles.flexFixedChild}>
         <Input />
       </div>

@@ -27,6 +27,7 @@ import {
   Mentor,
   Status,
   TopicQuestions,
+  MentorType,
 } from "../types";
 
 const RESPONSE_CUTOFF = -100;
@@ -210,18 +211,20 @@ export const loadMentor: ActionCreator<ThunkAction<
     });
     for (const mentorId of mentors) {
       let result = await fetchMentor(config, mentorId, subject);
-      if (result.status === 200 && !subject) {
-        const mentor: Mentor = result.data.data!.mentor;
-        if (mentor.defaultSubject) {
+      if (result.status === 200) {
+        let mentor: Mentor = result.data.data!.mentor;
+        if (mentors.length > 1 && mentor.mentorType === MentorType.CHAT) {
+          continue;
+        }
+        if (!subject && mentor.defaultSubject) {
           result = await fetchMentor(
             config,
             mentorId,
             mentor.defaultSubject._id
           );
+          mentor = result.data.data!.mentor;
         }
-      }
-      if (result.status === 200) {
-        const mentor: Mentor = result.data.data!.mentor;
+
         const topicQuestions: TopicQuestions[] = [];
         const recommendedQuestions = getState().recommendedQuestions;
         if (recommendedQuestions.length > 0) {
