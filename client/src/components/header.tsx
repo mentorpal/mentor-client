@@ -34,7 +34,7 @@ function Header(): JSX.Element {
       >
         <img
           src={config.styleHeaderLogo}
-          style={{ position: "absolute", left: 0, height: 50 }}
+          style={{ position: "absolute", left: "5px", height: 50 }}
         />
         <Hidden only="xs">
           <Typography>

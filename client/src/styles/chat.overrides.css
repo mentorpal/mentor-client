@@ -1,5 +1,5 @@
 #chat-thread {
-    background: #E9E9E9;
+    background: #FFFFFF;
 }
 
 ul {
@@ -25,15 +25,20 @@ ul li {
     text-align: left;
 }
 
+ul li p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 .system {
-    background: #ffffff;
+    background: #e8e9ea;
     float: left;
     border-bottom-left-radius: 5px;
 }
 
 .user {
     float: right;
-    background: #0084ff;
+    background: #88929e;
     color: #fff;
     border-bottom-right-radius: 5px;
 }
