@@ -76,6 +76,8 @@ export interface Config {
   urlGraphql: string;
   urlVideo: string;
   styleHeaderLogo: string;
+  styleHeaderColor: string;
+  styleHeaderTextColor: string;
 }
 
 export enum QuestionType {

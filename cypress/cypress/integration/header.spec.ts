@@ -44,7 +44,34 @@ describe("Header", () => {
     cy.get("[data-cy=header]").contains("Clinton Anderson: Nuclear Electrician's Mate");
   });
 
-  it("shows alternate header with logo if config.styleHeaderLogo is set", () => {
+  it("shows legal disclaimer", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        cmi5Enabled: false,
+        mentorsDefault: ["clint"]
+      }
+    });
+    cy.visit("/");
+    cy.get("#alert-dialog-title")
+      .contains("USC Privacy Policy");
+      cy.get("#alert-dialog-description")
+      .contains(`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+      felis ex, tempor eget velit id, fringilla interdum nisl. Aliquam
+      erat volutpat. Duis eu suscipit dolor, quis varius ex. Proin
+      tincidunt mollis dictum. Sed porta elit sapien, id ultrices tortor
+      venenatis porttitor. Nam ut egestas magna. Nunc at neque a enim
+      aliquet efficitur vitae in odio. Mauris sollicitudin pulvinar
+      vestibulum. Nunc gravida tellus in diam maximus rutrum. Vivamus mi
+      tellus, convallis at commodo nec, consequat non velit. Nulla id
+      diam nibh. Mauris lectus enim, consectetur nec aliquam vitae,
+      auctor non odio. Curabitur eleifend sagittis neque, id ornare odio
+      mollis eget. Cras dictum enim nec eleifend fringilla. Ut in
+      bibendum quam. Suspendisse ultricies, orci id blandit faucibus,
+      neque ligula sodales mi, vitae tristique arcu erat volutpat
+      libero.`);
+  });
+
+  it("shows alternate header with logo and if config.styleHeaderLogo is set", () => {
     mockDefaultSetup(cy, {
       config: {
         cmi5Enabled: false,
@@ -64,5 +91,49 @@ describe("Header", () => {
         "eq",
         "https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png"
       );
+  });
+
+  it("shows alternate color header and text if config.styleHeaderColor and config.styleHeaderTextColor are set", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        cmi5Enabled: false,
+        mentorsDefault: ["clint"],
+        styleHeaderColor: "#990000",
+        styleHeaderTextColor: "#FFFFFF",
+      }
+    });
+    cy.visit("/");
+    cy.get("#header")
+      .should("have.css", "background-color", "rgb(153, 0, 0)");//RGB of #990000
+    cy.get("#header p")
+      .should("have.css", "color", "rgb(255, 255, 255)");//RGB of #FFFFFF
+  });
+
+  it("shows full branding if config.styleHeaderColor, config.styleHeaderTextColor, and config.styleHeaderLogo are set", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        cmi5Enabled: false,
+        mentorsDefault: ["clint"],
+        styleHeaderColor: "#990000",
+        styleHeaderTextColor: "#FFFFFF",
+        styleHeaderLogo:
+          "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
+      }
+    });
+    cy.intercept(
+      "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
+      { fixture: "uscheader2.png" }
+    );
+    cy.visit("/");
+    cy.get("#header img")
+      .should("have.attr", "src")
+      .and(
+        "eq",
+        "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png"
+      );
+    cy.get("#header")
+      .should("have.css", "background-color", "rgb(153, 0, 0)");//RGB of #990000
+    cy.get("#header p")
+      .should("have.css", "color", "rgb(255, 255, 255)");//RGB of #FFFFFF
   });
 });

@@ -54,6 +54,8 @@ export const initialState: State = {
     urlClassifier: process.env.MENTOR_API_URL || "/classifier",
     urlVideo: process.env.MENTOR_VIDEO_URL || "/videos",
     styleHeaderLogo: process.env.HEADER_LOGO || "",
+    styleHeaderColor: process.env.HEADER_COLOR || "",
+    styleHeaderTextColor: process.env.HEADER_TEXT_COLOR || "",
   },
   configLoadStatus: LoadStatus.NONE,
   guestName: "",
