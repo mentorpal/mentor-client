@@ -25,6 +25,8 @@ app.get("/chat/config", (req, res) => {
     cmit5Fetch: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
     mentorsDefault: (process.env.DEFAULT_MENTORS || "").split(","),
     styleHeaderLogo: process.env.HEADER_LOGO || "",
+    styleHeaderColor: process.env.HEADER_COLOR || "",
+    styleHeaderTextColor: process.env.HEADER_TEXT_COLOR || "",
     urlGraphql: process.env.MENTOR_GRAPHQL_URL || "/graphql",
     urlClassifier: process.env.MENTOR_API_URL || "/classifier",
     urlVideo: process.env.MENTOR_VIDEO_URL || "/videos",

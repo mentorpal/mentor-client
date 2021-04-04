@@ -43,7 +43,7 @@ describe("Header", () => {
     cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
   });
 
-  it("shows alternate header with logo if config.styleHeaderLogo is set", () => {
+  it("shows alternate header with logo and if config.styleHeaderLogo is set", () => {
     mockDefaultSetup(cy, {
       cmi5Enabled: false,
       mentorsDefault: ["clint"],
@@ -61,5 +61,19 @@ describe("Header", () => {
         "eq",
         "https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png"
       );
+  });
+
+  it("shows alternate color header and text if config.styleHeaderColor and config.styleHeaderTextColor are set", () => {
+    mockDefaultSetup(cy, {
+      cmi5Enabled: false,
+      mentorsDefault: ["clint"],
+      styleHeaderColor: "#990000",
+      styleHeaderTextColor: "#FFFFFF",
+    });
+    cy.visit("/");
+    cy.get("#header")
+      .should("have.css", "background-color", "rgb(153, 0, 0)");//RGB of #990000
+    cy.get("#header p")
+      .should("have.css", "color", "#rgb(255, 255, 255)");//RGB of #FFFFFF
   });
 });

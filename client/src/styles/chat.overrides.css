@@ -63,6 +63,9 @@ ul li p {
     border-bottom-left-radius: 5px;
 }
 
+#feedback-popup .MuiPaper-rounded {
+    border-radius: 30px;
+}
 
 /* Round Last Bubble */
 

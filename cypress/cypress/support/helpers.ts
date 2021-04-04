@@ -20,6 +20,8 @@ export interface Config {
   urlGraphql: string;
   urlVideo: string;
   styleHeaderLogo: string;
+  styleHeaderColor: string;
+  styleHeaderTextColor: string;
 }
 
 export function addGuestParams(query = {}, guestName = "guest") {
@@ -95,6 +97,8 @@ export const CONFIG_DEFAULT: Config = {
   urlGraphql: "/graphql",
   urlVideo: "/video",
   styleHeaderLogo: "",
+  styleHeaderColor: "",
+  styleHeaderTextColor: "",
 };
 
 export function mockConfig(cy, config: Partial<Config> = {}) {

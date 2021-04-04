@@ -8,6 +8,8 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Hidden, Typography } from "@material-ui/core";
 import { Config, MentorData, State } from "types";
+import IconButton from '@material-ui/core/IconButton';
+import InfoIcon from '@material-ui/icons/Info';
 
 function Header(): JSX.Element {
   const curMentor = useSelector<State, string>(state => state.curMentor);
@@ -21,6 +23,15 @@ function Header(): JSX.Element {
   }
   const mentor = mentorsById[curMentor].mentor;
 
+  //Default Colors
+  let backgroundColor:string = "#FFFFFF";
+  let textColor:string = "#000000";
+
+  if(config.styleHeaderColor && config.styleHeaderTextColor) {
+    backgroundColor = config.styleHeaderColor;
+    textColor = config.styleHeaderTextColor;
+  }
+  
   if (config.styleHeaderLogo) {
     return (
       <div
@@ -30,6 +41,8 @@ function Header(): JSX.Element {
           alignItems: "center",
           justifyContent: "center",
           height: 50,
+          backgroundColor: `${backgroundColor}`,
+          color: `${textColor}`,
         }}
       >
         <img
@@ -41,6 +54,9 @@ function Header(): JSX.Element {
             {mentor.name}: {mentor.title}
           </Typography>
         </Hidden>
+        <IconButton aria-label="information" component="span" style={{ position: "absolute", right: "20px", color:`${textColor}`}}>
+          <InfoIcon/>
+        </IconButton> 
       </div>
     );
   }

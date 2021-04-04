@@ -28,7 +28,7 @@ export const wrapRootElement = ({ element }) => (
   </MuiThemeProvider>
 );
 
-export const onRouteUpdate = ({ location, prevLocation }) => {
+/*export const onRouteUpdate = ({ location, prevLocation }) => {
   if (
     typeof window !== "undefined" &&
     !window.location.protocol.toLowerCase().startsWith("https")
@@ -36,4 +36,4 @@ export const onRouteUpdate = ({ location, prevLocation }) => {
     const redirect = `https://${window.location.host}${window.location.pathname}${window.location.search}`;
     window.location.href = redirect;
   }
-};
+};*/

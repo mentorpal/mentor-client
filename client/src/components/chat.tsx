@@ -20,6 +20,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
+import CloseIcon from "@material-ui/icons/Close";
 
 import { giveFeedback, getUtterance } from "api";
 import { Config, Feedback, State, UtteranceName } from "types";
@@ -36,9 +37,10 @@ const useStyles = makeStyles(theme => ({
   avatar: {
     width: theme.spacing(4),
     height: theme.spacing(4),
+    backgroundColor: "#88929e",
   },
   GOOD: {
-    backgroundColor: "#0084ff",
+    backgroundColor: "#00bf00",
   },
   BAD: {
     backgroundColor: "#E63535",
@@ -46,6 +48,10 @@ const useStyles = makeStyles(theme => ({
   icon: {
     position: "absolute",
     right: -40,
+  },
+  feedbackPopup: {
+    borderRadius: "30px",
+    // backgroundColor: "black",
   },
 }));
 
@@ -131,71 +137,78 @@ function ChatItem(props: {
       ) : (
         undefined
       )}
-      <Popover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={handleFeedbackClose}
-        anchorOrigin={{
-          vertical: "center",
-          horizontal: "center",
-        }}
-        transformOrigin={{
-          vertical: "center",
-          horizontal: "center",
-        }}
-        elevation={0}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+        <Popover
+          id="feedback-popup"
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
+          onClose={handleFeedbackClose}
+          anchorOrigin={{
+            vertical: "center",
+            horizontal: "center",
           }}
+          transformOrigin={{
+            vertical: "center",
+            horizontal: "center",
+          }}
+          elevation={0}
+          className={styles.feedbackPopup}
         >
-          <Typography>Did this answer your question?</Typography>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <div
-              onClick={() => {
-                if (message.feedbackId) {
-                  handleSelectFeedback(message.feedbackId, Feedback.GOOD);
-                }
-              }}
-            >
-              <ListItemAvatar>
-                <Avatar className={[styles.avatar, styles.GOOD].join(" ")}>
-                  <ThumbUpIcon />
-                </Avatar>
-              </ListItemAvatar>
-            </div>
-            <div
-              onClick={() => {
-                if (message.feedbackId) {
-                  handleSelectFeedback(message.feedbackId, Feedback.NEUTRAL);
-                }
-              }}
-            >
-              <ListItemAvatar>
-                <Avatar className={styles.avatar}>
-                  <ThumbsUpDownIcon />
-                </Avatar>
-              </ListItemAvatar>
-            </div>
-            <div
-              onClick={() => {
-                if (message.feedbackId) {
-                  handleSelectFeedback(message.feedbackId, Feedback.BAD);
-                }
-              }}
-            >
-              <ListItemAvatar>
-                <Avatar className={[styles.avatar, styles.BAD].join(" ")}>
-                  <ThumbDownIcon />
-                </Avatar>
-              </ListItemAvatar>
+          <div
+            id="feedback-popup-child"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              backgroundColor: "#88929e",
+              borderRadius: "30px",
+              padding: 10,
+              color: "#FFFFFF",
+            }}
+          >
+            <Typography>Did this answer your question?</Typography>
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <div
+                onClick={() => {
+                  if (message.feedbackId) {
+                    handleSelectFeedback(message.feedbackId, Feedback.GOOD);
+                  }
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar className={[styles.avatar, styles.GOOD].join(" ")}>
+                    <ThumbUpIcon />
+                  </Avatar>
+                </ListItemAvatar>
+              </div>
+              <div
+                onClick={() => {
+                  if (message.feedbackId) {
+                    handleSelectFeedback(message.feedbackId, Feedback.NEUTRAL);
+                  }
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar className={styles.avatar}>
+                    <CloseIcon />
+                  </Avatar>
+                </ListItemAvatar>
+              </div>
+              <div
+                onClick={() => {
+                  if (message.feedbackId) {
+                    handleSelectFeedback(message.feedbackId, Feedback.BAD);
+                  }
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar className={[styles.avatar, styles.BAD].join(" ")}>
+                    <ThumbDownIcon />
+                  </Avatar>
+                </ListItemAvatar>
+              </div>
             </div>
           </div>
-        </div>
-      </Popover>
+        </Popover>
     </ListItem>
   );
 }

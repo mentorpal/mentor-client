@@ -34,11 +34,22 @@ const useStyles = makeStyles(theme => ({
     alignItems: "stretch",
     margin: 0,
   },
+  flexFixedChildHeader: {
+    flexGrow: 0,
+  },
   flexFixedChild: {
     flexGrow: 0,
+    width: "100%",
+    maxWidth: 1366,
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   flexExpandChild: {
     flexGrow: 1,
+    width: "100%",
+    maxWidth: 1366,
+    marginLeft: "auto",
+    marginRight: "auto",
   },
 }));
 
@@ -184,7 +195,7 @@ function IndexPage(props: {
 
   return (
     <div className={styles.flexRoot} style={{ height: windowHeight }}>
-      <div className={styles.flexFixedChild}>
+      <div className={styles.flexFixedChildHeader}>
         <VideoPanel />
         <Header />
       </div>
