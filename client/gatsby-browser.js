@@ -15,7 +15,7 @@ import store from "store/reducer";
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#1b6a9c",
+      main: "#000000",
     },
   },
 });
@@ -23,9 +23,9 @@ const theme = createMuiTheme({
 const storeObj = createStore(store, applyMiddleware(...[thunk]));
 
 export const wrapRootElement = ({ element }) => (
-  <MuiThemeProvider theme={theme}>
+  // <MuiThemeProvider theme={theme}>
     <Provider store={storeObj}>{element}</Provider>
-  </MuiThemeProvider>
+  // </MuiThemeProvider>
 );
 
 /*export const onRouteUpdate = ({ location, prevLocation }) => {

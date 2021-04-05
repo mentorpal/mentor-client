@@ -6,7 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Cmi5 from "@xapi/cmi5";
 import { hasCmi } from "cmiutils";
@@ -26,6 +26,17 @@ import { Config, LoadStatus, MentorData, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
 
+
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#000000",
+    },
+  },
+});
+
 const useStyles = makeStyles(theme => ({
   flexRoot: {
     display: "flex",
@@ -38,8 +49,9 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 0,
   },
   flexFixedChild: {
+    marginTop: 10,
     flexGrow: 0,
-    width: "100%",
+    width: "calc(100% - 10px)",
     maxWidth: 1366,
     marginLeft: "auto",
     marginRight: "auto",
@@ -51,6 +63,28 @@ const useStyles = makeStyles(theme => ({
     marginLeft: "auto",
     marginRight: "auto",
   },
+  loadingWindow: {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    textAlign: "center",
+    height: 200,
+  },
+  loadingContent: {
+    position: "relative",
+  },
+  loadingIndicatorContent: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+
+  },
+  loadingImage: {
+    width: 100,
+    display: "block",
+  }
 }));
 
 const useResize = (myRef: any) => {
@@ -113,6 +147,9 @@ function IndexPage(props: {
   function isConfigLoadComplete(s: LoadStatus): boolean {
     return s === LoadStatus.LOADED || s === LoadStatus.LOAD_FAILED;
   }
+
+  //Load Theme
+  theme.palette.primary.main = config.styleHeaderColor;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -187,13 +224,20 @@ function IndexPage(props: {
 
   if (!isConfigLoadComplete(configLoadStatus) || !curMentor) {
     return (
-      <div>
-        <CircularProgress id="loading" />
+      <div className={styles.loadingWindow}>
+        <div className={styles.loadingContent}>
+          <CircularProgress id="loading" color="primary" size={150}/>
+          <div className={styles.loadingIndicatorContent}>
+          <img className={styles.loadingImage} src="http://scf.usc.edu/~jtyner/itp104/img/usc-shield.png"></img>
+          </div>
+          {/* <Typography>Loading...</Typography> */}
+        </div>
       </div>
     );
   }
 
   return (
+    <MuiThemeProvider theme={theme}>
     <div className={styles.flexRoot} style={{ height: windowHeight }}>
       <div className={styles.flexFixedChildHeader}>
         <VideoPanel />
@@ -212,6 +256,7 @@ function IndexPage(props: {
       </div>
       {!hasSessionUser() ? <GuestPrompt /> : undefined}
     </div>
+    </MuiThemeProvider>
   );
 }
 

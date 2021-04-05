@@ -8,8 +8,16 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Hidden, Typography } from "@material-ui/core";
 import { Config, MentorData, State } from "types";
-import IconButton from '@material-ui/core/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
+import IconButton from "@material-ui/core/IconButton";
+import InfoIcon from "@material-ui/icons/Info";
+import Button from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { TrainRounded } from "@material-ui/icons";
+import useLocalStorage from "use-local-storage";
 
 function Header(): JSX.Element {
   const curMentor = useSelector<State, string>(state => state.curMentor);
@@ -23,15 +31,28 @@ function Header(): JSX.Element {
   }
   const mentor = mentorsById[curMentor].mentor;
 
-  //Default Colors
-  let backgroundColor:string = "#FFFFFF";
-  let textColor:string = "#000000";
+  const [acceptedTerms, setAcceptedTerms] = useLocalStorage('acceptedTerms', 'false');
+  //Check if user agreed to TOS, if not present dialog by setting default state
+  const [open, setOpen] = React.useState(acceptedTerms!=='true');
 
-  if(config.styleHeaderColor && config.styleHeaderTextColor) {
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleAgree = () => {
+    setAcceptedTerms('true');
+    setOpen(false);
+  };
+
+  //Default Colors
+  let backgroundColor: string = "#FFFFFF";
+  let textColor: string = "#000000";
+
+  if (config.styleHeaderColor && config.styleHeaderTextColor) {
     backgroundColor = config.styleHeaderColor;
     textColor = config.styleHeaderTextColor;
   }
-  
+
   if (config.styleHeaderLogo) {
     return (
       <div
@@ -54,9 +75,35 @@ function Header(): JSX.Element {
             {mentor.name}: {mentor.title}
           </Typography>
         </Hidden>
-        <IconButton aria-label="information" component="span" style={{ position: "absolute", right: "20px", color:`${textColor}`}}>
-          <InfoIcon/>
-        </IconButton> 
+        <IconButton
+          aria-label="information"
+          component="span"
+          style={{ position: "absolute", right: "20px", color: `${textColor}` }}
+          onClick={handleClickOpen}
+        >
+          <InfoIcon />
+        </IconButton>
+        <Dialog
+          disableBackdropClick
+          disableEscapeKeyDown
+          open={open}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"USC Privacy Policy"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam felis ex, tempor eget velit id, fringilla interdum nisl. Aliquam erat volutpat. Duis eu suscipit dolor, quis varius ex. Proin tincidunt mollis dictum. Sed porta elit sapien, id ultrices tortor venenatis porttitor. Nam ut egestas magna. Nunc at neque a enim aliquet efficitur vitae in odio. Mauris sollicitudin pulvinar vestibulum. Nunc gravida tellus in diam maximus rutrum. Vivamus mi tellus, convallis at commodo nec, consequat non velit. Nulla id diam nibh. Mauris lectus enim, consectetur nec aliquam vitae, auctor non odio. Curabitur eleifend sagittis neque, id ornare odio mollis eget. Cras dictum enim nec eleifend fringilla. Ut in bibendum quam. Suspendisse ultricies, orci id blandit faucibus, neque ligula sodales mi, vitae tristique arcu erat volutpat libero.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleAgree} color="primary">
+              I Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
