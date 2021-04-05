@@ -10,12 +10,12 @@ import { Hidden, Typography } from "@material-ui/core";
 import { Config, MentorData, State } from "types";
 import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from "@material-ui/icons/Info";
-import Button from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from "@material-ui/core/DialogTitle";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import { TrainRounded } from "@material-ui/icons";
 import useLocalStorage from "use-local-storage";
 
@@ -31,16 +31,19 @@ function Header(): JSX.Element {
   }
   const mentor = mentorsById[curMentor].mentor;
 
-  const [acceptedTerms, setAcceptedTerms] = useLocalStorage('acceptedTerms', 'false');
+  const [acceptedTerms, setAcceptedTerms] = useLocalStorage(
+    "acceptedTerms",
+    "false"
+  );
   //Check if user agreed to TOS, if not present dialog by setting default state
-  const [open, setOpen] = React.useState(acceptedTerms!=='true');
+  const [open, setOpen] = React.useState(acceptedTerms !== "true");
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
   const handleAgree = () => {
-    setAcceptedTerms('true');
+    setAcceptedTerms("true");
     setOpen(false);
   };
 
@@ -95,7 +98,20 @@ function Header(): JSX.Element {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam felis ex, tempor eget velit id, fringilla interdum nisl. Aliquam erat volutpat. Duis eu suscipit dolor, quis varius ex. Proin tincidunt mollis dictum. Sed porta elit sapien, id ultrices tortor venenatis porttitor. Nam ut egestas magna. Nunc at neque a enim aliquet efficitur vitae in odio. Mauris sollicitudin pulvinar vestibulum. Nunc gravida tellus in diam maximus rutrum. Vivamus mi tellus, convallis at commodo nec, consequat non velit. Nulla id diam nibh. Mauris lectus enim, consectetur nec aliquam vitae, auctor non odio. Curabitur eleifend sagittis neque, id ornare odio mollis eget. Cras dictum enim nec eleifend fringilla. Ut in bibendum quam. Suspendisse ultricies, orci id blandit faucibus, neque ligula sodales mi, vitae tristique arcu erat volutpat libero.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+              felis ex, tempor eget velit id, fringilla interdum nisl. Aliquam
+              erat volutpat. Duis eu suscipit dolor, quis varius ex. Proin
+              tincidunt mollis dictum. Sed porta elit sapien, id ultrices tortor
+              venenatis porttitor. Nam ut egestas magna. Nunc at neque a enim
+              aliquet efficitur vitae in odio. Mauris sollicitudin pulvinar
+              vestibulum. Nunc gravida tellus in diam maximus rutrum. Vivamus mi
+              tellus, convallis at commodo nec, consequat non velit. Nulla id
+              diam nibh. Mauris lectus enim, consectetur nec aliquam vitae,
+              auctor non odio. Curabitur eleifend sagittis neque, id ornare odio
+              mollis eget. Cras dictum enim nec eleifend fringilla. Ut in
+              bibendum quam. Suspendisse ultricies, orci id blandit faucibus,
+              neque ligula sodales mi, vitae tristique arcu erat volutpat
+              libero.
             </DialogContentText>
           </DialogContent>
           <DialogActions>

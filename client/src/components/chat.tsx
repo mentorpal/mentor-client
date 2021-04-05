@@ -137,78 +137,78 @@ function ChatItem(props: {
       ) : (
         undefined
       )}
-        <Popover
-          id="feedback-popup"
-          open={Boolean(anchorEl)}
-          anchorEl={anchorEl}
-          onClose={handleFeedbackClose}
-          anchorOrigin={{
-            vertical: "center",
-            horizontal: "center",
+      <Popover
+        id="feedback-popup"
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handleFeedbackClose}
+        anchorOrigin={{
+          vertical: "center",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "center",
+          horizontal: "center",
+        }}
+        elevation={0}
+        className={styles.feedbackPopup}
+      >
+        <div
+          id="feedback-popup-child"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            backgroundColor: "#88929e",
+            borderRadius: "30px",
+            padding: 10,
+            color: "#FFFFFF",
           }}
-          transformOrigin={{
-            vertical: "center",
-            horizontal: "center",
-          }}
-          elevation={0}
-          className={styles.feedbackPopup}
         >
-          <div
-            id="feedback-popup-child"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              backgroundColor: "#88929e",
-              borderRadius: "30px",
-              padding: 10,
-              color: "#FFFFFF",
-            }}
-          >
-            <Typography>Did this answer your question?</Typography>
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <div
-                onClick={() => {
-                  if (message.feedbackId) {
-                    handleSelectFeedback(message.feedbackId, Feedback.GOOD);
-                  }
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar className={[styles.avatar, styles.GOOD].join(" ")}>
-                    <ThumbUpIcon />
-                  </Avatar>
-                </ListItemAvatar>
-              </div>
-              <div
-                onClick={() => {
-                  if (message.feedbackId) {
-                    handleSelectFeedback(message.feedbackId, Feedback.NEUTRAL);
-                  }
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar className={styles.avatar}>
-                    <CloseIcon />
-                  </Avatar>
-                </ListItemAvatar>
-              </div>
-              <div
-                onClick={() => {
-                  if (message.feedbackId) {
-                    handleSelectFeedback(message.feedbackId, Feedback.BAD);
-                  }
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar className={[styles.avatar, styles.BAD].join(" ")}>
-                    <ThumbDownIcon />
-                  </Avatar>
-                </ListItemAvatar>
-              </div>
+          <Typography>Did this answer your question?</Typography>
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <div
+              onClick={() => {
+                if (message.feedbackId) {
+                  handleSelectFeedback(message.feedbackId, Feedback.GOOD);
+                }
+              }}
+            >
+              <ListItemAvatar>
+                <Avatar className={[styles.avatar, styles.GOOD].join(" ")}>
+                  <ThumbUpIcon />
+                </Avatar>
+              </ListItemAvatar>
+            </div>
+            <div
+              onClick={() => {
+                if (message.feedbackId) {
+                  handleSelectFeedback(message.feedbackId, Feedback.NEUTRAL);
+                }
+              }}
+            >
+              <ListItemAvatar>
+                <Avatar className={styles.avatar}>
+                  <CloseIcon />
+                </Avatar>
+              </ListItemAvatar>
+            </div>
+            <div
+              onClick={() => {
+                if (message.feedbackId) {
+                  handleSelectFeedback(message.feedbackId, Feedback.BAD);
+                }
+              }}
+            >
+              <ListItemAvatar>
+                <Avatar className={[styles.avatar, styles.BAD].join(" ")}>
+                  <ThumbDownIcon />
+                </Avatar>
+              </ListItemAvatar>
             </div>
           </div>
-        </Popover>
+        </div>
+      </Popover>
     </ListItem>
   );
 }

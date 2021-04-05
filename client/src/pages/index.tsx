@@ -26,7 +26,6 @@ import { Config, LoadStatus, MentorData, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
 
-
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
 const theme = createMuiTheme({
@@ -79,12 +78,11 @@ const useStyles = makeStyles(theme => ({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-
   },
   loadingImage: {
     width: 100,
     display: "block",
-  }
+  },
 }));
 
 const useResize = (myRef: any) => {
@@ -226,9 +224,12 @@ function IndexPage(props: {
     return (
       <div className={styles.loadingWindow}>
         <div className={styles.loadingContent}>
-          <CircularProgress id="loading" color="primary" size={150}/>
+          <CircularProgress id="loading" color="primary" size={150} />
           <div className={styles.loadingIndicatorContent}>
-          <img className={styles.loadingImage} src="http://scf.usc.edu/~jtyner/itp104/img/usc-shield.png"></img>
+            <img
+              className={styles.loadingImage}
+              src="http://scf.usc.edu/~jtyner/itp104/img/usc-shield.png"
+            ></img>
           </div>
           {/* <Typography>Loading...</Typography> */}
         </div>
@@ -238,24 +239,24 @@ function IndexPage(props: {
 
   return (
     <MuiThemeProvider theme={theme}>
-    <div className={styles.flexRoot} style={{ height: windowHeight }}>
-      <div className={styles.flexFixedChildHeader}>
-        <VideoPanel />
-        <Header />
+      <div className={styles.flexRoot} style={{ height: windowHeight }}>
+        <div className={styles.flexFixedChildHeader}>
+          <VideoPanel />
+          <Header />
+        </div>
+        <div className={styles.flexExpandChild}>
+          {Object.keys(mentorsById).length < 2 ||
+          mentorsById[curMentor].mentor.mentorType === MentorType.CHAT ? (
+            <Chat height={chatHeight} />
+          ) : (
+            <Video playing={hasSessionUser()} />
+          )}
+        </div>
+        <div className={styles.flexFixedChild}>
+          <Input />
+        </div>
+        {!hasSessionUser() ? <GuestPrompt /> : undefined}
       </div>
-      <div className={styles.flexExpandChild}>
-        {Object.keys(mentorsById).length < 2 ||
-        mentorsById[curMentor].mentor.mentorType === MentorType.CHAT ? (
-          <Chat height={chatHeight} />
-        ) : (
-          <Video playing={hasSessionUser()} />
-        )}
-      </div>
-      <div className={styles.flexFixedChild}>
-        <Input />
-      </div>
-      {!hasSessionUser() ? <GuestPrompt /> : undefined}
-    </div>
     </MuiThemeProvider>
   );
 }
