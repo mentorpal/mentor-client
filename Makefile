@@ -1,6 +1,9 @@
 DOCKER_IMAGE?=mentor-client
 TEST_E2E_DOCKER_COMPOSE=docker-compose
 
+node_modules/license-check-and-add:
+	npm ci
+
 PHONY: clean
 clean:
 	cd client && $(MAKE) clean
@@ -59,14 +62,12 @@ LICENSE_HEADER:
 	exit 1
 
 .PHONY: license
-license: LICENSE LICENSE_HEADER
-	cd client && npm ci && npm run license:fix
-	cd docker && npm ci && npm run license:fix
+license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
+	npm ci && npm run license:fix
 
 .PHONY: test-license
-test-license: LICENSE LICENSE_HEADER
-	cd client && npm ci && npm run test:license
-	cd docker && npm ci && npm run test:license
+test-license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
+	npm run test:license
 
 .PHONY: test-e2e
 test-e2e:
