@@ -6,18 +6,19 @@ The full terms of this copyright and license should always be found in the root 
 */
 import { mockConfig } from "../support/helpers";
 import { mockDefaultSetup } from "../support/helpers";
+const clint_video = require("../fixtures/clint-video.json");
 
 describe("Chat", () => {
-  it("does not show if config.modeDefault is video", () => {
+  it("does not show if mentor type is video", () => {
     mockDefaultSetup(cy, {
       mentorsDefault: ["clint"],
-    });
+    }, [clint_video]);
     cy.visit("/");
     cy.get("#video-container").should("exist");
     cy.get("#chat-thread").should("not.exist");
   });
 
-  it("replaces video config.modeDefault is chat", () => {
+  it("replaces video if mentor type is chat", () => {
     mockDefaultSetup(cy, { mentorsDefault: ["clint"] });
     cy.viewport("iphone-x");
     cy.visit("/");

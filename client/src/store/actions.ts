@@ -211,6 +211,7 @@ export const loadMentor: ActionCreator<ThunkAction<
     });
     for (const mentorId of mentors) {
       let result = await fetchMentor(config, mentorId, subject);
+      console.log(result);
       if (result.status === 200) {
         let mentor: Mentor = result.data.data!.mentor;
         if (mentors.length > 1 && mentor.mentorType === MentorType.CHAT) {
