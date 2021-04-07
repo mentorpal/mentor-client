@@ -4,6 +4,36 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
+
+export enum Feedback {
+  GOOD = "GOOD",
+  BAD = "BAD",
+  NEUTRAL = "NEUTRAL",
+}
+
+export enum LoadStatus {
+  NONE = "NONE",
+  LOAD_IN_PROGRESS = "LOAD_IN_PROGRESS",
+  LOADED = "LOADED",
+  LOAD_FAILED = "LOAD_FAILED",
+}
+
+export const MODE_CHAT = "chat";
+export const MODE_VIDEO = "video";
+export type Mode = typeof MODE_CHAT | typeof MODE_VIDEO;
+
+export interface Config {
+  cmi5Enabled: boolean;
+  cmi5Endpoint: string;
+  cmi5Fetch: string;
+  mentorsDefault: string[];
+  modeDefault: Mode;
+  urlClassifier: string;
+  urlGraphql: string;
+  urlVideo: string;
+  styleHeaderLogo: string;
+}
+
 export enum MentorQuestionStatus {
   NONE = "NONE",
   ANSWERED = "ANSWERED",
@@ -59,6 +89,7 @@ export interface MentorData {
   answer_text?: string;
   answerDuration: number;
   answerReceivedAt?: Date;
+  answerFeedbackId?: string;
   classifier?: string;
   confidence?: number;
   id: string;
@@ -98,6 +129,8 @@ export interface QuestionResult {
 }
 
 export interface State {
+  config: Config;
+  configLoadStatus: LoadStatus;
   curMentor: string; // id of selected mentor
   curMentorReason: MentorSelectReason;
   curQuestion: string; // question that was last asked
@@ -106,9 +139,7 @@ export interface State {
   curTopic: string; // topic to show questions for
   mentorFaved: string; // id of the preferred mentor
   isIdle: boolean;
-  mentorsById: {
-    [mentor: string]: MentorData;
-  };
+  mentorsById: Record<string, MentorData>;
   mentorNext: string; // id of the next mentor to speak after the current finishes
   questionsAsked: string[];
   guestName: string;
@@ -121,6 +152,7 @@ export interface QuestionResponse {
   answerConfidence: number;
   answerIsOffTopic: boolean;
   answerResponseTimeSecs: number;
+  answerFeedbackId: string;
   mentor: string;
   question: string;
   questionSource: MentorQuestionSource;

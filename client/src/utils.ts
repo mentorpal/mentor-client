@@ -4,17 +4,19 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React from "react";
-import { useSelector } from "react-redux";
+export function normalizeString(s: string): string {
+  return s
+    .replace(/\W+/g, "")
+    .normalize()
+    .toLowerCase();
+}
 
-const Header = () => {
-  const mentor = useSelector(state => state.mentorsById[state.curMentor]);
-
-  return (
-    <div id="header">
-      {mentor ? `${mentor.name}: ${mentor.title}` : undefined}
-    </div>
-  );
-};
-
-export default Header;
+export function chromeVersion(): number {
+  // eslint-disable-next-line no-undef
+  if (typeof navigator === `undefined`) {
+    return 0;
+  }
+  // eslint-disable-next-line no-undef
+  const raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
+  return raw ? parseInt(raw[2], 10) : 0;
+}

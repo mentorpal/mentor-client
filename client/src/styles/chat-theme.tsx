@@ -4,19 +4,9 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-export const normalizeString = str => {
-  return str
-    .replace(/\W+/g, "")
-    .normalize()
-    .toLowerCase();
-};
+import React from "react";
+import "styles/chat.css";
 
-export const chromeVersion = () => {
-  // eslint-disable-next-line no-undef
-  if (typeof navigator === `undefined`) {
-    return false;
-  }
-  // eslint-disable-next-line no-undef
-  const raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
-  return raw ? parseInt(raw[2], 10) : false;
-};
+const Theme = () => <React.Fragment></React.Fragment>;
+
+export default Theme;

@@ -20,8 +20,9 @@ describe("Mentor panel", () => {
         cy.get("#video-panel").should("not.exist");
     });
 
-    it("displays 4 default mentors if no mentors specified", () => {
+    it("displays 4 default mentors if no mentors specified and DEFAULT_MENTORS is set to clint,dan,carlos,julianne", () => {
         mockDefaultSetup(cy);
+        cy.intercept("**/config", { DEFAULT_MENTORS: "clint,dan,carlos,julianne" });
         cy.visit("/");
         cy.get("#video-panel").get("#video-thumbnail-clint");
         cy.get("#video-panel").get("#video-thumbnail-dan");
@@ -41,12 +42,10 @@ describe("Mentor panel", () => {
         cy.get("#header").contains(
             "JD Thomas: NPS Student, Lieutenant, AOPS and ASWO"
         );
-
         cy.get("#video-thumbnail-mario-pais").trigger('mouseover').click();
         cy.get("#header").contains(
             "Mario Pais: Senior Chief, Lead NECC UMS Instructor"
         );
-
         cy.get("#video-thumbnail-dan-burns").trigger('mouseover').click();
         cy.get("#header").contains("Dan Burns: Captain (Retired), Chief Engineer");
     });
@@ -54,8 +53,6 @@ describe("Mentor panel", () => {
     it("picking a mentor sets them as faved", () => {
         mockDefaultSetup(cy);
         cy.visit("/");
-        cy.get("#guest-prompt-input").type("guest");
-        cy.get("#guest-prompt-input-send").trigger('mouseover').click();
         cy.get("#video-panel")
             .get("#video-thumbnail-dan")
             .trigger('mouseover').click();

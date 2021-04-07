@@ -4,26 +4,22 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { withPrefix } from "gatsby";
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet";
 import { useSelector, useDispatch } from "react-redux";
-import { v1 as uuidv1 } from "uuid";
 import { CircularProgress } from "@material-ui/core";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import Cmi5 from "@xapi/cmi5";
-
-import { addCmi, hasCmi } from "cmiutils";
-import config from "config";
+import { hasCmi } from "cmiutils";
+import Chat from "components/chat";
 import GuestPrompt from "components/guest-prompt";
 import Header from "components/header";
 import Input from "components/input";
 import Video from "components/video";
 import VideoPanel from "components/video-panel";
-import { loadMentor, setGuestName } from "store/actions";
+import { loadConfig, loadMentor, setGuestName } from "store/actions";
 import withLocation from "wrap-with-location";
-
 import "styles/layout.css";
+import { Config, LoadStatus, MentorData, MODE_CHAT, State } from "store/types";
 
 const theme = createMuiTheme({
   palette: {
@@ -33,28 +29,50 @@ const theme = createMuiTheme({
   },
 });
 
-const IndexPage = ({ search }) => {
+interface IndexSearch {
+  guest: string;
+  mentor: string[];
+  recommended: string[];
+}
+
+interface IndexParams {
+  search: IndexSearch;
+}
+
+const IndexPage = (props: IndexParams) => {
   const dispatch = useDispatch();
-  const mentorsById = useSelector(state => state.mentorsById);
-  const guestName = useSelector(state => state.guestName);
+  const config = useSelector<State, Config>(state => state.config);
+  const configLoadStatus = useSelector<State, LoadStatus>(
+    state => state.configLoadStatus
+  );
+  const mentorsById = useSelector<State, Record<string, MentorData>>(
+    state => state.mentorsById
+  );
+  const guestName = useSelector<State, string>(state => state.guestName);
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
-  const { recommended, mentor, guest } = search;
+  const { recommended, mentor, guest } = props.search;
 
+  const hidePanel = Object.getOwnPropertyNames(mentorsById).length < 2;
   const isMobile = width < 768;
-  const videoHeight = isMobile ? height * 0.5 : Math.min(width * 0.5625, 700);
+  const videoHeight = isMobile
+    ? height * 0.5
+    : Math.min(width * 0.5625, height * 0.7);
   const inputHeight = isMobile
     ? height * 0.5
-    : Math.max(height - videoHeight, 250);
+    : Math.max(height - videoHeight, 300);
+  const headerHeight = hidePanel || config.modeDefault === MODE_CHAT ? 50 : 100;
 
-  let globalWindow;
+  let globalWindow: Window;
   if (typeof window !== "undefined") {
     globalWindow = window; // eslint-disable-line no-undef
   }
 
   function hasSessionUser() {
     return Boolean(
-      (globalWindow && hasCmi(globalWindow.location.search)) || guestName
+      !config.cmi5Enabled ||
+        (globalWindow && hasCmi(globalWindow.location.search)) ||
+        guestName
     );
   }
 
@@ -66,57 +84,21 @@ const IndexPage = ({ search }) => {
     setWidth(globalWindow.innerWidth);
   }
 
-  function setQueryStringWithoutPageReload(qsValue) {
-    let url = `${window.location.protocol}//${window.location.host}${window.location.pathname}${window.location.search}`;
-    if (window.location.search) {
-      url += `&guest=${qsValue}`;
-    } else {
-      url += `?guest=${qsValue}`;
-    }
-    window.history.pushState({ path: url }, "", url);
-  }
-
-  function absUrl(u) {
-    if (!globalWindow) {
-      return u;
-    }
-    return u.startsWith("http")
-      ? u
-      : `${window.location.protocol}//${window.location.host}${
-          u.startsWith("/") ? "" : "/"
-        }${u}`;
-  }
-
-  function onGuestNameEntered(name) {
-    if (!name) {
-      name = "guest";
-    }
-    if (!globalWindow) {
-      setQueryStringWithoutPageReload(name);
-      dispatch(setGuestName(name));
-      return;
-    }
-    const urlRoot = `${window.location.protocol}//${window.location.host}`;
-    const userId = uuidv1();
-    globalWindow.location.href = addCmi(globalWindow.location.href, {
-      activityId: globalWindow.location.href,
-      actor: {
-        name: `${name}`,
-        account: {
-          name: `${userId}`,
-          homePage: `${urlRoot}/guests`,
-        },
-      },
-      endpoint: absUrl(config.CMI5_ENDPOINT),
-      fetch: `${absUrl(config.CMI5_FETCH)}${
-        config.CMI5_FETCH.includes("?") ? "" : "?"
-      }&username=${encodeURIComponent(name)}&userid=${userId}`,
-      registration: uuidv1(),
-    });
+  function isConfigLoadComplete(s: LoadStatus) {
+    return s === LoadStatus.LOADED || s === LoadStatus.LOAD_FAILED;
   }
 
   useEffect(() => {
-    if (Cmi5.isCmiAvailable) {
+    if (configLoadStatus === LoadStatus.NONE) {
+      dispatch(loadConfig());
+    }
+  }, [configLoadStatus]);
+
+  useEffect(() => {
+    if (!isConfigLoadComplete(configLoadStatus)) {
+      return;
+    }
+    if (config.cmi5Enabled && Cmi5.isCmiAvailable) {
       try {
         Cmi5.instance.initialize().catch(e => {
           console.error(e);
@@ -125,23 +107,26 @@ const IndexPage = ({ search }) => {
         console.error(err2);
       }
     }
-  }, []);
+  }, [configLoadStatus]);
 
   useEffect(() => {
+    if (!isConfigLoadComplete(configLoadStatus)) {
+      return;
+    }
     const mentorList = mentor
       ? Array.isArray(mentor)
         ? mentor
         : [mentor]
-      : ["clint", "dan", "carlos", "julianne"];
+      : config.mentorsDefault;
     dispatch(
-      loadMentor(mentorList, {
+      loadMentor(config, mentorList, {
         recommendedQuestions: recommended,
       })
     );
     if (guest) {
       dispatch(setGuestName(guest));
     }
-  }, [mentor, recommended, guest]);
+  }, [configLoadStatus, mentor, recommended, guest]);
 
   useEffect(() => {
     // Media queries for layout
@@ -153,40 +138,44 @@ const IndexPage = ({ search }) => {
     };
   }, []);
 
-  if (mentorsById === {} || height === 0 || width === 0) {
-    return <CircularProgress />;
+  if (
+    !isConfigLoadComplete(configLoadStatus) ||
+    mentorsById === {} ||
+    height === 0 ||
+    width === 0
+  ) {
+    return (
+      <div>
+        <CircularProgress id="loading" />
+      </div>
+    );
   }
-
-  const hidePanel = Object.getOwnPropertyNames(mentorsById).length < 2;
 
   return (
     <MuiThemeProvider theme={theme}>
-      <Helmet>
-        <script src={withPrefix("cmi5.js")} type="text/javascript" />
-      </Helmet>
       <div className="flex" style={{ height: videoHeight }}>
-        {hidePanel ? (
-          undefined
-        ) : (
-          <div className="content" style={{ height: "100px" }}>
+        <div className="content" style={{ height: headerHeight }}>
+          {hidePanel || config.modeDefault === MODE_CHAT ? (
+            undefined
+          ) : (
             <VideoPanel isMobile={isMobile} />
-            <Header />
-          </div>
-        )}
+          )}
+          <Header />
+        </div>
         <div className="expand">
-          <Video
-            height={videoHeight - (hidePanel ? 0 : 100)}
-            width={width}
-            playing={hasSessionUser()}
-          />
+          {config.modeDefault === MODE_CHAT ? (
+            <Chat height={videoHeight - headerHeight} />
+          ) : (
+            <Video
+              height={videoHeight - headerHeight}
+              width={width}
+              playing={hasSessionUser()}
+            />
+          )}
         </div>
       </div>
       <Input height={inputHeight} />
-      {!hasSessionUser() ? (
-        <GuestPrompt submit={onGuestNameEntered} />
-      ) : (
-        undefined
-      )}
+      {!hasSessionUser() ? <GuestPrompt /> : undefined}
     </MuiThemeProvider>
   );
 };
