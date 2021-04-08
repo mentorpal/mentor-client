@@ -36,7 +36,7 @@ jobs:
       - name: Docker - lint
         run: cd docker && npm run test:lint
   test-license:
-    name: test client
+    name: test license
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
