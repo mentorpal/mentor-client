@@ -4,20 +4,19 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { mockDefaultSetup, addGuestParams } from "../support/helpers";
+import { mockDefaultSetup, addGuestParams, visitAsGuestWithDefaultSetup } from "../support/helpers";
 
 describe("Favorite", () => {
     it("is not toggled by default", () => {
-        mockDefaultSetup(cy);
-        cy.visit("/", { qs: addGuestParams() });
+        visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#fave-button")
             .invoke("attr", "style")
             .should("contain", "grey");
     });
 
     it("can be toggled", () => {
-        mockDefaultSetup(cy);
-        cy.visit("/", { qs: addGuestParams() });
+        visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#video-thumbnail-julianne").should("have.attr", "data-ready", "true")
         cy.get("#fave-button").trigger('mouseover').click();
         cy.get("#fave-button")
             .invoke("attr", "style")

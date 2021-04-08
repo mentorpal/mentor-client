@@ -21,13 +21,6 @@ import { Config, MentorData, State } from "types";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
-interface VideoState {
-  answerId: string;
-  idleVideoId: string;
-  isIdle: boolean;
-  mentor: string;
-}
-
 function Video(args: { playing?: boolean }) {
   const { playing = false } = args;
   const dispatch = useDispatch();
