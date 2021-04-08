@@ -26,7 +26,7 @@ import { Config, LoadStatus, MentorData, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   flexRoot: {
     display: "flex",
     flexFlow: "column nowrap",

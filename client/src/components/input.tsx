@@ -14,7 +14,7 @@ import Questions from "components/questions";
 import { sendQuestion, onInput } from "store/actions";
 import { Config, MentorQuestionSource, State } from "types";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
     alignItems: "center",
