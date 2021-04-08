@@ -8,7 +8,7 @@ import {
   mockDefaultSetup,
 } from "../support/helpers";
 
-describe.only("plays a video in response to a user question", () => {
+describe("plays a video in response to a user question", () => {
   it("plays a mentor response and displays subtitles", () => {
     mockDefaultSetup(cy);
     cy.viewport("iphone-x");

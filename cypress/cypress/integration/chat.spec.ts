@@ -26,7 +26,6 @@ describe("Chat", () => {
     cy.get("#scrolling-questions-list").contains(
       "What are the symptoms of COVID-19?"
     );
-
     cy.get("#chat-thread").should("exist");
     cy.get("#video-container").should("not.exist");
     cy.get("#chat-msg-0").contains("I am a COVID-19 chat bot, you can ask me about COVID-19.");

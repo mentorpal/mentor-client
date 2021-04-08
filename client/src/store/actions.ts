@@ -213,10 +213,6 @@ export const loadMentor: ActionCreator<ThunkAction<
       let result = await fetchMentor(config, mentorId);
       if (result.status === 200) {
         const mentor: Mentor = result.data.data!.mentor;
-        // don't include chat-only mentors in mentorpanel
-        if (mentors.length > 1 && mentor.mentorType === MentorType.CHAT) {
-          continue;
-        }
         subjectId = subjectId || mentor.defaultSubject?._id;
         const subject = mentor.subjects.find(s => s._id === subjectId);
         const topics = subject ? subject.topics : mentor.topics;
