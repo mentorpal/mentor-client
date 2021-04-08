@@ -26,12 +26,6 @@ node_modules/eslint:
 node_modules/gatsby-cli:
 	npm ci 
 
-node_modules/jest:
-	npm ci 
-
-node_modules/jest:
-	npm ci 
-
 node_modules/prettier:
 	npm ci 
 
@@ -39,7 +33,7 @@ node_modules/typescript:
 	npm ci 
 
 .PHONY: test
-test: node_modules/jest
+test:
 	npm run test
 
 PHONY: test-all
