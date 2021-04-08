@@ -23,7 +23,7 @@ describe("History", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field").type("Hello");
         cy.get("#input-send").trigger('mouseover').click();
-        cy.get("#topic-8").trigger('mouseover').click();
+        cy.get("#topic-2").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").contains("Hello");
     });
 
@@ -32,7 +32,7 @@ describe("History", () => {
         cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#input-send").trigger('mouseover').click();
-        cy.get("#topic-8").trigger('mouseover').click();
+        cy.get("#topic-2").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").contains("Where were you born?");
     });
 
@@ -40,7 +40,7 @@ describe("History", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field").type("Hello");
         cy.get("#input-send").trigger('mouseover').click();
-        cy.get("#topic-8").trigger('mouseover').click();
+        cy.get("#topic-2").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").get("li").first().contains("Hello");
         cy.get("#input-field").type("World");
         cy.get("#input-send").trigger('mouseover').click();
@@ -51,7 +51,7 @@ describe("History", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field").type("Hello");
         cy.get("#input-send").trigger('mouseover').click();
-        cy.get("#topic-8").trigger('mouseover').click();
+        cy.get("#topic-2").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").contains("Hello");
         cy.get("#input-field").type("World");
         cy.get("#input-send").trigger('mouseover').click();

@@ -4,60 +4,43 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { toGuestUrl, mockDefaultSetup } from "../support/helpers";
+import { mockDefaultSetup, mockConfig, mockMentorData } from "../support/helpers";
+
+const clint = require("../fixtures/clint.json");
+const carlos = require("../fixtures/carlos.json");
+const covid = require("../fixtures/covid.json");
 
 describe("Mentor panel", () => {
 
     it("shows if there is more than one mentor", () => {
         mockDefaultSetup(cy);
-        cy.visit(toGuestUrl("/?mentor=clint&mentor=dan"));
+        cy.visit("/?mentor=clint&mentor=carlos");
         cy.get("#video-panel");
     });
 
     it("is hidden if there is only one mentor", () => {
         mockDefaultSetup(cy);
-        cy.visit(toGuestUrl("/?mentor=clint"));
+        cy.visit("/?mentor=clint");
         cy.get("#video-panel").should("not.exist");
     });
 
-    it("displays 4 default mentors if no mentors specified and DEFAULT_MENTORS is set to clint,dan,carlos,julianne", () => {
+    it("displays default mentors if no mentors specified and DEFAULT_MENTORS is set", () => {
         mockDefaultSetup(cy);
-        cy.intercept("**/config", { DEFAULT_MENTORS: "clint,dan,carlos,julianne" });
+        cy.intercept("**/config", { DEFAULT_MENTORS: ["clint", "carlos", "julianne"] });
         cy.visit("/");
         cy.get("#video-panel").get("#video-thumbnail-clint");
-        cy.get("#video-panel").get("#video-thumbnail-dan");
         cy.get("#video-panel").get("#video-thumbnail-carlos");
         cy.get("#video-panel").get("#video-thumbnail-julianne");
-    });
-
-    it("loads and displays chosen mentors if mentors specified", () => {
-        mockDefaultSetup(cy);
-        cy.visit(
-            toGuestUrl("/?mentor=jd_thomas&mentor=mario-pais&mentor=dan-burns")
-        );
-        cy.get("#video-panel").get("#video-thumbnail-jd_thomas");
-        cy.get("#video-panel").get("#video-thumbnail-mario-pais");
-        cy.get("#video-panel").get("#video-thumbnail-dan-burns");
-
-        cy.get("#header").contains(
-            "JD Thomas: NPS Student, Lieutenant, AOPS and ASWO"
-        );
-        cy.get("#video-thumbnail-mario-pais").trigger('mouseover').click();
-        cy.get("#header").contains(
-            "Mario Pais: Senior Chief, Lead NECC UMS Instructor"
-        );
-        cy.get("#video-thumbnail-dan-burns").trigger('mouseover').click();
-        cy.get("#header").contains("Dan Burns: Captain (Retired), Chief Engineer");
     });
 
     it("picking a mentor sets them as faved", () => {
         mockDefaultSetup(cy);
         cy.visit("/");
         cy.get("#video-panel")
-            .get("#video-thumbnail-dan")
+            .get("#video-thumbnail-clint")
             .trigger('mouseover').click();
         cy.get("#video-panel")
-            .get("#video-thumbnail-dan")
+            .get("#video-thumbnail-clint")
             .get(".star-icon");
         cy.get("#video-panel")
             .get("#video-thumbnail-carlos")
@@ -66,4 +49,13 @@ describe("Mentor panel", () => {
             .get("#video-thumbnail-carlos")
             .get(".star-icon");
     });
+
+    it("does not show chat-only mentors in panel", () => {
+        mockConfig(cy, {});
+        mockMentorData(cy, [clint, carlos, covid]);
+        cy.visit("/?mentor=clint&mentor=carlos&mentor=covid");
+        cy.get("#video-panel").get("#video-thumbnail-clint");
+        cy.get("#video-panel").get("#video-thumbnail-carlos");
+        cy.get("#video-panel").get("#video-thumbnail-covid").should("not.exist");
+    })
 });

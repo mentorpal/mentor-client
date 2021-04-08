@@ -6,6 +6,10 @@ The full terms of this copyright and license should always be found in the root 
 */
 import { mockMentorData, mockMentorVideos, visitAsGuestWithDefaultSetup } from "../support/helpers";
 
+const clint = require("../fixtures/clint.json");
+const carlos = require("../fixtures/carlos.json");
+const julianne = require("../fixtures/julianne.json");
+
 describe("Input field", () => {
     it("has a default placeholder message", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
@@ -56,19 +60,18 @@ describe("Input field", () => {
     });
 
     it("sends api call to get responses from mentors after sending input", () => {
-        mockMentorData(cy);
+        mockMentorData(cy, [clint, carlos, julianne]);
         mockMentorVideos(cy);
         cy.viewport("iphone-x");
 
-        cy.intercept("**/questions/?mentor=clint&query=how+old+are+you", { fixture: "clint_response.json" }).as("askClint");
-        cy.intercept("**/questions/?mentor=dan&query=how+old+are+you", { fixture: "clint_response.json" }).as("askDan");
-        cy.intercept("**/questions/?mentor=julianne&query=how+old+are+you", { fixture: "clint_response.json" }).as("askJulianne");
-        cy.intercept("**/questions/?mentor=carlos&query=how+old+are+you", { fixture: "clint_response.json" }).as("askCarlos");
+        cy.intercept("**/questions/?mentor=clint&query=how+old+are+you", { fixture: "response.json" }).as("askClint");
+        cy.intercept("**/questions/?mentor=julianne&query=how+old+are+you", { fixture: "response.json" }).as("askJulianne");
+        cy.intercept("**/questions/?mentor=carlos&query=how+old+are+you", { fixture: "response.json" }).as("askCarlos");
 
         cy.get("#input-field").type("how old are you");
         cy.get("#input-send").trigger('mouseover').click();
 
-        cy.wait(["@askClint", "@askDan", "@askJulianne", "@askCarlos"], {
+        cy.wait(["@askClint", "@askJulianne", "@askCarlos"], {
             responseTimeout: 15000,
         });
         expect(true).to.equal(true);

@@ -42,29 +42,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const useResize = (myRef: any) => {
-  const [width, setWidth] = React.useState<number>(0);
-  const [height, setHeight] = React.useState<number>(0);
-
-  const handleResize = () => {
-    console.log(myRef.current.offsetHeight);
-    setWidth(myRef.current.offsetWidth);
-    setHeight(myRef.current.offsetHeight);
-  };
-
-  useEffect(() => {
-    myRef.current && myRef.current.addEventListener("resize", handleResize);
-    if (myRef.current) {
-      handleResize();
-    }
-    return () => {
-      myRef.current.removeEventListener("resize", handleResize);
-    };
-  }, [myRef]);
-
-  return { width, height };
-};
-
 function IndexPage(props: {
   search: {
     mentor?: string | string[];
@@ -189,8 +166,7 @@ function IndexPage(props: {
         <Header />
       </div>
       <div className={styles.flexExpandChild}>
-        {Object.keys(mentorsById).length < 2 ||
-        mentorsById[curMentor].mentor.mentorType === MentorType.CHAT ? (
+        {mentorsById[curMentor].mentor.mentorType === MentorType.CHAT ? (
           <Chat height={chatHeight} />
         ) : (
           <Video playing={hasSessionUser()} />

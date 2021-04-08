@@ -16,21 +16,16 @@ describe("Header", () => {
     cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
   });
 
-  it("changes title when selecting a mentor", () => {
+  it("changes title when selecting a mentor from panel", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("#video-thumbnail-dan").trigger("mouseover").click();
-    cy.get("#header").contains(
-      "Dan Davis: High Performance Computing Researcher"
-    );
-
+    cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
+    cy.wait(100);
     cy.get("#video-thumbnail-carlos").trigger("mouseover").click();
+    cy.wait(100);
     cy.get("#header").contains("Carlos Rios: Marine Logistician");
-
+    cy.wait(100);
     cy.get("#video-thumbnail-julianne").trigger("mouseover").click();
     cy.get("#header").contains("Julianne Nordhagen: Student Naval Aviator");
-
-    cy.get("#video-thumbnail-clint").trigger("mouseover").click();
-    cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
   });
 
   it("shows title for a single mentor", () => {

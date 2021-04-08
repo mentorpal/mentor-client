@@ -17,7 +17,7 @@ describe("Recommended questions", () => {
         mockDefaultSetup(cy);
         cy.visit("/", {
             qs: addGuestParams({
-                recommended: "Howdy",
+                recommendedQuestions: "Howdy",
             }),
         });
         cy.get("#topics").contains("Recommended");
@@ -27,7 +27,7 @@ describe("Recommended questions", () => {
         mockDefaultSetup(cy);
         cy.visit("/", {
             qs: addGuestParams({
-                recommended: "Howdy",
+                recommendedQuestions: "Howdy",
             }),
         });
         cy.get("#topics")
@@ -39,7 +39,7 @@ describe("Recommended questions", () => {
         mockDefaultSetup(cy);
         cy.visit("/", {
             qs: addGuestParams({
-                recommended: ["Howdy", "Partner"],
+                recommendedQuestions: ["Howdy", "Partner"],
             }),
         });
         cy.get("#scrolling-questions-list").contains("Howdy");
@@ -50,7 +50,7 @@ describe("Recommended questions", () => {
         mockDefaultSetup(cy);
         cy.visit("/", {
             qs: addGuestParams({
-                recommended: "Howdy",
+                recommendedQuestions: "Howdy",
             }),
         });
         cy.get("#scrolling-questions-list")
@@ -62,14 +62,16 @@ describe("Recommended questions", () => {
         mockDefaultSetup(cy);
         cy.visit("/", {
             qs: addGuestParams({
-                recommended: "What is Japan like?",
+                recommendedQuestions: "What do you do in computer science/programming?",
             }),
         });
-        cy.get("#topic-1").trigger('mouseover').click();
+        cy.wait(100);
+        cy.get("#topic-2").trigger('mouseover').click();
+        cy.wait(100);
         cy.get("#scrolling-questions-list")
             .get("li")
             .first()
-            .contains("What is Japan like?");
+            .contains("What do you do in computer science/programming?");
         cy.get("#scrolling-questions-list")
             .get("li")
             .first()

@@ -1,0 +1,8 @@
+{
+  "query": "how old are you",
+  "answer_id": "answer_id",
+  "answer_text": "I'm thirty seven years old.",
+  "confidence": -0.5140574318328217,
+  "feedback_id": "",
+  "classifier": ""
+}

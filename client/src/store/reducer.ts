@@ -137,11 +137,11 @@ function onMentorDataRequested(
         mentor: {
           _id: mentorId,
           name: "",
-          firstName: "",
           title: "",
           mentorType: MentorType.CHAT,
           topics: [],
-          answers: [],
+          subjects: [],
+          questions: [],
           utterances: [],
         },
         topic_questions: [],

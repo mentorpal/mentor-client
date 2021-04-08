@@ -47,12 +47,7 @@ export function subtitleUrl(
   return `${config.urlClassifier}/mentors/${mentorId}/tracks/${answerId}.vtt`;
 }
 
-export async function fetchMentor(
-  config: Config,
-  mentorId: string,
-  subject?: string,
-  topic?: string
-) {
+export async function fetchMentor(config: Config, mentorId: string) {
   return await axios.post(config.urlGraphql, {
     query: `
       query {
@@ -65,28 +60,40 @@ export async function fetchMentor(
           defaultSubject {
             _id
           }
-          topics(subject: "${subject || ""}") {
+          subjects {
             _id
+            topics {
+              id
+              name
+            }
+            questions {
+              topics {
+                id
+              }
+              question {
+                question
+                type
+              }
+            }
+          }
+          topics {
+            id
             name
+          }
+          questions {
+            topics {
+              id
+            }
+            question {
+              question
+              type
+            }
           }
           utterances(status: "${Status.COMPLETE}") {
             _id
             transcript
             question {
-              question
               name
-            }
-          }
-          answers(subject: "${subject || ""}", topic: "${topic ||
-      ""}", status: "${Status.COMPLETE}") {
-            _id
-            transcript
-            question {
-              question
-              topics {
-                _id
-                name
-              }
             }
           }
         }

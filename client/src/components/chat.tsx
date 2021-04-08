@@ -155,6 +155,7 @@ function ChatItem(props: {
           <Typography>Did this answer your question?</Typography>
           <div style={{ display: "flex", flexDirection: "row" }}>
             <div
+              id="click-good"
               onClick={() => {
                 if (message.feedbackId) {
                   handleSelectFeedback(message.feedbackId, Feedback.GOOD);
@@ -168,6 +169,7 @@ function ChatItem(props: {
               </ListItemAvatar>
             </div>
             <div
+              id="click-neutral"
               onClick={() => {
                 if (message.feedbackId) {
                   handleSelectFeedback(message.feedbackId, Feedback.NEUTRAL);
@@ -181,6 +183,7 @@ function ChatItem(props: {
               </ListItemAvatar>
             </div>
             <div
+              id="click-bad"
               onClick={() => {
                 if (message.feedbackId) {
                   handleSelectFeedback(message.feedbackId, Feedback.BAD);

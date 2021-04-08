@@ -4,29 +4,32 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { mockConfig } from "../support/helpers";
+import { cyInterceptGraphQL, cyMockGQL, mockConfig, mockMentorData } from "../support/helpers";
 import { mockDefaultSetup } from "../support/helpers";
-const clint_video = require("../fixtures/clint-video.json");
+
+const clint = require("../fixtures/clint.json");
+const covid = require("../fixtures/covid.json");
 
 describe("Chat", () => {
   it("does not show if mentor type is video", () => {
-    mockDefaultSetup(cy, {
-      mentorsDefault: ["clint"],
-    }, [clint_video]);
+    mockDefaultSetup(cy, { mentorsDefault: ["clint"] }, [clint]);
     cy.visit("/");
     cy.get("#video-container").should("exist");
     cy.get("#chat-thread").should("not.exist");
   });
 
   it("replaces video if mentor type is chat", () => {
-    mockDefaultSetup(cy, { mentorsDefault: ["clint"] });
-    cy.viewport("iphone-x");
+    mockDefaultSetup(cy, { mentorsDefault: ["covid"] }, [covid]);
     cy.visit("/");
+    cy.get("#header").contains("USC: COVID-19 FAQ Chat Bot");
+    cy.get("#topics").contains("COVID-19 General Information");
+    cy.get("#scrolling-questions-list").contains(
+      "What are the symptoms of COVID-19?"
+    );
+
     cy.get("#chat-thread").should("exist");
     cy.get("#video-container").should("not.exist");
-    cy.get("#chat-msg-0").contains(
-      "My name is EMC Clint Anderson. I was born in California and I have lived there most of my life. I graduated from Paramount and a couple of years after I finished high school, I joined the US Navy. I was an Electrician's Mate. I served on an aircraft carrier for eight years and then afterwards, I went to the United States Navy Reserve. During that time I started going to school with some of the abundant benefits that the military reserve has given me and I started working with various companies."
-    );
+    cy.get("#chat-msg-0").contains("I am a COVID-19 chat bot, you can ask me about COVID-19.");
     cy.get("#input-field").type("how old are you");
     cy.get("#input-send").trigger("mouseover").click();
     cy.get("#chat-msg-1").contains("how old are you");
@@ -34,13 +37,10 @@ describe("Chat", () => {
   });
 
   it("can open external links in chat with markdown", () => {
-    cy.intercept("**/mentors/clint/data", { fixture: "clint.json" });
+    mockConfig(cy, { mentorsDefault: ["covid"] });
+    mockMentorData(cy, [covid]);
     cy.intercept("**/questions/?mentor=*&query=*", {
-      fixture: "clint_response_with_markdown.json",
-    });
-    mockConfig(cy, {
-      cmi5Enabled: false,
-      mentorsDefault: ["clint"],
+      fixture: "response_with_markdown.json",
     });
     cy.viewport("iphone-x");
     cy.visit("/");
@@ -57,13 +57,13 @@ describe("Chat", () => {
   });
 
   it("can give feedback on classifier answer", () => {
-    cy.intercept("**/mentors/clint/data", { fixture: "clint.json" });
-    cy.intercept("**/questions/?mentor=*&query=*", {
-      fixture: "clint_response_with_feedback.json",
-    });
-    mockConfig(cy, {
-      cmi5Enabled: false,
-      mentorsDefault: ["clint"],
+    mockConfig(cy, { mentorsDefault: ["covid"] });
+    mockMentorData(cy, [covid]);
+    cyInterceptGraphQL(cy, [
+      cyMockGQL("userQuestionSetFeedback", null, false),
+    ]);
+    cy.intercept("**/questions/?mentor=covid&query=*", {
+      fixture: "response_with_feedback.json",
     });
     cy.viewport("iphone-x");
     cy.visit("/");
@@ -73,5 +73,10 @@ describe("Chat", () => {
     cy.get("#chat-msg-2").contains("Give me feedback");
     cy.get("#chat-msg-2 #feedback-btn #neutral").should("exist");
     cy.get("#chat-msg-2 #feedback-btn").trigger("mouseover").click();
+    cy.get("#click-good");
+    cy.get("#click-neutral");
+    cy.get("#click-bad").trigger("mouseover").click();
+    cy.get("#chat-msg-2 #feedback-btn #bad").should("exist");
+    cy.get("#chat-msg-2 #feedback-btn #neutral").should("not.exist");
   })
 });

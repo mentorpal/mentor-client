@@ -80,7 +80,7 @@ test-e2e-build:
 
 .PHONY: test-e2e-exec
 test-e2e-exec:
-	$(TEST_E2E_DOCKER_COMPOSE) exec -T cypress npx cypress run --headless --browser chrome
+	$(TEST_E2E_DOCKER_COMPOSE) exec -T cypress npx cypress run --headless
 
 .PHONY: test-e2e-up
 test-e2e-up:

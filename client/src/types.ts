@@ -8,34 +8,41 @@ The full terms of this copyright and license should always be found in the root 
 export interface Mentor {
   _id: string;
   name: string;
-  firstName: string;
   title: string;
   mentorType: MentorType;
   defaultSubject?: Subject;
+  subjects: Subject[];
   topics: Topic[];
+  questions: SubjectQuestion[];
   utterances: Answer[];
-  answers: Answer[];
 }
 
 export interface Subject {
   _id: string;
+  topics: Topic[];
+  questions: SubjectQuestion[];
 }
 
 export interface Topic {
-  _id: string;
+  id: string;
   name: string;
 }
 
-export interface Answer {
-  _id: string;
-  transcript: string;
+export interface SubjectQuestion {
   question: Question;
+  topics: Topic[];
 }
 
 export interface Question {
   question: string;
-  name: string;
-  topics: Topic[];
+  type: QuestionType;
+  name: UtteranceName;
+}
+
+export interface Answer {
+  _id: string;
+  question: Question;
+  transcript: string;
 }
 
 export interface QuestionApiData {

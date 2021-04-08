@@ -11,47 +11,28 @@ describe("Questions list", () => {
     it("displays list of questions for selected topic", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#scrolling-questions-list").contains("Where were you born?");
-        cy.get("#scrolling-questions-list").contains("What is Japan like?");
-        cy.get("#scrolling-questions-list").contains(
-            "What kind of student were you?"
-        );
-        cy.get("#scrolling-questions-list").contains("When did you join the Navy?");
+        cy.get("#scrolling-questions-list").contains("What do you do in computer science");
+        cy.get("#scrolling-questions-list").contains("What qualifications and experience do recruiters").should("not.exist");
     });
 
     it("changes questions when switching topics", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#topic-1").trigger('mouseover').click();
-        cy.get("#scrolling-questions-list").contains(
-            "What qualifications and experience do recruiters"
-        );
-        cy.get("#scrolling-questions-list").contains("What is Japan like?");
-
-        cy.get("#topic-2").trigger('mouseover').click();
-        cy.get("#scrolling-questions-list").contains(
-            "What is your strategy for overcoming your hardships?"
-        );
-        cy.get("#scrolling-questions-list").contains(
-            "What do you see as the major problems for those"
-        );
+        cy.get("#scrolling-questions-list").contains("Where were you born?").should("not.exist");
+        cy.get("#scrolling-questions-list").contains("What do you do in computer science").should("not.exist");
+        cy.get("#scrolling-questions-list").contains("What qualifications and experience do recruiters");
     });
 
     it("changes questions when switching mentors", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
-        cy.get("#video-thumbnail-dan").trigger('mouseover').click();
-        cy.get("#scrolling-questions-list").contains(
-            "How is cryptology different outside of the US?"
-        );
-
+        cy.get("#scrolling-questions-list").contains("What do you do in computer science");
+        cy.get("#scrolling-questions-list").contains("What do you do in the marines?").should("not.exist");
         cy.get("#video-thumbnail-carlos").trigger('mouseover').click();
-        cy.get("#scrolling-questions-list").contains("What is Puerto Rico like?");
-
+        cy.get("#scrolling-questions-list").contains("What do you do in computer science").should("not.exist");
+        cy.get("#scrolling-questions-list").contains("What do you do in the marines?");
         cy.get("#video-thumbnail-julianne").trigger('mouseover').click();
-        cy.get("#scrolling-questions-list").contains(
-            "Where were you commissioned?"
-        );
-
-        cy.get("#video-thumbnail-clint").trigger('mouseover').click();
-        cy.get("#scrolling-questions-list").contains("What is Japan like?");
+        cy.get("#scrolling-questions-list").contains("What do you do in computer science/programming?").should("not.exist");
+        cy.get("#scrolling-questions-list").contains("What do you do in the marines?").should("not.exist");
     });
 
     it("greys out questions that have been asked (via topic button)", () => {
@@ -61,11 +42,9 @@ describe("Questions list", () => {
             .find("div")
             .invoke("attr", "style")
             .should("contain", "black");
-
         cy.get("#topic-1").trigger('mouseover').click();
         cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#input-send").trigger('mouseover').click();
-
         cy.get("#scrolling-questions-list")
             .get(`#${CSS.escape("Where were you born?")}`)
             .find("div")
@@ -77,7 +56,6 @@ describe("Questions list", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#input-field").type("where were you born?");
         cy.get("#input-send").trigger('mouseover').click();
-
         cy.get("#scrolling-questions-list")
             .get(`#${CSS.escape("Where were you born?")}`)
             .find("div")
@@ -87,17 +65,16 @@ describe("Questions list", () => {
 
     it("keeps greyed out questions when switching mentors if new mentor also has it", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
-        cy.get("#input-field").type("Are you married?");
+        cy.get("#input-field").type("where were you born?");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#scrolling-questions-list")
-            .get(`#${CSS.escape("Are you married?")}`)
+            .get(`#${CSS.escape("Where were you born?")}`)
             .find("div")
             .invoke("attr", "style")
             .should("contain", "gray");
-
-        cy.get("#video-thumbnail-dan").trigger('mouseover').click();
+        cy.get("#video-thumbnail-carlos").trigger('mouseover').click();
         cy.get("#scrolling-questions-list")
-            .get(`#${CSS.escape("Are you married?")}`)
+            .get(`#${CSS.escape("Where were you born?")}`)
             .find("div")
             .invoke("attr", "style")
             .should("contain", "gray");
@@ -105,17 +82,16 @@ describe("Questions list", () => {
 
     it("keeps greyed out questions when switching topics if new topic also has it", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
-        cy.get("#input-field").type("Are you married?");
+        cy.get("#input-field").type("What do you do in computer science/programming?");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#scrolling-questions-list")
-            .get(`#${CSS.escape("Are you married?")}`)
+            .get(`#${CSS.escape("What do you do in computer science/programming?")}`)
             .find("div")
             .invoke("attr", "style")
             .should("contain", "gray");
-
-        cy.get("#topic-4").trigger('mouseover').click();
+        cy.get("#topic-1").trigger('mouseover').click();
         cy.get("#scrolling-questions-list")
-            .get(`#${CSS.escape("Are you married?")}`)
+            .get(`#${CSS.escape("What do you do in computer science/programming?")}`)
             .find("div")
             .invoke("attr", "style")
             .should("contain", "gray");

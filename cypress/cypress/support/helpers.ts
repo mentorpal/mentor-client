@@ -101,7 +101,6 @@ export function cyMockGQL(query: string, data: any | any[], me = false): MockGra
   }
 }
 
-
 export interface Config {
   cmi5Enabled: boolean;
   cmi5Endpoint: string;
@@ -137,7 +136,7 @@ export function mockMentorData(cy, data: any[]) {
 }
 
 export function mockMentorVideos(cy) {
-  cy.intercept("**/*.mp4", { fixture: "clint_response.mp4" });
+  cy.intercept("**/*.mp4", { fixture: "video_response.mp4" });
 }
 
 export function mockMentorVtt(cy) {
@@ -145,9 +144,7 @@ export function mockMentorVtt(cy) {
 }
 
 export function mockApiQuestions(cy) {
-  cy.intercept("**/questions/?mentor=*&query=*", {
-    fixture: "clint_response.json",
-  });
+  cy.intercept("**/questions/?mentor=*&query=*", { fixture: "response.json", });
 }
 
 export function toGuestUrl(url: string, guestName: string) {
@@ -164,9 +161,8 @@ export function toGuestUrl(url: string, guestName: string) {
     fetch: `https://fake.org.lrs/auth?user=${encodeURIComponent(guestName)}`,
     registration: uuidv1(),
   };
-  const urlBase = `${url}${url.includes("?") ? "" : "?"}${
-    url.includes("&") ? "&" : ""
-  }`;
+  const urlBase = `${url}${url.includes("?") ? "" : "?"}${url.includes("&") ? "&" : ""
+    }`;
   return Object.getOwnPropertyNames(cmiParam).reduce((acc, cur) => {
     return `${acc}&${cur}=${encodeURIComponent(cmiParam[cur])}`;
   }, urlBase);
@@ -176,7 +172,7 @@ export const CONFIG_DEFAULT: Config = {
   cmi5Enabled: false,
   cmi5Endpoint: "",
   cmi5Fetch: "",
-  mentorsDefault: ["clint", "dan", "carlos", "julianne"],
+  mentorsDefault: ["clint", "carlos", "julianne"],
   urlClassifier: "/classifier",
   urlGraphql: "/graphql",
   urlVideo: "/video",
@@ -187,8 +183,11 @@ export function mockConfig(cy, config: Partial<Config> = {}) {
   cy.intercept("**/config", { ...CONFIG_DEFAULT, ...config });
 }
 
-const clint_video = require("../fixtures/clint-video.json");
-export function mockDefaultSetup(cy, config: Partial<Config> = {}, mentorData: any[] = [clint_video]) {
+const clint = require("../fixtures/clint.json");
+const carlos = require("../fixtures/carlos.json");
+const julianne = require("../fixtures/julianne.json");
+
+export function mockDefaultSetup(cy, config: Partial<Config> = {}, mentorData: any[] = [clint, carlos, julianne]) {
   mockConfig(cy, config);
   mockMentorData(cy, mentorData);
   mockMentorVideos(cy);

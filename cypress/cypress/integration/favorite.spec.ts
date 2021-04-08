@@ -27,14 +27,11 @@ describe("Favorite", () => {
 
     it("is hidden if there is only one mentor", () => {
         mockDefaultSetup(cy);
-        cy.visit(
-            "/",
-            addGuestParams({
-                qs: {
-                    mentor: "clint",
-                },
-            })
-        );
+        cy.visit("/", {
+            qs: addGuestParams({
+                mentor: "clint",
+            }),
+        });
         cy.get("#fave-button").should("not.exist");
     });
 });

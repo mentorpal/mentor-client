@@ -6,27 +6,21 @@ The full terms of this copyright and license should always be found in the root 
 */
 import {
   mockDefaultSetup,
-  visitAsGuestWithDefaultSetup,
 } from "../support/helpers";
 
-describe("Config", () => {
-  it("disables cmi5 guest prompt if config.cmi5Enabled=false", () => {
-    mockDefaultSetup(cy, { cmi5Enabled: false });
-    cy.visit("/");
-    cy.get("#guest-prompt").should("not.exist");
-  });
-
-  it("loads a single default mentor if mentorsDefault specifies", () => {
-    mockDefaultSetup(cy, { mentorsDefault: ["clint"] });
-    visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
-    cy.get("#video-panel").should("not.exist");
-  });
-
-  it("loads multiple default mentors if mentorsDefault specifies", () => {
-    mockDefaultSetup(cy, { mentorsDefault: ["clint", "dan"] });
-    visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("#video-panel").get("#video-thumbnail-clint");
-    cy.get("#video-panel").get("#video-thumbnail-dan");
+describe("plays a video in response to a user question", () => {
+  it("plays a mentor response and displays subtitles", () => {
+    mockDefaultSetup(cy);
+    cy.viewport("iphone-x");
+    cy.visit("/?mentor=clint&mentor=dan");
+    cy.get("#input-field").type("is the food good");
+    cy.get("#input-send").trigger("mouseover").click();
+    cy.get("#video-container video").should("exist");
+    cy.get("#video-container video")
+      .should("have.attr", "src")
+      .and("match", /.*video_response.mp4$/);
+    cy.get("#video-container video track")
+      .should("have.attr", "src")
+      .and("match", /.*default.vtt$/);
   });
 });

@@ -25,9 +25,9 @@ import {
   Config,
   UtteranceName,
   Mentor,
-  Status,
   TopicQuestions,
   MentorType,
+  QuestionType,
 } from "../types";
 
 const RESPONSE_CUTOFF = -100;
@@ -200,7 +200,7 @@ export const loadMentor: ActionCreator<ThunkAction<
   State, // The type for the data within the last action
   string, // The type of the parameter for the nested function
   MentorDataRequestDoneAction // The type of the last action to be dispatched
->> = (config: Config, mentors: string[], subject?: string) => async (
+>> = (config: Config, mentors: string[], subjectId?: string) => async (
   dispatch: ThunkDispatch<State, void, AnyAction>,
   getState: () => State
 ) => {
@@ -210,22 +210,27 @@ export const loadMentor: ActionCreator<ThunkAction<
       payload: mentors,
     });
     for (const mentorId of mentors) {
-      let result = await fetchMentor(config, mentorId, subject);
-      console.log(result);
+      let result = await fetchMentor(config, mentorId);
       if (result.status === 200) {
-        let mentor: Mentor = result.data.data!.mentor;
+        const mentor: Mentor = result.data.data!.mentor;
+        // don't include chat-only mentors in mentorpanel
         if (mentors.length > 1 && mentor.mentorType === MentorType.CHAT) {
+          dispatch<MentorDataResultAction>({
+            type: MENTOR_DATA_RESULT,
+            payload: {
+              data: undefined,
+              status: ResultStatus.FAILED,
+            },
+          });
           continue;
         }
-        if (!subject && mentor.defaultSubject) {
-          result = await fetchMentor(
-            config,
-            mentorId,
-            mentor.defaultSubject._id
-          );
-          mentor = result.data.data!.mentor;
-        }
-
+        subjectId = subjectId || mentor.defaultSubject?._id;
+        const subject = mentor.subjects.find(s => s._id === subjectId);
+        const topics = subject ? subject.topics : mentor.topics;
+        const questions = (subject
+          ? subject.questions
+          : mentor.questions
+        ).filter(q => q.question.type === QuestionType.QUESTION);
         const topicQuestions: TopicQuestions[] = [];
         const recommendedQuestions = getState().recommendedQuestions;
         if (recommendedQuestions.length > 0) {
@@ -234,16 +239,16 @@ export const loadMentor: ActionCreator<ThunkAction<
             questions: recommendedQuestions,
           });
         }
-        for (const topic of mentor.topics) {
-          topicQuestions.push({
-            topic: topic.name,
-            questions: mentor.answers
-              .filter(
-                a =>
-                  a.question.topics.find(t => t._id === topic._id) !== undefined
-              )
-              .map(a => a.question.question),
-          });
+        for (const topic of topics) {
+          const tq = questions
+            .filter(q => q.topics.find(t => t.id === topic.id))
+            .map(q => q.question.question);
+          if (tq.length > 0) {
+            topicQuestions.push({
+              topic: topic.name,
+              questions: tq,
+            });
+          }
         }
         topicQuestions.push({ topic: "History", questions: [] });
         const mentorData: MentorData = {
