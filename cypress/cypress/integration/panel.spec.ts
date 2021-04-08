@@ -10,7 +10,7 @@ const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
 const covid = require("../fixtures/covid.json");
 
-describe.only("Mentor panel", () => {
+describe("Mentor panel", () => {
 
     it("shows if there is more than one mentor", () => {
         mockDefaultSetup(cy);
