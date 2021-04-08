@@ -215,13 +215,6 @@ export const loadMentor: ActionCreator<ThunkAction<
         const mentor: Mentor = result.data.data!.mentor;
         // don't include chat-only mentors in mentorpanel
         if (mentors.length > 1 && mentor.mentorType === MentorType.CHAT) {
-          dispatch<MentorDataResultAction>({
-            type: MENTOR_DATA_RESULT,
-            payload: {
-              data: undefined,
-              status: ResultStatus.FAILED,
-            },
-          });
           continue;
         }
         subjectId = subjectId || mentor.defaultSubject?._id;
@@ -283,7 +276,12 @@ export const loadMentor: ActionCreator<ThunkAction<
     );
     if (firstMentor) {
       dispatch(selectMentor(firstMentor, MentorSelectReason.NEXT_READY));
-      dispatch(selectTopic(mentorsById[firstMentor].topic_questions[0].topic));
+      if (!getState().curTopic) {
+        // user clicks topic before all mentors are loaded and a default topic is selected
+        dispatch(
+          selectTopic(mentorsById[firstMentor].topic_questions[0].topic)
+        );
+      }
     }
   } catch (err) {
     console.error(`Failed to load mentor data for id ${mentors}`, err);

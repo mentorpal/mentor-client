@@ -19,11 +19,8 @@ describe("Header", () => {
   it("changes title when selecting a mentor from panel", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
-    cy.wait(100);
     cy.get("#video-thumbnail-carlos").trigger("mouseover").click();
-    cy.wait(100);
     cy.get("#header").contains("Carlos Rios: Marine Logistician");
-    cy.wait(100);
     cy.get("#video-thumbnail-julianne").trigger("mouseover").click();
     cy.get("#header").contains("Julianne Nordhagen: Student Naval Aviator");
   });

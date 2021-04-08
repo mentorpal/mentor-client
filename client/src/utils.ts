@@ -1,3 +1,5 @@
+import { MentorData, MentorQuestionStatus } from "types";
+
 /*
 This software is Copyright ©️ 2020 The University of Southern California. All Rights Reserved. 
 Permission to use, copy, modify, and distribute this software and its documentation for educational, research and non-profit purposes, without fee, and without a written agreement is hereby granted, provided that the above copyright notice and subject to the full license file found in the root of this software deliverable. Permission to make commercial use of this software may be obtained by contacting:  USC Stevens Center for Innovation University of Southern California 1150 S. Olive Street, Suite 2300, Los Angeles, CA 90115, USA Email: accounting@stevens.usc.edu
@@ -19,4 +21,11 @@ export function chromeVersion(): number {
   // eslint-disable-next-line no-undef
   const raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
   return raw ? parseInt(raw[2], 10) : 0;
+}
+
+export function isMentorReady(m: MentorData): boolean {
+  return (
+    m.status === MentorQuestionStatus.READY ||
+    m.status === MentorQuestionStatus.ANSWERED
+  );
 }

@@ -138,7 +138,7 @@ function onMentorDataRequested(
           _id: mentorId,
           name: "",
           title: "",
-          mentorType: MentorType.CHAT,
+          mentorType: MentorType.VIDEO,
           topics: [],
           subjects: [],
           questions: [],

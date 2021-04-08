@@ -18,7 +18,6 @@ describe("Favorite", () => {
     it("can be toggled", () => {
         mockDefaultSetup(cy);
         cy.visit("/", { qs: addGuestParams() });
-        cy.wait(1000);
         cy.get("#fave-button").trigger('mouseover').click();
         cy.get("#fave-button")
             .invoke("attr", "style")

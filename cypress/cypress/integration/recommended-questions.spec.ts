@@ -65,9 +65,7 @@ describe("Recommended questions", () => {
                 recommendedQuestions: "What do you do in computer science/programming?",
             }),
         });
-        cy.wait(100);
         cy.get("#topic-2").trigger('mouseover').click();
-        cy.wait(100);
         cy.get("#scrolling-questions-list")
             .get("li")
             .first()

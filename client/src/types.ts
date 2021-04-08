@@ -132,6 +132,7 @@ export enum ResultStatus {
   IN_PROGRESS = "IN_PROGRESS",
   SUCCEEDED = "SUCCEEDED",
   FAILED = "FAILED",
+  REMOVED = "REMOVED",
 }
 
 export interface MentorSelection {

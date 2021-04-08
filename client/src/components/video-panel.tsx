@@ -11,12 +11,8 @@ import VideoThumbnail from "components/video-thumbnail";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import { selectMentor, faveMentor } from "store/actions";
-import {
-  MentorData,
-  MentorQuestionStatus,
-  MentorSelectReason,
-  State,
-} from "types";
+import { MentorData, MentorSelectReason, State } from "types";
+import { isMentorReady } from "utils";
 
 function VideoPanel(): JSX.Element {
   const dispatch = useDispatch();
@@ -33,7 +29,7 @@ function VideoPanel(): JSX.Element {
 
   function onClick(mId: string) {
     const m = mentorsById[mId];
-    if (m.is_off_topic || m.status === MentorQuestionStatus.ERROR) {
+    if (m.is_off_topic || !isMentorReady(m)) {
       return;
     }
     if (!(isIdle && mentorFaved === mId)) {
@@ -44,27 +40,31 @@ function VideoPanel(): JSX.Element {
 
   return (
     <div id="video-panel" className="carousel" style={{ height: 50 }}>
-      {Object.keys(mentorsById).map((id, i) => (
-        <div
-          id={`video-thumbnail-${id}`}
-          className={`slide video-slide ${id === mentor ? "selected" : ""}`}
-          key={`${id}-${i}`}
-          onClick={() => onClick(id)}
-        >
-          <VideoThumbnail mentor={id} />
-          <LoadingSpinner mentor={id} />
-          <MessageStatus mentor={id} />
-          {mentorFaved === id ? (
-            <Star
-              className="star-icon"
-              fontSize="small"
-              style={{ color: "yellow" }}
-            />
-          ) : (
-            <div />
-          )}
-        </div>
-      ))}
+      {Object.keys(mentorsById).map((id, i) => {
+        const m = mentorsById[id];
+        return (
+          <div
+            id={`video-thumbnail-${id}`}
+            className={`slide video-slide ${id === mentor ? "selected" : ""}`}
+            data-ready={isMentorReady(m)}
+            key={`${id}-${i}`}
+            onClick={() => onClick(id)}
+          >
+            <VideoThumbnail mentor={id} />
+            <LoadingSpinner mentor={id} />
+            <MessageStatus mentor={id} />
+            {mentorFaved === id ? (
+              <Star
+                className="star-icon"
+                fontSize="small"
+                style={{ color: "yellow" }}
+              />
+            ) : (
+              <div />
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
