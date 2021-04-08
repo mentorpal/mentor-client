@@ -46,8 +46,8 @@ function Video(args: { playing?: boolean }) {
 
   const video = {
     src: isIdle
-      ? videoUrl(curMentor, mentor.answer_id || "", config)
-      : idleUrl(mentor.mentor, config),
+      ? idleUrl(mentor.mentor, config)
+      : videoUrl(curMentor, mentor.answer_id || "", config),
     subtitles:
       subtitlesSupported && !isIdle
         ? subtitleUrl(curMentor, mentor.answer_id || "", config)
@@ -71,7 +71,7 @@ function Video(args: { playing?: boolean }) {
   }
 
   return (
-    <div id="video-container">
+    <div id="video-container" data-video-type={isIdle ? 'idle' : 'answer'}>
       <MemoVideoPlayer
         isIdle={Boolean(isIdle)}
         onEnded={onEnded}
