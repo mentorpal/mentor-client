@@ -10,7 +10,7 @@ import { Button, Paper } from "@material-ui/core";
 import { History, Whatshot } from "@material-ui/icons";
 import { normalizeString } from "utils";
 import { selectTopic } from "store/actions";
-import { MentorData, State } from "types";
+import { State, TopicQuestions } from "types";
 import withLocation from "wrap-with-location";
 
 function Topics(args: {
@@ -21,9 +21,13 @@ function Topics(args: {
 }) {
   const { onSelected } = args;
   const dispatch = useDispatch();
-  const mentor = useSelector<State, MentorData>(
-    (state) => state.mentorsById[state.curMentor]
-  );
+  const topicQuestions = useSelector<State, TopicQuestions[]>((state) => {
+    if (!state.curMentor) {
+      return [];
+    }
+    const m = state.mentorsById[state.curMentor];
+    return m ? m.topic_questions : [];
+  });
   const curTopic = useSelector<State, string>((state) => state.curTopic);
   const questionsAsked = useSelector<State, string[]>(
     (state) => state.questionsAsked
@@ -35,18 +39,18 @@ function Topics(args: {
       return;
     }
     dispatch(selectTopic(topic));
-    const top_question = mentor.topic_questions
+    const topQ = topicQuestions
       .find((tq) => tq.topic === topic)
       ?.questions.find((q) => !questionsAsked.includes(normalizeString(q)));
-    if (top_question) {
-      onSelected(top_question);
+    if (topQ) {
+      onSelected(topQ);
     }
   }
 
   return (
     <Paper elevation={2} square>
       <div id="topics" className="carousel" style={{ height: 70 }}>
-        {mentor.topic_questions.map((tq, i) => {
+        {topicQuestions.map((tq, i) => {
           return (
             <div id={`topic-${i}`} className="slide topic-slide" key={i}>
               <Button
