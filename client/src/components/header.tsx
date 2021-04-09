@@ -10,7 +10,6 @@ import { Hidden, Typography } from "@material-ui/core";
 import { Config, Mentor, State } from "types";
 
 function Header(): JSX.Element {
-  // const curMentor = useSelector<State, string>((state) => state.curMentor);
   const mentor = useSelector<State, Mentor | null>((state) =>
     state.curMentor && state.mentorsById[state.curMentor]
       ? state.mentorsById[state.curMentor].mentor
@@ -21,7 +20,6 @@ function Header(): JSX.Element {
   if (!mentor) {
     return <div />;
   }
-  // const mentor = mentorsById[curMentor].mentor;
 
   if (config.styleHeaderLogo) {
     return (

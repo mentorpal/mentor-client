@@ -11,19 +11,16 @@ import VideoThumbnail from "components/video-thumbnail";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import { selectMentor, faveMentor } from "store/actions";
-import { MentorData, MentorSelectReason, MentorType, State } from "types";
+import { MentorSelectReason, MentorType, State } from "types";
 import { isMentorReady } from "utils";
 
 function VideoPanel(): JSX.Element {
   const dispatch = useDispatch();
-  const mentor = useSelector<State, string>((state) => state.curMentor);
-  const mentorsById = useSelector<State, Record<string, MentorData>>(
-    (state) => state.mentorsById
-  );
-  const mentorFaved = useSelector<State, string>((state) => state.mentorFaved);
-  const isIdle = useSelector<State, boolean>((state) => state.isIdle);
-
-  if (!mentor || Object.getOwnPropertyNames(mentorsById).length < 2) {
+  const { curMentor, mentorsById, mentorFaved, isIdle } = useSelector<
+    State,
+    State
+  >((state) => state);
+  if (!curMentor || Object.getOwnPropertyNames(mentorsById).length < 2) {
     return <div />;
   }
 
@@ -49,7 +46,9 @@ function VideoPanel(): JSX.Element {
           return (
             <button
               id={`video-thumbnail-${id}`}
-              className={`slide video-slide ${id === mentor ? "selected" : ""}`}
+              className={`slide video-slide ${
+                id === curMentor ? "selected" : ""
+              }`}
               data-ready={isMentorReady(m)}
               key={`${id}-${i}`}
               onClick={() => onClick(id)}
