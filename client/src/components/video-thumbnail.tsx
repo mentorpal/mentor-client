@@ -13,11 +13,9 @@ import { useSelector } from "react-redux";
 function VideoThumbnail(props: { mentor: string }): JSX.Element {
   const [isPlaying, setPlaying] = useState(true);
   const config = useSelector<State, Config>((s) => s.config);
-  const mentorsById = useSelector<State, Record<string, MentorData>>(
-    (state) => state.mentorsById
+  const mentor = useSelector<State, MentorData>(
+    (state) => state.mentorsById[props.mentor]
   );
-
-  const mentor = mentorsById[props.mentor];
   const isDisabled =
     mentor.is_off_topic || mentor.status === MentorQuestionStatus.ERROR;
 
