@@ -7,21 +7,38 @@ The full terms of this copyright and license should always be found in the root 
 import React from "react";
 import { useSelector } from "react-redux";
 import { Hidden, Typography } from "@material-ui/core";
-import { Config, Mentor, State } from "types";
+import { State } from "types";
+
+interface HeaderMentorData {
+  _id: string;
+  name: string;
+  title: string;
+}
 
 function Header(): JSX.Element {
-  const mentor = useSelector<State, Mentor | null>((state) =>
-    state.curMentor && state.mentorsById[state.curMentor]
-      ? state.mentorsById[state.curMentor].mentor
-      : null
+  const mentor = useSelector<State, HeaderMentorData | null>((state) => {
+    if (!state.curMentor) {
+      return null;
+    }
+    const m = state.mentorsById[state.curMentor];
+    if (!(m && m.mentor)) {
+      return null;
+    }
+    return {
+      _id: m.mentor._id,
+      name: m.mentor.name,
+      title: m.mentor.title,
+    };
+  });
+  const headerStyleLogo = useSelector<State, string>(
+    (state) => state.config.styleHeaderLogo
   );
-  const config = useSelector<State, Config>((state) => state.config);
 
   if (!mentor) {
     return <div />;
   }
 
-  if (config.styleHeaderLogo) {
+  if (headerStyleLogo) {
     return (
       <div
         id="header"
@@ -34,7 +51,7 @@ function Header(): JSX.Element {
         }}
       >
         <img
-          src={config.styleHeaderLogo}
+          src={headerStyleLogo}
           style={{ position: "absolute", left: 0, height: 50 }}
         />
         <Hidden only="xs">
