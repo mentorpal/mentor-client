@@ -25,6 +25,9 @@ function Questions(props: {
     subject?: string;
   };
 }) {
+  const mentorId = useSelector<State, string>(
+    (state) => state.curMentor
+  );
   const mentor = useSelector<State, MentorData>(
     (state) => state.mentorsById[state.curMentor]
   );
@@ -67,6 +70,8 @@ function Questions(props: {
         questionsAsked={questionsAsked}
         recommended={recommendedQuestions}
         onQuestionSelected={props.onSelected}
+        mentor={mentorId}
+        topic={curTopic}
       />
     </MuiThemeProvider>
   );

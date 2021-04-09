@@ -20,10 +20,19 @@ interface ScrollingQuestionsParams {
   questionsAsked: string[];
   recommended: string[];
   onQuestionSelected: OnQuestionSelected;
+  topic: string;
+  mentor: string;
 }
 
 function ScrollingQuestions(args: ScrollingQuestionsParams): JSX.Element {
-  const { questions, questionsAsked, recommended, onQuestionSelected } = args;
+  const {
+    questions,
+    questionsAsked,
+    recommended,
+    onQuestionSelected,
+    mentor,
+    topic,
+  } = args;
   useEffect(() => {
     smoothscroll.polyfill();
   }, []);
@@ -47,6 +56,8 @@ function ScrollingQuestions(args: ScrollingQuestionsParams): JSX.Element {
   return (
     <List
       id="scrolling-questions-list"
+      data-topic={topic}
+      data-mentor={mentor}
       className="scroll"
       style={{ height: 200 }}
       disablePadding

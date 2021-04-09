@@ -18,6 +18,7 @@ describe("Questions list", () => {
     it("changes questions when switching topics", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#topic-1").trigger('mouseover').click();
+        cy.get("#scrolling-questions-list").should("have.attr", "data-topic", "About the Job")
         cy.get("#scrolling-questions-list").contains("Where were you born?").should("not.exist");
         cy.get("#scrolling-questions-list").contains("What do you do in computer science").should("not.exist");
         cy.get("#scrolling-questions-list").contains("What qualifications and experience do recruiters");
@@ -28,15 +29,18 @@ describe("Questions list", () => {
         cy.get("#scrolling-questions-list").contains("What do you do in computer science");
         cy.get("#scrolling-questions-list").contains("What do you do in the marines?").should("not.exist");
         cy.get("#video-thumbnail-carlos").trigger('mouseover').click();
+        cy.get("#scrolling-questions-list").should("have.attr", "data-mentor", "carlos")
         cy.get("#scrolling-questions-list").contains("What do you do in computer science").should("not.exist");
         cy.get("#scrolling-questions-list").contains("What do you do in the marines?");
         cy.get("#video-thumbnail-julianne").trigger('mouseover').click();
+        cy.get("#scrolling-questions-list").should("have.attr", "data-mentor", "julianne")
         cy.get("#scrolling-questions-list").contains("What do you do in computer science/programming?").should("not.exist");
         cy.get("#scrolling-questions-list").contains("What do you do in the marines?").should("not.exist");
     });
 
     it("greys out questions that have been asked (via topic button)", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#scrolling-questions-list").should("have.attr", "data-topic", "About Me")
         cy.get("#scrolling-questions-list")
             .get(`#${CSS.escape("Where were you born?")}`)
             .find("div")
@@ -54,6 +58,7 @@ describe("Questions list", () => {
 
     it("greys out questions that have been asked (via input field)", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#scrolling-questions-list").should("have.attr", "data-topic", "About Me")
         cy.get("#input-field").type("where were you born?");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#scrolling-questions-list")
@@ -73,6 +78,7 @@ describe("Questions list", () => {
             .invoke("attr", "style")
             .should("contain", "gray");
         cy.get("#video-thumbnail-carlos").trigger('mouseover').click();
+        cy.get("#scrolling-questions-list").should("have.attr", "data-topic", "About Me")
         cy.get("#scrolling-questions-list")
             .get(`#${CSS.escape("Where were you born?")}`)
             .find("div")
@@ -90,6 +96,7 @@ describe("Questions list", () => {
             .invoke("attr", "style")
             .should("contain", "gray");
         cy.get("#topic-1").trigger('mouseover').click();
+        cy.get("#scrolling-questions-list").should("have.attr", "data-topic", "About the Job")
         cy.get("#scrolling-questions-list")
             .get(`#${CSS.escape("What do you do in computer science/programming?")}`)
             .find("div")
