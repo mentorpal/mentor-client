@@ -22,7 +22,7 @@ import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
 
 import { giveFeedback, getUtterance } from "api";
-import { Config, Feedback, MentorData, State, UtteranceName } from "types";
+import { ChatMsg, Config, Feedback, MentorData, State, UtteranceName } from "types";
 import "styles/chat-override-theme";
 
 const useStyles = makeStyles((theme) => ({
@@ -48,13 +48,6 @@ const useStyles = makeStyles((theme) => ({
     right: -40,
   },
 }));
-
-interface ChatMsg {
-  isUser: boolean;
-  text: string;
-  feedback?: Feedback;
-  feedbackId?: string;
-}
 
 function ChatItem(props: {
   message: ChatMsg;
