@@ -22,7 +22,7 @@ interface ScrollingQuestionsParams {
   onQuestionSelected: OnQuestionSelected;
 }
 
-const ScrollingQuestions = (args: ScrollingQuestionsParams) => {
+function ScrollingQuestions(args: ScrollingQuestionsParams): JSX.Element {
   const { questions, questionsAsked, recommended, onQuestionSelected } = args;
   useEffect(() => {
     smoothscroll.polyfill();
@@ -77,6 +77,6 @@ const ScrollingQuestions = (args: ScrollingQuestionsParams) => {
       ))}
     </List>
   );
-};
+}
 
 export default ScrollingQuestions;

@@ -15,6 +15,7 @@ import {
   QUESTION_ERROR,
   QUESTION_SENT,
   TOPIC_SELECTED,
+  MentorClientAction,
   MentorSelectedAction,
   MentorAnswerPlaybackStartedAction,
   QuestionSentAction,
@@ -201,7 +202,10 @@ function onConfigLoadSucceeded(
   };
 }
 
-export default function reducer(state = initialState, action: any): State {
+export default function reducer(
+  state = initialState,
+  action: MentorClientAction
+): State {
   switch (action.type) {
     case CONFIG_LOAD_FAILED:
       return onConfigLoadFailed(state);

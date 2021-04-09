@@ -7,6 +7,6 @@ The full terms of this copyright and license should always be found in the root 
 import React from "react";
 import "styles/chat.css";
 
-const Theme = () => <React.Fragment></React.Fragment>;
+const Theme = (): JSX.Element => <React.Fragment></React.Fragment>;
 
 export default Theme;

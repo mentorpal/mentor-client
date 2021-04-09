@@ -21,7 +21,7 @@ import { Config, MentorData, State } from "types";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
-function Video(args: { playing?: boolean }) {
+function Video(args: { playing?: boolean }): JSX.Element {
   const { playing = false } = args;
   const dispatch = useDispatch();
   const curMentor = useSelector<State, string>((state) => state.curMentor);

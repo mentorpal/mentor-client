@@ -16,7 +16,7 @@ interface MessageStatusState {
   mentorStatus: MentorQuestionStatus;
 }
 
-const MessageStatus = (args: { mentor: string }) => {
+function MessageStatus(args: { mentor: string }): JSX.Element {
   const { mentor } = args;
   const msgStatusState = useSelector<State, MessageStatusState>((state) => {
     const m = state.mentorsById[mentor];
@@ -52,6 +52,6 @@ const MessageStatus = (args: { mentor: string }) => {
     default:
       return <div />;
   }
-};
+}
 
 export default MessageStatus;

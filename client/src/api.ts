@@ -48,7 +48,7 @@ export function subtitleUrl(
 }
 
 interface MentorQueryData {
-  mentor: Mentor
+  mentor: Mentor;
 }
 
 interface GraphQLReponse<T> {
@@ -114,11 +114,17 @@ export async function fetchMentor(
   });
 }
 
+interface GiveFeedbackResult {
+  userQuestionSetFeedback: {
+    _id: string;
+  };
+}
+
 export async function giveFeedback(
   feedbackId: string,
   feedback: string,
   config: Config
-) {
+): Promise<AxiosResponse<GraphQLReponse<GiveFeedbackResult>>> {
   return await axios.post(config.urlGraphql, {
     query: `
       mutation {

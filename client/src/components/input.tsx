@@ -39,7 +39,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function Input() {
+function Input(): JSX.Element {
   const dispatch = useDispatch();
   const classes = useStyles();
   const config = useSelector<State, Config>((s) => s.config);

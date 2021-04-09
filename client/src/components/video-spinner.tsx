@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { CircularProgress } from "@material-ui/core";
 import { State } from "types";
 
-const LoadingSpinner = (args: { mentor: string }) => {
+function LoadingSpinner(args: { mentor: string }): JSX.Element {
   const { mentor } = args;
   const isMentorQuestionDifferent = useSelector<State, boolean>((state) => {
     const m = state.mentorsById[mentor];
@@ -20,6 +20,6 @@ const LoadingSpinner = (args: { mentor: string }) => {
   ) : (
     <div />
   );
-};
+}
 
 export default LoadingSpinner;

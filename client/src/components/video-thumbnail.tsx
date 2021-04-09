@@ -10,7 +10,7 @@ import { idleUrl } from "api";
 import { Config, MentorData, MentorQuestionStatus, State } from "types";
 import { useSelector } from "react-redux";
 
-function VideoThumbnail(props: { mentor: string }) {
+function VideoThumbnail(props: { mentor: string }): JSX.Element {
   const [isPlaying, setPlaying] = useState(true);
   const config = useSelector<State, Config>((s) => s.config);
   const mentorsById = useSelector<State, Record<string, MentorData>>(

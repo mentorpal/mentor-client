@@ -53,19 +53,24 @@ export const TOPIC_SELECTED = "TOPIC_SELECTED";
 export const GUEST_NAME_SET = "GUEST_NAME_SET";
 export const RECOMMENDED_QUESTIONS_SET = "RECOMMENDED_QUESTIONS_SET";
 
-export interface ConfigLoadStartedAction {
-  type: typeof CONFIG_LOAD_STARTED;
-}
-
 export interface ConfigLoadFailedAction {
   type: typeof CONFIG_LOAD_FAILED;
   errors: string[];
+}
+
+export interface ConfigLoadStartedAction {
+  type: typeof CONFIG_LOAD_STARTED;
 }
 
 export interface ConfigLoadSucceededAction {
   type: typeof CONFIG_LOAD_SUCCEEDED;
   payload: Config;
 }
+
+export type ConfigLoadAction =
+  | ConfigLoadFailedAction
+  | ConfigLoadStartedAction
+  | ConfigLoadSucceededAction;
 
 export interface MentorAnswerPlaybackStartedAction {
   type: typeof MENTOR_ANSWER_PLAYBACK_STARTED;
@@ -89,9 +94,46 @@ export interface MentorDataRequestDoneAction {
   type: typeof MENTOR_DATA_REQUEST_DONE;
 }
 
+export type MentorDataAction =
+  | MentorDataRequestedAction
+  | MentorDataResultAction
+  | MentorDataRequestDoneAction;
+
+export interface AnswerFinishedAction {
+  type: typeof ANSWER_FINISHED;
+}
+
+export interface MentorFavedAction {
+  type: typeof MENTOR_FAVED;
+  id: string;
+}
+
 export interface MentorSelectedAction {
   type: typeof MENTOR_SELECTED;
   payload: MentorSelection;
+}
+
+export interface NextMentorAction {
+  type: typeof MENTOR_NEXT;
+  mentor: string;
+}
+
+export type MentorAction =
+  | AnswerFinishedAction
+  | MentorAnswerPlaybackStartedAction
+  | MentorFavedAction
+  | MentorSelectedAction
+  | NextMentorAction;
+
+export interface QuestionAnsweredAction {
+  type: typeof QUESTION_ANSWERED;
+  mentor: QuestionResponse;
+}
+
+export interface QuestionErrorAction {
+  type: typeof QUESTION_ERROR;
+  mentor: string;
+  question: string;
 }
 
 export interface QuestionResultAction {
@@ -107,20 +149,41 @@ export interface QuestionSentAction {
   };
 }
 
-export interface NextMentorAction {
-  type: typeof MENTOR_NEXT;
-  mentor: string;
+export type QuestionAction =
+  | QuestionAnsweredAction
+  | QuestionErrorAction
+  | QuestionResultAction
+  | QuestionSentAction;
+
+export interface GuestNameSetAction {
+  type: typeof GUEST_NAME_SET;
+  name: string;
 }
+
+export interface RecommendedQuestionsSetAction {
+  type: typeof RECOMMENDED_QUESTIONS_SET;
+  recommendedQuestions: string[];
+}
+
+export interface TopicSelectedAction {
+  type: typeof TOPIC_SELECTED;
+  topic: string;
+}
+
+export type MentorClientAction =
+  | ConfigLoadAction
+  | GuestNameSetAction
+  | MentorDataAction
+  | MentorAction
+  | QuestionAction
+  | TopicSelectedAction
+  | RecommendedQuestionsSetAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
 
 export const loadConfig = () => async (
-  dispatch: ThunkDispatch<
-    State,
-    void,
-    ConfigLoadStartedAction | ConfigLoadSucceededAction | ConfigLoadFailedAction
-  >
+  dispatch: ThunkDispatch<State, void, ConfigLoadAction>
 ) => {
   dispatch({
     type: CONFIG_LOAD_STARTED,
