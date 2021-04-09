@@ -22,7 +22,7 @@ import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
 
 import { giveFeedback, getUtterance } from "api";
-import { Config, Feedback, State, UtteranceName } from "types";
+import { Config, Feedback, MentorData, State, UtteranceName } from "types";
 import "styles/chat-override-theme";
 
 const useStyles = makeStyles((theme) => ({
@@ -206,20 +206,21 @@ function Chat(props: { height: number }): JSX.Element {
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [lastQuestionAt, setLastQuestionAt] = useState<Date>();
   const [lastAnswerAt, setLastAnswerAt] = useState<Date>();
-  const state = useSelector<State, State>((state) => state);
+  const mentor = useSelector<State, MentorData>((state) => state.mentorsById[state.curMentor]);
+  const curQuestion = useSelector<State, string>((state) => state.curQuestion);
+  const curQuestionUpdatedAt = useSelector<State, Date | undefined>((state) => state.curQuestionUpdatedAt);
 
   useEffect(() => {
     const _messages = [...messages];
     let updated = false;
-    if (lastQuestionAt !== state.curQuestionUpdatedAt) {
+    if (lastQuestionAt !== curQuestionUpdatedAt) {
       updated = true;
       _messages.push({
         isUser: true,
-        text: state.curQuestion,
+        text: curQuestion,
       });
-      setLastQuestionAt(state.curQuestionUpdatedAt);
+      setLastQuestionAt(curQuestionUpdatedAt);
     }
-    const mentor = state.mentorsById[state.curMentor];
     if (mentor) {
       if (messages.length === 0) {
         updated = true;
@@ -242,7 +243,7 @@ function Chat(props: { height: number }): JSX.Element {
     if (updated) {
       setMessages(_messages);
     }
-  }, [state]);
+  }, [mentor, curQuestionUpdatedAt]);
 
   useEffect(() => {
     animateScroll.scrollToBottom({

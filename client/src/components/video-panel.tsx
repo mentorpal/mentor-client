@@ -11,15 +11,15 @@ import VideoThumbnail from "components/video-thumbnail";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import { selectMentor, faveMentor } from "store/actions";
-import { MentorSelectReason, MentorType, State } from "types";
+import { MentorData, MentorSelectReason, MentorType, State } from "types";
 import { isMentorReady } from "utils";
 
 function VideoPanel(): JSX.Element {
   const dispatch = useDispatch();
-  const { curMentor, mentorsById, mentorFaved, isIdle } = useSelector<
-    State,
-    State
-  >((state) => state);
+  const isIdle = useSelector<State, boolean>((state) => state.isIdle);
+  const curMentor = useSelector<State, string>((state) => state.curMentor);
+  const mentorFaved = useSelector<State, string>((state) => state.mentorFaved);
+  const mentorsById = useSelector<State, Record<string, MentorData>>((state) => state.mentorsById);
   if (!curMentor || Object.getOwnPropertyNames(mentorsById).length < 2) {
     return <div />;
   }
