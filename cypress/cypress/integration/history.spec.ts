@@ -9,11 +9,13 @@ import { visitAsGuestWithDefaultSetup } from "../support/helpers";
 describe("History", () => {
     it("does not display in topics list if no questions have been asked", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#header").should("have.attr", "data-mentor", "clint")
         cy.get("#topics").should("not.have.value", "History");
     });
 
     it("displays in topics list if questions have been asked", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#header").should("have.attr", "data-mentor", "clint")
         cy.get("#input-field").type("Hello");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#topics").contains("History");
@@ -21,6 +23,7 @@ describe("History", () => {
 
     it("displays questions that have been asked via input", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#header").should("have.attr", "data-mentor", "clint")
         cy.get("#input-field").type("Hello");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#topic-2").trigger('mouseover').click();
@@ -29,6 +32,7 @@ describe("History", () => {
 
     it("displays questions that have been asked via topic button", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#header").should("have.attr", "data-mentor", "clint")
         cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#input-send").trigger('mouseover').click();
@@ -38,6 +42,7 @@ describe("History", () => {
 
     it("displays most recent questions at the top", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#header").should("have.attr", "data-mentor", "clint")
         cy.get("#input-field").type("Hello");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#topic-2").trigger('mouseover').click();
@@ -49,9 +54,11 @@ describe("History", () => {
 
     it("does not read duplicate questions", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#header").should("have.attr", "data-mentor", "clint")
         cy.get("#input-field").type("Hello");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#topic-2").trigger('mouseover').click();
+        cy.get("#scrolling-questions-list").should("have.attr", "data-topic", "History")
         cy.get("#scrolling-questions-list").contains("Hello");
         cy.get("#input-field").type("World");
         cy.get("#input-send").trigger('mouseover').click();
