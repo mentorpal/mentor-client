@@ -25,6 +25,7 @@ function Header(): JSX.Element {
     return (
       <div
         id="header"
+        data-mentor={curMentor}
         style={{
           display: "flex",
           alignItems: "center",
@@ -48,6 +49,7 @@ function Header(): JSX.Element {
   return (
     <div
       id="header"
+      data-mentor={curMentor}
       style={{
         display: "flex",
         flexDirection: "column",
