@@ -22,7 +22,15 @@ import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
 
 import { giveFeedback, getUtterance } from "api";
-import { ChatMsg, Config, Feedback, MentorData, State, UtteranceName } from "types";
+import {
+  ChatMsg,
+  ChatData,
+  Config,
+  Feedback,
+  MentorData,
+  State,
+  UtteranceName,
+} from "types";
 import "styles/chat-override-theme";
 
 const useStyles = makeStyles((theme) => ({
@@ -196,9 +204,16 @@ function ChatItem(props: {
 
 function Chat(props: { height: number }): JSX.Element {
   const styles = useStyles();
-  const [messages, setMessages] = useState<ChatMsg[]>([]);
-  const [lastQuestionAt, setLastQuestionAt] = useState<Date>();
-  const [lastAnswerAt, setLastAnswerAt] = useState<Date>();
+  const [chatData, setChatData] = useState<ChatData>({
+    messages: [],
+  });
+  const answerReceivedAt = useSelector<State, Date | undefined>((state) => {
+    const m = state.mentorsById[state.curMentor];
+    if (!(m && m.answerReceivedAt)) {
+      return undefined;
+    }
+    return m.answerReceivedAt;
+  });
   const mentor = useSelector<State, MentorData>(
     (state) => state.mentorsById[state.curMentor]
   );
@@ -208,37 +223,40 @@ function Chat(props: { height: number }): JSX.Element {
   );
 
   useEffect(() => {
-    const _messages = [...messages];
+    const chatDataUpdated = {
+      ...chatData,
+      messages: [...chatData.messages],
+    };
     let updated = false;
-    if (lastQuestionAt !== curQuestionUpdatedAt) {
+    if (chatDataUpdated.lastQuestionAt !== curQuestionUpdatedAt) {
       updated = true;
-      _messages.push({
+      chatDataUpdated.messages.push({
         isUser: true,
         text: curQuestion,
       });
-      setLastQuestionAt(curQuestionUpdatedAt);
+      chatDataUpdated.lastQuestionAt = curQuestionUpdatedAt;
     }
     if (mentor) {
-      if (messages.length === 0) {
+      if (chatDataUpdated.messages.length === 0) {
         updated = true;
-        _messages.push({
+        chatDataUpdated.messages.push({
           isUser: false,
           text:
             getUtterance(mentor.mentor, UtteranceName.INTRO)?.transcript || "",
         });
       }
-      if (lastAnswerAt !== mentor.answerReceivedAt) {
+      if (chatDataUpdated.lastAnswerAt !== answerReceivedAt) {
         updated = true;
-        _messages.push({
+        chatDataUpdated.messages.push({
           isUser: false,
           text: mentor.answer_text || "",
           feedbackId: mentor.answerFeedbackId,
         });
-        setLastAnswerAt(mentor.answerReceivedAt);
+        chatDataUpdated.lastAnswerAt = answerReceivedAt;
       }
     }
     if (updated) {
-      setMessages(_messages);
+      setChatData(chatDataUpdated);
     }
   }, [mentor, curQuestionUpdatedAt]);
 
@@ -246,14 +264,24 @@ function Chat(props: { height: number }): JSX.Element {
     animateScroll.scrollToBottom({
       containerId: "chat-thread",
     });
-  }, [messages]);
+  }, [chatData.messages]);
 
   function onSendFeedback(id: string, feedback: Feedback) {
-    const idx = messages.findIndex((f) => f.feedbackId === id);
-    if (idx !== -1) {
-      messages[idx].feedback = feedback;
+    const ix = chatData.messages.findIndex((f) => f.feedbackId === id);
+    if (ix === -1) {
+      return;
     }
-    setMessages(messages);
+    setChatData({
+      ...chatData,
+      messages: [
+        ...chatData.messages.slice(0, ix),
+        {
+          ...chatData.messages[ix],
+          feedback,
+        },
+        ...chatData.messages.slice(ix + 1),
+      ],
+    });
   }
 
   return (
@@ -263,11 +291,11 @@ function Chat(props: { height: number }): JSX.Element {
       style={{ height: props.height }}
       disablePadding={true}
     >
-      {messages.map((message, i) => {
+      {chatData.messages.map((m, i) => {
         return (
           <ChatItem
             key={`chat-msg-${i}`}
-            message={message}
+            message={m}
             i={i}
             styles={styles}
             onSendFeedback={onSendFeedback}
