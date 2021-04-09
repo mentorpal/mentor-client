@@ -26,7 +26,6 @@ import {
   UtteranceName,
   Mentor,
   TopicQuestions,
-  MentorType,
   QuestionType,
 } from "../types";
 
@@ -52,6 +51,7 @@ export const QUESTION_SENT = "QUESTION_SENT"; // question input was sent
 export const TOPIC_SELECTED = "TOPIC_SELECTED";
 export const GUEST_NAME_SET = "GUEST_NAME_SET";
 export const RECOMMENDED_QUESTIONS_SET = "RECOMMENDED_QUESTIONS_SET";
+export const USER_INPUT_CHANGED = "USER_INPUT_CHANGED";
 
 export interface ConfigLoadFailedAction {
   type: typeof CONFIG_LOAD_FAILED;
@@ -168,6 +168,11 @@ export interface RecommendedQuestionsSetAction {
 export interface TopicSelectedAction {
   type: typeof TOPIC_SELECTED;
   topic: string;
+}
+
+export interface UserInputChangedAction {
+  type: typeof USER_INPUT_CHANGED;
+  payload: string;
 }
 
 export type MentorClientAction =
@@ -573,22 +578,23 @@ export const answerFinished = () => (
   }
   dispatch(nextMentor(mentorNext.id));
   // play the next mentor after the timeout
-  if (timer) {
-    clearTimeout(timer);
-    timer = null;
-  }
+  clearNextMentorTimer();
   timer = setTimeout(() => {
     dispatch(selectMentor(mentorNext.id, MentorSelectReason.NEXT_READY));
   }, NEXT_MENTOR_DELAY);
 };
 
-export const onInput: ActionCreator<
-  ThunkAction<AnyAction, State, void, NextMentorAction>
-> = () => (dispatch: Dispatch) => {
+function clearNextMentorTimer(): void {
   if (timer) {
     clearTimeout(timer);
     timer = null;
   }
+}
+
+export const onInput: ActionCreator<
+  ThunkAction<AnyAction, State, void, NextMentorAction>
+> = () => (dispatch: Dispatch) => {
+  clearNextMentorTimer();
   return dispatch(nextMentor(""));
 };
 
