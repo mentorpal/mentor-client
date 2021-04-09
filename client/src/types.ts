@@ -187,6 +187,12 @@ export interface State {
   guestName: string;
   questionsAsked: string[];
   recommendedQuestions: string[];
+  questionInput: QuestionInput;
+}
+
+export interface QuestionInput {
+  question: string;
+  source: MentorQuestionSource;
 }
 
 export interface QuestionResponse {

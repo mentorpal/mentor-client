@@ -4,15 +4,15 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React, { useState } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Divider, Paper, InputBase, Collapse } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Topics from "components/topics";
 import Questions from "components/questions";
-import { sendQuestion, onInput } from "store/actions";
-import { Config, MentorQuestionSource, State } from "types";
+import { sendQuestion, userInputChanged } from "store/actions";
+import { Config, MentorQuestionSource, QuestionInput, State } from "types";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -45,20 +45,15 @@ function Input(): JSX.Element {
   const config = useSelector<State, Config>((s) => s.config);
   const curTopic = useSelector<State, string>((s) => s.curTopic);
   const curQuestion = useSelector<State, string>((s) => s.curQuestion);
-  const [questionInput, setQuestionInput] = useState({
-    question: "",
-    source: MentorQuestionSource.NONE,
-  });
+  const questionInput = useSelector<State, QuestionInput>(
+    (s) => s.questionInput
+  );
 
   function handleQuestionChanged(
     question: string,
     source: MentorQuestionSource
   ) {
-    setQuestionInput({
-      question: question || "",
-      source: source || MentorQuestionSource.NONE,
-    });
-    dispatch(onInput());
+    dispatch(userInputChanged({ question, source }));
   }
 
   function handleQuestionSend(question: string, source: MentorQuestionSource) {
@@ -66,7 +61,6 @@ function Input(): JSX.Element {
       return;
     }
     dispatch(sendQuestion({ question, source, config }));
-    setQuestionInput({ question: "", source: MentorQuestionSource.NONE });
     window.focus();
   }
 

@@ -27,6 +27,7 @@ import {
   Mentor,
   TopicQuestions,
   QuestionType,
+  QuestionInput,
 } from "../types";
 
 const RESPONSE_CUTOFF = -100;
@@ -46,12 +47,12 @@ export const MENTOR_SELECTED = "MENTOR_SELECTED"; // mentor video was selected
 export const MENTOR_TOPIC_QUESTIONS_LOADED = "MENTOR_TOPIC_QUESTIONS_LOADED";
 export const QUESTION_ANSWERED = "QUESTION_ANSWERED"; // question was answered by mentor
 export const QUESTION_ERROR = "QUESTION_ERROR"; // question could not be answered by mentor
+export const QUESTION_INPUT_CHANGED = "QUESTION_INPUT_CHANGED";
 export const QUESTION_RESULT = "QUESTION_RESULT";
 export const QUESTION_SENT = "QUESTION_SENT"; // question input was sent
 export const TOPIC_SELECTED = "TOPIC_SELECTED";
 export const GUEST_NAME_SET = "GUEST_NAME_SET";
 export const RECOMMENDED_QUESTIONS_SET = "RECOMMENDED_QUESTIONS_SET";
-export const USER_INPUT_CHANGED = "USER_INPUT_CHANGED";
 
 export interface ConfigLoadFailedAction {
   type: typeof CONFIG_LOAD_FAILED;
@@ -170,9 +171,9 @@ export interface TopicSelectedAction {
   topic: string;
 }
 
-export interface UserInputChangedAction {
-  type: typeof USER_INPUT_CHANGED;
-  payload: string;
+export interface QuestionInputChangedAction {
+  type: typeof QUESTION_INPUT_CHANGED;
+  payload: QuestionInput;
 }
 
 export type MentorClientAction =
@@ -182,7 +183,8 @@ export type MentorClientAction =
   | MentorAction
   | QuestionAction
   | TopicSelectedAction
-  | RecommendedQuestionsSetAction;
+  | RecommendedQuestionsSetAction
+  | QuestionInputChangedAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
@@ -396,7 +398,8 @@ export function mentorAnswerPlaybackStarted(video: {
 export const selectMentor = (mentor: string, reason: MentorSelectReason) => (
   dispatch: ThunkDispatch<State, void, AnyAction>
 ) => {
-  dispatch(onInput());
+  clearNextMentorTimer();
+  // dispatch(onInput());
   return dispatch({
     payload: {
       id: mentor,
@@ -456,7 +459,8 @@ export const sendQuestion = (q: {
       },
     });
   }
-  dispatch(onInput());
+  clearNextMentorTimer();
+  // dispatch(onInput());
   dispatch(onQuestionSent(q));
   const state = getState();
   const mentorIds = Object.keys(state.mentorsById);
@@ -591,11 +595,21 @@ function clearNextMentorTimer(): void {
   }
 }
 
-export const onInput: ActionCreator<
-  ThunkAction<AnyAction, State, void, NextMentorAction>
-> = () => (dispatch: Dispatch) => {
+// export const onInput: ActionCreator<
+//   ThunkAction<AnyAction, State, void, NextMentorAction>
+// > = () => (dispatch: Dispatch) => {
+//   clearNextMentorTimer();
+//   return dispatch(nextMentor(""));
+// };
+
+export const userInputChanged: ActionCreator<
+  ThunkAction<AnyAction, State, void, QuestionInputChangedAction>
+> = (userInput: String) => (dispatch: Dispatch) => {
   clearNextMentorTimer();
-  return dispatch(nextMentor(""));
+  return dispatch({
+    type: QUESTION_INPUT_CHANGED,
+    payload: userInput,
+  });
 };
 
 const onMentorAnswerPlaybackStarted = (

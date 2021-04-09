@@ -13,6 +13,7 @@ import {
   MENTOR_SELECTED,
   QUESTION_ANSWERED,
   QUESTION_ERROR,
+  QUESTION_INPUT_CHANGED,
   QUESTION_SENT,
   TOPIC_SELECTED,
   MentorClientAction,
@@ -29,6 +30,8 @@ import {
   MentorDataRequestedAction,
   MENTOR_DATA_REQUESTED,
   RECOMMENDED_QUESTIONS_SET,
+  QuestionInputChangedAction,
+  NextMentorAction,
 } from "./actions";
 import {
   MentorData,
@@ -66,11 +69,15 @@ export const initialState: State = {
   mentorNext: "", // id of the next mentor to speak after the current finishes
   recommendedQuestions: [],
   questionsAsked: [],
+  questionInput: {
+    question: "",
+    source: MentorQuestionSource.NONE,
+  },
 };
 
 function mentorSelected(state: State, action: MentorSelectedAction): State {
   const mentorId = action.payload.id;
-  return {
+  return onMentorNext({
     ...state,
     curMentor: action.payload.id,
     curMentorReason: action.payload.reason,
@@ -82,7 +89,7 @@ function mentorSelected(state: State, action: MentorSelectedAction): State {
         status: MentorQuestionStatus.ANSWERED,
       },
     },
-  };
+  });
 }
 
 function onMentorAnswerPlaybackStarted(
@@ -163,18 +170,29 @@ function onMentorDataRequested(
 }
 
 function onQuestionSent(state: State, action: QuestionSentAction): State {
-  return {
-    ...state,
-    curQuestion: action.payload.question,
-    curQuestionSource: action.payload.source,
-    curQuestionUpdatedAt: new Date(Date.now()),
-    questionsAsked: Array.from(
-      new Set([
-        ...state.questionsAsked,
-        normalizeString(action.payload.question),
-      ])
-    ),
-  };
+  return onMentorNext(
+    onQuestionInputChanged(
+      {
+        ...state,
+        curQuestion: action.payload.question,
+        curQuestionSource: action.payload.source,
+        curQuestionUpdatedAt: new Date(Date.now()),
+        questionsAsked: Array.from(
+          new Set([
+            ...state.questionsAsked,
+            normalizeString(action.payload.question),
+          ])
+        ),
+      },
+      {
+        type: QUESTION_INPUT_CHANGED,
+        payload: {
+          question: "",
+          source: MentorQuestionSource.NONE,
+        },
+      }
+    )
+  );
 }
 
 function onConfigLoadStarted(state: State): State {
@@ -200,6 +218,26 @@ function onConfigLoadSucceeded(
     config: action.payload,
     configLoadStatus: LoadStatus.LOADED,
   };
+}
+
+function onMentorNext(
+  state: State,
+  action: NextMentorAction | undefined = undefined
+): State {
+  return {
+    ...state,
+    mentorNext: action ? action.mentor : "",
+  };
+}
+
+function onQuestionInputChanged(
+  state: State,
+  action: QuestionInputChangedAction
+): State {
+  return onMentorNext({
+    ...state,
+    questionInput: action.payload,
+  });
 }
 
 export default function reducer(
@@ -230,10 +268,7 @@ export default function reducer(
         mentorFaved: state.mentorFaved === action.id ? "" : action.id,
       };
     case MENTOR_NEXT:
-      return {
-        ...state,
-        mentorNext: action.mentor,
-      };
+      return onMentorNext(state, action as NextMentorAction);
     case QUESTION_SENT:
       return onQuestionSent(state, action as QuestionSentAction);
     case QUESTION_ANSWERED: {
@@ -299,6 +334,11 @@ export default function reducer(
         ...state,
         recommendedQuestions: action.recommendedQuestions,
       };
+    case QUESTION_INPUT_CHANGED:
+      return onQuestionInputChanged(
+        state,
+        action as QuestionInputChangedAction
+      );
     default:
       return state;
   }
