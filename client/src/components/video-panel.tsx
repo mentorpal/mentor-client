@@ -62,9 +62,7 @@ function VideoPanel(): JSX.Element {
   return (
     <div id="video-panel" className="carousel" style={{ height: 50 }}>
       {Object.keys(mentorsById)
-        .filter(
-          (mId) => mentorsById[mId].mentorType === MentorType.VIDEO
-        )
+        .filter((mId) => mentorsById[mId].mentorType === MentorType.VIDEO)
         .map((id, i) => {
           const m = mentorsById[id];
           return (

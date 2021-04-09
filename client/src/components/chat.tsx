@@ -206,9 +206,13 @@ function Chat(props: { height: number }): JSX.Element {
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [lastQuestionAt, setLastQuestionAt] = useState<Date>();
   const [lastAnswerAt, setLastAnswerAt] = useState<Date>();
-  const mentor = useSelector<State, MentorData>((state) => state.mentorsById[state.curMentor]);
+  const mentor = useSelector<State, MentorData>(
+    (state) => state.mentorsById[state.curMentor]
+  );
   const curQuestion = useSelector<State, string>((state) => state.curQuestion);
-  const curQuestionUpdatedAt = useSelector<State, Date | undefined>((state) => state.curQuestionUpdatedAt);
+  const curQuestionUpdatedAt = useSelector<State, Date | undefined>(
+    (state) => state.curQuestionUpdatedAt
+  );
 
   useEffect(() => {
     const _messages = [...messages];

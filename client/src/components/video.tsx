@@ -17,35 +17,42 @@ import {
   faveMentor,
   mentorAnswerPlaybackStarted,
 } from "store/actions";
-import { Config, MentorData, State } from "types";
+import { State } from "types";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
+
+interface VideoData {
+  src: string;
+  subtitles: string;
+}
 
 function Video(args: { playing?: boolean }): JSX.Element {
   const { playing = false } = args;
   const dispatch = useDispatch();
   const curMentor = useSelector<State, string>((state) => state.curMentor);
-  const mentorsById = useSelector<State, Record<string, MentorData>>(
-    (state) => state.mentorsById
-  );
+  const video = useSelector<State, VideoData | null>((state) => {
+    if (!state.curMentor) {
+      return null;
+    }
+    const m = state.mentorsById[state.curMentor];
+    if (!m) {
+      return null;
+    }
+    return {
+      src: state.isIdle
+        ? idleUrl(m.mentor, state.config)
+        : videoUrl(state.curMentor, m.answer_id || "", state.config),
+      subtitles:
+        subtitlesSupported && !state.isIdle
+          ? subtitleUrl(state.curMentor, m.answer_id || "", state.config)
+          : "",
+    };
+  });
   const isIdle = useSelector<State, boolean>((state) => state.isIdle);
-  const config = useSelector<State, Config>((s) => s.config);
   const [duration, setDuration] = useState(Number.NaN);
-
-  if (!curMentor) {
+  if (!(curMentor && video)) {
     return <div />;
   }
-  const mentor = mentorsById[curMentor];
-
-  const video = {
-    src: isIdle
-      ? idleUrl(mentor.mentor, config)
-      : videoUrl(curMentor, mentor.answer_id || "", config),
-    subtitles:
-      subtitlesSupported && !isIdle
-        ? subtitleUrl(curMentor, mentor.answer_id || "", config)
-        : "",
-  };
 
   function onEnded() {
     dispatch(answerFinished());
