@@ -46,6 +46,7 @@ describe("History", () => {
         cy.get("#input-field").type("Hello");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#topic-2").trigger('mouseover').click();
+        cy.get("#scrolling-questions-list").should("have.attr", "data-topic", "History")
         cy.get("#scrolling-questions-list").get("li").first().contains("Hello");
         cy.get("#input-field").type("World");
         cy.get("#input-send").trigger('mouseover').click();
