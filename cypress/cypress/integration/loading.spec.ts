@@ -6,7 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import { mockDefaultSetup } from "../support/helpers";
 
-describe("loading", () => {
+describe("Loading", () => {
     it("displays a skeleton until site config has loaded", () => {
         mockDefaultSetup(cy);
         cy.visit("/");

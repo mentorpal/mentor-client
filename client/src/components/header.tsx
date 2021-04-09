@@ -7,25 +7,27 @@ The full terms of this copyright and license should always be found in the root 
 import React from "react";
 import { useSelector } from "react-redux";
 import { Hidden, Typography } from "@material-ui/core";
-import { Config, MentorData, State } from "types";
+import { Config, Mentor, State } from "types";
 
 function Header(): JSX.Element {
-  const curMentor = useSelector<State, string>((state) => state.curMentor);
-  const mentorsById = useSelector<State, Record<string, MentorData>>(
-    (state) => state.mentorsById
+  // const curMentor = useSelector<State, string>((state) => state.curMentor);
+  const mentor = useSelector<State, Mentor | null>((state) =>
+    state.curMentor && state.mentorsById[state.curMentor]
+      ? state.mentorsById[state.curMentor].mentor
+      : null
   );
   const config = useSelector<State, Config>((state) => state.config);
 
-  if (!curMentor) {
+  if (!mentor) {
     return <div />;
   }
-  const mentor = mentorsById[curMentor].mentor;
+  // const mentor = mentorsById[curMentor].mentor;
 
   if (config.styleHeaderLogo) {
     return (
       <div
         id="header"
-        data-mentor={curMentor}
+        data-mentor={mentor._id}
         style={{
           display: "flex",
           alignItems: "center",
@@ -49,7 +51,7 @@ function Header(): JSX.Element {
   return (
     <div
       id="header"
-      data-mentor={curMentor}
+      data-mentor={mentor._id}
       style={{
         display: "flex",
         flexDirection: "column",
