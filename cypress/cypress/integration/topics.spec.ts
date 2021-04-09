@@ -72,6 +72,7 @@ describe("Topics list", () => {
     it("recommends a topic-relevant question for current mentor when topic is selected", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("#topic-1").trigger('mouseover').click();
+        cy.get("#input-field-wrapper").should("have.attr", "data-topic", "About the Job")
         cy.get("#input-field").contains(
             "What qualifications and experience do recruiters"
         );
@@ -82,6 +83,7 @@ describe("Topics list", () => {
         cy.get("#video-thumbnail-julianne").should("have.attr", "data-ready", "true")
         cy.get("#video-thumbnail-julianne").trigger('mouseover').click();
         cy.get("#topic-1").trigger('mouseover').click();
+        cy.get("#input-field-wrapper").should("have.attr", "data-topic", "Challenges")
         cy.get("#input-field").contains("Were you worried about starting college?");
     });
 
@@ -90,8 +92,10 @@ describe("Topics list", () => {
         cy.get("#input-field").type("where were you born?");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#topic-1").trigger('mouseover').click();
+        cy.get("#input-field-wrapper").should("have.attr", "data-topic", "About the Job")
         cy.get("#topic-0").trigger('mouseover').click();
-        cy.get("#input-field").contains("What do you do in computer");
+        cy.get("#input-field-wrapper").should("have.attr", "data-topic", "About Me")
+        cy.get("#input-field").contains("Are you fun at parties?");
     });
 
     it("does not recommend a topic question that has already been asked (via topic button)", () => {
@@ -100,8 +104,10 @@ describe("Topics list", () => {
         cy.get("#topic-0").trigger('mouseover').click();
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#topic-1").trigger('mouseover').click();
+        cy.get("#input-field-wrapper").should("have.attr", "data-topic", "About the Job")
         cy.get("#topic-0").trigger('mouseover').click();
-        cy.get("#input-field").contains("What do you do in computer");
+        cy.get("#input-field-wrapper").should("have.attr", "data-topic", "About Me")
+        cy.get("#input-field").contains("Are you fun at parties?");
     });
 
     it("skips topic questions that have already been asked", () => {
@@ -109,7 +115,9 @@ describe("Topics list", () => {
         cy.get("#input-field").type("where were you born?");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#topic-1").trigger('mouseover').click();
+        cy.get("#input-field-wrapper").should("have.attr", "data-topic", "About the Job")
         cy.get("#topic-0").trigger('mouseover').click();
-        cy.get("#input-field").contains("What do you do in computer");
+        cy.get("#input-field-wrapper").should("have.attr", "data-topic", "About Me")
+        cy.get("#input-field").contains("Are you fun at parties");
     });
 });

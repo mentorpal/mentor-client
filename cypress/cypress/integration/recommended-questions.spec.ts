@@ -62,7 +62,7 @@ describe("Recommended questions", () => {
         mockDefaultSetup(cy);
         cy.visit("/", {
             qs: addGuestParams({
-                recommendedQuestions: "What do you do in computer science/programming?",
+                recommendedQuestions: "Are you fun at parties?",
             }),
         });
         cy.get("#topic-0").find(".topic-selected");
@@ -71,7 +71,7 @@ describe("Recommended questions", () => {
         cy.get("#scrolling-questions-list")
             .get("li")
             .first()
-            .contains("What do you do in computer science/programming?");
+            .contains("Are you fun at parties?");
         cy.get("#scrolling-questions-list")
             .get("li")
             .first()

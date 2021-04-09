@@ -10,8 +10,9 @@ describe("Questions list", () => {
 
     it("displays list of questions for selected topic", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("#scrolling-questions-list").should("have.attr", "data-topic", "About Me")
         cy.get("#scrolling-questions-list").contains("Where were you born?");
-        cy.get("#scrolling-questions-list").contains("What do you do in computer science");
+        cy.get("#scrolling-questions-list").contains("Are you fun at parties?");
         cy.get("#scrolling-questions-list").contains("What qualifications and experience do recruiters").should("not.exist");
     });
 
@@ -26,7 +27,8 @@ describe("Questions list", () => {
 
     it("changes questions when switching mentors", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
-        cy.get("#scrolling-questions-list").contains("What do you do in computer science");
+        cy.get("#scrolling-questions-list").should("have.attr", "data-topic", "About Me")
+        cy.get("#scrolling-questions-list").contains("Are you fun at parties?");
         cy.get("#scrolling-questions-list").contains("What do you do in the marines?").should("not.exist");
         cy.get("#video-thumbnail-carlos").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").should("have.attr", "data-mentor", "carlos")
@@ -34,7 +36,7 @@ describe("Questions list", () => {
         cy.get("#scrolling-questions-list").contains("What do you do in the marines?");
         cy.get("#video-thumbnail-julianne").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").should("have.attr", "data-mentor", "julianne")
-        cy.get("#scrolling-questions-list").contains("What do you do in computer science/programming?").should("not.exist");
+        cy.get("#scrolling-questions-list").contains("Are you fun at parties?").should("not.exist");
         cy.get("#scrolling-questions-list").contains("What do you do in the marines?").should("not.exist");
     });
 
@@ -88,17 +90,17 @@ describe("Questions list", () => {
 
     it("keeps greyed out questions when switching topics if new topic also has it", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
-        cy.get("#input-field").type("What do you do in computer science/programming?");
+        cy.get("#input-field").type("Are you fun at parties?");
         cy.get("#input-send").trigger('mouseover').click();
         cy.get("#scrolling-questions-list")
-            .get(`#${CSS.escape("What do you do in computer science/programming?")}`)
+            .get(`#${CSS.escape("Are you fun at parties?")}`)
             .find("div")
             .invoke("attr", "style")
             .should("contain", "gray");
         cy.get("#topic-1").trigger('mouseover').click();
         cy.get("#scrolling-questions-list").should("have.attr", "data-topic", "About the Job")
         cy.get("#scrolling-questions-list")
-            .get(`#${CSS.escape("What do you do in computer science/programming?")}`)
+            .get(`#${CSS.escape("Are you fun at parties?")}`)
             .find("div")
             .invoke("attr", "style")
             .should("contain", "gray");
