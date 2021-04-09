@@ -52,19 +52,19 @@ function IndexPage(props: {
 }): JSX.Element {
   const dispatch = useDispatch();
   const styles = useStyles();
-  const config = useSelector<State, Config>(state => state.config);
+  const config = useSelector<State, Config>((state) => state.config);
   const configLoadStatus = useSelector<State, LoadStatus>(
-    state => state.configLoadStatus
+    (state) => state.configLoadStatus
   );
-  const guestName = useSelector<State, string>(state => state.guestName);
-  const curMentor = useSelector<State, string>(state => state.curMentor);
+  const guestName = useSelector<State, string>((state) => state.guestName);
+  const curMentor = useSelector<State, string>((state) => state.curMentor);
   const mentorsById = useSelector<State, Record<string, MentorData>>(
-    state => state.mentorsById
+    (state) => state.mentorsById
   );
 
   const [windowHeight, setWindowHeight] = React.useState<number>(0);
   const [chatHeight, setChatHeight] = React.useState<number>(0);
-  const curTopic = useSelector<State, string>(state => state.curTopic);
+  const curTopic = useSelector<State, string>((state) => state.curTopic);
 
   const { mentor, guest, subject, recommendedQuestions } = props.search;
 
@@ -121,7 +121,7 @@ function IndexPage(props: {
     }
     if (config.cmi5Enabled && Cmi5.isCmiAvailable) {
       try {
-        Cmi5.instance.initialize().catch(e => {
+        Cmi5.instance.initialize().catch((e) => {
           console.error(e);
         });
       } catch (err2) {

@@ -15,8 +15,8 @@ const theme = createMuiTheme({
   palette: {
     primary: { main: "#1B6A9C" },
   },
-  // @ts-ignore
-  typography: { useNextVariants: true },
+  // eslint-disable-next-line
+  // typography: { useNextVariants: true },
 });
 
 function Questions(props: {
@@ -26,18 +26,18 @@ function Questions(props: {
   };
 }) {
   const mentor = useSelector<State, MentorData>(
-    state => state.mentorsById[state.curMentor]
+    (state) => state.mentorsById[state.curMentor]
   );
-  const curTopic = useSelector<State, string>(state => state.curTopic);
+  const curTopic = useSelector<State, string>((state) => state.curTopic);
   const questionsAsked = useSelector<State, string[]>(
-    state => state.questionsAsked
+    (state) => state.questionsAsked
   );
   const recommendedQuestions = useSelector<State, string[]>(
-    state => state.recommendedQuestions
+    (state) => state.recommendedQuestions
   );
 
   const questions =
-    mentor.topic_questions.find(tq => tq.topic === curTopic)?.questions || [];
+    mentor.topic_questions.find((tq) => tq.topic === curTopic)?.questions || [];
   const orderedQuestions = questions.slice();
   if (curTopic === "History") {
     orderedQuestions.reverse();

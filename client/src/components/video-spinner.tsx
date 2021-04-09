@@ -11,7 +11,7 @@ import { State } from "types";
 
 const LoadingSpinner = (args: { mentor: string }) => {
   const { mentor } = args;
-  const isMentorQuestionDifferent = useSelector<State, boolean>(state => {
+  const isMentorQuestionDifferent = useSelector<State, boolean>((state) => {
     const m = state.mentorsById[mentor];
     return Boolean(m && state.curQuestion && state.curQuestion !== m.question);
   });

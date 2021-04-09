@@ -23,7 +23,7 @@ export function getUtterance(
   mentor: Mentor,
   utterance: UtteranceName
 ): Answer | undefined {
-  return mentor.utterances.find(a => a.question.name === utterance);
+  return mentor.utterances.find((a) => a.question.name === utterance);
 }
 
 export function videoUrl(
@@ -47,8 +47,20 @@ export function subtitleUrl(
   return `${config.urlClassifier}/mentors/${mentorId}/tracks/${answerId}.vtt`;
 }
 
-export async function fetchMentor(config: Config, mentorId: string) {
-  return await axios.post(config.urlGraphql, {
+interface MentorQueryData {
+  mentor: Mentor
+}
+
+interface GraphQLReponse<T> {
+  errors?: { message: string }[];
+  data?: T;
+}
+
+export async function fetchMentor(
+  config: Config,
+  mentorId: string
+): Promise<AxiosResponse<GraphQLReponse<MentorQueryData>>> {
+  return await axios.post<GraphQLReponse<MentorQueryData>>(config.urlGraphql, {
     query: `
       query {
         mentor(id: "${mentorId}") {

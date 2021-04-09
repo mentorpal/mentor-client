@@ -42,9 +42,9 @@ const useStyles = makeStyles(() => ({
 function Input() {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const config = useSelector<State, Config>(s => s.config);
-  const curTopic = useSelector<State, string>(state => state.curTopic);
-  const curQuestion = useSelector<State, string>(state => state.curQuestion);
+  const config = useSelector<State, Config>((s) => s.config);
+  const curTopic = useSelector<State, string>((state) => state.curTopic);
+  const curQuestion = useSelector<State, string>((state) => state.curQuestion);
   const [questionInput, setQuestionInput] = useState({
     question: "",
     source: MentorQuestionSource.NONE,
@@ -120,7 +120,7 @@ function Input() {
           rows={2}
           rowsMax={2}
           placeholder={curQuestion || "Ask a question"}
-          onChange={e => {
+          onChange={(e) => {
             onQuestionInputChanged(e.target.value);
           }}
           onClick={onQuestionInputSelected}

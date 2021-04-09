@@ -22,11 +22,11 @@ function Topics(args: {
   const { onSelected } = args;
   const dispatch = useDispatch();
   const mentor = useSelector<State, MentorData>(
-    state => state.mentorsById[state.curMentor]
+    (state) => state.mentorsById[state.curMentor]
   );
-  const curTopic = useSelector<State, string>(state => state.curTopic);
+  const curTopic = useSelector<State, string>((state) => state.curTopic);
   const questionsAsked = useSelector<State, string[]>(
-    state => state.questionsAsked
+    (state) => state.questionsAsked
   );
 
   async function onTopicSelected(topic: string) {
@@ -36,8 +36,8 @@ function Topics(args: {
     }
     dispatch(selectTopic(topic));
     const top_question = mentor.topic_questions
-      .find(tq => tq.topic === topic)
-      ?.questions.find(q => !questionsAsked.includes(normalizeString(q)));
+      .find((tq) => tq.topic === topic)
+      ?.questions.find((q) => !questionsAsked.includes(normalizeString(q)));
     if (top_question) {
       onSelected(top_question);
     }
@@ -57,14 +57,10 @@ function Topics(args: {
               >
                 {tq.topic === "History" ? (
                   <History style={{ marginRight: "5px" }} />
-                ) : (
-                  undefined
-                )}
+                ) : undefined}
                 {tq.topic === "Recommended" ? (
                   <Whatshot style={{ marginRight: "5px" }} />
-                ) : (
-                  undefined
-                )}
+                ) : undefined}
                 {tq.topic}
               </Button>
             </div>

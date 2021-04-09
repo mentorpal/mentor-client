@@ -16,12 +16,12 @@ import { isMentorReady } from "utils";
 
 function VideoPanel(): JSX.Element {
   const dispatch = useDispatch();
-  const mentor = useSelector<State, string>(state => state.curMentor);
+  const mentor = useSelector<State, string>((state) => state.curMentor);
   const mentorsById = useSelector<State, Record<string, MentorData>>(
-    state => state.mentorsById
+    (state) => state.mentorsById
   );
-  const mentorFaved = useSelector<State, string>(state => state.mentorFaved);
-  const isIdle = useSelector<State, boolean>(state => state.isIdle);
+  const mentorFaved = useSelector<State, string>((state) => state.mentorFaved);
+  const isIdle = useSelector<State, boolean>((state) => state.isIdle);
 
   if (!mentor || Object.getOwnPropertyNames(mentorsById).length < 2) {
     return <div />;
@@ -41,7 +41,9 @@ function VideoPanel(): JSX.Element {
   return (
     <div id="video-panel" className="carousel" style={{ height: 50 }}>
       {Object.keys(mentorsById)
-        .filter(mId => mentorsById[mId].mentor.mentorType === MentorType.VIDEO)
+        .filter(
+          (mId) => mentorsById[mId].mentor.mentorType === MentorType.VIDEO
+        )
         .map((id, i) => {
           const m = mentorsById[id];
           return (

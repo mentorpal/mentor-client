@@ -24,12 +24,12 @@ const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 function Video(args: { playing?: boolean }) {
   const { playing = false } = args;
   const dispatch = useDispatch();
-  const curMentor = useSelector<State, string>(state => state.curMentor);
+  const curMentor = useSelector<State, string>((state) => state.curMentor);
   const mentorsById = useSelector<State, Record<string, MentorData>>(
-    state => state.mentorsById
+    (state) => state.mentorsById
   );
-  const isIdle = useSelector<State, boolean>(state => state.isIdle);
-  const config = useSelector<State, Config>(s => s.config);
+  const isIdle = useSelector<State, boolean>((state) => state.isIdle);
+  const config = useSelector<State, Config>((s) => s.config);
   const [duration, setDuration] = useState(Number.NaN);
 
   if (!curMentor) {
@@ -144,11 +144,11 @@ const MemoVideoPlayer = React.memo(VideoPlayer);
 
 function FaveButton() {
   const dispatch = useDispatch();
-  const mentor = useSelector<State, string>(state => state.curMentor);
+  const mentor = useSelector<State, string>((state) => state.curMentor);
   const numMentors = useSelector<State, number>(
-    state => Object.keys(state.mentorsById).length
+    (state) => Object.keys(state.mentorsById).length
   );
-  const mentorFaved = useSelector<State, string>(state => state.mentorFaved);
+  const mentorFaved = useSelector<State, string>((state) => state.mentorFaved);
 
   const onClick = () => {
     dispatch(faveMentor(mentor));

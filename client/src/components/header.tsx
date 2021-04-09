@@ -10,11 +10,11 @@ import { Hidden, Typography } from "@material-ui/core";
 import { Config, MentorData, State } from "types";
 
 function Header(): JSX.Element {
-  const curMentor = useSelector<State, string>(state => state.curMentor);
+  const curMentor = useSelector<State, string>((state) => state.curMentor);
   const mentorsById = useSelector<State, Record<string, MentorData>>(
-    state => state.mentorsById
+    (state) => state.mentorsById
   );
-  const config = useSelector<State, Config>(state => state.config);
+  const config = useSelector<State, Config>((state) => state.config);
 
   if (!curMentor) {
     return <div />;

@@ -18,7 +18,7 @@ interface MessageStatusState {
 
 const MessageStatus = (args: { mentor: string }) => {
   const { mentor } = args;
-  const msgStatusState = useSelector<State, MessageStatusState>(state => {
+  const msgStatusState = useSelector<State, MessageStatusState>((state) => {
     const m = state.mentorsById[mentor];
     return {
       isMentorLoaded: Boolean(m),

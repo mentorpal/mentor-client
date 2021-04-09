@@ -12,9 +12,9 @@ import { useSelector } from "react-redux";
 
 function VideoThumbnail(props: { mentor: string }) {
   const [isPlaying, setPlaying] = useState(true);
-  const config = useSelector<State, Config>(s => s.config);
+  const config = useSelector<State, Config>((s) => s.config);
   const mentorsById = useSelector<State, Record<string, MentorData>>(
-    state => state.mentorsById
+    (state) => state.mentorsById
   );
 
   const mentor = mentorsById[props.mentor];

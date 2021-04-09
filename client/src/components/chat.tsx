@@ -25,7 +25,7 @@ import { giveFeedback, getUtterance } from "api";
 import { Config, Feedback, State, UtteranceName } from "types";
 import "styles/chat-override-theme";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: "auto",
   },
@@ -64,7 +64,7 @@ function ChatItem(props: {
 }): JSX.Element {
   const { message, i, styles, onSendFeedback } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const config = useSelector<State, Config>(s => s.config);
+  const config = useSelector<State, Config>((s) => s.config);
 
   function handleFeedbackClick(event: any) {
     setAnchorEl(event.currentTarget);
@@ -128,9 +128,7 @@ function ChatItem(props: {
             </Avatar>
           </ListItemAvatar>
         </div>
-      ) : (
-        undefined
-      )}
+      ) : undefined}
       <Popover
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
@@ -208,7 +206,7 @@ function Chat(props: { height: number }): JSX.Element {
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [lastQuestionAt, setLastQuestionAt] = useState<Date>();
   const [lastAnswerAt, setLastAnswerAt] = useState<Date>();
-  const state = useSelector<State, State>(state => state);
+  const state = useSelector<State, State>((state) => state);
 
   useEffect(() => {
     const _messages = [...messages];
@@ -253,7 +251,7 @@ function Chat(props: { height: number }): JSX.Element {
   }, [messages]);
 
   function onSendFeedback(id: string, feedback: Feedback) {
-    const idx = messages.findIndex(f => f.feedbackId === id);
+    const idx = messages.findIndex((f) => f.feedbackId === id);
     if (idx !== -1) {
       messages[idx].feedback = feedback;
     }

@@ -152,7 +152,7 @@ function onMentorDataRequested(
     },
     {}
   );
-  Object.getOwnPropertyNames(state.mentorsById).forEach(id => {
+  Object.getOwnPropertyNames(state.mentorsById).forEach((id) => {
     mentorsById[id] = state.mentorsById[id];
   });
   return {

@@ -12,7 +12,7 @@ import addCmi from "cmiutils";
 import { useSelector } from "react-redux";
 import { Config, State } from "types";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
     alignItems: "center",
@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 export default function GuestPrompt(): JSX.Element {
   const classes = useStyles();
   const [name, setName] = useState("");
-  const config = useSelector<State, Config>(state => state.config);
+  const config = useSelector<State, Config>((state) => state.config);
 
   function absUrl(u: string) {
     return u.startsWith("http")
@@ -98,7 +98,7 @@ export default function GuestPrompt(): JSX.Element {
             className={classes.inputField}
             value={name}
             placeholder={"guest"}
-            onChange={e => {
+            onChange={(e) => {
               onInput(e.target.value);
             }}
           />
