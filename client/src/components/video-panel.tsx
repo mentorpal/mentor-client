@@ -47,7 +47,7 @@ function VideoPanel(): JSX.Element {
         .map((id, i) => {
           const m = mentorsById[id];
           return (
-            <div
+            <button
               id={`video-thumbnail-${id}`}
               className={`slide video-slide ${id === mentor ? "selected" : ""}`}
               data-ready={isMentorReady(m)}
@@ -66,7 +66,7 @@ function VideoPanel(): JSX.Element {
               ) : (
                 <div />
               )}
-            </div>
+            </button>
           );
         })}
     </div>
