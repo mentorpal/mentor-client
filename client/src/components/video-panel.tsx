@@ -14,19 +14,43 @@ import { selectMentor, faveMentor } from "store/actions";
 import { MentorData, MentorSelectReason, MentorType, State } from "types";
 import { isMentorReady } from "utils";
 
+interface MentorVideoStatus {
+  isReady: boolean;
+  isOffTopic: boolean;
+  mentorType: MentorType;
+}
+
+function toMentorVideoStatus(m: MentorData): MentorVideoStatus {
+  return {
+    isOffTopic: Boolean(m.is_off_topic),
+    isReady: isMentorReady(m),
+    mentorType: m.mentor.mentorType,
+  };
+}
+
 function VideoPanel(): JSX.Element {
   const dispatch = useDispatch();
   const isIdle = useSelector<State, boolean>((state) => state.isIdle);
   const curMentor = useSelector<State, string>((state) => state.curMentor);
   const mentorFaved = useSelector<State, string>((state) => state.mentorFaved);
-  const mentorsById = useSelector<State, Record<string, MentorData>>((state) => state.mentorsById);
+  const mentorsById = useSelector<State, Record<string, MentorVideoStatus>>(
+    (state) => {
+      return Object.getOwnPropertyNames(state.mentorsById).reduce(
+        (acc: Record<string, MentorVideoStatus>, mentorId: string) => {
+          acc[mentorId] = toMentorVideoStatus(state.mentorsById[mentorId]);
+          return acc;
+        },
+        {} as Record<string, MentorVideoStatus>
+      );
+    }
+  );
   if (!curMentor || Object.getOwnPropertyNames(mentorsById).length < 2) {
     return <div />;
   }
 
   function onClick(mId: string) {
     const m = mentorsById[mId];
-    if (m.is_off_topic || !isMentorReady(m)) {
+    if (m.isOffTopic || !m.isReady) {
       return;
     }
     if (!(isIdle && mentorFaved === mId)) {
@@ -39,7 +63,7 @@ function VideoPanel(): JSX.Element {
     <div id="video-panel" className="carousel" style={{ height: 50 }}>
       {Object.keys(mentorsById)
         .filter(
-          (mId) => mentorsById[mId].mentor.mentorType === MentorType.VIDEO
+          (mId) => mentorsById[mId].mentorType === MentorType.VIDEO
         )
         .map((id, i) => {
           const m = mentorsById[id];
@@ -49,7 +73,7 @@ function VideoPanel(): JSX.Element {
               className={`slide video-slide ${
                 id === curMentor ? "selected" : ""
               }`}
-              data-ready={isMentorReady(m)}
+              data-ready={m.isReady}
               key={`${id}-${i}`}
               onClick={() => onClick(id)}
             >

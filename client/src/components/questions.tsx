@@ -8,7 +8,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import ScrollingQuestions from "components/scrolling-questions";
-import { State, MentorData } from "types";
+import { State } from "types";
 import withLocation from "wrap-with-location";
 
 const theme = createMuiTheme({
