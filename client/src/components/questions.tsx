@@ -26,9 +26,6 @@ function Questions(props: {
   };
 }) {
   const mentorId = useSelector<State, string>((state) => state.curMentor);
-  const mentor = useSelector<State, MentorData>(
-    (state) => state.mentorsById[state.curMentor]
-  );
   const curTopic = useSelector<State, string>((state) => state.curTopic);
   const questionsAsked = useSelector<State, string[]>(
     (state) => state.questionsAsked
@@ -36,35 +33,41 @@ function Questions(props: {
   const recommendedQuestions = useSelector<State, string[]>(
     (state) => state.recommendedQuestions
   );
-
-  const questions =
-    mentor.topic_questions.find((tq) => tq.topic === curTopic)?.questions || [];
-  const orderedQuestions = questions.slice();
-  if (curTopic === "History") {
-    orderedQuestions.reverse();
-  } else {
-    orderedQuestions.sort((a: string, b: string) => {
-      if (
-        recommendedQuestions.includes(a) &&
-        recommendedQuestions.includes(b)
-      ) {
-        return orderedQuestions.indexOf(a) - orderedQuestions.indexOf(b);
-      }
-      if (recommendedQuestions.includes(a)) {
-        return -1;
-      }
-      if (recommendedQuestions.includes(b)) {
-        return 1;
-      }
-      return 0;
-    });
-  }
+  const questions = useSelector<State, string[]>((state) => {
+    if (!state.curMentor) {
+      return [] as string[];
+    }
+    const m = state.mentorsById[state.curMentor];
+    const qlist =
+      m.topic_questions.find((tq) => tq.topic === curTopic)?.questions || [];
+    const orderedQuestions = qlist.slice();
+    if (curTopic === "History") {
+      orderedQuestions.reverse();
+    } else {
+      orderedQuestions.sort((a: string, b: string) => {
+        if (
+          recommendedQuestions.includes(a) &&
+          recommendedQuestions.includes(b)
+        ) {
+          return orderedQuestions.indexOf(a) - orderedQuestions.indexOf(b);
+        }
+        if (recommendedQuestions.includes(a)) {
+          return -1;
+        }
+        if (recommendedQuestions.includes(b)) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+    return orderedQuestions;
+  });
 
   return (
     <MuiThemeProvider theme={theme}>
       <ScrollingQuestions
         id="questions"
-        questions={orderedQuestions}
+        questions={questions}
         questionsAsked={questionsAsked}
         recommended={recommendedQuestions}
         onQuestionSelected={props.onSelected}
