@@ -7,22 +7,23 @@ The full terms of this copyright and license should always be found in the root 
 import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import { idleUrl } from "api";
-import { Config, MentorData, MentorQuestionStatus, State } from "types";
+import { MentorQuestionStatus, State } from "types";
 import { useSelector } from "react-redux";
 
 function VideoThumbnail(props: { mentor: string }): JSX.Element {
   const [isPlaying, setPlaying] = useState(true);
-  const config = useSelector<State, Config>((s) => s.config);
-  const mentor = useSelector<State, MentorData>(
-    (state) => state.mentorsById[props.mentor]
-  );
-  const isDisabled =
-    mentor.is_off_topic || mentor.status === MentorQuestionStatus.ERROR;
-
+  const idle = useSelector<State, string>((s) => {
+    const m = s.mentorsById[props.mentor];
+    return m ? idleUrl(m.mentor, s.config) : "";
+  });
+  const isDisabled = useSelector<State, boolean>((s) => {
+    const m = s.mentorsById[props.mentor];
+    return m ? m.is_off_topic || m.status === MentorQuestionStatus.ERROR : true;
+  });
   return (
     <ReactPlayer
       style={{ opacity: isDisabled ? "0.25" : "1", backgroundColor: "black" }}
-      url={idleUrl(mentor.mentor, config)}
+      url={idle}
       height={50}
       width={100}
       onStart={() => setPlaying(false)}
