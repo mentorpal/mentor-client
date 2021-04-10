@@ -22,7 +22,7 @@ import {
   setGuestName,
   setRecommendedQuestions,
 } from "store/actions";
-import { Config, LoadStatus, MentorData, MentorType, State } from "types";
+import { Config, LoadStatus, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
 
@@ -58,9 +58,19 @@ function IndexPage(props: {
   );
   const guestName = useSelector<State, string>((state) => state.guestName);
   const curMentor = useSelector<State, string>((state) => state.curMentor);
-  const mentorsById = useSelector<State, Record<string, MentorData>>(
-    (state) => state.mentorsById
-  );
+  const mentorCount = useSelector<State, number>((state) => {
+    return Object.getOwnPropertyNames(state.mentorsById).length;
+  });
+  const mentorType = useSelector<State, MentorType>((state) => {
+    if (!state.curMentor) {
+      return MentorType.VIDEO;
+    }
+    const m = state.mentorsById[state.curMentor];
+    if (!m) {
+      return MentorType.VIDEO;
+    }
+    return m.mentor.mentorType;
+  });
 
   const [windowHeight, setWindowHeight] = React.useState<number>(0);
   const [chatHeight, setChatHeight] = React.useState<number>(0);
@@ -95,8 +105,7 @@ function IndexPage(props: {
       return;
     }
     const headerHeight = 50;
-    const panelHeight =
-      Object.getOwnPropertyNames(mentorsById).length > 1 ? 50 : 0;
+    const panelHeight = mentorCount > 1 ? 50 : 0;
     const inputHeight = 130;
     const questionsHeight = curTopic ? 200 : 0;
     setChatHeight(
@@ -140,12 +149,17 @@ function IndexPage(props: {
         : [recommendedQuestions]
       : [];
     dispatch(setRecommendedQuestions(recommendedQuestionList));
-    const mentorList = mentor
-      ? Array.isArray(mentor)
-        ? mentor
-        : [mentor]
-      : config.mentorsDefault;
-    dispatch(loadMentor(config, mentorList, subject));
+    dispatch(
+      loadMentor(
+        config,
+        mentor
+          ? Array.isArray(mentor)
+            ? mentor
+            : [mentor]
+          : config.mentorsDefault,
+        subject
+      )
+    );
     if (guest) {
       dispatch(setGuestName(guest));
     }
@@ -166,7 +180,7 @@ function IndexPage(props: {
         <Header />
       </div>
       <div className={styles.flexExpandChild}>
-        {mentorsById[curMentor].mentor.mentorType === MentorType.CHAT ? (
+        {mentorType === MentorType.CHAT ? (
           <Chat height={chatHeight} />
         ) : (
           <Video playing={hasSessionUser()} />
