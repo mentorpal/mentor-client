@@ -151,6 +151,7 @@ export enum ResultStatus {
 export interface MentorSelection {
   id: string;
   reason: MentorSelectReason;
+  setFav?: boolean;
 }
 
 export interface TopicQuestions {

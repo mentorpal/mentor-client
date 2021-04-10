@@ -395,15 +395,17 @@ export function mentorAnswerPlaybackStarted(video: {
   };
 }
 
-export const selectMentor = (mentor: string, reason: MentorSelectReason) => (
-  dispatch: ThunkDispatch<State, void, AnyAction>
-) => {
+export const selectMentor = (
+  mentor: string,
+  reason: MentorSelectReason,
+  setFav = false
+) => (dispatch: ThunkDispatch<State, void, MentorSelectedAction>) => {
   clearNextMentorTimer();
-  // dispatch(onInput());
   return dispatch({
     payload: {
       id: mentor,
       reason,
+      setFav,
     },
     type: MENTOR_SELECTED,
   });

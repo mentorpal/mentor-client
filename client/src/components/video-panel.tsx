@@ -10,7 +10,7 @@ import { Star } from "@material-ui/icons";
 import VideoThumbnail from "components/video-thumbnail";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
-import { selectMentor, faveMentor } from "store/actions";
+import { selectMentor } from "store/actions";
 import { MentorData, MentorSelectReason, MentorType, State } from "types";
 import { isMentorReady } from "utils";
 
@@ -53,10 +53,8 @@ function VideoPanel(): JSX.Element {
     if (m.isOffTopic || !m.isReady) {
       return;
     }
-    if (!(isIdle && mentorFaved === mId)) {
-      dispatch(faveMentor(mId));
-    }
-    dispatch(selectMentor(mId, MentorSelectReason.USER_SELECT));
+    const setFav = !(isIdle && mentorFaved === mId);
+    dispatch(selectMentor(mId, MentorSelectReason.USER_SELECT, setFav));
   }
 
   return (

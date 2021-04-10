@@ -32,12 +32,12 @@ import {
   RECOMMENDED_QUESTIONS_SET,
   QuestionInputChangedAction,
   NextMentorAction,
+  MentorFavedAction,
 } from "./actions";
 import {
   MentorData,
   MentorQuestionSource,
   MentorQuestionStatus,
-  QuestionResponse,
   State,
   MentorSelectReason,
   LoadStatus,
@@ -78,7 +78,9 @@ export const initialState: State = {
 function mentorSelected(state: State, action: MentorSelectedAction): State {
   const mentorId = action.payload.id;
   return onMentorNext({
-    ...state,
+    ...(action.payload.setFav
+      ? mentorFaved(state, { type: MENTOR_FAVED, id: action.payload.id })
+      : state),
     curMentor: action.payload.id,
     curMentorReason: action.payload.reason,
     isIdle: false,
@@ -90,6 +92,13 @@ function mentorSelected(state: State, action: MentorSelectedAction): State {
       },
     },
   });
+}
+
+function mentorFaved(state: State, action: MentorFavedAction): State {
+  return {
+    ...state,
+    mentorFaved: state.mentorFaved === action.id ? "" : action.id,
+  };
 }
 
 function onMentorAnswerPlaybackStarted(
@@ -250,29 +259,23 @@ export default function reducer(
     case CONFIG_LOAD_STARTED:
       return onConfigLoadStarted(state);
     case CONFIG_LOAD_SUCCEEDED:
-      return onConfigLoadSucceeded(state, action as ConfigLoadSucceededAction);
+      return onConfigLoadSucceeded(state, action);
     case MENTOR_ANSWER_PLAYBACK_STARTED:
-      return onMentorAnswerPlaybackStarted(
-        state,
-        action as MentorAnswerPlaybackStartedAction
-      );
+      return onMentorAnswerPlaybackStarted(state, action);
     case MENTOR_DATA_REQUESTED:
-      return onMentorDataRequested(state, action as MentorDataRequestedAction);
+      return onMentorDataRequested(state, action);
     case MENTOR_DATA_RESULT:
-      return onMentorDataResult(state, action as MentorDataResultAction);
+      return onMentorDataResult(state, action);
     case MENTOR_SELECTED:
       return mentorSelected(state, action);
     case MENTOR_FAVED:
-      return {
-        ...state,
-        mentorFaved: state.mentorFaved === action.id ? "" : action.id,
-      };
+      return mentorFaved(state, action);
     case MENTOR_NEXT:
-      return onMentorNext(state, action as NextMentorAction);
+      return onMentorNext(state, action);
     case QUESTION_SENT:
-      return onQuestionSent(state, action as QuestionSentAction);
+      return onQuestionSent(state, action);
     case QUESTION_ANSWERED: {
-      const response = action.mentor as QuestionResponse;
+      const response = action.mentor;
       const mentor: MentorData = {
         ...state.mentorsById[response.mentor],
         answer_id: response.answerId,
@@ -335,10 +338,7 @@ export default function reducer(
         recommendedQuestions: action.recommendedQuestions,
       };
     case QUESTION_INPUT_CHANGED:
-      return onQuestionInputChanged(
-        state,
-        action as QuestionInputChangedAction
-      );
+      return onQuestionInputChanged(state, action);
     default:
       return state;
   }
