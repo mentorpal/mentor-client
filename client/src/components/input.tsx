@@ -70,7 +70,6 @@ function Input(): JSX.Element {
   }
 
   function onQuestionSelected(question: string) {
-    handleQuestionChanged(question, MentorQuestionSource.TOPIC_LIST);
     handleQuestionSend(question, MentorQuestionSource.TOPIC_LIST);
   }
 
