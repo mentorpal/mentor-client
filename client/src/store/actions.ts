@@ -454,7 +454,6 @@ export const sendQuestion = (q: {
     });
   }
   clearNextMentorTimer();
-  // dispatch(onInput());
   dispatch(onQuestionSent(q));
   const state = getState();
   const mentorIds = Object.keys(state.mentorsById);
@@ -588,13 +587,6 @@ function clearNextMentorTimer(): void {
     timer = null;
   }
 }
-
-// export const onInput: ActionCreator<
-//   ThunkAction<AnyAction, State, void, NextMentorAction>
-// > = () => (dispatch: Dispatch) => {
-//   clearNextMentorTimer();
-//   return dispatch(nextMentor(""));
-// };
 
 export const userInputChanged: ActionCreator<
   ThunkAction<AnyAction, State, void, QuestionInputChangedAction>
