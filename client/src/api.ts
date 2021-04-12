@@ -23,6 +23,9 @@ export function getUtterance(
   mentor: Mentor,
   utterance: UtteranceName
 ): Answer | undefined {
+  if (!(mentor && Array.isArray(mentor.utterances))) {
+    return undefined;
+  }
   return mentor.utterances.find((a) => a.question.name === utterance);
 }
 

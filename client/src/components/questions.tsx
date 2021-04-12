@@ -39,7 +39,8 @@ function Questions(props: {
     }
     const m = state.mentorsById[state.curMentor];
     const qlist =
-      m.topic_questions.find((tq) => tq.topic === curTopic)?.questions || [];
+      (m?.topic_questions || []).find((tq) => tq.topic === curTopic)
+        ?.questions || [];
     const orderedQuestions = qlist.slice();
     if (curTopic === "History") {
       orderedQuestions.reverse();

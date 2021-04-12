@@ -33,9 +33,12 @@ import {
   QuestionInputChangedAction,
   NextMentorAction,
   MentorFavedAction,
+  MentorsLoadResultAction,
+  TopicSelectedAction,
+  MENTORS_LOAD_RESULT,
 } from "./actions";
 import {
-  MentorData,
+  MentorState,
   MentorQuestionSource,
   MentorQuestionStatus,
   State,
@@ -126,7 +129,7 @@ function onMentorDataResult(
   action: MentorDataResultAction
 ): State {
   if (action.payload.status === ResultStatus.SUCCEEDED) {
-    const mentor = action.payload.data as MentorData;
+    const mentor = action.payload.data as MentorState;
     return {
       ...state,
       curMentor: mentor.mentor._id, // TODO: why is the current mentor any random last that loaded?
@@ -144,31 +147,66 @@ function onMentorDataResult(
   return state;
 }
 
+function onMentorLoadResults(
+  state: State,
+  action: MentorsLoadResultAction
+): State {
+  let s = {
+    ...state,
+    mentorsById: Object.getOwnPropertyNames(action.payload.mentorsById).reduce(
+      (acc: Record<string, MentorState>, mid: string) => {
+        acc[mid] = {
+          ...state.mentorsById[mid],
+          ...(action.payload.mentorsById[mid]?.data || {}),
+          status: MentorQuestionStatus.READY,
+        };
+        return acc;
+      },
+      {} as Record<string, MentorState>
+    ),
+  };
+  if (action.payload.mentor) {
+    s = mentorSelected(s, {
+      type: MENTOR_SELECTED,
+      payload: {
+        id: action.payload.mentor,
+        reason: MentorSelectReason.NEXT_READY,
+      },
+    });
+  }
+  if (action.payload.topic) {
+    s = topicSelected(s, {
+      type: TOPIC_SELECTED,
+      topic: action.payload.topic,
+    });
+  }
+  return s;
+}
+
 function onMentorDataRequested(
   state: State,
   action: MentorDataRequestedAction
 ): State {
-  const mentorsById = action.payload.reduce<{ [mentorId: string]: MentorData }>(
-    (mentorsByIdAcc, mentorId) => {
-      mentorsByIdAcc[mentorId] = {
-        mentor: {
-          _id: mentorId,
-          name: "",
-          title: "",
-          mentorType: MentorType.VIDEO,
-          topics: [],
-          subjects: [],
-          questions: [],
-          utterances: [],
-        },
-        topic_questions: [],
-        status: MentorQuestionStatus.NONE,
-        answerDuration: Number.NaN,
-      };
-      return mentorsByIdAcc;
-    },
-    {}
-  );
+  const mentorsById = action.payload.reduce<{
+    [mentorId: string]: MentorState;
+  }>((mentorsByIdAcc, mentorId) => {
+    mentorsByIdAcc[mentorId] = {
+      mentor: {
+        _id: mentorId,
+        name: "",
+        title: "",
+        mentorType: MentorType.VIDEO,
+        topics: [],
+        subjects: [],
+        questions: [],
+        utterances: [],
+      },
+      topic_questions: [],
+      status: MentorQuestionStatus.NONE,
+      answerDuration: Number.NaN,
+    };
+    return mentorsByIdAcc;
+  }, {});
   Object.getOwnPropertyNames(state.mentorsById).forEach((id) => {
     mentorsById[id] = state.mentorsById[id];
   });
@@ -249,6 +287,13 @@ function onQuestionInputChanged(
   });
 }
 
+function topicSelected(state: State, action: TopicSelectedAction): State {
+  return {
+    ...state,
+    curTopic: action.topic,
+  };
+}
+
 export default function reducer(
   state = initialState,
   action: MentorClientAction
@@ -266,6 +311,8 @@ export default function reducer(
       return onMentorDataRequested(state, action);
     case MENTOR_DATA_RESULT:
       return onMentorDataResult(state, action);
+    case MENTORS_LOAD_RESULT:
+      return onMentorLoadResults(state, action);
     case MENTOR_SELECTED:
       return mentorSelected(state, action);
     case MENTOR_FAVED:
@@ -276,7 +323,7 @@ export default function reducer(
       return onQuestionSent(state, action);
     case QUESTION_ANSWERED: {
       const response = action.mentor;
-      const mentor: MentorData = {
+      const mentor: MentorState = {
         ...state.mentorsById[response.mentor],
         answer_id: response.answerId,
         answer_text: response.answerText,
@@ -323,10 +370,7 @@ export default function reducer(
         isIdle: true,
       };
     case TOPIC_SELECTED:
-      return {
-        ...state,
-        curTopic: action.topic,
-      };
+      return topicSelected(state, action);
     case GUEST_NAME_SET:
       return {
         ...state,

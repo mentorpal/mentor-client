@@ -11,7 +11,7 @@ import VideoThumbnail from "components/video-thumbnail";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import { selectMentor } from "store/actions";
-import { MentorData, MentorSelectReason, MentorType, State } from "types";
+import { MentorState, MentorSelectReason, MentorType, State } from "types";
 import { isMentorReady } from "utils";
 
 interface MentorVideoStatus {
@@ -20,11 +20,11 @@ interface MentorVideoStatus {
   mentorType: MentorType;
 }
 
-function toMentorVideoStatus(m: MentorData): MentorVideoStatus {
+function toMentorVideoStatus(m: MentorState): MentorVideoStatus {
   return {
     isOffTopic: Boolean(m.is_off_topic),
     isReady: isMentorReady(m),
-    mentorType: m.mentor.mentorType,
+    mentorType: m?.mentor?.mentorType || MentorType.VIDEO,
   };
 }
 
@@ -60,7 +60,7 @@ function VideoPanel(): JSX.Element {
   return (
     <div id="video-panel" className="carousel" style={{ height: 50 }}>
       {Object.keys(mentorsById)
-        .filter((mId) => mentorsById[mId].mentorType === MentorType.VIDEO)
+        .filter((mId) => mentorsById[mId]?.mentorType === MentorType.VIDEO)
         .map((id, i) => {
           const m = mentorsById[id];
           return (

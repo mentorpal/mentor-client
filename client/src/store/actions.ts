@@ -11,13 +11,14 @@ import Cmi5 from "@xapi/cmi5";
 import { fetchConfig, fetchMentor, getUtterance, queryMentor } from "api";
 import {
   MentorDataResult,
+  MentorLoadResult,
   MentorQuestionStatus,
   MentorSelection,
   MentorSelectReason,
   QuestionResponse,
   QuestionResult,
   ResultStatus,
-  MentorData,
+  MentorState,
   MentorQuestionSource,
   State,
   XapiResultExt,
@@ -29,6 +30,7 @@ import {
   QuestionType,
   QuestionInput,
 } from "../types";
+import { AddToQueueSharp } from "@material-ui/icons";
 
 const RESPONSE_CUTOFF = -100;
 
@@ -40,6 +42,7 @@ export const MENTOR_ANSWER_PLAYBACK_STARTED = "MENTOR_ANSWER_PLAYBACK_STARTED";
 export const MENTOR_DATA_REQUESTED = "MENTOR_DATA_REQUESTED";
 export const MENTOR_DATA_RESULT = "MENTOR_DATA_RESULT";
 export const MENTOR_DATA_REQUEST_DONE = "MENTOR_DATA_REQUEST_DONE";
+export const MENTORS_LOAD_RESULT = "MENTORS_LOAD_RESULT";
 export const MENTOR_FAVED = "MENTOR_FAVED"; // mentor was favorited
 export const MENTOR_NEXT = "MENTOR_NEXT"; // set next mentor to play after current
 export const MENTOR_LOADED = "MENTOR_LOADED"; // mentor info was loaded
@@ -95,10 +98,17 @@ export interface MentorDataRequestDoneAction {
   type: typeof MENTOR_DATA_REQUEST_DONE;
 }
 
+export interface MentorsLoadResultAction {
+  type: typeof MENTORS_LOAD_RESULT;
+  payload: MentorLoadResult;
+}
+
 export type MentorDataAction =
   | MentorDataRequestedAction
   | MentorDataResultAction
-  | MentorDataRequestDoneAction;
+  | MentorDataRequestDoneAction
+  | MentorDataResultAction
+  | MentorsLoadResultAction;
 
 export interface AnswerFinishedAction {
   type: typeof ANSWER_FINISHED;
@@ -223,7 +233,7 @@ function sendCmi5Statement(statement: any) {
   }
 }
 
-function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
+function toXapiResultExt(mentorData: MentorState, state: State): XapiResultExt {
   return {
     answerClassifier: mentorData.classifier || "",
     answerConfidence: Number(mentorData.confidence),
@@ -265,7 +275,15 @@ function toXapiResultExt(mentorData: MentorData, state: State): XapiResultExt {
   };
 }
 
-export const loadMentor: ActionCreator<
+export interface LoadMentorArgs {
+  config: Config;
+  mentors: string[];
+  subjectId?: string;
+  recommendedQuestions?: string[];
+  guestName?: string;
+}
+
+export const loadMentors: ActionCreator<
   ThunkAction<
     Promise<MentorDataRequestDoneAction>, // The type of the last action to be dispatched - will always be promise<T> for async actions
     State, // The type for the data within the last action
@@ -281,8 +299,11 @@ export const loadMentor: ActionCreator<
       type: MENTOR_DATA_REQUESTED,
       payload: mentors,
     });
+    const mentorLoadResult: MentorLoadResult = {
+      mentorsById: {}
+    };
     for (const mentorId of mentors) {
-      let result = await fetchMentor(config, mentorId);
+      const result = await fetchMentor(config, mentorId);
       if (result.status === 200 && result.data.data) {
         const mentor: Mentor = result.data.data.mentor;
         subjectId = subjectId || mentor.defaultSubject?._id;
@@ -312,45 +333,61 @@ export const loadMentor: ActionCreator<
           }
         }
         topicQuestions.push({ topic: "History", questions: [] });
-        const mentorData: MentorData = {
+        const mentorData: MentorState = {
           mentor: mentor,
           topic_questions: topicQuestions,
           status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
           answer_id: getUtterance(mentor, UtteranceName.INTRO)?._id,
           answerDuration: Number.NaN,
         };
-        dispatch<MentorDataResultAction>({
-          type: MENTOR_DATA_RESULT,
-          payload: {
-            data: mentorData,
-            status: ResultStatus.SUCCEEDED,
-          },
-        });
+        mentorLoadResult.mentorsById[mentorId] = {
+          data: mentorData,
+          status: ResultStatus.SUCCEEDED,
+        };
+        // dispatch<MentorDataResultAction>({
+        //   type: MENTOR_DATA_RESULT,
+        //   payload: {
+        //     data: mentorData,
+        //     status: ResultStatus.SUCCEEDED,
+        //   },
+        // });
       } else {
-        dispatch<MentorDataResultAction>({
-          type: MENTOR_DATA_RESULT,
-          payload: {
-            data: undefined,
-            status: ResultStatus.FAILED,
-          },
-        });
+        mentorLoadResult.mentorsById[mentorId] = {
+          status: ResultStatus.FAILED,
+        };
+        // dispatch<MentorDataResultAction>({
+        //   type: MENTOR_DATA_RESULT,
+        //   payload: {
+        //     data: undefined,
+        //     status: ResultStatus.FAILED,
+        //   },
+        // });
       }
     }
-    const mentorsById = getState().mentorsById;
+    // const mentorsById = getState().mentorsById;
     // find the first of the requested mentors that loaded successfully
     // and select that mentor
-    const firstMentor = mentors.find(
-      (id) => mentorsById[id].status === MentorQuestionStatus.READY
+    mentorLoadResult.mentor = mentors.find(
+      (id) => mentorLoadResult.mentorsById[id].status === ResultStatus.SUCCEEDED
     );
-    if (firstMentor) {
-      dispatch(selectMentor(firstMentor, MentorSelectReason.NEXT_READY));
-      if (!getState().curTopic) {
-        // user clicks topic before all mentors are loaded and a default topic is selected
-        dispatch(
-          selectTopic(mentorsById[firstMentor].topic_questions[0].topic)
-        );
+    if (mentorLoadResult.mentor) {
+      const tqs = mentorLoadResult.mentorsById[mentorLoadResult.mentor]?.data?.topic_questions
+      if(tqs && tqs.length > 0) {
+        mentorLoadResult.topic = tqs[0].topic
       }
     }
+    dispatch({
+      type: MENTORS_LOAD_RESULT,
+      payload: mentorLoadResult
+    })
+    //   // dispatch(selectMentor(firstMentor, MentorSelectReason.NEXT_READY));
+    //   // if (!getState().curTopic) {
+    //     // user clicks topic before all mentors are loaded and a default topic is selected
+    //     dispatch(
+    //       selectTopic(mentorsById[firstMentor].topic_questions[0].topic)
+    //     );
+    //   }
+    // }
   } catch (err) {
     console.error(`Failed to load mentor data for id ${mentors}`, err);
   }

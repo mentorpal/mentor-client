@@ -1,4 +1,4 @@
-import { MentorData, MentorQuestionStatus } from "types";
+import { MentorState, MentorQuestionStatus } from "types";
 
 /*
 This software is Copyright ©️ 2020 The University of Southern California. All Rights Reserved. 
@@ -20,7 +20,7 @@ export function chromeVersion(): number {
   return raw ? parseInt(raw[2], 10) : 0;
 }
 
-export function isMentorReady(m: MentorData): boolean {
+export function isMentorReady(m: MentorState): boolean {
   return (
     m.status === MentorQuestionStatus.READY ||
     m.status === MentorQuestionStatus.ANSWERED

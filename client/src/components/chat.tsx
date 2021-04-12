@@ -27,7 +27,7 @@ import {
   ChatData,
   Config,
   Feedback,
-  MentorData,
+  MentorState,
   State,
   UtteranceName,
 } from "types";
@@ -214,7 +214,7 @@ function Chat(props: { height: number }): JSX.Element {
     }
     return m.answerReceivedAt;
   });
-  const mentor = useSelector<State, MentorData>(
+  const mentor = useSelector<State, MentorState>(
     (state) => state.mentorsById[state.curMentor]
   );
   const curQuestion = useSelector<State, string>((state) => state.curQuestion);

@@ -18,7 +18,7 @@ import Video from "components/video";
 import VideoPanel from "components/video-panel";
 import {
   loadConfig,
-  loadMentor,
+  loadMentors,
   setGuestName,
   setRecommendedQuestions,
 } from "store/actions";
@@ -65,11 +65,9 @@ function IndexPage(props: {
     if (!state.curMentor) {
       return MentorType.VIDEO;
     }
-    const m = state.mentorsById[state.curMentor];
-    if (!m) {
-      return MentorType.VIDEO;
-    }
-    return m.mentor.mentorType;
+    return (
+      state.mentorsById[state.curMentor]?.mentor?.mentorType || MentorType.VIDEO
+    );
   });
 
   const [windowHeight, setWindowHeight] = React.useState<number>(0);
@@ -150,7 +148,7 @@ function IndexPage(props: {
       : [];
     dispatch(setRecommendedQuestions(recommendedQuestionList));
     dispatch(
-      loadMentor(
+      loadMentors(
         config,
         mentor
           ? Array.isArray(mentor)

@@ -25,12 +25,11 @@ function Topics(args: {
     if (!state.curMentor) {
       return [];
     }
-    const m = state.mentorsById[state.curMentor];
-    return m ? m.topic_questions : [];
+    return state.mentorsById[state.curMentor]?.topic_questions || [];
   });
   const curTopic = useSelector<State, string>((state) => state.curTopic);
   const questionsAsked = useSelector<State, string[]>(
-    (state) => state.questionsAsked
+    (state) => state.questionsAsked || []
   );
 
   async function onTopicSelected(topic: string) {
@@ -39,9 +38,9 @@ function Topics(args: {
       return;
     }
     dispatch(selectTopic(topic));
-    const topQ = topicQuestions
-      .find((tq) => tq.topic === topic)
-      ?.questions.find((q) => !questionsAsked.includes(normalizeString(q)));
+    const topQ = (
+      topicQuestions.find((tq) => tq.topic === topic)?.questions || []
+    ).find((q) => !questionsAsked.includes(normalizeString(q)));
     if (topQ) {
       onSelected(topQ);
     }

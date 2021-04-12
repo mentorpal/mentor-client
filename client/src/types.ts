@@ -159,7 +159,7 @@ export interface TopicQuestions {
   questions: string[];
 }
 
-export interface MentorData {
+export interface MentorState {
   mentor: Mentor;
   topic_questions: TopicQuestions[];
   status: MentorQuestionStatus;
@@ -177,8 +177,14 @@ export interface MentorData {
 }
 
 export interface MentorDataResult {
-  data: MentorData | undefined;
+  data?: MentorState;
   status: ResultStatus;
+}
+
+export interface MentorLoadResult {
+  mentorsById: Record<string, MentorDataResult>,
+  mentor?: string;
+  topic?: string;
 }
 
 export interface QuestionResult {
@@ -196,7 +202,7 @@ export interface State {
   curTopic: string; // topic to show questions for
   mentorFaved: string; // id of the preferred mentor
   isIdle: boolean;
-  mentorsById: Record<string, MentorData>;
+  mentorsById: Record<string, MentorState>;
   mentorNext: string; // id of the next mentor to speak after the current finishes
   guestName: string;
   questionsAsked: string[];
