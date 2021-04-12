@@ -44,7 +44,6 @@ export const MENTORS_LOAD_RESULT = "MENTORS_LOAD_RESULT";
 export const MENTOR_FAVED = "MENTOR_FAVED"; // mentor was favorited
 export const MENTOR_NEXT = "MENTOR_NEXT"; // set next mentor to play after current
 export const MENTOR_SELECTED = "MENTOR_SELECTED"; // mentor video was selected
-export const MENTOR_TOPIC_QUESTIONS_LOADED = "MENTOR_TOPIC_QUESTIONS_LOADED";
 export const QUESTION_ANSWERED = "QUESTION_ANSWERED"; // question was answered by mentor
 export const QUESTION_ERROR = "QUESTION_ERROR"; // question could not be answered by mentor
 export const QUESTION_INPUT_CHANGED = "QUESTION_INPUT_CHANGED";
