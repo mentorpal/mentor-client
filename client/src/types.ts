@@ -182,7 +182,7 @@ export interface MentorDataResult {
 }
 
 export interface MentorLoadResult {
-  mentorsById: Record<string, MentorDataResult>,
+  mentorsById: Record<string, MentorDataResult>;
   mentor?: string;
   topic?: string;
 }

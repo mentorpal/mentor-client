@@ -10,7 +10,6 @@ import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import Cmi5 from "@xapi/cmi5";
 import { fetchConfig, fetchMentor, getUtterance, queryMentor } from "api";
 import {
-  MentorDataResult,
   MentorLoadResult,
   MentorQuestionStatus,
   MentorSelection,
@@ -29,8 +28,8 @@ import {
   TopicQuestions,
   QuestionType,
   QuestionInput,
+  MentorDataResult,
 } from "../types";
-import { AddToQueueSharp } from "@material-ui/icons";
 
 const RESPONSE_CUTOFF = -100;
 
@@ -40,12 +39,9 @@ export const CONFIG_LOAD_STARTED = "CONFIG_LOAD_STARTED";
 export const CONFIG_LOAD_SUCCEEDED = "CONFIG_LOAD_SUCCEEDED";
 export const MENTOR_ANSWER_PLAYBACK_STARTED = "MENTOR_ANSWER_PLAYBACK_STARTED";
 export const MENTOR_DATA_REQUESTED = "MENTOR_DATA_REQUESTED";
-export const MENTOR_DATA_RESULT = "MENTOR_DATA_RESULT";
-export const MENTOR_DATA_REQUEST_DONE = "MENTOR_DATA_REQUEST_DONE";
 export const MENTORS_LOAD_RESULT = "MENTORS_LOAD_RESULT";
 export const MENTOR_FAVED = "MENTOR_FAVED"; // mentor was favorited
 export const MENTOR_NEXT = "MENTOR_NEXT"; // set next mentor to play after current
-export const MENTOR_LOADED = "MENTOR_LOADED"; // mentor info was loaded
 export const MENTOR_SELECTED = "MENTOR_SELECTED"; // mentor video was selected
 export const MENTOR_TOPIC_QUESTIONS_LOADED = "MENTOR_TOPIC_QUESTIONS_LOADED";
 export const QUESTION_ANSWERED = "QUESTION_ANSWERED"; // question was answered by mentor
@@ -89,15 +85,6 @@ export interface MentorDataRequestedAction {
   payload: string[];
 }
 
-export interface MentorDataResultAction {
-  type: typeof MENTOR_DATA_RESULT;
-  payload: MentorDataResult;
-}
-
-export interface MentorDataRequestDoneAction {
-  type: typeof MENTOR_DATA_REQUEST_DONE;
-}
-
 export interface MentorsLoadResultAction {
   type: typeof MENTORS_LOAD_RESULT;
   payload: MentorLoadResult;
@@ -105,9 +92,6 @@ export interface MentorsLoadResultAction {
 
 export type MentorDataAction =
   | MentorDataRequestedAction
-  | MentorDataResultAction
-  | MentorDataRequestDoneAction
-  | MentorDataResultAction
   | MentorsLoadResultAction;
 
 export interface AnswerFinishedAction {
@@ -285,24 +269,32 @@ export interface LoadMentorArgs {
 
 export const loadMentors: ActionCreator<
   ThunkAction<
-    Promise<MentorDataRequestDoneAction>, // The type of the last action to be dispatched - will always be promise<T> for async actions
+    Promise<MentorsLoadResultAction>, // The type of the last action to be dispatched - will always be promise<T> for async actions
     State, // The type for the data within the last action
     string, // The type of the parameter for the nested function
-    MentorDataRequestDoneAction // The type of the last action to be dispatched
+    MentorsLoadResultAction // The type of the last action to be dispatched
   >
 > = (config: Config, mentors: string[], subjectId?: string) => async (
   dispatch: ThunkDispatch<State, void, AnyAction>,
   getState: () => State
 ) => {
-  try {
-    dispatch<MentorDataRequestedAction>({
-      type: MENTOR_DATA_REQUESTED,
-      payload: mentors,
-    });
-    const mentorLoadResult: MentorLoadResult = {
-      mentorsById: {}
-    };
-    for (const mentorId of mentors) {
+  dispatch<MentorDataRequestedAction>({
+    type: MENTOR_DATA_REQUESTED,
+    payload: mentors,
+  });
+  const mentorLoadResult: MentorLoadResult = {
+    mentorsById: mentors.reduce(
+      (acc: Record<string, MentorDataResult>, cur: string) => {
+        acc[cur] = {
+          status: ResultStatus.FAILED,
+        };
+        return acc;
+      },
+      {}
+    ),
+  };
+  for (const mentorId of mentors) {
+    try {
       const result = await fetchMentor(config, mentorId);
       if (result.status === 200 && result.data.data) {
         const mentor: Mentor = result.data.data.mentor;
@@ -344,55 +336,27 @@ export const loadMentors: ActionCreator<
           data: mentorData,
           status: ResultStatus.SUCCEEDED,
         };
-        // dispatch<MentorDataResultAction>({
-        //   type: MENTOR_DATA_RESULT,
-        //   payload: {
-        //     data: mentorData,
-        //     status: ResultStatus.SUCCEEDED,
-        //   },
-        // });
       } else {
-        mentorLoadResult.mentorsById[mentorId] = {
-          status: ResultStatus.FAILED,
-        };
-        // dispatch<MentorDataResultAction>({
-        //   type: MENTOR_DATA_RESULT,
-        //   payload: {
-        //     data: undefined,
-        //     status: ResultStatus.FAILED,
-        //   },
-        // });
+        console.error(`error loading mentor ${mentorId}`, result);
       }
+    } catch (mentorErr) {
+      console.error(mentorErr);
     }
-    // const mentorsById = getState().mentorsById;
-    // find the first of the requested mentors that loaded successfully
-    // and select that mentor
-    mentorLoadResult.mentor = mentors.find(
-      (id) => mentorLoadResult.mentorsById[id].status === ResultStatus.SUCCEEDED
-    );
-    if (mentorLoadResult.mentor) {
-      const tqs = mentorLoadResult.mentorsById[mentorLoadResult.mentor]?.data?.topic_questions
-      if(tqs && tqs.length > 0) {
-        mentorLoadResult.topic = tqs[0].topic
-      }
-    }
-    dispatch({
-      type: MENTORS_LOAD_RESULT,
-      payload: mentorLoadResult
-    })
-    //   // dispatch(selectMentor(firstMentor, MentorSelectReason.NEXT_READY));
-    //   // if (!getState().curTopic) {
-    //     // user clicks topic before all mentors are loaded and a default topic is selected
-    //     dispatch(
-    //       selectTopic(mentorsById[firstMentor].topic_questions[0].topic)
-    //     );
-    //   }
-    // }
-  } catch (err) {
-    console.error(`Failed to load mentor data for id ${mentors}`, err);
   }
-  return dispatch<MentorDataRequestDoneAction>({
-    type: MENTOR_DATA_REQUEST_DONE,
+  mentorLoadResult.mentor = mentors.find(
+    (id) => mentorLoadResult.mentorsById[id].status === ResultStatus.SUCCEEDED
+  );
+  if (mentorLoadResult.mentor) {
+    const tqs =
+      mentorLoadResult.mentorsById[mentorLoadResult.mentor]?.data
+        ?.topic_questions;
+    if (tqs && tqs.length > 0) {
+      mentorLoadResult.topic = tqs[0].topic;
+    }
+  }
+  return dispatch<MentorsLoadResultAction>({
+    type: MENTORS_LOAD_RESULT,
+    payload: mentorLoadResult,
   });
 };
 

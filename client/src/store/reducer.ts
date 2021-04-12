@@ -25,8 +25,6 @@ import {
   CONFIG_LOAD_FAILED,
   CONFIG_LOAD_STARTED,
   CONFIG_LOAD_SUCCEEDED,
-  MentorDataResultAction,
-  MENTOR_DATA_RESULT,
   MentorDataRequestedAction,
   MENTOR_DATA_REQUESTED,
   RECOMMENDED_QUESTIONS_SET,
@@ -44,7 +42,6 @@ import {
   State,
   MentorSelectReason,
   LoadStatus,
-  ResultStatus,
   MentorType,
 } from "../types";
 
@@ -122,29 +119,6 @@ function onMentorAnswerPlaybackStarted(
       },
     },
   };
-}
-
-function onMentorDataResult(
-  state: State,
-  action: MentorDataResultAction
-): State {
-  if (action.payload.status === ResultStatus.SUCCEEDED) {
-    const mentor = action.payload.data as MentorState;
-    return {
-      ...state,
-      curMentor: mentor.mentor._id, // TODO: why is the current mentor any random last that loaded?
-      isIdle: false,
-      mentorsById: {
-        ...state.mentorsById,
-        [mentor.mentor._id]: {
-          ...state.mentorsById[mentor.mentor._id],
-          ...mentor,
-          status: MentorQuestionStatus.READY,
-        },
-      },
-    };
-  }
-  return state;
 }
 
 function onMentorLoadResults(
@@ -309,8 +283,6 @@ export default function reducer(
       return onMentorAnswerPlaybackStarted(state, action);
     case MENTOR_DATA_REQUESTED:
       return onMentorDataRequested(state, action);
-    case MENTOR_DATA_RESULT:
-      return onMentorDataResult(state, action);
     case MENTORS_LOAD_RESULT:
       return onMentorLoadResults(state, action);
     case MENTOR_SELECTED:
