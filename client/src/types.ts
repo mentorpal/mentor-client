@@ -181,7 +181,13 @@ export interface MentorDataResult {
   status: ResultStatus;
 }
 
-export interface MentorLoadResult {
+export interface MentorsLoadRequest {
+  guestName?: string;
+  mentors: string[];
+  recommendedQuestions?: string[];
+}
+
+export interface MentorsLoadResult {
   mentorsById: Record<string, MentorDataResult>;
   mentor?: string;
   topic?: string;

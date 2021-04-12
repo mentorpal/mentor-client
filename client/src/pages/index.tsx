@@ -16,12 +16,7 @@ import Header from "components/header";
 import Input from "components/input";
 import Video from "components/video";
 import VideoPanel from "components/video-panel";
-import {
-  loadConfig,
-  loadMentors,
-  setGuestName,
-  setRecommendedQuestions,
-} from "store/actions";
+import { loadConfig, loadMentors, setGuestName } from "store/actions";
 import { Config, LoadStatus, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
@@ -141,27 +136,29 @@ function IndexPage(props: {
     if (!isConfigLoadComplete(configLoadStatus)) {
       return;
     }
-    const recommendedQuestionList = recommendedQuestions
-      ? Array.isArray(recommendedQuestions)
-        ? recommendedQuestions
-        : [recommendedQuestions]
-      : [];
-    dispatch(setRecommendedQuestions(recommendedQuestionList));
     dispatch(
-      loadMentors(
+      loadMentors({
         config,
-        mentor
+        mentors: mentor
           ? Array.isArray(mentor)
             ? mentor
             : [mentor]
           : config.mentorsDefault,
-        subject
-      )
+        subject,
+        recommendedQuestions: recommendedQuestions
+          ? Array.isArray(recommendedQuestions)
+            ? recommendedQuestions
+            : [recommendedQuestions]
+          : [],
+      })
     );
+  }, [configLoadStatus, mentor, subject, recommendedQuestions]);
+
+  useEffect(() => {
     if (guest) {
       dispatch(setGuestName(guest));
     }
-  }, [configLoadStatus, mentor, guest, subject, recommendedQuestions]);
+  }, [guest]);
 
   if (!isConfigLoadComplete(configLoadStatus) || !curMentor) {
     return (

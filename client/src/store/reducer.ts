@@ -25,9 +25,8 @@ import {
   CONFIG_LOAD_FAILED,
   CONFIG_LOAD_STARTED,
   CONFIG_LOAD_SUCCEEDED,
-  MentorDataRequestedAction,
-  MENTOR_DATA_REQUESTED,
-  RECOMMENDED_QUESTIONS_SET,
+  MentorsLoadRequestedAction,
+  MENTORS_LOAD_REQUESTED,
   QuestionInputChangedAction,
   NextMentorAction,
   MentorFavedAction,
@@ -121,6 +120,40 @@ function onMentorAnswerPlaybackStarted(
   };
 }
 
+function onMentorsLoadRequested(
+  state: State,
+  action: MentorsLoadRequestedAction
+): State {
+  const mentorsById = action.payload.mentors.reduce<{
+    [mentorId: string]: MentorState;
+  }>((mentorsByIdAcc, mentorId) => {
+    mentorsByIdAcc[mentorId] = {
+      mentor: {
+        _id: mentorId,
+        name: "",
+        title: "",
+        mentorType: MentorType.VIDEO,
+        topics: [],
+        subjects: [],
+        questions: [],
+        utterances: [],
+      },
+      topic_questions: [],
+      status: MentorQuestionStatus.NONE,
+      answerDuration: Number.NaN,
+    };
+    return mentorsByIdAcc;
+  }, {});
+  Object.getOwnPropertyNames(state.mentorsById).forEach((id) => {
+    mentorsById[id] = state.mentorsById[id];
+  });
+  return {
+    ...state,
+    mentorsById: mentorsById,
+    recommendedQuestions: action.payload.recommendedQuestions || [],
+  };
+}
+
 function onMentorLoadResults(
   state: State,
   action: MentorsLoadResultAction
@@ -155,39 +188,6 @@ function onMentorLoadResults(
     });
   }
   return s;
-}
-
-function onMentorDataRequested(
-  state: State,
-  action: MentorDataRequestedAction
-): State {
-  const mentorsById = action.payload.reduce<{
-    [mentorId: string]: MentorState;
-  }>((mentorsByIdAcc, mentorId) => {
-    mentorsByIdAcc[mentorId] = {
-      mentor: {
-        _id: mentorId,
-        name: "",
-        title: "",
-        mentorType: MentorType.VIDEO,
-        topics: [],
-        subjects: [],
-        questions: [],
-        utterances: [],
-      },
-      topic_questions: [],
-      status: MentorQuestionStatus.NONE,
-      answerDuration: Number.NaN,
-    };
-    return mentorsByIdAcc;
-  }, {});
-  Object.getOwnPropertyNames(state.mentorsById).forEach((id) => {
-    mentorsById[id] = state.mentorsById[id];
-  });
-  return {
-    ...state,
-    mentorsById: mentorsById,
-  };
 }
 
 function onQuestionSent(state: State, action: QuestionSentAction): State {
@@ -281,8 +281,8 @@ export default function reducer(
       return onConfigLoadSucceeded(state, action);
     case MENTOR_ANSWER_PLAYBACK_STARTED:
       return onMentorAnswerPlaybackStarted(state, action);
-    case MENTOR_DATA_REQUESTED:
-      return onMentorDataRequested(state, action);
+    case MENTORS_LOAD_REQUESTED:
+      return onMentorsLoadRequested(state, action);
     case MENTORS_LOAD_RESULT:
       return onMentorLoadResults(state, action);
     case MENTOR_SELECTED:
@@ -347,11 +347,6 @@ export default function reducer(
       return {
         ...state,
         guestName: action.name,
-      };
-    case RECOMMENDED_QUESTIONS_SET:
-      return {
-        ...state,
-        recommendedQuestions: action.recommendedQuestions,
       };
     case QUESTION_INPUT_CHANGED:
       return onQuestionInputChanged(state, action);

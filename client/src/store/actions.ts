@@ -10,7 +10,8 @@ import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import Cmi5 from "@xapi/cmi5";
 import { fetchConfig, fetchMentor, getUtterance, queryMentor } from "api";
 import {
-  MentorLoadResult,
+  MentorsLoadRequest,
+  MentorsLoadResult,
   MentorQuestionStatus,
   MentorSelection,
   MentorSelectReason,
@@ -38,7 +39,7 @@ export const CONFIG_LOAD_FAILED = "CONFIG_LOAD_FAILED";
 export const CONFIG_LOAD_STARTED = "CONFIG_LOAD_STARTED";
 export const CONFIG_LOAD_SUCCEEDED = "CONFIG_LOAD_SUCCEEDED";
 export const MENTOR_ANSWER_PLAYBACK_STARTED = "MENTOR_ANSWER_PLAYBACK_STARTED";
-export const MENTOR_DATA_REQUESTED = "MENTOR_DATA_REQUESTED";
+export const MENTORS_LOAD_REQUESTED = "MENTORS_LOAD_REQUESTED";
 export const MENTORS_LOAD_RESULT = "MENTORS_LOAD_RESULT";
 export const MENTOR_FAVED = "MENTOR_FAVED"; // mentor was favorited
 export const MENTOR_NEXT = "MENTOR_NEXT"; // set next mentor to play after current
@@ -51,7 +52,6 @@ export const QUESTION_RESULT = "QUESTION_RESULT";
 export const QUESTION_SENT = "QUESTION_SENT"; // question input was sent
 export const TOPIC_SELECTED = "TOPIC_SELECTED";
 export const GUEST_NAME_SET = "GUEST_NAME_SET";
-export const RECOMMENDED_QUESTIONS_SET = "RECOMMENDED_QUESTIONS_SET";
 
 export interface ConfigLoadFailedAction {
   type: typeof CONFIG_LOAD_FAILED;
@@ -80,18 +80,18 @@ export interface MentorAnswerPlaybackStartedAction {
   };
 }
 
-export interface MentorDataRequestedAction {
-  type: typeof MENTOR_DATA_REQUESTED;
-  payload: string[];
+export interface MentorsLoadRequestedAction {
+  type: typeof MENTORS_LOAD_REQUESTED;
+  payload: MentorsLoadRequest;
 }
 
 export interface MentorsLoadResultAction {
   type: typeof MENTORS_LOAD_RESULT;
-  payload: MentorLoadResult;
+  payload: MentorsLoadResult;
 }
 
 export type MentorDataAction =
-  | MentorDataRequestedAction
+  | MentorsLoadRequestedAction
   | MentorsLoadResultAction;
 
 export interface AnswerFinishedAction {
@@ -155,11 +155,6 @@ export interface GuestNameSetAction {
   name: string;
 }
 
-export interface RecommendedQuestionsSetAction {
-  type: typeof RECOMMENDED_QUESTIONS_SET;
-  recommendedQuestions: string[];
-}
-
 export interface TopicSelectedAction {
   type: typeof TOPIC_SELECTED;
   topic: string;
@@ -177,7 +172,6 @@ export type MentorClientAction =
   | MentorAction
   | QuestionAction
   | TopicSelectedAction
-  | RecommendedQuestionsSetAction
   | QuestionInputChangedAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
@@ -204,69 +198,6 @@ export const loadConfig = () => async (
   }
 };
 
-function sendCmi5Statement(statement: any) {
-  if (!Cmi5.isCmiAvailable) {
-    return;
-  }
-  try {
-    Cmi5.instance
-      .sendCmi5AllowedStatement(statement)
-      .catch((err: Error) => console.error(err));
-  } catch (err2) {
-    console.error(err2);
-  }
-}
-
-function toXapiResultExt(mentorData: MentorState, state: State): XapiResultExt {
-  return {
-    answerClassifier: mentorData.classifier || "",
-    answerConfidence: Number(mentorData.confidence),
-    answerDuration: Number(mentorData.answerDuration),
-    answerId: mentorData.answer_id || "",
-    answerIsOffTopic: Boolean(mentorData.is_off_topic),
-    answerResponseTimeSecs: Number(mentorData.response_time) / 1000,
-    answerStatusByMentor: Object.getOwnPropertyNames(state.mentorsById).reduce(
-      (
-        acc: XapiResultAnswerStatusByMentorId,
-        cur: string
-      ): XapiResultAnswerStatusByMentorId => {
-        acc[cur] = {
-          answerId: state.mentorsById[cur].answer_id || "",
-          confidence: Number(state.mentorsById[cur].confidence),
-          isOffTopic: Boolean(state.mentorsById[cur].is_off_topic),
-          mentor: state.mentorsById[cur].mentor._id,
-          status: state.mentorsById[cur].status,
-          responseTimeSecs: Number(mentorData.response_time) / 1000,
-        };
-        return acc;
-      },
-      {}
-    ),
-    answerText: mentorData.answer_text || "",
-    mentorCur: mentorData.mentor._id,
-    mentorCurReason: state.curMentorReason,
-    mentorCurStatus: mentorData.status,
-    mentorCurIsFav: state.mentorFaved === mentorData.mentor._id,
-    mentorFaved: state.mentorFaved,
-    mentorNext: state.mentorNext,
-    mentorTopicDisplayed: state.curTopic,
-    questionsAsked: state.questionsAsked,
-    question: state.curQuestion,
-    questionSource: state.curQuestionSource,
-    questionIndex: currentQuestionIndex(state),
-    timestampAnswered: state.curQuestionUpdatedAt,
-    timestampAsked: mentorData.answerReceivedAt,
-  };
-}
-
-export interface LoadMentorArgs {
-  config: Config;
-  mentors: string[];
-  subjectId?: string;
-  recommendedQuestions?: string[];
-  guestName?: string;
-}
-
 export const loadMentors: ActionCreator<
   ThunkAction<
     Promise<MentorsLoadResultAction>, // The type of the last action to be dispatched - will always be promise<T> for async actions
@@ -274,15 +205,24 @@ export const loadMentors: ActionCreator<
     string, // The type of the parameter for the nested function
     MentorsLoadResultAction // The type of the last action to be dispatched
   >
-> = (config: Config, mentors: string[], subjectId?: string) => async (
+> = (args: {
+  config: Config;
+  mentors: string[];
+  subjectId?: string;
+  recommendedQuestions?: string[];
+}) => async (
   dispatch: ThunkDispatch<State, void, AnyAction>,
   getState: () => State
 ) => {
-  dispatch<MentorDataRequestedAction>({
-    type: MENTOR_DATA_REQUESTED,
-    payload: mentors,
+  const { config, mentors, subjectId, recommendedQuestions } = args;
+  dispatch<MentorsLoadRequestedAction>({
+    type: MENTORS_LOAD_REQUESTED,
+    payload: {
+      mentors,
+      recommendedQuestions: recommendedQuestions || [],
+    },
   });
-  const mentorLoadResult: MentorLoadResult = {
+  const mentorLoadResult: MentorsLoadResult = {
     mentorsById: mentors.reduce(
       (acc: Record<string, MentorDataResult>, cur: string) => {
         acc[cur] = {
@@ -298,8 +238,9 @@ export const loadMentors: ActionCreator<
       const result = await fetchMentor(config, mentorId);
       if (result.status === 200 && result.data.data) {
         const mentor: Mentor = result.data.data.mentor;
-        subjectId = subjectId || mentor.defaultSubject?._id;
-        const subject = mentor.subjects.find((s) => s._id === subjectId);
+        const subject = mentor.subjects.find(
+          (s) => s._id === (subjectId || mentor.defaultSubject?._id)
+        );
         const topics = subject ? subject.topics : mentor.topics;
         const questions = (subject
           ? subject.questions
@@ -359,6 +300,61 @@ export const loadMentors: ActionCreator<
     payload: mentorLoadResult,
   });
 };
+
+function sendCmi5Statement(statement: any) {
+  if (!Cmi5.isCmiAvailable) {
+    return;
+  }
+  try {
+    Cmi5.instance
+      .sendCmi5AllowedStatement(statement)
+      .catch((err: Error) => console.error(err));
+  } catch (err2) {
+    console.error(err2);
+  }
+}
+
+function toXapiResultExt(mentorData: MentorState, state: State): XapiResultExt {
+  return {
+    answerClassifier: mentorData.classifier || "",
+    answerConfidence: Number(mentorData.confidence),
+    answerDuration: Number(mentorData.answerDuration),
+    answerId: mentorData.answer_id || "",
+    answerIsOffTopic: Boolean(mentorData.is_off_topic),
+    answerResponseTimeSecs: Number(mentorData.response_time) / 1000,
+    answerStatusByMentor: Object.getOwnPropertyNames(state.mentorsById).reduce(
+      (
+        acc: XapiResultAnswerStatusByMentorId,
+        cur: string
+      ): XapiResultAnswerStatusByMentorId => {
+        acc[cur] = {
+          answerId: state.mentorsById[cur].answer_id || "",
+          confidence: Number(state.mentorsById[cur].confidence),
+          isOffTopic: Boolean(state.mentorsById[cur].is_off_topic),
+          mentor: state.mentorsById[cur].mentor._id,
+          status: state.mentorsById[cur].status,
+          responseTimeSecs: Number(mentorData.response_time) / 1000,
+        };
+        return acc;
+      },
+      {}
+    ),
+    answerText: mentorData.answer_text || "",
+    mentorCur: mentorData.mentor._id,
+    mentorCurReason: state.curMentorReason,
+    mentorCurStatus: mentorData.status,
+    mentorCurIsFav: state.mentorFaved === mentorData.mentor._id,
+    mentorFaved: state.mentorFaved,
+    mentorNext: state.mentorNext,
+    mentorTopicDisplayed: state.curTopic,
+    questionsAsked: state.questionsAsked,
+    question: state.curQuestion,
+    questionSource: state.curQuestionSource,
+    questionIndex: currentQuestionIndex(state),
+    timestampAnswered: state.curQuestionUpdatedAt,
+    timestampAsked: mentorData.answerReceivedAt,
+  };
+}
 
 export function mentorAnswerPlaybackStarted(video: {
   mentor: string;
@@ -425,11 +421,6 @@ export const faveMentor = (mentor_id: any) => ({
 export const setGuestName = (name: string) => ({
   name,
   type: GUEST_NAME_SET,
-});
-
-export const setRecommendedQuestions = (recommendedQuestions: string[]) => ({
-  recommendedQuestions,
-  type: RECOMMENDED_QUESTIONS_SET,
 });
 
 const currentQuestionIndex = (state: { questionsAsked: { length: any } }) =>
