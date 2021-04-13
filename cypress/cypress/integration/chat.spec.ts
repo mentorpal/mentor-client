@@ -4,7 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { cyInterceptGraphQL, cyMockGQL, mockConfig, mockMentorData } from "../support/helpers";
+import { cyMockGQL } from "../support/helpers";
 import { mockDefaultSetup } from "../support/helpers";
 
 const clint = require("../fixtures/clint.json");
@@ -12,14 +12,20 @@ const covid = require("../fixtures/covid.json");
 
 describe("Chat", () => {
   it("does not show if mentor type is video", () => {
-    mockDefaultSetup(cy, { mentorsDefault: ["clint"] }, [clint]);
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint"] },
+      mentorData: [clint],
+    });
     cy.visit("/");
     cy.get("#video-container").should("exist");
     cy.get("#chat-thread").should("not.exist");
   });
 
   it("replaces video if mentor type is chat", () => {
-    mockDefaultSetup(cy, { mentorsDefault: ["covid"] }, [covid]);
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["covid"] },
+      mentorData: [covid],
+    });
     cy.visit("/");
     cy.get("#header").contains("USC: COVID-19 FAQ Chat Bot");
     cy.get("#topics").contains("COVID-19 General Information");
@@ -28,7 +34,9 @@ describe("Chat", () => {
     );
     cy.get("#chat-thread").should("exist");
     cy.get("#video-container").should("not.exist");
-    cy.get("#chat-msg-0").contains("I am a COVID-19 chat bot, you can ask me about COVID-19.");
+    cy.get("#chat-msg-0").contains(
+      "I am a COVID-19 chat bot, you can ask me about COVID-19."
+    );
     cy.get("#input-field").type("how old are you");
     cy.get("#input-send").trigger("mouseover").click();
     cy.get("#chat-msg-1").contains("how old are you");
@@ -36,8 +44,10 @@ describe("Chat", () => {
   });
 
   it("can open external links in chat with markdown", () => {
-    mockConfig(cy, { mentorsDefault: ["covid"] });
-    mockMentorData(cy, [covid]);
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["covid"] },
+      mentorData: [covid],
+    });
     cy.intercept("**/questions/?mentor=*&query=*", {
       fixture: "response_with_markdown.json",
     });
@@ -56,11 +66,11 @@ describe("Chat", () => {
   });
 
   it("can give feedback on classifier answer", () => {
-    mockConfig(cy, { mentorsDefault: ["covid"] });
-    mockMentorData(cy, [covid]);
-    cyInterceptGraphQL(cy, [
-      cyMockGQL("userQuestionSetFeedback", null, false),
-    ]);
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["covid"] },
+      mentorData: [covid],
+      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
+    });
     cy.intercept("**/questions/?mentor=covid&query=*", {
       fixture: "response_with_feedback.json",
     });
@@ -77,5 +87,5 @@ describe("Chat", () => {
     cy.get("#click-bad").trigger("mouseover").click();
     cy.get("#chat-msg-2 #feedback-btn #bad").should("exist");
     cy.get("#chat-msg-2 #feedback-btn #neutral").should("not.exist");
-  })
+  });
 });

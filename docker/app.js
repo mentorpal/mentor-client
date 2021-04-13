@@ -22,7 +22,7 @@ app.get("/chat/config", (req, res) => {
   res.send({
     cmi5Enabled: yn(process.env.CMI5_ENABLED || false),
     cmi5Endpoint: process.env.CMI5_ENDPOINT || "/lrs/xapi",
-    cmit5Fetch: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
+    cmi5Fetch: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
     mentorsDefault: (process.env.DEFAULT_MENTORS || "").split(","),
     styleHeaderLogo: process.env.HEADER_LOGO || "",
     urlGraphql: process.env.MENTOR_GRAPHQL_URL || "/graphql",

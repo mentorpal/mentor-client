@@ -18,15 +18,19 @@ describe("Header", () => {
 
   it("changes title when selecting a mentor from panel", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("#header").should("have.attr", "data-mentor", "clint")
+    cy.get("#header").should("have.attr", "data-mentor", "clint");
     cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
-    cy.get("#video-thumbnail-carlos").should("have.attr", "data-ready", "true")
+    cy.get("#video-thumbnail-carlos").should("have.attr", "data-ready", "true");
     cy.get("#video-thumbnail-carlos").trigger("mouseover").click();
-    cy.get("#header").should("have.attr", "data-mentor", "carlos")
+    cy.get("#header").should("have.attr", "data-mentor", "carlos");
     cy.get("#header").contains("Carlos Rios: Marine Logistician");
-    cy.get("#video-thumbnail-julianne").should("have.attr", "data-ready", "true")
+    cy.get("#video-thumbnail-julianne").should(
+      "have.attr",
+      "data-ready",
+      "true"
+    );
     cy.get("#video-thumbnail-julianne").trigger("mouseover").click();
-    cy.get("#header").should("have.attr", "data-mentor", "julianne")
+    cy.get("#header").should("have.attr", "data-mentor", "julianne");
     cy.get("#header").contains("Julianne Nordhagen: Student Naval Aviator");
   });
 
@@ -42,10 +46,12 @@ describe("Header", () => {
 
   it("shows alternate header with logo if config.styleHeaderLogo is set", () => {
     mockDefaultSetup(cy, {
-      cmi5Enabled: false,
-      mentorsDefault: ["clint"],
-      styleHeaderLogo:
-        "https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png",
+      config: {
+        cmi5Enabled: false,
+        mentorsDefault: ["clint"],
+        styleHeaderLogo:
+          "https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png",
+      },
     });
     cy.intercept(
       "https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png",
