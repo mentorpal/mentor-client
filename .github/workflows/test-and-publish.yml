@@ -19,22 +19,6 @@ jobs:
         run: cd client && npm run test:lint
       - name: Client - test types
         run: cd client && npm run test:types
-  test-docker:
-    name: test docker
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: "14.16"
-      - name: Docker - Install
-        run: cd docker && npm ci
-      - name: Docker - audit
-        run: cd docker && npm run test:audit
-      - name: Docker - test format
-        run: cd docker && npm run test:format
-      - name: Docker - lint
-        run: cd docker && npm run test:lint
   test-license:
     name: test license
     runs-on: ubuntu-latest
@@ -57,7 +41,6 @@ jobs:
     name: publish check
     needs:
       - test-client
-      - test-docker
       - test-license
       - test-e2e
     runs-on: ubuntu-latest
@@ -75,7 +58,6 @@ jobs:
     needs:
       - publish-check
       - test-client
-      - test-docker
       - test-license
       - test-e2e
     if: needs.publish-check.outputs.is_release || github.ref == 'refs/heads/main'

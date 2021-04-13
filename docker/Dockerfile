@@ -1,5 +1,4 @@
-FROM node:14.16.0 as builder
-ARG NODE_ENV
+FROM node:14.16 as builder
 RUN apt-get update && \
     apt-get install -y \
         libgif-dev \
@@ -14,13 +13,10 @@ COPY client ./client
 RUN cd client && \
     npm ci && \
     npm run build
-FROM node:14.16.0-slim
-ENV TINI_VERSION=v0.16.1
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini 
-WORKDIR /app
-COPY docker .
-COPY --from=builder /build/client/public /app/public/chat
-RUN npm ci --production 
-RUN chmod +x /app/entrypoint.sh
-ENTRYPOINT ["/tini", "--", "/app/entrypoint.sh"]
+FROM nginx:1-alpine 
+EXPOSE 80
+COPY docker/nginx/conf.d /etc/nginx/conf.d
+COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /build/client/public /etc/nginx/html/chat
+# cypress will request the root even though noone else uses it
+RUN echo "OK" >> /etc/nginx/html/index.html
