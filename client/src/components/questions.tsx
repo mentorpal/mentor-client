@@ -15,8 +15,6 @@ const theme = createMuiTheme({
   palette: {
     primary: { main: "#1B6A9C" },
   },
-  // eslint-disable-next-line
-  // typography: { useNextVariants: true },
 });
 
 function Questions(props: {
