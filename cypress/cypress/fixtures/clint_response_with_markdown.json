@@ -1,8 +1,0 @@
-{
-  "answer_id": "clintanderson_A4_1_1",
-  "answer_text": "Click [here](https://www.google.com)",
-  "classifier": "/app/checkpoint/classifiers/lstm_v1/2019-11-14-2031/clint",
-  "confidence": -0.5140574318328217,
-  "mentor": "clint",
-  "query": "test"
-}

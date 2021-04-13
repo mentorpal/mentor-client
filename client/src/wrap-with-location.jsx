@@ -8,7 +8,8 @@ import React from "react";
 import { Location } from "@reach/router";
 import queryString from "query-string";
 
-const withLocation = ComponentToWrap => props => (
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const withLocation = (ComponentToWrap) => (props) => (
   <Location>
     {({ location, navigate }) => (
       <ComponentToWrap

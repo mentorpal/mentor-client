@@ -4,22 +4,10 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React from "react";
-import { useSelector } from "react-redux";
-import { CircularProgress } from "@material-ui/core";
-import { State } from "types";
-
-function LoadingSpinner(args: { mentor: string }): JSX.Element {
-  const { mentor } = args;
-  const isMentorQuestionDifferent = useSelector<State, boolean>((state) => {
-    const m = state.mentorsById[mentor];
-    return Boolean(m && state.curQuestion && state.curQuestion !== m.question);
-  });
-  return isMentorQuestionDifferent ? (
-    <CircularProgress className="spinner" />
-  ) : (
-    <div />
-  );
+declare namespace Cypress {
+  interface Chainable<Subject = any> {
+    matchImageSnapshot(value: string): Chainable<void>;
+    fill(value: string): Chainable<void>;
+  }
+  interface cy extends Chainable<undefined> {}
 }
-
-export default LoadingSpinner;

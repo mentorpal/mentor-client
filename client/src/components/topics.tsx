@@ -10,73 +10,68 @@ import { Button, Paper } from "@material-ui/core";
 import { History, Whatshot } from "@material-ui/icons";
 import { normalizeString } from "utils";
 import { selectTopic } from "store/actions";
-import { MentorData, State } from "store/types";
+import { State, TopicQuestions } from "types";
+import withLocation from "wrap-with-location";
 
-interface TopicsArgs {
-  onSelected: (topic: string) => void;
-}
-
-const Topics = (args: TopicsArgs) => {
+function Topics(args: {
+  onSelected: (question: string) => void;
+  search: {
+    subject?: string;
+  };
+}) {
   const { onSelected } = args;
   const dispatch = useDispatch();
-  const mentor = useSelector<State, MentorData>(
-    state => state.mentorsById[state.curMentor]
-  );
-  const curTopic = useSelector<State, string>(state => state.curTopic);
+  const topicQuestions = useSelector<State, TopicQuestions[]>((state) => {
+    if (!state.curMentor) {
+      return [];
+    }
+    return state.mentorsById[state.curMentor]?.topic_questions || [];
+  });
+  const curTopic = useSelector<State, string>((state) => state.curTopic);
   const questionsAsked = useSelector<State, string[]>(
-    state => state.questionsAsked
+    (state) => state.questionsAsked || []
   );
 
-  if (!(mentor && mentor.topic_questions)) {
-    return <div />;
-  }
-
-  const { topic_questions } = mentor;
-  function onTopicSelected(topic: string) {
+  async function onTopicSelected(topic: string) {
+    if (curTopic === topic) {
+      dispatch(selectTopic(""));
+      return;
+    }
     dispatch(selectTopic(topic));
-    const top_question = topic_questions[topic].find(q => {
-      return !questionsAsked.includes(normalizeString(q));
-    });
-    onSelected(top_question || "");
-  }
-
-  if (!curTopic) {
-    const first_topic = Object.keys(topic_questions)[0];
-    if (first_topic === "Recommended") {
-      onTopicSelected(first_topic);
-    } else {
-      dispatch(selectTopic(first_topic));
+    const topQ = (
+      topicQuestions.find((tq) => tq.topic === topic)?.questions || []
+    ).find((q) => !questionsAsked.includes(normalizeString(q)));
+    if (topQ) {
+      onSelected(topQ);
     }
   }
 
   return (
     <Paper elevation={2} square>
-      <div id="topics" className="carousel">
-        {Object.keys(topic_questions).map((topic, i) => (
-          <div id={`topic-${i}`} className="slide topic-slide" key={i}>
-            <Button
-              className={curTopic === topic ? "topic-selected" : ""}
-              variant="contained"
-              color={curTopic === topic ? "primary" : "default"}
-              onClick={() => onTopicSelected(topic)}
-            >
-              {topic === "History" ? (
-                <History style={{ marginRight: "5px" }} />
-              ) : (
-                undefined
-              )}
-              {topic === "Recommended" ? (
-                <Whatshot style={{ marginRight: "5px" }} />
-              ) : (
-                undefined
-              )}
-              {topic}
-            </Button>
-          </div>
-        ))}
+      <div id="topics" className="carousel" style={{ height: 70 }}>
+        {topicQuestions.map((tq, i) => {
+          return (
+            <div id={`topic-${i}`} className="slide topic-slide" key={i}>
+              <Button
+                className={curTopic === tq.topic ? "topic-selected" : ""}
+                variant="contained"
+                color={curTopic === tq.topic ? "primary" : "default"}
+                onClick={() => onTopicSelected(tq.topic)}
+              >
+                {tq.topic === "History" ? (
+                  <History style={{ marginRight: "5px" }} />
+                ) : undefined}
+                {tq.topic === "Recommended" ? (
+                  <Whatshot style={{ marginRight: "5px" }} />
+                ) : undefined}
+                {tq.topic}
+              </Button>
+            </div>
+          );
+        })}
       </div>
     </Paper>
   );
-};
+}
 
-export default Topics;
+export default withLocation(Topics);

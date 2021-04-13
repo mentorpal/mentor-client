@@ -4,9 +4,24 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React from "react";
-import "styles/chat.css";
+import {
+  mockDefaultSetup,
+} from "../support/helpers";
 
-const Theme = () => <React.Fragment></React.Fragment>;
-
-export default Theme;
+describe("Plays a video in response to a user question", () => {
+  it("plays a mentor response and displays subtitles", () => {
+    mockDefaultSetup(cy);
+    cy.viewport("iphone-x");
+    cy.visit("/?mentor=clint");
+    cy.get("#input-field").type("is the food good");
+    cy.get("#input-send").trigger("mouseover").click();
+    cy.get("#video-container").should("have.attr", "data-video-type", "answer");
+    cy.get("#video-container video").should("exist");
+    cy.get("#video-container video")
+      .should("have.attr", "src")
+      .and("match", /.*answer_id.mp4$/);
+    cy.get("#video-container video track")
+      .should("have.attr", "src")
+      .and("match", /.*answer_id.vtt$/);
+  });
+});

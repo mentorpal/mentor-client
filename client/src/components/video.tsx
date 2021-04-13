@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import { useSelector, useDispatch } from "react-redux";
 import { Star, StarBorder } from "@material-ui/icons";
-import { idleUrl, videoUrl, subtitleUrl } from "api";
+import { videoUrl, subtitleUrl, idleUrl } from "api";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import { chromeVersion } from "utils";
@@ -17,85 +17,63 @@ import {
   faveMentor,
   mentorAnswerPlaybackStarted,
 } from "store/actions";
-import { Config, MentorData, State } from "store/types";
+import { State } from "types";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
-function findMentorIdleId(mentor: MentorData) {
-  try {
-    return mentor.utterances_by_type["_IDLE_"][0][0];
-  } catch (err) {
-    return "";
-  }
+interface VideoData {
+  src: string;
+  subtitles: string;
 }
 
-interface VideoState {
-  answerId: string;
-  idleVideoId: string;
-  isIdle: boolean;
-  mentor: string;
-}
-
-interface VideoParams {
-  height: number;
-  playing?: boolean;
-  width: number;
-}
-const Video = (args: VideoParams) => {
-  const { height, width, playing = false } = args;
-  const videoState = useSelector<State, VideoState>(state => {
+function Video(args: { playing?: boolean }): JSX.Element {
+  const { playing = false } = args;
+  const dispatch = useDispatch();
+  const curMentor = useSelector<State, string>((state) => state.curMentor);
+  const video = useSelector<State, VideoData | null>((state) => {
+    if (!state.curMentor) {
+      return null;
+    }
     const m = state.mentorsById[state.curMentor];
+    if (!m) {
+      return null;
+    }
     return {
-      answerId: m ? `${m.answer_id}` : "",
-      idleVideoId: m ? findMentorIdleId(m) : "",
-      isIdle: state.isIdle,
-      mentor: state.curMentor,
+      src: state.isIdle
+        ? idleUrl(m.mentor, state.config)
+        : videoUrl(state.curMentor, m.answer_id || "", state.config),
+      subtitles:
+        subtitlesSupported && !state.isIdle
+          ? subtitleUrl(state.curMentor, m.answer_id || "", state.config)
+          : "",
     };
   });
-  const dispatch = useDispatch();
-  const config = useSelector<State, Config>(s => s.config);
+  const isIdle = useSelector<State, boolean>((state) => state.isIdle);
   const [duration, setDuration] = useState(Number.NaN);
-  const mobileWidth = Math.round(height / 0.895);
-  const webWidth = Math.round(height / 0.5625);
-  const format =
-    Math.abs(width - mobileWidth) > Math.abs(width - webWidth)
-      ? "web"
-      : "mobile";
-  const video = {
-    src: videoState.mentor
-      ? videoState.isIdle
-        ? videoState.idleVideoId
-          ? videoUrl(videoState.mentor, videoState.idleVideoId, format, config)
-          : idleUrl(videoState.mentor, format, config)
-        : videoUrl(videoState.mentor, videoState.answerId, format, config)
-      : "",
-    subtitles:
-      videoState.mentor && subtitlesSupported && !videoState.isIdle
-        ? subtitleUrl(videoState.mentor, videoState.answerId, config)
-        : "",
-  };
+  if (!(curMentor && video)) {
+    return <div />;
+  }
 
   function onEnded() {
     dispatch(answerFinished());
   }
 
   function onPlay() {
-    if (videoState.isIdle) {
+    if (isIdle) {
       return;
     }
     dispatch(
       mentorAnswerPlaybackStarted({
-        mentor: videoState.mentor,
+        mentor: curMentor,
         duration: duration,
       })
     );
   }
 
   return (
-    <div id="video-container" style={{ width }}>
+    <div id="video-container" data-video-type={isIdle ? "idle" : "answer"}>
       <MemoVideoPlayer
-        height={height}
-        isIdle={Boolean(videoState.isIdle)}
+        isIdle={Boolean(isIdle)}
         onEnded={onEnded}
         onPlay={onPlay}
         playing={Boolean(playing)}
@@ -103,21 +81,15 @@ const Video = (args: VideoParams) => {
         subtitlesOn={Boolean(subtitlesSupported)}
         subtitlesUrl={video.subtitles}
         videoUrl={video.src}
-        width={Math.min(width, format === "mobile" ? mobileWidth : webWidth)}
       />
       <FaveButton />
-      <LoadingSpinner
-        mentor={videoState.mentor}
-        height={height}
-        width={width}
-      />
-      <MessageStatus mentor={videoState.mentor} />
+      <LoadingSpinner mentor={curMentor} />
+      <MessageStatus mentor={curMentor} />
     </div>
   );
-};
+}
 
 interface VideoPlayerParams {
-  height: number;
   isIdle: boolean;
   onEnded: () => void;
   onPlay: () => void;
@@ -126,12 +98,10 @@ interface VideoPlayerParams {
   subtitlesOn: boolean;
   subtitlesUrl: string;
   videoUrl: string;
-  width: number;
 }
 
 function VideoPlayer(args: VideoPlayerParams) {
   const {
-    height,
     isIdle,
     onEnded,
     onPlay,
@@ -140,7 +110,6 @@ function VideoPlayer(args: VideoPlayerParams) {
     subtitlesOn,
     subtitlesUrl,
     videoUrl,
-    width,
   } = args;
   return (
     <ReactPlayer
@@ -155,8 +124,6 @@ function VideoPlayer(args: VideoPlayerParams) {
       onEnded={onEnded}
       onPlay={onPlay}
       loop={isIdle}
-      width={width}
-      height={height}
       controls={!isIdle}
       playing={Boolean(playing)}
       playsinline
@@ -184,11 +151,11 @@ const MemoVideoPlayer = React.memo(VideoPlayer);
 
 function FaveButton() {
   const dispatch = useDispatch();
-  const mentor = useSelector<State, string>(state => state.curMentor);
+  const mentor = useSelector<State, string>((state) => state.curMentor);
   const numMentors = useSelector<State, number>(
-    state => Object.keys(state.mentorsById).length
+    (state) => Object.keys(state.mentorsById).length
   );
-  const mentorFaved = useSelector<State, string>(state => state.mentorFaved);
+  const mentorFaved = useSelector<State, string>((state) => state.mentorFaved);
 
   const onClick = () => {
     dispatch(faveMentor(mentor));

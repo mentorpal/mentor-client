@@ -1,8 +1,8 @@
-body {
+html, body {
     height: 100%;
-    margin: 0;
+    width: 100%;
     text-align: center;
-    -webkit-overflow-scrolling: touch;
+    margin: 0;
 }
 
 #video-container {
@@ -49,11 +49,11 @@ body {
 }
 
 .carousel .video-slide {
-    padding: 5px;
+    margin: 5px;
 }
 
 .carousel .topic-slide {
-    padding: 10px;
+    margin: 10px;
 }
 
 .carousel .selected {

@@ -6,40 +6,67 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React from "react";
 import { useSelector } from "react-redux";
-import { Grid, Hidden, Typography } from "@material-ui/core";
-import { Config, MentorData, State } from "store/types";
+import { Hidden, Typography } from "@material-ui/core";
+import { State } from "types";
+
+interface HeaderMentorData {
+  _id: string;
+  name: string;
+  title: string;
+}
 
 function Header(): JSX.Element {
-  const mentor = useSelector<State, MentorData>(
-    state => state.mentorsById[state.curMentor]
+  const mentor = useSelector<State, HeaderMentorData | null>((state) => {
+    if (!state.curMentor) {
+      return null;
+    }
+    const m = state.mentorsById[state.curMentor];
+    if (!(m && m.mentor)) {
+      return null;
+    }
+    return {
+      _id: m.mentor._id,
+      name: m.mentor.name,
+      title: m.mentor.title,
+    };
+  });
+  const headerStyleLogo = useSelector<State, string>(
+    (state) => state.config.styleHeaderLogo
   );
-  const config = useSelector<State, Config>(state => state.config);
-  if (config.styleHeaderLogo) {
+
+  if (!mentor) {
+    return <div />;
+  }
+
+  if (headerStyleLogo) {
     return (
-      <Grid
+      <div
         id="header"
-        container
-        direction="row"
-        alignItems="center"
-        style={{ padding: "2px 4px", height: 50 }}
+        data-mentor={mentor._id}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: 50,
+        }}
       >
-        <Grid item style={{ position: "absolute", textAlign: "left" }}>
-          <img src={config.styleHeaderLogo} style={{ height: 50 }} />
-        </Grid>
+        <img
+          src={headerStyleLogo}
+          style={{ position: "absolute", left: 0, height: 50 }}
+        />
         <Hidden only="xs">
-          <Grid item sm={12}>
-            <Typography>
-              {mentor ? `${mentor.name}: ${mentor.title}` : undefined}
-            </Typography>
-          </Grid>
+          <Typography>
+            {mentor.name}: {mentor.title}
+          </Typography>
         </Hidden>
-      </Grid>
+      </div>
     );
   }
 
   return (
     <div
       id="header"
+      data-mentor={mentor._id}
       style={{
         display: "flex",
         flexDirection: "column",
@@ -48,7 +75,7 @@ function Header(): JSX.Element {
       }}
     >
       <Typography>
-        {mentor ? `${mentor.name}: ${mentor.title}` : undefined}
+        {mentor.name}: {mentor.title}
       </Typography>
     </div>
   );

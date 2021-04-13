@@ -6,47 +6,27 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useState } from "react";
 import ReactPlayer from "react-player";
-import { idleUrl, videoUrl } from "api";
-import { Config, MentorData, MentorQuestionStatus, State } from "store/types";
+import { idleUrl } from "api";
+import { MentorQuestionStatus, State } from "types";
 import { useSelector } from "react-redux";
 
-function findMentorIdleId(mentor: MentorData) {
-  try {
-    return mentor.utterances_by_type["_IDLE_"][0][0];
-  } catch (err) {
-    return undefined;
-  }
-}
-
-const VideoThumbnail = (props: {
-  mentor: MentorData;
-  isMobile: boolean;
-  width: number;
-  height: number;
-}) => {
-  const { mentor, isMobile, width, height } = props;
+function VideoThumbnail(props: { mentor: string }): JSX.Element {
   const [isPlaying, setPlaying] = useState(true);
-  const config = useSelector<State, Config>(s => s.config);
-  const format = isMobile ? "mobile" : "web";
-  const isDisabled =
-    mentor.is_off_topic || mentor.status === MentorQuestionStatus.ERROR;
-
-  const onStart = () => {
-    setPlaying(false);
-  };
-
-  const idleVideoId = findMentorIdleId(mentor);
-  const url = idleVideoId
-    ? videoUrl(mentor.id, idleVideoId, format, config)
-    : idleUrl(mentor.id, format, config);
-
+  const idle = useSelector<State, string>((s) => {
+    const m = s.mentorsById[props.mentor];
+    return m ? idleUrl(m.mentor, s.config) : "";
+  });
+  const isDisabled = useSelector<State, boolean>((s) => {
+    const m = s.mentorsById[props.mentor];
+    return m ? m.is_off_topic || m.status === MentorQuestionStatus.ERROR : true;
+  });
   return (
     <ReactPlayer
       style={{ opacity: isDisabled ? "0.25" : "1", backgroundColor: "black" }}
-      url={url}
-      height={height}
-      width={width}
-      onStart={onStart}
+      url={idle}
+      height={50}
+      width={100}
+      onStart={() => setPlaying(false)}
       playing={isPlaying}
       volume={0.0}
       muted
@@ -55,6 +35,6 @@ const VideoThumbnail = (props: {
       webkit-playsinline="true"
     />
   );
-};
+}
 
 export default VideoThumbnail;

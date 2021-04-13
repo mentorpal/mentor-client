@@ -16,21 +16,18 @@ describe("Header", () => {
     cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
   });
 
-  it("changes title when selecting a mentor", () => {
+  it("changes title when selecting a mentor from panel", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("#video-thumbnail-dan").trigger("mouseover").click();
-    cy.get("#header").contains(
-      "Dan Davis: High Performance Computing Researcher"
-    );
-
-    cy.get("#video-thumbnail-carlos").trigger("mouseover").click();
-    cy.get("#header").contains("Carlos Rios: Marine Logistician");
-
-    cy.get("#video-thumbnail-julianne").trigger("mouseover").click();
-    cy.get("#header").contains("Julianne Nordhagen: Student Naval Aviator");
-
-    cy.get("#video-thumbnail-clint").trigger("mouseover").click();
+    cy.get("#header").should("have.attr", "data-mentor", "clint")
     cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
+    cy.get("#video-thumbnail-carlos").should("have.attr", "data-ready", "true")
+    cy.get("#video-thumbnail-carlos").trigger("mouseover").click();
+    cy.get("#header").should("have.attr", "data-mentor", "carlos")
+    cy.get("#header").contains("Carlos Rios: Marine Logistician");
+    cy.get("#video-thumbnail-julianne").should("have.attr", "data-ready", "true")
+    cy.get("#video-thumbnail-julianne").trigger("mouseover").click();
+    cy.get("#header").should("have.attr", "data-mentor", "julianne")
+    cy.get("#header").contains("Julianne Nordhagen: Student Naval Aviator");
   });
 
   it("shows title for a single mentor", () => {

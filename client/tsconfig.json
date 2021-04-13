@@ -4,7 +4,6 @@
   "compilerOptions": {
     "allowJs": true,
     "baseUrl": "src",
-    // "checkJs": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,

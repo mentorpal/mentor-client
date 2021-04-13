@@ -17,7 +17,7 @@ describe("Recommended questions", () => {
         mockDefaultSetup(cy);
         cy.visit("/", {
             qs: addGuestParams({
-                recommended: "Howdy",
+                recommendedQuestions: "Howdy",
             }),
         });
         cy.get("#topics").contains("Recommended");
@@ -27,7 +27,7 @@ describe("Recommended questions", () => {
         mockDefaultSetup(cy);
         cy.visit("/", {
             qs: addGuestParams({
-                recommended: "Howdy",
+                recommendedQuestions: "Howdy",
             }),
         });
         cy.get("#topics")
@@ -39,7 +39,7 @@ describe("Recommended questions", () => {
         mockDefaultSetup(cy);
         cy.visit("/", {
             qs: addGuestParams({
-                recommended: ["Howdy", "Partner"],
+                recommendedQuestions: ["Howdy", "Partner"],
             }),
         });
         cy.get("#scrolling-questions-list").contains("Howdy");
@@ -50,7 +50,7 @@ describe("Recommended questions", () => {
         mockDefaultSetup(cy);
         cy.visit("/", {
             qs: addGuestParams({
-                recommended: "Howdy",
+                recommendedQuestions: "Howdy",
             }),
         });
         cy.get("#scrolling-questions-list")
@@ -62,14 +62,16 @@ describe("Recommended questions", () => {
         mockDefaultSetup(cy);
         cy.visit("/", {
             qs: addGuestParams({
-                recommended: "What is Japan like?",
+                recommendedQuestions: "Are you fun at parties?",
             }),
         });
-        cy.get("#topic-1").trigger('mouseover').click();
+        cy.get("#topic-0").find(".topic-selected");
+        cy.get("#topic-2").trigger('mouseover').click();
+        cy.get("#topic-2").find(".topic-selected");
         cy.get("#scrolling-questions-list")
             .get("li")
             .first()
-            .contains("What is Japan like?");
+            .contains("Are you fun at parties?");
         cy.get("#scrolling-questions-list")
             .get("li")
             .first()

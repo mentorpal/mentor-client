@@ -5,6 +5,105 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 
+export interface ChatData {
+  lastQuestionAt?: Date;
+  lastAnswerAt?: Date;
+  messages: ChatMsg[];
+}
+
+export interface ChatMsg {
+  isUser: boolean;
+  text: string;
+  feedback?: Feedback;
+  feedbackId?: string;
+}
+
+export interface Mentor {
+  _id: string;
+  name: string;
+  title: string;
+  mentorType: MentorType;
+  defaultSubject?: Subject;
+  subjects: Subject[];
+  topics: Topic[];
+  questions: SubjectQuestion[];
+  utterances: Answer[];
+}
+
+export interface Subject {
+  _id: string;
+  topics: Topic[];
+  questions: SubjectQuestion[];
+}
+
+export interface Topic {
+  id: string;
+  name: string;
+}
+
+export interface SubjectQuestion {
+  question: Question;
+  topics: Topic[];
+}
+
+export interface Question {
+  question: string;
+  type: QuestionType;
+  name: UtteranceName;
+}
+
+export interface Answer {
+  _id: string;
+  question: Question;
+  transcript: string;
+}
+
+export interface QuestionApiData {
+  query: string;
+  answer_id: string;
+  answer_text: string;
+  confidence: number;
+  classifier: string;
+  feedback_id: string;
+}
+
+export interface Config {
+  cmi5Enabled: boolean;
+  cmi5Endpoint: string;
+  cmi5Fetch: string;
+  mentorsDefault: string[];
+  urlClassifier: string;
+  urlGraphql: string;
+  urlVideo: string;
+  styleHeaderLogo: string;
+}
+
+export enum QuestionType {
+  UTTERANCE = "UTTERANCE",
+  QUESTION = "QUESTION",
+}
+
+export enum Status {
+  INCOMPLETE = "INCOMPLETE",
+  COMPLETE = "COMPLETE",
+}
+
+export enum UtteranceName {
+  IDLE = "_IDLE_",
+  INTRO = "_INTRO_",
+  OFF_TOPIC = "_OFF_TOPIC_",
+  PROMPT = "_PROMPT_",
+  FEEDBACK = "_FEEDBACK_",
+  REPEAT = "_REPEAT_",
+  REPEAT_BUMP = "_REPEAT_BUMP_",
+  PROFANIY = "_PROFANITY_",
+}
+
+export enum MentorType {
+  VIDEO = "VIDEO",
+  CHAT = "CHAT",
+}
+
 export enum Feedback {
   GOOD = "GOOD",
   BAD = "BAD",
@@ -16,22 +115,6 @@ export enum LoadStatus {
   LOAD_IN_PROGRESS = "LOAD_IN_PROGRESS",
   LOADED = "LOADED",
   LOAD_FAILED = "LOAD_FAILED",
-}
-
-export const MODE_CHAT = "chat";
-export const MODE_VIDEO = "video";
-export type Mode = typeof MODE_CHAT | typeof MODE_VIDEO;
-
-export interface Config {
-  cmi5Enabled: boolean;
-  cmi5Endpoint: string;
-  cmi5Fetch: string;
-  mentorsDefault: string[];
-  modeDefault: Mode;
-  urlClassifier: string;
-  urlGraphql: string;
-  urlVideo: string;
-  styleHeaderLogo: string;
 }
 
 export enum MentorQuestionStatus {
@@ -57,71 +140,57 @@ export enum MentorSelectReason {
   USER_SELECT = "USER_SELECT",
 }
 
-export interface MentorSelection {
-  id: string;
-  reason: MentorSelectReason;
-}
-
 export enum ResultStatus {
   NONE = "NONE",
   IN_PROGRESS = "IN_PROGRESS",
   SUCCEEDED = "SUCCEEDED",
   FAILED = "FAILED",
+  REMOVED = "REMOVED",
 }
 
-export function newMentorData(id: string): MentorData {
-  return {
-    answerDuration: Number.NaN,
-    id: id,
-    name: "",
-    questions_by_id: {},
-    short_name: "",
-    status: MentorQuestionStatus.NONE,
-    title: "",
-    topics_by_id: {},
-    topic_questions: {},
-    utterances_by_type: {},
-  };
+export interface MentorSelection {
+  id: string;
+  reason: MentorSelectReason;
+  setFav?: boolean;
 }
 
-export interface MentorData {
+export interface TopicQuestions {
+  topic: string;
+  questions: string[];
+}
+
+export interface MentorState {
+  mentor: Mentor;
+  topic_questions: TopicQuestions[];
+  status: MentorQuestionStatus;
+  answerDuration: number;
+
   answer_id?: string;
   answer_text?: string;
-  answerDuration: number;
   answerReceivedAt?: Date;
   answerFeedbackId?: string;
   classifier?: string;
   confidence?: number;
-  id: string;
   is_off_topic?: boolean;
-  name: string;
   question?: string;
-  questions_by_id: {
-    [question_id: string]: {
-      question_text: string;
-    };
-  };
   response_time?: number;
-  short_name: string;
-  status: MentorQuestionStatus;
-  title: string;
-  topics_by_id: {
-    [topic_id: string]: {
-      name: string;
-      questions: string[];
-    };
-  };
-  topic_questions: {
-    [topic_id: string]: string[];
-  };
-  utterances_by_type: {
-    [utterance_type: string]: string[][];
-  };
 }
 
 export interface MentorDataResult {
-  data: MentorData | undefined;
+  data?: MentorState;
   status: ResultStatus;
+}
+
+export interface MentorsLoadRequest {
+  guestName?: string;
+  mentors: string[];
+  recommendedQuestions?: string[];
+}
+
+export interface MentorsLoadResult {
+  mentorsById: Record<string, MentorDataResult>;
+  mentor?: string;
+  topic?: string;
 }
 
 export interface QuestionResult {
@@ -139,10 +208,17 @@ export interface State {
   curTopic: string; // topic to show questions for
   mentorFaved: string; // id of the preferred mentor
   isIdle: boolean;
-  mentorsById: Record<string, MentorData>;
+  mentorsById: Record<string, MentorState>;
   mentorNext: string; // id of the next mentor to speak after the current finishes
-  questionsAsked: string[];
   guestName: string;
+  questionsAsked: string[];
+  recommendedQuestions: string[];
+  questionInput: QuestionInput;
+}
+
+export interface QuestionInput {
+  question: string;
+  source: MentorQuestionSource;
 }
 
 export interface QuestionResponse {

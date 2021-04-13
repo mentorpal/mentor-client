@@ -1,304 +1,88 @@
 {
-  "id": "julianne",
+  "_id": "julianne",
   "name": "Julianne Nordhagen",
-  "questions_by_id": {
-    "julianne_A10_1_3": {
-      "question_text": "Are you currently serving in the military?"
-    },
-    "julianne_A11_1_3": {
-      "question_text": "What is your current rank and duty position now?"
-    },
-    "julianne_A12_1_3": {
-      "question_text": "How will you spend most of your time at work?"
-    },
-    "julianne_A13_1_3": {
-      "question_text": "What kind of decisions will you be making?"
-    },
-    "julianne_A14_1_3": {
-      "question_text": "What are the major benefits of doing this type of work?"
-    },
-    "julianne_A15_1_3": {
-      "question_text": "What are the negatives about being a Navy pilot?"
-    },
-    "julianne_A16_1_3": {
-      "question_text": "How much do Navy pilots travel in a year?"
-    },
-    "julianne_A17_1_3": {
-      "question_text": "To what extent will you understand the overall goals of the work you are doing?"
-    },
-    "julianne_A18_1_3": {
-      "question_text": "How stable is the employment of your job?"
-    },
-    "julianne_A19_1_3": {
-      "question_text": "Do you know members of your job that have high stress syndromes or problems?"
-    },
-    "julianne_A20_2_1": {
-      "question_text": "What if someone finds out that they do not like being a pilot?"
-    },
-    "julianne_A21_2_2": {
-      "question_text": "How did you come to join JROTC and ROTC?"
-    },
-    "julianne_A22_2_3": { "question_text": "What is JROTC?" },
-    "julianne_A23_2_4": { "question_text": "What is ROTC?" },
-    "julianne_A24_2_4": { "question_text": "What does NROTC stand for?" },
-    "julianne_A25_2_4": { "question_text": "What does JROTC stand for?" },
-    "julianne_A26_2_5": {
-      "question_text": "What is the different between JROTC and ROTC?"
-    },
-    "julianne_A27_2_6": {
-      "question_text": "What does a typical day in ROTC look like?"
-    },
-    "julianne_A28_2_6": {
-      "question_text": "Is there a sense of community within ROTC?"
-    },
-    "julianne_A29_2_7": {
-      "question_text": "Were you worried about starting college?"
-    },
-    "julianne_A2_1_3": { "question_text": "What is your name?" },
-    "julianne_A30_2_7": { "question_text": "What is your favorite color?" },
-    "julianne_A31_2_8": { "question_text": "What is your favorite food?" },
-    "julianne_A32_2_9": {
-      "question_text": "Can I be in a relationship in the military?"
-    },
-    "julianne_A33_3_1": {
-      "question_text": "How do relationships last in the military?"
-    },
-    "julianne_A34_3_1": { "question_text": "Where were you commissioned?" },
-    "julianne_A35_3_1": {
-      "question_text": "How much money do you earn working for the Navy?"
-    },
-    "julianne_A36_3_1": {
-      "question_text": "Do you recommend I apply for the ROTC program?"
-    },
-    "julianne_A37_3_1": {
-      "question_text": "When do you sign your service commitment?"
-    },
-    "julianne_A38_3_1": {
-      "question_text": "What's the minimum commitment of service for the Navy?"
-    },
-    "julianne_A39_3_1": {
-      "question_text": "What's the minimum commitment of service for aviation?"
-    },
-    "julianne_A3_1_3": { "question_text": "What year were you born?" },
-    "julianne_A40_3_1": {
-      "question_text": "Are you scared of the commitment of service for aviation?"
-    },
-    "julianne_A41_3_2": {
-      "question_text": "How do I apply for the ROTC program?"
-    },
-    "julianne_A42_3_2": {
-      "question_text": "What is your biggest takeaway from ROTC?"
-    },
-    "julianne_A43_3_2": { "question_text": "How do I succeed in school?" },
-    "julianne_A44_3_2": {
-      "question_text": "Do you reccommend studying abroad?"
-    },
-    "julianne_A45_3_2": { "question_text": "How can I study abroad?" },
-    "julianne_A46_3_2": {
-      "question_text": "Have you ever felt discriminated in a male dominated field?"
-    },
-    "julianne_A47_3_2": {
-      "question_text": "How do you deal with your cowokers in a male dominated field?"
-    },
-    "julianne_A48_3_2": {
-      "question_text": "If you had the chance to do school over, what would you do differently?"
-    },
-    "julianne_A49_3_2": {
-      "question_text": "What have you done that you are most proud of?"
-    },
-    "julianne_A4_1_3": { "question_text": "How old are you now?" },
-    "julianne_A50_3_2": {
-      "question_text": "What kind of people do not do well in your line of work?"
-    },
-    "julianne_A51_3_2": {
-      "question_text": "What was your biggest failure and how did you learn from it?"
-    },
-    "julianne_A52_3_2": {
-      "question_text": "What kind of risks do you need to take in your field?"
-    },
-    "julianne_A53_3_2": {
-      "question_text": "What courses in college have you found to be the most useful so far?"
-    },
-    "julianne_A54_3_2": { "question_text": "When is breaking the rules okay?" },
-    "julianne_A55_3_2": {
-      "question_text": "What were some of the most diffucult courses you had to take in college?"
-    },
-    "julianne_A56_3_2": {
-      "question_text": "How has your job affected your lifestyle"
-    },
-    "julianne_A57_3_2": {
-      "question_text": "What was a pivitol moment in your life?"
-    },
-    "julianne_A58_3_2": {
-      "question_text": "What is important when choosing a college?"
-    },
-    "julianne_A59_3_2": {
-      "question_text": "How might your job change over the next 10 years?"
-    },
-    "julianne_A5_1_3": { "question_text": "When is your birthday? " },
-    "julianne_A60_3_2": {
-      "question_text": "What are you really passionate about in your career?"
-    },
-    "julianne_A61_3_2": {
-      "question_text": "How much do you use Math in your job?"
-    },
-    "julianne_A62_3_2": { "question_text": "How can you change careers?" },
-    "julianne_A6_1_3": { "question_text": "Where did you grow up?" },
-    "julianne_A7_1_3": {
-      "question_text": "Tell me about your family growing up."
-    },
-    "julianne_A8_1_3": { "question_text": "Tell me about your childhood" },
-    "julianne_A9_1_3": { "question_text": "When did you join the Navy?" }
-  },
-  "short_name": "Julianne",
   "title": "Student Naval Aviator",
-  "topics_by_id": {
-    "about_me": {
-      "name": "About Me",
-      "questions": [
-        "julianne_A10_1_3",
-        "julianne_A2_1_3",
-        "julianne_A30_2_7",
-        "julianne_A31_2_8",
-        "julianne_A34_3_1",
-        "julianne_A3_1_3",
-        "julianne_A4_1_3",
-        "julianne_A50_3_2",
-        "julianne_A57_3_2",
-        "julianne_A5_1_3",
-        "julianne_A6_1_3",
-        "julianne_A7_1_3",
-        "julianne_A8_1_3",
-        "julianne_A9_1_3"
-      ]
+  "mentorType": "VIDEO",
+  "defaultSubject": null,
+  "subjects": [],
+  "topics": [
+    {
+      "id": "aboutme",
+      "name": "About Me"
     },
-    "about_the_job": {
-      "name": "About the Job",
-      "questions": [
-        "julianne_A11_1_3",
-        "julianne_A12_1_3",
-        "julianne_A13_1_3",
-        "julianne_A14_1_3",
-        "julianne_A15_1_3",
-        "julianne_A16_1_3",
-        "julianne_A17_1_3",
-        "julianne_A18_1_3",
-        "julianne_A19_1_3",
-        "julianne_A20_2_1",
-        "julianne_A21_2_2",
-        "julianne_A22_2_3",
-        "julianne_A23_2_4",
-        "julianne_A24_2_4",
-        "julianne_A25_2_4",
-        "julianne_A26_2_5",
-        "julianne_A27_2_6",
-        "julianne_A28_2_6",
-        "julianne_A32_2_9",
-        "julianne_A33_3_1",
-        "julianne_A35_3_1",
-        "julianne_A36_3_1",
-        "julianne_A37_3_1",
-        "julianne_A38_3_1",
-        "julianne_A39_3_1",
-        "julianne_A40_3_1",
-        "julianne_A41_3_2",
-        "julianne_A42_3_2",
-        "julianne_A44_3_2",
-        "julianne_A56_3_2",
-        "julianne_A59_3_2",
-        "julianne_A60_3_2",
-        "julianne_A61_3_2",
-        "julianne_A62_3_2"
-      ]
-    },
-    "challenges": {
-      "name": "Challenges",
-      "questions": [
-        "julianne_A19_1_3",
-        "julianne_A29_2_7",
-        "julianne_A37_3_1",
-        "julianne_A40_3_1",
-        "julianne_A46_3_2",
-        "julianne_A47_3_2",
-        "julianne_A52_3_2",
-        "julianne_A55_3_2"
-      ]
-    },
-    "lifestyle": {
-      "name": "Lifestyle",
-      "questions": [
-        "julianne_A14_1_3",
-        "julianne_A18_1_3",
-        "julianne_A19_1_3",
-        "julianne_A20_2_1",
-        "julianne_A23_2_4",
-        "julianne_A29_2_7",
-        "julianne_A33_3_1",
-        "julianne_A35_3_1",
-        "julianne_A42_3_2",
-        "julianne_A46_3_2",
-        "julianne_A49_3_2",
-        "julianne_A51_3_2",
-        "julianne_A52_3_2",
-        "julianne_A56_3_2"
-      ]
-    },
-    "what_does_it_take_": {
-      "name": "What Does it Take?",
-      "questions": [
-        "julianne_A29_2_7",
-        "julianne_A36_3_1",
-        "julianne_A43_3_2",
-        "julianne_A44_3_2",
-        "julianne_A45_3_2",
-        "julianne_A47_3_2",
-        "julianne_A48_3_2",
-        "julianne_A53_3_2",
-        "julianne_A54_3_2",
-        "julianne_A55_3_2",
-        "julianne_A58_3_2",
-        "julianne_A8_1_3"
-      ]
-    },
-    "who_does_it_": {
-      "name": "Who Does it?",
-      "questions": [
-        "julianne_A19_1_3",
-        "julianne_A27_2_6",
-        "julianne_A28_2_6",
-        "julianne_A32_2_9",
-        "julianne_A33_3_1"
-      ]
+    {
+      "id": "challenges",
+      "name": "Challenges"
     }
-  },
-  "utterances_by_type": {
-    "_FEEDBACK_": [
-      ["julianne_U2_1_3", "Yes sir."],
-      ["julianne_U4_1_3", "How are you?"],
-      ["julianne_U5_1_3", "Good morning."],
-      ["julianne_U6_1_3", "Good afternoon."],
-      ["julianne_U7_1_3", "Good evening."],
-      ["julianne_U8_1_3", "Good night."],
-      ["julianne_U9_1_3", "I may have said this before."],
-      ["julianne_U10_1_3", "No."],
-      ["julianne_U11_1_3", "Maybe."],
-      ["julianne_U12_1_3", "Perhaps."],
-      ["julianne_U13_1_3", "Of course."],
-      ["julianne_U14_1_3", "Always."],
-      ["julianne_U15_1_3", "Never."],
-      ["julianne_U16_1_3", "Often."],
-      ["julianne_U17_1_3", "I do."],
-      ["julianne_U18_1_3", "I don't"],
-      ["julianne_U19_1_3", "I have no idea."],
-      ["julianne_U20_1_3", "I do not think so"]
-    ],
-    "_IDLE_": [["idle", ""]],
-    "_INTRO_": [
-      [
-        "julianne_U1_1_1",
-        "Hi my name's Julie Nordhagen, I'm in the United States Navy and I'm currently a student naval aviator so that means that I have commissioned into the Navy and I am starting to learn how to fly planes and will then become a full trained pilot for the Navy."
+  ],
+  "questions": [
+    {
+      "question": {
+        "question": "Where were you born?",
+        "type": "QUESTION"
+      },
+      "topics": [
+        {
+          "id": "aboutme",
+          "name": "About Me"
+        }
       ]
-    ],
-    "_OFF_TOPIC_": [["julianne_U3_1_3", "Excuse me?"]]
-  }
+    },
+    {
+      "question": {
+        "question": "Were you worried about starting college?",
+        "type": "QUESTION"
+      },
+      "topics": [
+        {
+          "id": "challenges",
+          "name": "Challenges"
+        }
+      ]
+    },
+    {
+      "question": {
+        "question": "idle",
+        "type": "UTTERANCE"
+      },
+      "topics": []
+    },
+    {
+      "question": {
+        "question": "intro",
+        "type": "UTTERANCE"
+      },
+      "topics": []
+    },
+    {
+      "question": {
+        "question": "offtopic",
+        "type": "UTTERANCE"
+      },
+      "topics": []
+    }
+  ],
+  "utterances": [
+    {
+      "_id": "idle",
+      "transcript": "",
+      "question": {
+        "name": "_IDLE_"
+      }
+    },
+    {
+      "_id": "intro",
+      "transcript": "Hi my name's Julie Nordhagen, I'm in the United States Navy and I'm currently a student naval aviator so that means that I have commissioned into the Navy and I am starting to learn how to fly planes and will then become a full trained pilot for the Navy.",
+      "question": {
+        "name": "_INTRO_"
+      }
+    },
+    {
+      "_id": "offtopic",
+      "transcript": "That is a great question, but unfortunately I never recorded an answer to that.",
+      "question": {
+        "name": "_OFF_TOPIC_"
+      }
+    }
+  ]
 }

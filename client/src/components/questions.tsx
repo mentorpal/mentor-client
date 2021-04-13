@@ -8,66 +8,73 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import ScrollingQuestions from "components/scrolling-questions";
-import { State, MentorData } from "store/types";
+import { State } from "types";
+import withLocation from "wrap-with-location";
 
 const theme = createMuiTheme({
   palette: {
     primary: { main: "#1B6A9C" },
   },
-  // @ts-ignore
-  typography: { useNextVariants: true },
 });
 
-interface Props {
-  height: number;
+function Questions(props: {
   onSelected: (question: string) => void;
-}
-const Questions = ({ height, onSelected }: Props) => {
-  const mentor = useSelector<State, MentorData>(
-    state => state.mentorsById[state.curMentor]
-  );
-  const curTopic = useSelector<State, string>(state => state.curTopic);
+  search: {
+    subject?: string;
+  };
+}) {
+  const mentorId = useSelector<State, string>((state) => state.curMentor);
+  const curTopic = useSelector<State, string>((state) => state.curTopic);
   const questionsAsked = useSelector<State, string[]>(
-    state => state.questionsAsked
+    (state) => state.questionsAsked
   );
-
-  if (!(mentor && curTopic && mentor.topic_questions)) {
-    return <div id="questions" />;
-  }
-
-  const questions = mentor.topic_questions[curTopic] || [];
-  const recommended = mentor.topic_questions.Recommended || [];
-
-  const ordered_questions = questions.slice();
-  if (curTopic === "History") {
-    ordered_questions.reverse();
-  } else {
-    ordered_questions.sort((a, b) => {
-      if (recommended.includes(a) && recommended.includes(b)) {
-        return ordered_questions.indexOf(a) - ordered_questions.indexOf(b);
-      }
-      if (recommended.includes(a)) {
-        return -1;
-      }
-      if (recommended.includes(b)) {
-        return 1;
-      }
-      return 0;
-    });
-  }
+  const recommendedQuestions = useSelector<State, string[]>(
+    (state) => state.recommendedQuestions
+  );
+  const questions = useSelector<State, string[]>((state) => {
+    if (!state.curMentor) {
+      return [] as string[];
+    }
+    const m = state.mentorsById[state.curMentor];
+    const qlist =
+      (m?.topic_questions || []).find((tq) => tq.topic === curTopic)
+        ?.questions || [];
+    const orderedQuestions = qlist.slice();
+    if (curTopic === "History") {
+      orderedQuestions.reverse();
+    } else {
+      orderedQuestions.sort((a: string, b: string) => {
+        if (
+          recommendedQuestions.includes(a) &&
+          recommendedQuestions.includes(b)
+        ) {
+          return orderedQuestions.indexOf(a) - orderedQuestions.indexOf(b);
+        }
+        if (recommendedQuestions.includes(a)) {
+          return -1;
+        }
+        if (recommendedQuestions.includes(b)) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+    return orderedQuestions;
+  });
 
   return (
     <MuiThemeProvider theme={theme}>
       <ScrollingQuestions
         id="questions"
-        height={height}
-        questions={ordered_questions}
+        questions={questions}
         questionsAsked={questionsAsked}
-        recommended={recommended}
-        onQuestionSelected={onSelected}
+        recommended={recommendedQuestions}
+        onQuestionSelected={props.onSelected}
+        mentor={mentorId}
+        topic={curTopic}
       />
     </MuiThemeProvider>
   );
-};
+}
 
-export default Questions;
+export default withLocation(Questions);

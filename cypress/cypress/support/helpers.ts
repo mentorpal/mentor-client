@@ -6,16 +6,106 @@ The full terms of this copyright and license should always be found in the root 
 */
 import { v1 as uuidv1 } from "uuid";
 
-export const MODE_CHAT = "chat"
-export const MODE_VIDEO = "video";
-export type Mode = typeof MODE_CHAT | typeof MODE_VIDEO
+interface StaticResponse {
+  /**
+   * Serve a fixture as the response body.
+   */
+  fixture?: string;
+  /**
+   * Serve a static string/JSON object as the response body.
+   */
+  body?: string | object | object[];
+  /**
+   * HTTP headers to accompany the response.
+   * @default {}
+   */
+  headers?: { [key: string]: string };
+  /**
+   * The HTTP status code to send.
+   * @default 200
+   */
+  statusCode?: number;
+  /**
+   * If 'forceNetworkError' is truthy, Cypress will destroy the browser connection
+   * and send no response. Useful for simulating a server that is not reachable.
+   * Must not be set in combination with other options.
+   */
+  forceNetworkError?: boolean;
+  /**
+   * Milliseconds to delay before the response is sent.
+   */
+  delayMs?: number;
+  /**
+   * Kilobits per second to send 'body'.
+   */
+  throttleKbps?: number;
+}
+
+function staticResponse(s: StaticResponse): StaticResponse {
+  return {
+    ...{
+      headers: {
+        "access-control-allow-origin": window.location.origin,
+        "Access-Control-Allow-Credentials": "true",
+      },
+      ...s,
+    },
+  };
+}
+
+interface MockGraphQLQuery {
+  query: string,
+  data: any | any[],
+  me: boolean
+}
+
+export function cyInterceptGraphQL(cy, mocks: MockGraphQLQuery[]): void {
+  const queryCalls: any = {}
+  for (const mock of mocks) {
+    queryCalls[mock.query] = 0;
+  }
+  cy.intercept('**/graphql', (req) => {
+    const { body } = req;
+    const queryBody = body.query.replace(/\s+/g, " ").replace("\n", "").trim();
+    for (const mock of mocks) {
+      if (queryBody.indexOf(`{ ${mock.query}(`) !== -1 || queryBody.indexOf(`{ ${mock.query} {`) !== -1) {
+        const data = Array.isArray(mock.data) ? mock.data : [mock.data];
+        const val = data[Math.min(queryCalls[mock.query], data.length - 1)];
+        const body = {};
+        if (mock.me) {
+          const _inner = {};
+          _inner[mock.query] = val;
+          body["me"] = _inner;
+        } else {
+          body[mock.query] = val;
+        }
+        req.alias = mock.query;
+        req.reply(staticResponse({
+          body: {
+            data: body,
+            errors: null,
+          }
+        }));
+        queryCalls[mock.query] = queryCalls[mock.query] + 1;
+        break;
+      }
+    }
+  });
+}
+
+export function cyMockGQL(query: string, data: any | any[], me = false): MockGraphQLQuery {
+  return {
+    query,
+    data,
+    me,
+  }
+}
 
 export interface Config {
   cmi5Enabled: boolean;
   cmi5Endpoint: string;
   cmi5Fetch: string;
   mentorsDefault: string[];
-  modeDefault: Mode;
   urlClassifier: string;
   urlGraphql: string;
   urlVideo: string;
@@ -39,18 +129,14 @@ export function addGuestParams(query = {}, guestName = "guest") {
   };
 }
 
-export function mockMentorData(cy) {
-  cy.intercept("**/mentors/clint/data", { fixture: "clint.json" });
-  cy.intercept("**/mentors/dan/data", { fixture: "dan.json" });
-  cy.intercept("**/mentors/carlos/data", { fixture: "carlos.json" });
-  cy.intercept("**/mentors/julianne/data", { fixture: "julianne.json" });
-  cy.intercept("**/mentors/jd_thomas/data", { fixture: "jd_thomas.json" });
-  cy.intercept("**/mentors/mario-pais/data", { fixture: "mario-pais.json" });
-  cy.intercept("**/mentors/dan-burns/data", { fixture: "dan-burns.json" });
+export function mockMentorData(cy, data: any[]) {
+  cyInterceptGraphQL(cy, [
+    cyMockGQL("mentor", data, false),
+  ]);
 }
 
 export function mockMentorVideos(cy) {
-  cy.intercept("**/*.mp4", { fixture: "clint_response.mp4" });
+  cy.intercept("**/*.mp4", { fixture: "video_response.mp4" });
 }
 
 export function mockMentorVtt(cy) {
@@ -58,9 +144,7 @@ export function mockMentorVtt(cy) {
 }
 
 export function mockApiQuestions(cy) {
-  cy.intercept("**/questions/?mentor=*&query=*", {
-    fixture: "clint_response.json",
-  });
+  cy.intercept("**/questions/?mentor=*&query=*", { fixture: "response.json", });
 }
 
 export function toGuestUrl(url: string, guestName: string) {
@@ -77,9 +161,8 @@ export function toGuestUrl(url: string, guestName: string) {
     fetch: `https://fake.org.lrs/auth?user=${encodeURIComponent(guestName)}`,
     registration: uuidv1(),
   };
-  const urlBase = `${url}${url.includes("?") ? "" : "?"}${
-    url.includes("&") ? "&" : ""
-  }`;
+  const urlBase = `${url}${url.includes("?") ? "" : "?"}${url.includes("&") ? "&" : ""
+    }`;
   return Object.getOwnPropertyNames(cmiParam).reduce((acc, cur) => {
     return `${acc}&${cur}=${encodeURIComponent(cmiParam[cur])}`;
   }, urlBase);
@@ -89,8 +172,7 @@ export const CONFIG_DEFAULT: Config = {
   cmi5Enabled: false,
   cmi5Endpoint: "",
   cmi5Fetch: "",
-  mentorsDefault: ["clint", "dan", "carlos", "julianne"],
-  modeDefault: MODE_VIDEO,
+  mentorsDefault: ["clint", "carlos", "julianne"],
   urlClassifier: "/classifier",
   urlGraphql: "/graphql",
   urlVideo: "/video",
@@ -101,9 +183,13 @@ export function mockConfig(cy, config: Partial<Config> = {}) {
   cy.intercept("**/config", { ...CONFIG_DEFAULT, ...config });
 }
 
-export function mockDefaultSetup(cy, config: Partial<Config> = {}) {
+const clint = require("../fixtures/clint.json");
+const carlos = require("../fixtures/carlos.json");
+const julianne = require("../fixtures/julianne.json");
+
+export function mockDefaultSetup(cy, config: Partial<Config> = {}, mentorData: any[] = [clint, carlos, julianne]) {
   mockConfig(cy, config);
-  mockMentorData(cy);
+  mockMentorData(cy, mentorData);
   mockMentorVideos(cy);
   mockApiQuestions(cy);
   mockMentorVtt(cy);

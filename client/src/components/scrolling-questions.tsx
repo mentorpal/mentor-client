@@ -15,28 +15,30 @@ interface OnQuestionSelected {
 }
 
 interface ScrollingQuestionsParams {
-  height: number;
   id: string;
   questions: string[];
   questionsAsked: string[];
   recommended: string[];
   onQuestionSelected: OnQuestionSelected;
+  topic: string;
+  mentor: string;
 }
 
-const ScrollingQuestions = (args: ScrollingQuestionsParams) => {
+function ScrollingQuestions(args: ScrollingQuestionsParams): JSX.Element {
   const {
-    height,
     questions,
     questionsAsked,
     recommended,
     onQuestionSelected,
+    mentor,
+    topic,
   } = args;
   useEffect(() => {
     smoothscroll.polyfill();
   }, []);
 
   useEffect(() => {
-    const topQuestion = questions.find(q => {
+    const topQuestion = questions.find((q) => {
       return !questionsAsked.includes(normalizeString(q));
     });
     const parent = document.getElementById("scrolling-questions-list");
@@ -54,8 +56,10 @@ const ScrollingQuestions = (args: ScrollingQuestionsParams) => {
   return (
     <List
       id="scrolling-questions-list"
+      data-topic={topic}
+      data-mentor={mentor}
       className="scroll"
-      style={{ maxHeight: height }}
+      style={{ height: 200 }}
       disablePadding
     >
       {questions.map((question: string, i: number) => (
@@ -71,9 +75,7 @@ const ScrollingQuestions = (args: ScrollingQuestionsParams) => {
                 style={{ height: 25, width: 25 }}
               />
             </ListItemIcon>
-          ) : (
-            undefined
-          )}
+          ) : undefined}
           <ListItemText
             primary={question}
             style={{
@@ -86,6 +88,6 @@ const ScrollingQuestions = (args: ScrollingQuestionsParams) => {
       ))}
     </List>
   );
-};
+}
 
 export default ScrollingQuestions;

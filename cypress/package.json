@@ -1,14 +1,20 @@
 {
-    "name": "mentor-admin-cypress",
-    "description": "cypress testing",
-    "version": "1.0.0",
-    "dependencies": {
-        "cypress": "^6.5.0",
-        "typescript": "^4.0.5"
-    },
-    "scripts": {
-        "cy:open": "npx cypress open",
-        "cy:run": "npx cypress run",
-        "cy:verify": "npx cypress verify"
-    }
+  "name": "mentor-client-cypress",
+  "description": "cypress testing",
+  "version": "1.0.0",
+  "dependencies": {
+    "cypress": "^7.1.0",
+    "cypress-fill-command": "^1.0.2",
+    "cypress-image-snapshot": "^4.0.1"
+  },
+  "scripts": {
+    "cy:open": "npx cypress open --env failOnSnapshotDiff=false",
+    "cy:open:withSnapshots": "npx cypress open",
+    "cy:run": "npx cypress run --env failOnSnapshotDiff=false",
+    "cy:run:withSnapshots": "npx cypress run",
+    "cy:verify": "npx cypress verify"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  }
 }

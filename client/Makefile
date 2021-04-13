@@ -21,25 +21,19 @@ format: node_modules/prettier
 	npm run format
 
 node_modules/eslint:
-	npm install 
+	npm ci 
 
 node_modules/gatsby-cli:
-	npm install 
-
-node_modules/jest:
-	npm install 
-
-node_modules/jest:
-	npm install 
+	npm ci 
 
 node_modules/prettier:
-	npm install 
+	npm ci 
 
 node_modules/typescript:
-	npm install 
+	npm ci 
 
 .PHONY: test
-test: node_modules/jest
+test:
 	npm run test
 
 PHONY: test-all

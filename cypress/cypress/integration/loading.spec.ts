@@ -4,9 +4,12 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React from "react";
-import "styles/chat.overrides.css";
+import { mockDefaultSetup } from "../support/helpers";
 
-const Theme = () => <React.Fragment></React.Fragment>;
-
-export default Theme;
+describe("Loading", () => {
+    it("displays a skeleton until site config has loaded", () => {
+        mockDefaultSetup(cy);
+        cy.visit("/");
+        cy.get("#loading").should("be.visible");
+    });
+});
