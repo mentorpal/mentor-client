@@ -8,7 +8,7 @@ import logger from "redux-logger";
 
 const storeObj = createStore(store, applyMiddleware(...[thunk, logger]));
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+// eslint-disable-next-line react/prop-types , @typescript-eslint/explicit-module-boundary-types
 export default function WrappedWithProvider({ element }) {
   return <Provider store={storeObj}>{element}</Provider>;
 }

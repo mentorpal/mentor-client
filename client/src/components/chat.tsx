@@ -31,7 +31,6 @@ import {
   State,
   UtteranceName,
 } from "types";
-import "styles/chat-override-theme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
