@@ -60,14 +60,15 @@ const useStyles = makeStyles((theme) => ({
 function ChatItem(props: {
   message: ChatMsg;
   i: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   styles: any;
   onSendFeedback: (id: string, feedback: Feedback) => void;
 }): JSX.Element {
   const { message, i, styles, onSendFeedback } = props;
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const config = useSelector<State, Config>((s) => s.config);
 
-  function handleFeedbackClick(event: any) {
+  function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(event.currentTarget);
   }
 
@@ -81,7 +82,7 @@ function ChatItem(props: {
     onSendFeedback(id, feedback);
   }
 
-  function LinkRenderer(props: any) {
+  function LinkRenderer(props: { href: string; children: React.ReactNode }) {
     return (
       <a href={props.href} target="_blank" rel="noreferrer">
         {props.children}

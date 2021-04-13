@@ -25,30 +25,11 @@ module.exports = {
     sourceType: "module", // Allows for the use of imports
   },
   rules: {
-    "no-prototype-builtins": "off",
     "react/display-name": "off",
-    "react/prop-types": "off", // Disable prop-types as we use TypeScript for type checking
-    "@typescript-eslint/ban-ts-ignore": "off",
-    "@typescript-eslint/camelcase": "off",
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/indent": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-var-requires": "off",
   },
   settings: {
     react: {
       version: "detect", // Tells eslint-plugin-react to automatically detect the version of React to use
     },
   },
-  overrides: [
-    // Override some TypeScript rules just for .js files
-    {
-      files: ["*.js"],
-      rules: {
-        "@typescript-eslint/camelcase": "off",
-        "@typescript-eslint/indent": "off",
-        "@typescript-eslint/no-var-requires": "off",
-      },
-    },
-  ],
 };
