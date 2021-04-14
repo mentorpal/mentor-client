@@ -21,7 +21,7 @@ export async function fetchConfig(graphqlUrl = "/graphql"): Promise<Config> {
     {
       query: `
       query {
-        config() {
+        config {
           cmi5Enabled
           cmi5Endpoint
           cmi5Fetch
