@@ -16,7 +16,7 @@ import {
 
 export async function fetchConfig(graphqlUrl = "/graphql"): Promise<Config> {
   // return await axios.get<Config>(process.env.CONFIG || withPrefix("config"));
-  const gqlRes = await axios.post<GraphQLReponse<{ config: Config }>>(
+  const gqlRes = await axios.post<GraphQLResponse<{ config: Config }>>(
     graphqlUrl,
     {
       query: `
@@ -85,7 +85,7 @@ interface MentorQueryData {
   mentor: Mentor;
 }
 
-interface GraphQLReponse<T> {
+interface GraphQLResponse<T> {
   errors?: { message: string }[];
   data?: T;
 }
@@ -93,8 +93,8 @@ interface GraphQLReponse<T> {
 export async function fetchMentor(
   config: Config,
   mentorId: string
-): Promise<AxiosResponse<GraphQLReponse<MentorQueryData>>> {
-  return await axios.post<GraphQLReponse<MentorQueryData>>(config.urlGraphql, {
+): Promise<AxiosResponse<GraphQLResponse<MentorQueryData>>> {
+  return await axios.post<GraphQLResponse<MentorQueryData>>(config.urlGraphql, {
     query: `
       query {
         mentor(id: "${mentorId}") {
@@ -158,7 +158,7 @@ export async function giveFeedback(
   feedbackId: string,
   feedback: string,
   config: Config
-): Promise<AxiosResponse<GraphQLReponse<GiveFeedbackResult>>> {
+): Promise<AxiosResponse<GraphQLResponse<GiveFeedbackResult>>> {
   return await axios.post(config.urlGraphql, {
     query: `
       mutation {
