@@ -31,6 +31,7 @@ import {
   State,
   UtteranceName,
 } from "types";
+import "styles/chat.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {

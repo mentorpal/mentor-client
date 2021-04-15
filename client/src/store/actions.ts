@@ -183,10 +183,10 @@ export const loadConfig = () => async (
     type: CONFIG_LOAD_STARTED,
   });
   try {
-    const configResponse = await fetchConfig();
+    const config = await fetchConfig();
     return dispatch({
       type: CONFIG_LOAD_SUCCEEDED,
-      payload: configResponse.data,
+      payload: config,
     });
   } catch (err) {
     console.error(err);

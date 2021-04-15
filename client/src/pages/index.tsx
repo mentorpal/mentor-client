@@ -68,7 +68,6 @@ function IndexPage(props: {
   const [windowHeight, setWindowHeight] = React.useState<number>(0);
   const [chatHeight, setChatHeight] = React.useState<number>(0);
   const curTopic = useSelector<State, string>((state) => state.curTopic);
-
   const { mentor, guest, subject, recommendedQuestions } = props.search;
 
   function hasSessionUser(): boolean {

@@ -5,7 +5,6 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import axios, { AxiosResponse } from "axios";
-import { withPrefix } from "gatsby";
 import {
   Answer,
   Config,
@@ -15,8 +14,40 @@ import {
   UtteranceName,
 } from "types";
 
-export async function fetchConfig(): Promise<AxiosResponse<Config>> {
-  return await axios.get<Config>(process.env.CONFIG || withPrefix("config"));
+export async function fetchConfig(graphqlUrl = "/graphql"): Promise<Config> {
+  // return await axios.get<Config>(process.env.CONFIG || withPrefix("config"));
+  const gqlRes = await axios.post<GraphQLResponse<{ config: Config }>>(
+    graphqlUrl,
+    {
+      query: `
+      query {
+        config {
+          cmi5Enabled
+          cmi5Endpoint
+          cmi5Fetch
+          mentorsDefault
+          urlClassifier
+          urlGraphql
+          urlVideo
+        }
+      }
+    `,
+    }
+  );
+  if (gqlRes.status !== 200) {
+    throw new Error(`config load failed: ${gqlRes.statusText}}`);
+  }
+  if (gqlRes.data.errors) {
+    throw new Error(
+      `errors reponse to config query: ${JSON.stringify(gqlRes.data.errors)}`
+    );
+  }
+  if (!gqlRes.data.data) {
+    throw new Error(
+      `no data in non-error reponse: ${JSON.stringify(gqlRes.data)}`
+    );
+  }
+  return gqlRes.data.data.config;
 }
 
 export function getUtterance(
@@ -54,7 +85,7 @@ interface MentorQueryData {
   mentor: Mentor;
 }
 
-interface GraphQLReponse<T> {
+interface GraphQLResponse<T> {
   errors?: { message: string }[];
   data?: T;
 }
@@ -62,8 +93,8 @@ interface GraphQLReponse<T> {
 export async function fetchMentor(
   config: Config,
   mentorId: string
-): Promise<AxiosResponse<GraphQLReponse<MentorQueryData>>> {
-  return await axios.post<GraphQLReponse<MentorQueryData>>(config.urlGraphql, {
+): Promise<AxiosResponse<GraphQLResponse<MentorQueryData>>> {
+  return await axios.post<GraphQLResponse<MentorQueryData>>(config.urlGraphql, {
     query: `
       query {
         mentor(id: "${mentorId}") {
@@ -127,7 +158,7 @@ export async function giveFeedback(
   feedbackId: string,
   feedback: string,
   config: Config
-): Promise<AxiosResponse<GraphQLReponse<GiveFeedbackResult>>> {
+): Promise<AxiosResponse<GraphQLResponse<GiveFeedbackResult>>> {
   return await axios.post(config.urlGraphql, {
     query: `
       mutation {

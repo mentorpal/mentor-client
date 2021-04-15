@@ -1,13 +1,10 @@
 version: '3.8'
 services:
   client:
-    ipc: host
-    container_name: client
+    container_name: mentor-client
     build:
       context: .
       dockerfile: ./docker/Dockerfile
-    ports:
-      - "3000:3000"
   cypress:
     container_name: cypress
     depends_on:
@@ -15,4 +12,4 @@ services:
     build:
       context: cypress
     environment:
-      - "CYPRESS_BASE_URL=http://client:3000"
+      - "CYPRESS_BASE_URL=http://client/chat"

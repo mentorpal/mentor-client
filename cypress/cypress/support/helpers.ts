@@ -41,6 +41,17 @@ interface StaticResponse {
   throttleKbps?: number;
 }
 
+interface MockGraphQLQuery {
+  query: string;
+  data: any | any[];
+  me: boolean;
+}
+
+export function cySetup(cy) {
+  cy.server();
+  cy.viewport(1280, 720);
+}
+
 function staticResponse(s: StaticResponse): StaticResponse {
   return {
     ...{
@@ -53,22 +64,19 @@ function staticResponse(s: StaticResponse): StaticResponse {
   };
 }
 
-interface MockGraphQLQuery {
-  query: string,
-  data: any | any[],
-  me: boolean
-}
-
 export function cyInterceptGraphQL(cy, mocks: MockGraphQLQuery[]): void {
-  const queryCalls: any = {}
+  const queryCalls: any = {};
   for (const mock of mocks) {
     queryCalls[mock.query] = 0;
   }
-  cy.intercept('**/graphql', (req) => {
+  cy.intercept("**/graphql", (req) => {
     const { body } = req;
     const queryBody = body.query.replace(/\s+/g, " ").replace("\n", "").trim();
     for (const mock of mocks) {
-      if (queryBody.indexOf(`{ ${mock.query}(`) !== -1 || queryBody.indexOf(`{ ${mock.query} {`) !== -1) {
+      if (
+        queryBody.indexOf(`{ ${mock.query}(`) !== -1 ||
+        queryBody.indexOf(`{ ${mock.query} {`) !== -1
+      ) {
         const data = Array.isArray(mock.data) ? mock.data : [mock.data];
         const val = data[Math.min(queryCalls[mock.query], data.length - 1)];
         const body = {};
@@ -80,12 +88,14 @@ export function cyInterceptGraphQL(cy, mocks: MockGraphQLQuery[]): void {
           body[mock.query] = val;
         }
         req.alias = mock.query;
-        req.reply(staticResponse({
-          body: {
-            data: body,
-            errors: null,
-          }
-        }));
+        req.reply(
+          staticResponse({
+            body: {
+              data: body,
+              errors: null,
+            },
+          })
+        );
         queryCalls[mock.query] = queryCalls[mock.query] + 1;
         break;
       }
@@ -93,12 +103,16 @@ export function cyInterceptGraphQL(cy, mocks: MockGraphQLQuery[]): void {
   });
 }
 
-export function cyMockGQL(query: string, data: any | any[], me = false): MockGraphQLQuery {
+export function cyMockGQL(
+  query: string,
+  data: any | any[],
+  me = false
+): MockGraphQLQuery {
   return {
     query,
     data,
     me,
-  }
+  };
 }
 
 export interface Config {
@@ -129,10 +143,12 @@ export function addGuestParams(query = {}, guestName = "guest") {
   };
 }
 
-export function mockMentorData(cy, data: any[]) {
-  cyInterceptGraphQL(cy, [
-    cyMockGQL("mentor", data, false),
-  ]);
+export function cyMockMentorData(data: any[]) {
+  return cyMockGQL("mentor", data, false);
+}
+
+export function cyMockConfig(config: Partial<Config>) {
+  return cyMockGQL("config", { ...CONFIG_DEFAULT, ...config }, false);
 }
 
 export function mockMentorVideos(cy) {
@@ -144,7 +160,7 @@ export function mockMentorVtt(cy) {
 }
 
 export function mockApiQuestions(cy) {
-  cy.intercept("**/questions/?mentor=*&query=*", { fixture: "response.json", });
+  cy.intercept("**/questions/?mentor=*&query=*", { fixture: "response.json" });
 }
 
 export function toGuestUrl(url: string, guestName: string) {
@@ -161,8 +177,9 @@ export function toGuestUrl(url: string, guestName: string) {
     fetch: `https://fake.org.lrs/auth?user=${encodeURIComponent(guestName)}`,
     registration: uuidv1(),
   };
-  const urlBase = `${url}${url.includes("?") ? "" : "?"}${url.includes("&") ? "&" : ""
-    }`;
+  const urlBase = `${url}${url.includes("?") ? "" : "?"}${
+    url.includes("&") ? "&" : ""
+  }`;
   return Object.getOwnPropertyNames(cmiParam).reduce((acc, cur) => {
     return `${acc}&${cur}=${encodeURIComponent(cmiParam[cur])}`;
   }, urlBase);
@@ -179,20 +196,29 @@ export const CONFIG_DEFAULT: Config = {
   styleHeaderLogo: "",
 };
 
-export function mockConfig(cy, config: Partial<Config> = {}) {
-  cy.intercept("**/config", { ...CONFIG_DEFAULT, ...config });
-}
-
 const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
 const julianne = require("../fixtures/julianne.json");
 
-export function mockDefaultSetup(cy, config: Partial<Config> = {}, mentorData: any[] = [clint, carlos, julianne]) {
-  mockConfig(cy, config);
-  mockMentorData(cy, mentorData);
+export function mockDefaultSetup(
+  cy,
+  args: {
+    config?: Partial<Config>;
+    mentorData?: any[];
+    gqlQueries?: MockGraphQLQuery[];
+  } = {}
+) {
+  const config = args.config || {};
+  const mentorData = args.mentorData || [clint, carlos, julianne];
+  const gqlQueries = args.gqlQueries || [];
   mockMentorVideos(cy);
   mockApiQuestions(cy);
   mockMentorVtt(cy);
+  cyInterceptGraphQL(cy, [
+    cyMockConfig(config),
+    cyMockMentorData(mentorData),
+    ...gqlQueries,
+  ]);
   cy.viewport("iphone-x");
 }
 

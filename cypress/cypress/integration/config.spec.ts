@@ -4,35 +4,39 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import {
-  mockDefaultSetup,
-} from "../support/helpers";
+import { mockDefaultSetup } from "../support/helpers";
 
 const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
 
 describe("Config", () => {
   it("disables cmi5 guest prompt if config.cmi5Enabled=false", () => {
-    mockDefaultSetup(cy, { cmi5Enabled: false });
+    mockDefaultSetup(cy, { config: { cmi5Enabled: false } });
     cy.visit("/");
     cy.get("#guest-prompt").should("not.exist");
   });
 
   it("enables cmi5 guest prompt if config.cmi5Enabled=false", () => {
-    mockDefaultSetup(cy, { cmi5Enabled: true });
+    mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
     cy.visit("/");
     cy.get("#guest-prompt").should("exist");
   });
 
   it("loads a single default mentor if mentorsDefault specifies", () => {
-    mockDefaultSetup(cy, { mentorsDefault: ["clint"] }, [clint]);
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint"] },
+      mentorData: [clint],
+    });
     cy.visit("/");
     cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
     cy.get("#video-panel").should("not.exist");
   });
 
   it("loads multiple default mentors if mentorsDefault specifies", () => {
-    mockDefaultSetup(cy, { mentorsDefault: ["clint", "carlos"] }, [clint, carlos]);
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint", "carlos"] },
+      mentorData: [clint, carlos],
+    });
     cy.visit("/");
     cy.get("#video-panel").get("#video-thumbnail-clint");
     cy.get("#video-panel").get("#video-thumbnail-carlos");
