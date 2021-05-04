@@ -17,8 +17,8 @@ describe("Chat", () => {
       mentorData: [clint],
     });
     cy.visit("/");
-    cy.get("#video-container").should("exist");
-    cy.get("#chat-thread").should("not.exist");
+    cy.get("[data-cy=video-container]").should("exist");
+    cy.get("[data-cy=chat-thread]").should("not.exist");
   });
 
   it("replaces video if mentor type is chat", () => {
@@ -27,20 +27,20 @@ describe("Chat", () => {
       mentorData: [covid],
     });
     cy.visit("/");
-    cy.get("#header").contains("USC: COVID-19 FAQ Chat Bot");
-    cy.get("#topics").contains("COVID-19 General Information");
-    cy.get("#scrolling-questions-list").contains(
+    cy.get("[data-cy=header]").contains("USC: COVID-19 FAQ Chat Bot");
+    cy.get("[data-cy=topics]").contains("COVID-19 General Information");
+    cy.get("[data-cy=scrolling-questions-list]").contains(
       "What are the symptoms of COVID-19?"
     );
-    cy.get("#chat-thread").should("exist");
-    cy.get("#video-container").should("not.exist");
-    cy.get("#chat-msg-0").contains(
+    cy.get("[data-cy=chat-thread]").should("exist");
+    cy.get("[data-cy=video-container]").should("not.exist");
+    cy.get("[data-cy=chat-msg-0]").contains(
       "I am a COVID-19 chat bot, you can ask me about COVID-19."
     );
-    cy.get("#input-field").type("how old are you");
-    cy.get("#input-send").trigger("mouseover").click();
-    cy.get("#chat-msg-1").contains("how old are you");
-    cy.get("#chat-msg-2").contains("I'm thirty seven years old.");
+    cy.get("[data-cy=input-field]").type("how old are you");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=chat-msg-1]").contains("how old are you");
+    cy.get("[data-cy=chat-msg-2]").contains("I'm thirty seven years old.");
   });
 
   it("can open external links in chat with markdown", () => {

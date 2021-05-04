@@ -56,6 +56,7 @@ function ScrollingQuestions(args: ScrollingQuestionsParams): JSX.Element {
   return (
     <List
       id="scrolling-questions-list"
+      data-cy="scrolling-questions-list"
       data-topic={topic}
       data-mentor={mentor}
       className="scroll"

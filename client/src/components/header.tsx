@@ -42,6 +42,7 @@ function Header(): JSX.Element {
     return (
       <div
         id="header"
+        data-cy="header"
         data-mentor={mentor._id}
         style={{
           display: "flex",
@@ -66,6 +67,7 @@ function Header(): JSX.Element {
   return (
     <div
       id="header"
+      data-cy="header"
       data-mentor={mentor._id}
       style={{
         display: "flex",

@@ -92,6 +92,7 @@ function ChatItem(props: {
 
   return (
     <ListItem
+      data-cy={`chat-msg-${i}`}
       id={`chat-msg-${i}`}
       disableGutters={false}
       className={message.isUser ? "user" : "system"}
@@ -287,6 +288,7 @@ function Chat(props: { height: number }): JSX.Element {
 
   return (
     <List
+      data-cy="chat-thread"
       id="chat-thread"
       className={styles.list}
       style={{ height: props.height }}
