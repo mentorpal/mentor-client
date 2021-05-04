@@ -167,14 +167,14 @@ function FaveButton() {
 
   return mentorFaved && mentorFaved === mentor ? (
     <Star
-      id="fave-button"
+      data-cy="fave-button"
       className="star-icon"
       onClick={onClick}
       style={{ color: "yellow" }}
     />
   ) : (
     <StarBorder
-      id="fave-button"
+      data-cy="fave-button"
       className="star-icon"
       onClick={onClick}
       style={{ color: "grey" }}

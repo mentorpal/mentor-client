@@ -9,16 +9,16 @@ import { mockDefaultSetup, addGuestParams, visitAsGuestWithDefaultSetup } from "
 describe("Favorite", () => {
     it("is not toggled by default", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
-        cy.get("#fave-button")
+        cy.get("[data-cy=fave-button]")
             .invoke("attr", "style")
             .should("contain", "grey");
     });
 
     it("can be toggled", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
-        cy.get("#video-thumbnail-julianne").should("have.attr", "data-ready", "true")
-        cy.get("#fave-button").trigger('mouseover').click();
-        cy.get("#fave-button")
+        cy.get("[data-cy=video-thumbnail-julianne]").should("have.attr", "data-ready", "true")
+        cy.get("[data-cy=fave-button]").trigger('mouseover').click();
+        cy.get("[data-cy=fave-button]")
             .invoke("attr", "style")
             .should("contain", "yellow");
     });
@@ -30,6 +30,6 @@ describe("Favorite", () => {
                 mentor: "clint",
             }),
         });
-        cy.get("#fave-button").should("not.exist");
+        cy.get("[data-cy=fave-button]").should("not.exist");
     });
 });
