@@ -48,7 +48,7 @@ function Topics(args: {
 
   return (
     <Paper elevation={2} square>
-      <div id="topics" data-cy="topics" className="carousel" style={{ height: 70 }}>
+      <div data-cy="topics" className="carousel" style={{ height: 70 }}>
         {topicQuestions.map((tq, i) => {
           return (
             <div id={`topic-${i}`} className="slide topic-slide" key={i}>

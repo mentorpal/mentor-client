@@ -93,7 +93,6 @@ function ChatItem(props: {
   return (
     <ListItem
       data-cy={`chat-msg-${i}`}
-      id={`chat-msg-${i}`}
       disableGutters={false}
       className={message.isUser ? "user" : "system"}
       classes={{ root: styles.root }}
@@ -107,7 +106,6 @@ function ChatItem(props: {
       {message.feedbackId ? (
         <div
           data-cy="feedback-btn"
-          id="feedback-btn"
           className={styles.icon}
           onClick={handleFeedbackClick}
         >
@@ -123,11 +121,11 @@ function ChatItem(props: {
               ].join(" ")}
             >
               {message.feedback === Feedback.GOOD ? (
-                <ThumbUpIcon data-cy="good" id="good" />
+                <ThumbUpIcon data-cy="good"/>
               ) : message.feedback === Feedback.BAD ? (
-                <ThumbDownIcon data-cy="bad" id="bad" />
+                <ThumbDownIcon data-cy="bad"/>
               ) : (
-                <ThumbsUpDownIcon data-cy="neutral" id="neutral" />
+                <ThumbsUpDownIcon data-cy="neutral"/>
               )}
             </Avatar>
           </ListItemAvatar>
@@ -158,7 +156,6 @@ function ChatItem(props: {
           <div style={{ display: "flex", flexDirection: "row" }}>
             <div
               data-cy="click-good"
-              id="click-good"
               onClick={() => {
                 if (message.feedbackId) {
                   handleSelectFeedback(message.feedbackId, Feedback.GOOD);
@@ -173,7 +170,6 @@ function ChatItem(props: {
             </div>
             <div
               data-cy="click-neutral"
-              id="click-neutral"
               onClick={() => {
                 if (message.feedbackId) {
                   handleSelectFeedback(message.feedbackId, Feedback.NEUTRAL);
@@ -188,7 +184,6 @@ function ChatItem(props: {
             </div>
             <div
               data-cy="click-bad"
-              id="click-bad"
               onClick={() => {
                 if (message.feedbackId) {
                   handleSelectFeedback(message.feedbackId, Feedback.BAD);

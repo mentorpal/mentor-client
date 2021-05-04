@@ -58,14 +58,14 @@ function VideoPanel(): JSX.Element {
   }
 
   return (
-    <div id="video-panel" className="carousel" style={{ height: 50 }}>
+    <div data-cy="video-panel" className="carousel" style={{ height: 50 }}>
       {Object.keys(mentorsById)
         .filter((mId) => mentorsById[mId]?.mentorType === MentorType.VIDEO)
         .map((id, i) => {
           const m = mentorsById[id];
           return (
             <button
-              id={`video-thumbnail-${id}`}
+              data-cy={`video-thumbnail-${id}`}
               className={`slide video-slide ${
                 id === curMentor ? "selected" : ""
               }`}

@@ -80,7 +80,7 @@ export default function GuestPrompt(): JSX.Element {
   }
 
   return (
-    <div id="guest-prompt">
+    <div data-cy="guest-prompt" id="guest-prompt">
       <Modal
         open={true}
         onClose={() => onGuestNameEntered(name)}

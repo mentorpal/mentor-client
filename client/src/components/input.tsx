@@ -107,7 +107,6 @@ function Input(): JSX.Element {
       <Paper className={classes.root} square style={{ height: 60 }}>
         <InputBase
           data-cy="input-field"
-          id="input-field"
           className={classes.inputField}
           value={questionInput.question}
           multiline
@@ -124,7 +123,6 @@ function Input(): JSX.Element {
         <Divider className={classes.divider} />
         <Button
           data-cy="input-send"
-          id="input-send"
           className={classes.button}
           onClick={() => onQuestionInputSend()}
           disabled={!questionInput.question}

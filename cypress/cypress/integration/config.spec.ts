@@ -13,13 +13,13 @@ describe("Config", () => {
   it("disables cmi5 guest prompt if config.cmi5Enabled=false", () => {
     mockDefaultSetup(cy, { config: { cmi5Enabled: false } });
     cy.visit("/");
-    cy.get("#guest-prompt").should("not.exist");
+    cy.get("[data-cy=guest-prompt]").should("not.exist");
   });
 
   it("enables cmi5 guest prompt if config.cmi5Enabled=false", () => {
     mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
     cy.visit("/");
-    cy.get("#guest-prompt").should("exist");
+    cy.get("[data-cy=guest-prompt]").should("exist");
   });
 
   it("loads a single default mentor if mentorsDefault specifies", () => {
@@ -28,8 +28,8 @@ describe("Config", () => {
       mentorData: [clint],
     });
     cy.visit("/");
-    cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
-    cy.get("#video-panel").should("not.exist");
+    cy.get("[data-cy=header]").contains("Clinton Anderson: Nuclear Electrician's Mate");
+    cy.get("[data-cy=video-panel]").should("not.exist");
   });
 
   it("loads multiple default mentors if mentorsDefault specifies", () => {
@@ -38,7 +38,7 @@ describe("Config", () => {
       mentorData: [clint, carlos],
     });
     cy.visit("/");
-    cy.get("#video-panel").get("#video-thumbnail-clint");
-    cy.get("#video-panel").get("#video-thumbnail-carlos");
+    cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-clint]");
+    cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-carlos]");
   });
 });
