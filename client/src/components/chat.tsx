@@ -106,6 +106,7 @@ function ChatItem(props: {
       <ReactMarkdown source={message.text} renderers={{ link: LinkRenderer }} />
       {message.feedbackId ? (
         <div
+          data-cy="feedback-btn"
           id="feedback-btn"
           className={styles.icon}
           onClick={handleFeedbackClick}
@@ -122,11 +123,11 @@ function ChatItem(props: {
               ].join(" ")}
             >
               {message.feedback === Feedback.GOOD ? (
-                <ThumbUpIcon id="good" />
+                <ThumbUpIcon data-cy="good" id="good" />
               ) : message.feedback === Feedback.BAD ? (
-                <ThumbDownIcon id="bad" />
+                <ThumbDownIcon data-cy="bad" id="bad" />
               ) : (
-                <ThumbsUpDownIcon id="neutral" />
+                <ThumbsUpDownIcon data-cy="neutral" id="neutral" />
               )}
             </Avatar>
           </ListItemAvatar>
@@ -156,6 +157,7 @@ function ChatItem(props: {
           <Typography>Did this answer your question?</Typography>
           <div style={{ display: "flex", flexDirection: "row" }}>
             <div
+              data-cy="click-good"
               id="click-good"
               onClick={() => {
                 if (message.feedbackId) {
@@ -170,6 +172,7 @@ function ChatItem(props: {
               </ListItemAvatar>
             </div>
             <div
+              data-cy="click-neutral"
               id="click-neutral"
               onClick={() => {
                 if (message.feedbackId) {
@@ -184,6 +187,7 @@ function ChatItem(props: {
               </ListItemAvatar>
             </div>
             <div
+              data-cy="click-bad"
               id="click-bad"
               onClick={() => {
                 if (message.feedbackId) {

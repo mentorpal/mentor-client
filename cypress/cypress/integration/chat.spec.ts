@@ -53,16 +53,16 @@ describe("Chat", () => {
     });
     cy.viewport("iphone-x");
     cy.visit("/");
-    cy.get("#chat-thread").should("exist");
-    cy.get("#input-field").type("test");
-    cy.get("#input-send").trigger("mouseover").click();
-    cy.get("#chat-msg-2").contains("Click here");
-    cy.get("#chat-msg-2 a").should(
+    cy.get("[data-cy=chat-thread]").should("exist");
+    cy.get("[data-cy=input-field]").type("test");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=chat-msg-2]").contains("Click here");
+    cy.get("[data-cy=chat-msg-2] a").should(
       "have.attr",
       "href",
       "https://www.google.com"
     );
-    cy.get("#chat-msg-2 a").should("have.attr", "target", "_blank");
+    cy.get("[data-cy=chat-msg-2] a").should("have.attr", "target", "_blank");
   });
 
   it("can give feedback on classifier answer", () => {
@@ -76,16 +76,16 @@ describe("Chat", () => {
     });
     cy.viewport("iphone-x");
     cy.visit("/");
-    cy.get("#chat-thread").should("exist");
-    cy.get("#input-field").type("test");
-    cy.get("#input-send").trigger("mouseover").click();
-    cy.get("#chat-msg-2").contains("Give me feedback");
-    cy.get("#chat-msg-2 #feedback-btn #neutral").should("exist");
-    cy.get("#chat-msg-2 #feedback-btn").trigger("mouseover").click();
-    cy.get("#click-good");
-    cy.get("#click-neutral");
-    cy.get("#click-bad").trigger("mouseover").click();
-    cy.get("#chat-msg-2 #feedback-btn #bad").should("exist");
-    cy.get("#chat-msg-2 #feedback-btn #neutral").should("not.exist");
+    cy.get("[data-cy=chat-thread]").should("exist");
+    cy.get("[data-cy=input-field]").type("test");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=chat-msg-2]").contains("Give me feedback");
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]").should("exist");
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn]").trigger("mouseover").click();
+    cy.get("[data-cy=click-good]");
+    cy.get("[data-cy=click-neutral]");
+    cy.get("[data-cy=click-bad]").trigger("mouseover").click();
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=bad]").should("exist");
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]").should("not.exist");
   });
 });
