@@ -10,33 +10,33 @@ describe("Guest Prompt", () => {
   it("does not prompt if cmi5 is not enabled", () => {
     mockDefaultSetup(cy, { config: { cmi5Enabled: false } });
     cy.visit("/");
-    cy.get("#guest-prompt").should("not.exist");
+    cy.get("[data-cy=guest-prompt]").should("not.exist");
   });
 
   it("prompts anonymous user for a guest name when cmi5 enabled", () => {
     mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
     cy.visit("/");
-    cy.get("#guest-prompt").should("exist");
-    cy.get("#guest-prompt-header").contains("Enter a guest name:");
-    cy.get("#guest-prompt-input").should("exist");
+    cy.get("[data-cy=guest-prompt]").should("exist");
+    cy.get("[data-cy=guest-prompt-header]").contains("Enter a guest name:");
+    cy.get("[data-cy=guest-prompt-input]").should("exist");
   });
 
   it("does not play video until there is a session user when cmi5 enabled", () => {
     mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
     cy.visit("/");
-    cy.get("#video-container video").should("not.have.attr", "autoplay");
+    cy.get("[data-cy=video-container] video").should("not.have.attr", "autoplay");
   });
 
   it("reloads with a guest session on submit name via guest prompt", () => {
     mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
     cy.visit("/");
-    cy.get("#guest-prompt-input").type("guestuser1");
-    cy.get("#guest-prompt-input-send").trigger("mouseover").click();
+    cy.get("[data-cy=guest-prompt-input]").type("guestuser1");
+    cy.get("[data-cy=guest-prompt-input-send]").trigger("mouseover").click();
     cy.url().should("include", "actor=");
     cy.url().should("include", "guestuser1");
-    cy.get("#guest-prompt").should("not.exist");
-    cy.get("#video-container video").should("exist");
-    cy.get("#video-container video").should(
+    cy.get("[data-cy=guest-prompt]").should("not.exist");
+    cy.get("[data-cy=video-container] video").should("exist");
+    cy.get("[data-cy=video-container] video").should(
       "have.attr",
       "autoplay",
       "autoplay"
@@ -46,13 +46,13 @@ describe("Guest Prompt", () => {
   it("loads a single specific mentor", () => {
     mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
     cy.visit("/?mentor=clint");
-    cy.get("#guest-prompt-input").type("guestuser1");
-    cy.get("#guest-prompt-input-send").trigger("mouseover").click();
+    cy.get("[data-cy=guest-prompt-input]").type("guestuser1");
+    cy.get("[data-cy=guest-prompt-input-send]").trigger("mouseover").click();
     cy.url().should("include", "actor=");
     cy.url().should("include", "guestuser1");
-    cy.get("#guest-prompt").should("not.exist");
-    cy.get("#video-container video").should("exist");
-    cy.get("#video-container video").should(
+    cy.get("[data-cy=guest-prompt]").should("not.exist");
+    cy.get("[data-cy=video-container] video").should("exist");
+    cy.get("[data-cy=video-container] video").should(
       "have.attr",
       "autoplay",
       "autoplay"
@@ -62,12 +62,12 @@ describe("Guest Prompt", () => {
   it("accepts enter in guest-name input field as submit", () => {
     mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
     cy.visit("/");
-    cy.get("#guest-prompt-input").type("guestuser2\n");
+    cy.get("[data-cy=guest-prompt-input]").type("guestuser2\n");
     cy.url().should("include", "actor=");
     cy.url().should("include", "guestuser2");
-    cy.get("#guest-prompt").should("not.exist");
-    cy.get("#video-container video").should("exist");
-    cy.get("#video-container video").should(
+    cy.get("[data-cy=guest-prompt]").should("not.exist");
+    cy.get("[data-cy=video-container] video").should("exist");
+    cy.get("[data-cy=video-container] video").should(
       "have.attr",
       "autoplay",
       "autoplay"

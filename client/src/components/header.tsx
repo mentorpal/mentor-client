@@ -41,7 +41,6 @@ function Header(): JSX.Element {
   if (headerStyleLogo) {
     return (
       <div
-        id="header"
         data-cy="header"
         data-mentor={mentor._id}
         style={{
@@ -66,7 +65,6 @@ function Header(): JSX.Element {
 
   return (
     <div
-      id="header"
       data-cy="header"
       data-mentor={mentor._id}
       style={{
