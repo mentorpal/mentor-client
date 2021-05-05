@@ -121,11 +121,11 @@ function ChatItem(props: {
               ].join(" ")}
             >
               {message.feedback === Feedback.GOOD ? (
-                <ThumbUpIcon data-cy="good"/>
+                <ThumbUpIcon data-cy="good" />
               ) : message.feedback === Feedback.BAD ? (
-                <ThumbDownIcon data-cy="bad"/>
+                <ThumbDownIcon data-cy="bad" />
               ) : (
-                <ThumbsUpDownIcon data-cy="neutral"/>
+                <ThumbsUpDownIcon data-cy="neutral" />
               )}
             </Avatar>
           </ListItemAvatar>

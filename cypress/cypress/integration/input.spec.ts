@@ -16,7 +16,7 @@ const julianne = require("../fixtures/julianne.json");
 describe("Input field", () => {
   it("has a default placeholder message", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("[data-cy=input-field]").should("have.attr", "placeholder", "Ask a question");
+    cy.get("[data-cy=input-field] textarea").should("have.attr", "placeholder", "Ask a question");
   });
 
   it("can be typed into", () => {
@@ -42,13 +42,13 @@ describe("Input field", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=input-field]").type("Hello");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=input-field]")
+    cy.get("[data-cy=input-field] textarea")
       .should("have.attr", "placeholder")
       .should("contain", "Hello");
 
     cy.get("[data-cy=input-field]").type("Test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=input-field]").should("have.attr", "placeholder", "Test");
+    cy.get("[data-cy=input-field] textarea").should("have.attr", "placeholder", "Test");
   });
 
   it("clears text after sending input", () => {

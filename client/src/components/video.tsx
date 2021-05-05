@@ -71,7 +71,11 @@ function Video(args: { playing?: boolean }): JSX.Element {
   }
 
   return (
-    <div data-cy="video-container" data-video-type={isIdle ? "idle" : "answer"}>
+    <div
+      data-cy="video-container"
+      data-test-playing={Boolean(playing)}
+      data-video-type={isIdle ? "idle" : "answer"}
+    >
       <MemoVideoPlayer
         isIdle={Boolean(isIdle)}
         onEnded={onEnded}
