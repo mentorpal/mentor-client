@@ -16,46 +16,46 @@ const julianne = require("../fixtures/julianne.json");
 describe("Input field", () => {
   it("has a default placeholder message", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("#input-field").should("have.attr", "placeholder", "Ask a question");
+    cy.get("[data-cy=input-field]").should("have.attr", "placeholder", "Ask a question");
   });
 
   it("can be typed into", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("#input-field").type("Hello");
-    cy.get("#input-field").contains("Hello");
+    cy.get("[data-cy=input-field]").type("Hello");
+    cy.get("[data-cy=input-field]").contains("Hello");
   });
 
   it("enables send button if not empty", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("#input-field").type("Hello");
-    cy.get("#input-send").should("not.be.disabled");
+    cy.get("[data-cy=input-field]").type("Hello");
+    cy.get("[data-cy=input-send]").should("not.be.disabled");
   });
 
   it("disables send button if empty", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("#input-send").should("be.disabled");
-    cy.get("#input-field").type("Hello").clear();
-    cy.get("#input-send").should("be.disabled");
+    cy.get("[data-cy=input-send]").should("be.disabled");
+    cy.get("[data-cy=input-field]").type("Hello").clear();
+    cy.get("[data-cy=input-send]").should("be.disabled");
   });
 
   it("updates placeholder message to last question asked", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("#input-field").type("Hello");
-    cy.get("#input-send").trigger("mouseover").click();
-    cy.get("#input-field")
+    cy.get("[data-cy=input-field]").type("Hello");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-field]")
       .should("have.attr", "placeholder")
       .should("contain", "Hello");
 
-    cy.get("#input-field").type("Test");
-    cy.get("#input-send").trigger("mouseover").click();
-    cy.get("#input-field").should("have.attr", "placeholder", "Test");
+    cy.get("[data-cy=input-field]").type("Test");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-field]").should("have.attr", "placeholder", "Test");
   });
 
   it("clears text after sending input", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("#input-field").type("Hello");
-    cy.get("#input-send").trigger("mouseover").click();
-    cy.get("#input-field").should("not.have.value", "Hello");
+    cy.get("[data-cy=input-field]").type("Hello");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-field]").should("not.have.value", "Hello");
   });
 
   it("sends api call to get responses from mentors after sending input", () => {
@@ -72,8 +72,8 @@ describe("Input field", () => {
       fixture: "response.json",
     }).as("askCarlos");
 
-    cy.get("#input-field").type("how old are you");
-    cy.get("#input-send").trigger("mouseover").click();
+    cy.get("[data-cy=input-field]").type("how old are you");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.wait(["@askClint", "@askJulianne", "@askCarlos"], {
       responseTimeout: 15000,

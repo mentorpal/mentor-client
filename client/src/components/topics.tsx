@@ -51,7 +51,7 @@ function Topics(args: {
       <div data-cy="topics" className="carousel" style={{ height: 70 }}>
         {topicQuestions.map((tq, i) => {
           return (
-            <div id={`topic-${i}`} className="slide topic-slide" key={i}>
+            <div data-cy={`topic-${i}`} className="slide topic-slide" key={i}>
               <Button
                 className={curTopic === tq.topic ? "topic-selected" : ""}
                 variant="contained"
