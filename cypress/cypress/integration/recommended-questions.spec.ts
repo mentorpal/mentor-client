@@ -10,7 +10,7 @@ describe("Recommended questions", () => {
     it("do not appear in topic list if no questions are recommended", () => {
         mockDefaultSetup(cy);
         cy.visit("/", { qs: addGuestParams() });
-        cy.get("#topics").should("not.have.value", "Recommended");
+        cy.get("[data-cy=topics]").should("not.have.value", "Recommended");
     });
 
     it("appear in topic list if questions are recommended", () => {
@@ -20,7 +20,7 @@ describe("Recommended questions", () => {
                 recommendedQuestions: "Howdy",
             }),
         });
-        cy.get("#topics").contains("Recommended");
+        cy.get("[data-cy=topics]").contains("Recommended");
     });
 
     it("appear as default topic", () => {
@@ -30,7 +30,7 @@ describe("Recommended questions", () => {
                 recommendedQuestions: "Howdy",
             }),
         });
-        cy.get("#topics")
+        cy.get("[data-cy=topics]")
             .find(".topic-selected")
             .contains("Recommended");
     });
@@ -42,8 +42,8 @@ describe("Recommended questions", () => {
                 recommendedQuestions: ["Howdy", "Partner"],
             }),
         });
-        cy.get("#scrolling-questions-list").contains("Howdy");
-        cy.get("#scrolling-questions-list").contains("Partner");
+        cy.get("[data-cy=scrolling-questions-list]").contains("Howdy");
+        cy.get("[data-cy=scrolling-questions-list]").contains("Partner");
     });
 
     it("display an icon next to recommended questions", () => {
@@ -53,7 +53,7 @@ describe("Recommended questions", () => {
                 recommendedQuestions: "Howdy",
             }),
         });
-        cy.get("#scrolling-questions-list")
+        cy.get("[data-cy=scrolling-questions-list]")
             .get(`#${CSS.escape("Howdy")}`)
             .find(".recommended-question-icon");
     });
@@ -65,14 +65,14 @@ describe("Recommended questions", () => {
                 recommendedQuestions: "Are you fun at parties?",
             }),
         });
-        cy.get("#topic-0").find(".topic-selected");
-        cy.get("#topic-2").trigger('mouseover').click();
-        cy.get("#topic-2").find(".topic-selected");
-        cy.get("#scrolling-questions-list")
+        cy.get("[data-cy=topic-0]").find(".topic-selected");
+        cy.get("[data-cy=topic-2]").trigger('mouseover').click();
+        cy.get("[data-cy=topic-2]").find(".topic-selected");
+        cy.get("[data-cy=scrolling-questions-list]")
             .get("li")
             .first()
             .contains("Are you fun at parties?");
-        cy.get("#scrolling-questions-list")
+        cy.get("[data-cy=scrolling-questions-list]")
             .get("li")
             .first()
             .find(".recommended-question-icon");

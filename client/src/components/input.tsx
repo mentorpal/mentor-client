@@ -103,7 +103,7 @@ function Input(): JSX.Element {
   };
 
   return (
-    <div id="input-field-wrapper" data-topic={curTopic}>
+    <div data-cy="input-field-wrapper" data-topic={curTopic}>
       <Paper className={classes.root} square style={{ height: 60 }}>
         <InputBase
           data-cy="input-field"

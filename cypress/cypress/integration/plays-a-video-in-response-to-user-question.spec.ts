@@ -13,14 +13,14 @@ describe("Plays a video in response to a user question", () => {
     mockDefaultSetup(cy);
     cy.viewport("iphone-x");
     cy.visit("/?mentor=clint");
-    cy.get("#input-field").type("is the food good");
-    cy.get("#input-send").trigger("mouseover").click();
-    cy.get("#video-container").should("have.attr", "data-video-type", "answer");
-    cy.get("#video-container video").should("exist");
-    cy.get("#video-container video")
+    cy.get("[data-cy=input-field]").type("is the food good");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=video-container]").should("have.attr", "data-video-type", "answer");
+    cy.get("[data-cy=video-container] video").should("exist");
+    cy.get("[data-cy=video-container] video")
       .should("have.attr", "src")
       .and("match", /.*answer_id.mp4$/);
-    cy.get("#video-container video track")
+    cy.get("[data-cy=video-container] video track")
       .should("have.attr", "src")
       .and("match", /.*answer_id.vtt$/);
   });
