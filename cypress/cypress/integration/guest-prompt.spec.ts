@@ -24,7 +24,11 @@ describe("Guest Prompt", () => {
   it("does not play video until there is a session user when cmi5 enabled", () => {
     mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
     cy.visit("/");
-    cy.get("[data-cy=video-container] video").should("not.have.attr", "autoplay");
+    cy.get("[data-cy=video-container]").should(
+      "have.attr",
+      "data-test-playing",
+      "false"
+    );
   });
 
   it("reloads with a guest session on submit name via guest prompt", () => {
