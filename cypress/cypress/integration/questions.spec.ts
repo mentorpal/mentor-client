@@ -44,7 +44,7 @@ describe("Questions list", () => {
         visitAsGuestWithDefaultSetup(cy, "/");
         cy.get("[data-cy=scrolling-questions-list]").should("have.attr", "data-topic", "About Me")
         cy.get("[data-cy=scrolling-questions-list]")
-            .get(`#${CSS.escape("Where were you born?")}`)
+            .get(`[data-cy=${CSS.escape("Where were you born?")}]`)
             .find("div")
             .invoke("attr", "style")
             .should("contain", "black");
@@ -52,7 +52,7 @@ describe("Questions list", () => {
         cy.get("[data-cy=topic-0]").trigger('mouseover').click();
         cy.get("[data-cy=input-send]").trigger('mouseover').click();
         cy.get("[data-cy=scrolling-questions-list]")
-            .get(`#${CSS.escape("Where were you born?")}`)
+            .get(`[data-cy=${CSS.escape("Where were you born?")}]`)
             .find("div")
             .invoke("attr", "style")
             .should("contain", "gray");
@@ -64,7 +64,7 @@ describe("Questions list", () => {
         cy.get("[data-cy=input-field]").type("where were you born?");
         cy.get("[data-cy=input-send]").trigger('mouseover').click();
         cy.get("[data-cy=scrolling-questions-list]")
-            .get(`#${CSS.escape("Where were you born?")}`)
+            .get(`[data-cy=${CSS.escape("Where were you born?")}]`)
             .find("div")
             .invoke("attr", "style")
             .should("contain", "gray");
@@ -75,14 +75,14 @@ describe("Questions list", () => {
         cy.get("[data-cy=input-field]").type("where were you born?");
         cy.get("[data-cy=input-send]").trigger('mouseover').click();
         cy.get("[data-cy=scrolling-questions-list]")
-            .get(`#${CSS.escape("Where were you born?")}`)
+            .get(`[data-cy=${CSS.escape("Where were you born?")}]`)
             .find("div")
             .invoke("attr", "style")
             .should("contain", "gray");
         cy.get("[data-cy=video-thumbnail-carlos]").trigger('mouseover').click();
         cy.get("[data-cy=scrolling-questions-list]").should("have.attr", "data-topic", "About Me")
         cy.get("[data-cy=scrolling-questions-list]")
-            .get(`#${CSS.escape("Where were you born?")}`)
+            .get(`[data-cy=${CSS.escape("Where were you born?")}]`)
             .find("div")
             .invoke("attr", "style")
             .should("contain", "gray");
@@ -93,14 +93,14 @@ describe("Questions list", () => {
         cy.get("[data-cy=input-field]").type("Are you fun at parties?");
         cy.get("[data-cy=input-send]").trigger('mouseover').click();
         cy.get("[data-cy=scrolling-questions-list]")
-            .get(`#${CSS.escape("Are you fun at parties?")}`)
+            .get(`[data-cy=${CSS.escape("Are you fun at parties?")}]`)
             .find("div")
             .invoke("attr", "style")
             .should("contain", "gray");
         cy.get("[data-cy=topic-1]").trigger('mouseover').click();
         cy.get("[data-cy=scrolling-questions-list]").should("have.attr", "data-topic", "About the Job")
         cy.get("[data-cy=scrolling-questions-list]")
-            .get(`#${CSS.escape("Are you fun at parties?")}`)
+            .get(`[data-cy=${CSS.escape("Are you fun at parties?")}]`)
             .find("div")
             .invoke("attr", "style")
             .should("contain", "gray");

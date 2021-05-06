@@ -15,7 +15,6 @@ interface OnQuestionSelected {
 }
 
 interface ScrollingQuestionsParams {
-  id: string;
   questions: string[];
   questionsAsked: string[];
   recommended: string[];
@@ -55,7 +54,6 @@ function ScrollingQuestions(args: ScrollingQuestionsParams): JSX.Element {
 
   return (
     <List
-      id="scrolling-questions-list"
       data-cy="scrolling-questions-list"
       data-topic={topic}
       data-mentor={mentor}
@@ -66,7 +64,7 @@ function ScrollingQuestions(args: ScrollingQuestionsParams): JSX.Element {
       {questions.map((question: string, i: number) => (
         <ListItem
           key={i}
-          id={question}
+          data-cy={question}
           onClick={() => onQuestionSelected(question)}
         >
           {recommended.includes(question) ? (

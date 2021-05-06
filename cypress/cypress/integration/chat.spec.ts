@@ -47,6 +47,7 @@ describe("Chat", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["covid"] },
       mentorData: [covid],
+      apiResponse: "response_with_markdown.json"
     });
     cy.intercept("**/questions/?mentor=*&query=*", {
       fixture: "response_with_markdown.json",
@@ -69,6 +70,7 @@ describe("Chat", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["covid"] },
       mentorData: [covid],
+      apiResponse: "response_with_feedback.json",
       gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
     });
     cy.intercept("**/questions/?mentor=covid&query=*", {

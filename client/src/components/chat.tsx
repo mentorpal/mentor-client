@@ -288,7 +288,6 @@ function Chat(props: { height: number }): JSX.Element {
   return (
     <List
       data-cy="chat-thread"
-      id="chat-thread"
       className={styles.list}
       style={{ height: props.height }}
       disablePadding={true}

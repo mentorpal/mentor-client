@@ -54,7 +54,7 @@ describe("Recommended questions", () => {
             }),
         });
         cy.get("[data-cy=scrolling-questions-list]")
-            .get(`#${CSS.escape("Howdy")}`)
+            .get(`[data-cy=${CSS.escape("Howdy")}]`)
             .find(".recommended-question-icon");
     });
 

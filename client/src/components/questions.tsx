@@ -65,7 +65,6 @@ function Questions(props: {
   return (
     <MuiThemeProvider theme={theme}>
       <ScrollingQuestions
-        id="questions"
         questions={questions}
         questionsAsked={questionsAsked}
         recommended={recommendedQuestions}
