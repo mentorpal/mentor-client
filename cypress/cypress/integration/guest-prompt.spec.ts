@@ -24,10 +24,9 @@ describe("Guest Prompt", () => {
   it("does not play video until there is a session user when cmi5 enabled", () => {
     mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
     cy.visit("/");
-    cy.get("[data-cy=video-container] video").should(
-      "not.have.attr",
-      "autoplay"
-    );
+    cy.get("[data-cy=video-container]").within($video => {
+      cy.get("video").should("not.have.attr", "autoplay");
+    });
   });
 
   it("reloads with a guest session on submit name via guest prompt", () => {
@@ -38,12 +37,9 @@ describe("Guest Prompt", () => {
     cy.url().should("include", "actor=");
     cy.url().should("include", "guestuser1");
     cy.get("[data-cy=guest-prompt]").should("not.exist");
-    cy.get("[data-cy=video-container] video").should("exist");
-    cy.get("[data-cy=video-container] video").should(
-      "have.attr",
-      "autoplay",
-      "autoplay"
-    );
+    cy.get("[data-cy=video-container]").within($video => {
+      cy.get("video").should("have.attr", "autoplay", "autoplay");
+    });
   });
 
   it("loads a single specific mentor", () => {
@@ -54,12 +50,9 @@ describe("Guest Prompt", () => {
     cy.url().should("include", "actor=");
     cy.url().should("include", "guestuser1");
     cy.get("[data-cy=guest-prompt]").should("not.exist");
-    cy.get("[data-cy=video-container] video").should("exist");
-    cy.get("[data-cy=video-container] video").should(
-      "have.attr",
-      "autoplay",
-      "autoplay"
-    );
+    cy.get("[data-cy=video-container]").within($video => {
+      cy.get("video").should("have.attr", "autoplay", "autoplay");
+    });
   });
 
   it("accepts enter in guest-name input field as submit", () => {
@@ -69,11 +62,8 @@ describe("Guest Prompt", () => {
     cy.url().should("include", "actor=");
     cy.url().should("include", "guestuser2");
     cy.get("[data-cy=guest-prompt]").should("not.exist");
-    cy.get("[data-cy=video-container] video").should("exist");
-    cy.get("[data-cy=video-container] video").should(
-      "have.attr",
-      "autoplay",
-      "autoplay"
-    );
+    cy.get("[data-cy=video-container]").within($video => {
+      cy.get("video").should("have.attr", "autoplay", "autoplay");
+    });
   });
 });
