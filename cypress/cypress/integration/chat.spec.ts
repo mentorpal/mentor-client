@@ -17,8 +17,8 @@ describe("Chat", () => {
       mentorData: [clint],
     });
     cy.visit("/");
-    cy.get("#video-container").should("exist");
-    cy.get("#chat-thread").should("not.exist");
+    cy.get("[data-cy=video-container]").should("exist");
+    cy.get("[data-cy=chat-thread]").should("not.exist");
   });
 
   it("replaces video if mentor type is chat", () => {
@@ -27,48 +27,50 @@ describe("Chat", () => {
       mentorData: [covid],
     });
     cy.visit("/");
-    cy.get("#header").contains("USC: COVID-19 FAQ Chat Bot");
-    cy.get("#topics").contains("COVID-19 General Information");
-    cy.get("#scrolling-questions-list").contains(
+    cy.get("[data-cy=header]").contains("USC: COVID-19 FAQ Chat Bot");
+    cy.get("[data-cy=topics]").contains("COVID-19 General Information");
+    cy.get("[data-cy=scrolling-questions-list]").contains(
       "What are the symptoms of COVID-19?"
     );
-    cy.get("#chat-thread").should("exist");
-    cy.get("#video-container").should("not.exist");
-    cy.get("#chat-msg-0").contains(
+    cy.get("[data-cy=chat-thread]").should("exist");
+    cy.get("[data-cy=video-container]").should("not.exist");
+    cy.get("[data-cy=chat-msg-0]").contains(
       "I am a COVID-19 chat bot, you can ask me about COVID-19."
     );
-    cy.get("#input-field").type("how old are you");
-    cy.get("#input-send").trigger("mouseover").click();
-    cy.get("#chat-msg-1").contains("how old are you");
-    cy.get("#chat-msg-2").contains("I'm thirty seven years old.");
+    cy.get("[data-cy=input-field]").type("how old are you");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=chat-msg-1]").contains("how old are you");
+    cy.get("[data-cy=chat-msg-2]").contains("I'm thirty seven years old.");
   });
 
   it("can open external links in chat with markdown", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["covid"] },
       mentorData: [covid],
+      apiResponse: "response_with_markdown.json"
     });
     cy.intercept("**/questions/?mentor=*&query=*", {
       fixture: "response_with_markdown.json",
     });
     cy.viewport("iphone-x");
     cy.visit("/");
-    cy.get("#chat-thread").should("exist");
-    cy.get("#input-field").type("test");
-    cy.get("#input-send").trigger("mouseover").click();
-    cy.get("#chat-msg-2").contains("Click here");
-    cy.get("#chat-msg-2 a").should(
+    cy.get("[data-cy=chat-thread]").should("exist");
+    cy.get("[data-cy=input-field]").type("test");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=chat-msg-2]").contains("Click here");
+    cy.get("[data-cy=chat-msg-2] a").should(
       "have.attr",
       "href",
       "https://www.google.com"
     );
-    cy.get("#chat-msg-2 a").should("have.attr", "target", "_blank");
+    cy.get("[data-cy=chat-msg-2] a").should("have.attr", "target", "_blank");
   });
 
   it("can give feedback on classifier answer", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["covid"] },
       mentorData: [covid],
+      apiResponse: "response_with_feedback.json",
       gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
     });
     cy.intercept("**/questions/?mentor=covid&query=*", {
@@ -76,16 +78,16 @@ describe("Chat", () => {
     });
     cy.viewport("iphone-x");
     cy.visit("/");
-    cy.get("#chat-thread").should("exist");
-    cy.get("#input-field").type("test");
-    cy.get("#input-send").trigger("mouseover").click();
-    cy.get("#chat-msg-2").contains("Give me feedback");
-    cy.get("#chat-msg-2 #feedback-btn #neutral").should("exist");
-    cy.get("#chat-msg-2 #feedback-btn").trigger("mouseover").click();
-    cy.get("#click-good");
-    cy.get("#click-neutral");
-    cy.get("#click-bad").trigger("mouseover").click();
-    cy.get("#chat-msg-2 #feedback-btn #bad").should("exist");
-    cy.get("#chat-msg-2 #feedback-btn #neutral").should("not.exist");
+    cy.get("[data-cy=chat-thread]").should("exist");
+    cy.get("[data-cy=input-field]").type("test");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=chat-msg-2]").contains("Give me feedback");
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]").should("exist");
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn]").trigger("mouseover").click();
+    cy.get("[data-cy=click-good]");
+    cy.get("[data-cy=click-neutral]");
+    cy.get("[data-cy=click-bad]").trigger("mouseover").click();
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=bad]").should("exist");
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]").should("not.exist");
   });
 });

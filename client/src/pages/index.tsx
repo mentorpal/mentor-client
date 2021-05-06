@@ -162,7 +162,7 @@ function IndexPage(props: {
   if (!isConfigLoadComplete(configLoadStatus) || !curMentor) {
     return (
       <div>
-        <CircularProgress id="loading" />
+        <CircularProgress data-cy="loading" />
       </div>
     );
   }

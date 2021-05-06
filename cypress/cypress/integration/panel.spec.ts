@@ -14,43 +14,43 @@ describe("Mentor panel", () => {
   it("shows if there is more than one mentor", () => {
     mockDefaultSetup(cy);
     cy.visit("/?mentor=clint&mentor=carlos");
-    cy.get("#video-panel");
+    cy.get("[data-cy=video-panel]");
   });
 
   it("is hidden if there is only one mentor", () => {
     mockDefaultSetup(cy);
     cy.visit("/?mentor=clint");
-    cy.get("#video-panel").should("not.exist");
+    cy.get("[data-cy=video-panel]").should("not.exist");
   });
 
   it("displays default mentors if no mentors specified and DEFAULT_MENTORS is set", () => {
     mockDefaultSetup(cy);
     cy.visit("/");
-    cy.get("#video-panel").get("#video-thumbnail-clint");
-    cy.get("#video-panel").get("#video-thumbnail-carlos");
-    cy.get("#video-panel").get("#video-thumbnail-julianne");
+    cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-clint]");
+    cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-carlos]");
+    cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-julianne]");
   });
 
   it("picking a mentor sets them as faved", () => {
     mockDefaultSetup(cy);
     cy.visit("/");
-    cy.get("#video-panel")
-      .get("#video-thumbnail-clint")
+    cy.get("[data-cy=video-panel]")
+      .get("[data-cy=video-thumbnail-clint]")
       .trigger("mouseover")
       .click();
-    cy.get("#video-panel").get("#video-thumbnail-clint").get(".star-icon");
-    cy.get("#video-panel")
-      .get("#video-thumbnail-carlos")
+    cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-clint]").get(".star-icon");
+    cy.get("[data-cy=video-panel]")
+      .get("[data-cy=video-thumbnail-carlos]")
       .trigger("mouseover")
       .click();
-    cy.get("#video-panel").get("#video-thumbnail-carlos").get(".star-icon");
+    cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-carlos]").get(".star-icon");
   });
 
   it("does not show chat-only mentors in panel", () => {
     mockDefaultSetup(cy, { mentorData: [clint, carlos, covid] });
     cy.visit("/?mentor=clint&mentor=carlos&mentor=covid");
-    cy.get("#video-panel").get("#video-thumbnail-clint");
-    cy.get("#video-panel").get("#video-thumbnail-carlos");
-    cy.get("#video-panel").get("#video-thumbnail-covid").should("not.exist");
+    cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-clint]");
+    cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-carlos]");
+    cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-covid]").should("not.exist");
   });
 });

@@ -159,8 +159,8 @@ export function mockMentorVtt(cy) {
   cy.intercept("**/*.vtt", { fixture: "default.vtt" });
 }
 
-export function mockApiQuestions(cy) {
-  cy.intercept("**/questions/?mentor=*&query=*", { fixture: "response.json" });
+export function mockApiQuestions(cy, response?: string) {
+  cy.intercept("**/questions/?mentor=*&query=*", { fixture: response || "response.json" });
 }
 
 export function toGuestUrl(url: string, guestName: string) {
@@ -177,9 +177,8 @@ export function toGuestUrl(url: string, guestName: string) {
     fetch: `https://fake.org.lrs/auth?user=${encodeURIComponent(guestName)}`,
     registration: uuidv1(),
   };
-  const urlBase = `${url}${url.includes("?") ? "" : "?"}${
-    url.includes("&") ? "&" : ""
-  }`;
+  const urlBase = `${url}${url.includes("?") ? "" : "?"}${url.includes("&") ? "&" : ""
+    }`;
   return Object.getOwnPropertyNames(cmiParam).reduce((acc, cur) => {
     return `${acc}&${cur}=${encodeURIComponent(cmiParam[cur])}`;
   }, urlBase);
@@ -206,13 +205,17 @@ export function mockDefaultSetup(
     config?: Partial<Config>;
     mentorData?: any[];
     gqlQueries?: MockGraphQLQuery[];
+    apiResponse?: string;
+    noMockApi?: boolean;
   } = {}
 ) {
   const config = args.config || {};
   const mentorData = args.mentorData || [clint, carlos, julianne];
   const gqlQueries = args.gqlQueries || [];
   mockMentorVideos(cy);
-  mockApiQuestions(cy);
+  if (!args.noMockApi) {
+    mockApiQuestions(cy, args.apiResponse);
+  }
   mockMentorVtt(cy);
   cyInterceptGraphQL(cy, [
     cyMockConfig(config),

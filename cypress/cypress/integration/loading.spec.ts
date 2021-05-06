@@ -10,6 +10,6 @@ describe("Loading", () => {
     it("displays a skeleton until site config has loaded", () => {
         mockDefaultSetup(cy);
         cy.visit("/");
-        cy.get("#loading").should("be.visible");
+        cy.get("[data-cy=loading]").should("be.visible");
     });
 });

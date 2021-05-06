@@ -13,25 +13,25 @@ import {
 describe("Header", () => {
   it("shows title for default mentor in panel", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
+    cy.get("[data-cy=header]").contains("Clinton Anderson: Nuclear Electrician's Mate");
   });
 
   it("changes title when selecting a mentor from panel", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("#header").should("have.attr", "data-mentor", "clint");
-    cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
-    cy.get("#video-thumbnail-carlos").should("have.attr", "data-ready", "true");
-    cy.get("#video-thumbnail-carlos").trigger("mouseover").click();
-    cy.get("#header").should("have.attr", "data-mentor", "carlos");
-    cy.get("#header").contains("Carlos Rios: Marine Logistician");
-    cy.get("#video-thumbnail-julianne").should(
+    cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
+    cy.get("[data-cy=header]").contains("Clinton Anderson: Nuclear Electrician's Mate");
+    cy.get("[data-cy=video-thumbnail-carlos]").should("have.attr", "data-ready", "true");
+    cy.get("[data-cy=video-thumbnail-carlos]").trigger("mouseover").click();
+    cy.get("[data-cy=header]").should("have.attr", "data-mentor", "carlos");
+    cy.get("[data-cy=header]").contains("Carlos Rios: Marine Logistician");
+    cy.get("[data-cy=video-thumbnail-julianne]").should(
       "have.attr",
       "data-ready",
       "true"
     );
-    cy.get("#video-thumbnail-julianne").trigger("mouseover").click();
-    cy.get("#header").should("have.attr", "data-mentor", "julianne");
-    cy.get("#header").contains("Julianne Nordhagen: Student Naval Aviator");
+    cy.get("[data-cy=video-thumbnail-julianne]").trigger("mouseover").click();
+    cy.get("[data-cy=header]").should("have.attr", "data-mentor", "julianne");
+    cy.get("[data-cy=header]").contains("Julianne Nordhagen: Student Naval Aviator");
   });
 
   it("shows title for a single mentor", () => {
@@ -41,7 +41,7 @@ describe("Header", () => {
         mentor: "clint",
       }),
     });
-    cy.get("#header").contains("Clinton Anderson: Nuclear Electrician's Mate");
+    cy.get("[data-cy=header]").contains("Clinton Anderson: Nuclear Electrician's Mate");
   });
 
   it("shows alternate header with logo if config.styleHeaderLogo is set", () => {
@@ -58,7 +58,7 @@ describe("Header", () => {
       { fixture: "uscheader.png" }
     );
     cy.visit("/");
-    cy.get("#header img")
+    cy.get("[data-cy=header] img")
       .should("have.attr", "src")
       .and(
         "eq",

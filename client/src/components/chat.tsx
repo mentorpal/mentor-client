@@ -92,7 +92,7 @@ function ChatItem(props: {
 
   return (
     <ListItem
-      id={`chat-msg-${i}`}
+      data-cy={`chat-msg-${i}`}
       disableGutters={false}
       className={message.isUser ? "user" : "system"}
       classes={{ root: styles.root }}
@@ -105,7 +105,7 @@ function ChatItem(props: {
       <ReactMarkdown source={message.text} renderers={{ link: LinkRenderer }} />
       {message.feedbackId ? (
         <div
-          id="feedback-btn"
+          data-cy="feedback-btn"
           className={styles.icon}
           onClick={handleFeedbackClick}
         >
@@ -121,11 +121,11 @@ function ChatItem(props: {
               ].join(" ")}
             >
               {message.feedback === Feedback.GOOD ? (
-                <ThumbUpIcon id="good" />
+                <ThumbUpIcon data-cy="good" />
               ) : message.feedback === Feedback.BAD ? (
-                <ThumbDownIcon id="bad" />
+                <ThumbDownIcon data-cy="bad" />
               ) : (
-                <ThumbsUpDownIcon id="neutral" />
+                <ThumbsUpDownIcon data-cy="neutral" />
               )}
             </Avatar>
           </ListItemAvatar>
@@ -155,7 +155,7 @@ function ChatItem(props: {
           <Typography>Did this answer your question?</Typography>
           <div style={{ display: "flex", flexDirection: "row" }}>
             <div
-              id="click-good"
+              data-cy="click-good"
               onClick={() => {
                 if (message.feedbackId) {
                   handleSelectFeedback(message.feedbackId, Feedback.GOOD);
@@ -169,7 +169,7 @@ function ChatItem(props: {
               </ListItemAvatar>
             </div>
             <div
-              id="click-neutral"
+              data-cy="click-neutral"
               onClick={() => {
                 if (message.feedbackId) {
                   handleSelectFeedback(message.feedbackId, Feedback.NEUTRAL);
@@ -183,7 +183,7 @@ function ChatItem(props: {
               </ListItemAvatar>
             </div>
             <div
-              id="click-bad"
+              data-cy="click-bad"
               onClick={() => {
                 if (message.feedbackId) {
                   handleSelectFeedback(message.feedbackId, Feedback.BAD);
@@ -287,7 +287,7 @@ function Chat(props: { height: number }): JSX.Element {
 
   return (
     <List
-      id="chat-thread"
+      data-cy="chat-thread"
       className={styles.list}
       style={{ height: props.height }}
       disablePadding={true}
