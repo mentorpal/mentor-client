@@ -96,8 +96,8 @@ export async function fetchMentor(
 ): Promise<AxiosResponse<GraphQLResponse<MentorQueryData>>> {
   return await axios.post<GraphQLResponse<MentorQueryData>>(config.urlGraphql, {
     query: `
-      query {
-        mentor(id: "${mentorId}") {
+      query Mentor($id: ID!, $status: String!){
+        mentor(id: $id) {
           _id
           name
           firstName
@@ -135,7 +135,7 @@ export async function fetchMentor(
               type
             }
           }
-          utterances(status: "${Status.COMPLETE}") {
+          utterances(status: $status) {
             _id
             transcript
             question {
@@ -145,6 +145,10 @@ export async function fetchMentor(
         }
       }
     `,
+    variables: {
+      id: mentorId,
+      status: Status.COMPLETE,
+    },
   });
 }
 
@@ -161,12 +165,16 @@ export async function giveFeedback(
 ): Promise<AxiosResponse<GraphQLResponse<GiveFeedbackResult>>> {
   return await axios.post(config.urlGraphql, {
     query: `
-      mutation {
-        userQuestionSetFeedback(id: "${feedbackId}", feedback: "${feedback}") {
+      mutation UserQuestionSetFeedback ($id: ID!, $feedback: String!){
+        userQuestionSetFeedback(id: $id, feedback: $feedback) {
           _id
         }
       }
     `,
+    variables: {
+      id: feedbackId,
+      feedback: feedback,
+    },
   });
 }
 
