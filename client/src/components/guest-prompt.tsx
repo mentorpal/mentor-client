@@ -91,13 +91,13 @@ export default function GuestPrompt(): JSX.Element {
         }}
       >
         <Paper className={classes.paper}>
-          <h2 data-cy="guest-prompt-header">Enter a guest name:</h2>
+          <h2 data-cy="guest-prompt-header">Enter Your Name:</h2>
           <InputBase
             data-cy="guest-prompt-input"
             multiline={true}
             className={classes.inputField}
             value={name}
-            placeholder={"guest"}
+            placeholder={"Name"}
             onChange={(e) => {
               onInput(e.target.value);
             }}
