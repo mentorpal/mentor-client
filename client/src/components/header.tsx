@@ -43,15 +43,22 @@ function Header(): JSX.Element {
   const styleHeaderLogo = useSelector<State, string>(
     (state) => state.config.styleHeaderLogo?.trim() || ""
   );
-  // console.log("Header Logo: " + styleHeaderLogo);
   const styleHeaderColor = useSelector<State, string>(
     (state) => state.config.styleHeaderColor?.trim() || "#FFFFFF"
   );
-  // console.log("Header Color: " + styleHeaderColor);
   const styleHeaderTextColor = useSelector<State, string>(
     (state) => state.config.styleHeaderTextColor?.trim() || "#000000"
   );
-  // console.log("Header Text Color: " + styleHeaderTextColor);
+
+  const disclaimerTitle = useSelector<State, string>(
+    (state) => state.config.disclaimerTitle?.trim() || "Please Configure Title"
+  );
+  const disclaimerText = useSelector<State, string>(
+    (state) => state.config.disclaimerText?.trim() || "Please Configure Text"
+  );
+  const disclaimerDisabled = useSelector<State, boolean>(
+    (state) => state.config.disclaimerDisabled
+  );
 
   if (!mentor) {
     return <></>;
@@ -82,66 +89,74 @@ function Header(): JSX.Element {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          height: 50,
+          height: 55,
           backgroundColor: `${styleHeaderColor}`,
           color: `${styleHeaderTextColor}`,
         }}
       >
         <img
           src={styleHeaderLogo}
-          style={{ position: "absolute", left: "5px", height: 50 }}
+          style={{
+            position: "absolute",
+            left: "10px",
+            height: 40,
+            paddingTop: 10,
+            paddingBottom: 10,
+          }}
         />
         <Hidden only="xs">
           <Typography>
             {mentor.name}: {mentor.title}
           </Typography>
         </Hidden>
-        <IconButton
-          aria-label="information"
-          component="span"
-          style={{
-            position: "absolute",
-            right: "20px",
-            color: `${styleHeaderTextColor}`,
-          }}
-          onClick={handleClickOpen}
-        >
-          <InfoIcon />
-        </IconButton>
-        <Dialog
-          disableBackdropClick
-          disableEscapeKeyDown
-          open={open}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            {"USC Privacy Policy"}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-              felis ex, tempor eget velit id, fringilla interdum nisl. Aliquam
-              erat volutpat. Duis eu suscipit dolor, quis varius ex. Proin
-              tincidunt mollis dictum. Sed porta elit sapien, id ultrices tortor
-              venenatis porttitor. Nam ut egestas magna. Nunc at neque a enim
-              aliquet efficitur vitae in odio. Mauris sollicitudin pulvinar
-              vestibulum. Nunc gravida tellus in diam maximus rutrum. Vivamus mi
-              tellus, convallis at commodo nec, consequat non velit. Nulla id
-              diam nibh. Mauris lectus enim, consectetur nec aliquam vitae,
-              auctor non odio. Curabitur eleifend sagittis neque, id ornare odio
-              mollis eget. Cras dictum enim nec eleifend fringilla. Ut in
-              bibendum quam. Suspendisse ultricies, orci id blandit faucibus,
-              neque ligula sodales mi, vitae tristique arcu erat volutpat
-              libero.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleAgree} color="primary">
-              I Agree
-            </Button>
-          </DialogActions>
-        </Dialog>
+        {/* Show disclaimer */}
+        {disclaimerDisabled ? (
+          <></>
+        ) : (
+          <>
+            <IconButton
+              aria-label="information"
+              component="span"
+              style={{
+                position: "absolute",
+                right: "20px",
+                color: `${styleHeaderTextColor}`,
+              }}
+              onClick={handleClickOpen}
+              data-cy="info-button"
+            >
+              <InfoIcon />
+            </IconButton>
+            <Dialog
+              disableBackdropClick
+              disableEscapeKeyDown
+              open={open}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title" data-cy="alert-dialog-title">
+                {disclaimerTitle}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText
+                  id="alert-dialog-description"
+                  data-cy="alert-dialog-description"
+                >
+                  {disclaimerText}
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={handleAgree}
+                  color="primary"
+                  data-cy="agree-button"
+                >
+                  I Agree
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </>
+        )}
       </div>
     );
   }
@@ -154,7 +169,7 @@ function Header(): JSX.Element {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        height: 50,
+        height: 55,
         backgroundColor: `${styleHeaderColor}`,
         color: `${styleHeaderTextColor}`,
       }}
@@ -162,6 +177,54 @@ function Header(): JSX.Element {
       <Typography>
         {mentor.name}: {mentor.title}
       </Typography>
+      {/* Show disclaimer */}
+      {disclaimerDisabled ? (
+        <></>
+      ) : (
+        <>
+          <IconButton
+            aria-label="information"
+            component="span"
+            style={{
+              position: "absolute",
+              right: "20px",
+              color: `${styleHeaderTextColor}`,
+            }}
+            onClick={handleClickOpen}
+            data-cy="info-button"
+          >
+            <InfoIcon />
+          </IconButton>
+          <Dialog
+            disableBackdropClick
+            disableEscapeKeyDown
+            open={open}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title" data-cy="alert-dialog-title">
+              {disclaimerTitle}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText
+                id="alert-dialog-description"
+                data-cy="alert-dialog-description"
+              >
+                {disclaimerText}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={handleAgree}
+                color="primary"
+                data-cy="agree-button"
+              >
+                I Agree
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>
+      )}
     </div>
   );
 }

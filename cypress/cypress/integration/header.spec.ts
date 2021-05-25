@@ -44,31 +44,55 @@ describe("Header", () => {
     cy.get("[data-cy=header]").contains("Clinton Anderson: Nuclear Electrician's Mate");
   });
 
-  it("shows legal disclaimer", () => {
+  it("does not show legal disclaimer by default", () => {
     mockDefaultSetup(cy, {
       config: {
         cmi5Enabled: false,
-        mentorsDefault: ["clint"]
+        mentorsDefault: ["clint"],
       }
     });
     cy.visit("/");
-    cy.get("#alert-dialog-title")
-      .contains("USC Privacy Policy");
-      cy.get("#alert-dialog-description")
-      .contains(`Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-      felis ex, tempor eget velit id, fringilla interdum nisl. Aliquam
-      erat volutpat. Duis eu suscipit dolor, quis varius ex. Proin
-      tincidunt mollis dictum. Sed porta elit sapien, id ultrices tortor
-      venenatis porttitor. Nam ut egestas magna. Nunc at neque a enim
-      aliquet efficitur vitae in odio. Mauris sollicitudin pulvinar
-      vestibulum. Nunc gravida tellus in diam maximus rutrum. Vivamus mi
-      tellus, convallis at commodo nec, consequat non velit. Nulla id
-      diam nibh. Mauris lectus enim, consectetur nec aliquam vitae,
-      auctor non odio. Curabitur eleifend sagittis neque, id ornare odio
-      mollis eget. Cras dictum enim nec eleifend fringilla. Ut in
-      bibendum quam. Suspendisse ultricies, orci id blandit faucibus,
-      neque ligula sodales mi, vitae tristique arcu erat volutpat
-      libero.`);
+    cy.get("[data-cy=alert-dialog-title]").should("not.exist")
+    cy.get("[data-cy=alert-dialog-description]").should("not.exist")
+    cy.get("[data-cy=info-button]").should("not.exist")
+  });
+
+  it("shows legal disclaimer if disclaimerDisabled is false", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        cmi5Enabled: false,
+        mentorsDefault: ["clint"],
+        disclaimerTitle: "Privacy Policy",
+        disclaimerText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Imperdiet sed euismod nisi porta lorem mollis aliquam. Eget dolor morbi non arcu risus quis varius quam. Purus sit amet volutpat consequat mauris. Porttitor eget dolor morbi non arcu risus quis varius quam. Integer quis auctor elit sed vulputate mi. Dictumst vestibulum rhoncus est pellentesque. Sed adipiscing diam donec adipiscing tristique risus nec feugiat in. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Enim blandit volutpat maecenas volutpat blandit aliquam etiam erat. Consectetur libero id faucibus nisl tincidunt. Dis parturient montes nascetur ridiculus mus mauris. Pharetra et ultrices neque ornare aenean euismod. Aliquam etiam erat velit scelerisque in dictum. Odio morbi quis commodo odio aenean sed adipiscing diam. Nunc sed velit dignissim sodales ut eu sem integer. Scelerisque eu ultrices vitae auctor eu. Sagittis id consectetur purus ut faucibus pulvinar elementum integer enim.",
+        disclaimerDisabled: false
+      }
+    });
+    cy.visit("/");
+    cy.get("[data-cy=alert-dialog-title]")
+      .contains("Privacy Policy");
+    cy.get("[data-cy=alert-dialog-description]")
+      .contains("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Imperdiet sed euismod nisi porta lorem mollis aliquam. Eget dolor morbi non arcu risus quis varius quam. Purus sit amet volutpat consequat mauris. Porttitor eget dolor morbi non arcu risus quis varius quam. Integer quis auctor elit sed vulputate mi. Dictumst vestibulum rhoncus est pellentesque. Sed adipiscing diam donec adipiscing tristique risus nec feugiat in. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Enim blandit volutpat maecenas volutpat blandit aliquam etiam erat. Consectetur libero id faucibus nisl tincidunt. Dis parturient montes nascetur ridiculus mus mauris. Pharetra et ultrices neque ornare aenean euismod. Aliquam etiam erat velit scelerisque in dictum. Odio morbi quis commodo odio aenean sed adipiscing diam. Nunc sed velit dignissim sodales ut eu sem integer. Scelerisque eu ultrices vitae auctor eu. Sagittis id consectetur purus ut faucibus pulvinar elementum integer enim.");
+  });
+
+  it("dismisses legal disclaimer on agree and shows on icon press", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        cmi5Enabled: false,
+        mentorsDefault: ["clint"],
+        disclaimerTitle: "Privacy Policy",
+        disclaimerText: "Lorem ipsum dolor sit amet.",
+        disclaimerDisabled: false
+      }
+    });
+    cy.visit("/");
+    cy.get("[data-cy=alert-dialog-title]").should("exist")
+    cy.get("[data-cy=alert-dialog-description]").should("exist")
+    cy.get("[data-cy=agree-button]").click()
+    cy.get("[data-cy=alert-dialog-title]").should("not.exist")
+    cy.get("[data-cy=alert-dialog-description]").should("not.exist")
+    cy.get("[data-cy=info-button]").click()
+    cy.get("[data-cy=alert-dialog-title]").should("exist")
+    cy.get("[data-cy=alert-dialog-description]").should("exist")
   });
 
   it("shows alternate header with logo and if config.styleHeaderLogo is set", () => {
@@ -103,13 +127,13 @@ describe("Header", () => {
       }
     });
     cy.visit("/");
-    cy.get("#header")
+    cy.get("[data-cy=header]")
       .should("have.css", "background-color", "rgb(153, 0, 0)");//RGB of #990000
-    cy.get("#header p")
+    cy.get("[data-cy=header] p")
       .should("have.css", "color", "rgb(255, 255, 255)");//RGB of #FFFFFF
   });
 
-  it("shows full branding if config.styleHeaderColor, config.styleHeaderTextColor, and config.styleHeaderLogo are set", () => {
+  it("shows full branding on mobile if config.styleHeaderColor, config.styleHeaderTextColor, and config.styleHeaderLogo are set", () => {
     mockDefaultSetup(cy, {
       config: {
         cmi5Enabled: false,
@@ -125,15 +149,42 @@ describe("Header", () => {
       { fixture: "uscheader2.png" }
     );
     cy.visit("/");
-    cy.get("#header img")
+    cy.get("[data-cy=header] img")
       .should("have.attr", "src")
       .and(
         "eq",
         "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png"
       );
-    cy.get("#header")
+    cy.get("[data-cy=header]")
       .should("have.css", "background-color", "rgb(153, 0, 0)");//RGB of #990000
-    cy.get("#header p")
+  });
+
+  it("shows full branding on desktop if config.styleHeaderColor, config.styleHeaderTextColor, and config.styleHeaderLogo are set", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        cmi5Enabled: false,
+        mentorsDefault: ["clint"],
+        styleHeaderColor: "#990000",
+        styleHeaderTextColor: "#FFFFFF",
+        styleHeaderLogo:
+          "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
+      }
+    });
+    cy.viewport(750, 550)
+    cy.intercept(
+      "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
+      { fixture: "uscheader2.png" }
+    );
+    cy.visit("/");
+    cy.get("[data-cy=header] img")
+      .should("have.attr", "src")
+      .and(
+        "eq",
+        "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png"
+      );
+    cy.get("[data-cy=header]")
+      .should("have.css", "background-color", "rgb(153, 0, 0)");//RGB of #990000
+    cy.get("[data-cy=header] p")
       .should("have.css", "color", "rgb(255, 255, 255)");//RGB of #FFFFFF
   });
 });

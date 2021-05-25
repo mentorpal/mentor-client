@@ -78,6 +78,9 @@ export interface Config {
   styleHeaderLogo: string;
   styleHeaderColor: string;
   styleHeaderTextColor: string;
+  disclaimerTitle: string;
+  disclaimerText: string;
+  disclaimerDisabled: boolean;
 }
 
 export enum QuestionType {

@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
     transform: "translate(-50%, -50%)",
   },
   loadingIndicator: {
-    color: "#990000",
+    color: theme.palette.primary.main,
   },
   loadingImage: {
     width: 100,
@@ -124,12 +124,7 @@ function IndexPage(props: {
   const styleHeaderColor = useSelector<State, string>(
     (state) => state.config.styleHeaderColor?.trim() || "#FFFFFF"
   );
-  // console.log("Header Color: " + styleHeaderColor);
-  const styleHeaderTextColor = useSelector<State, string>(
-    (state) => state.config.styleHeaderTextColor?.trim() || "#000000"
-  );
-  // console.log("Header Text Color: " + styleHeaderTextColor);
-  // theme.palette.primary.main = config.styleHeaderColor || "#FFFFFF";
+
   const brandedTheme = createMuiTheme({
     palette: {
       primary: {
@@ -215,36 +210,24 @@ function IndexPage(props: {
     }
   }, [guest]);
 
-  //Waiting for branding files
-  /* if(!isBrandingLoaded()) {
-    return (
-      <div className={styles.loadingWindow}>
-        <div className={styles.loadingContent}>
-          <CircularProgress id="loading" className={styles.loadingIndicator} color="primary" size={150} />
-        </div>
-      </div>
-    );
-  } */
-
   //Waiting for config
   if (!isConfigLoadComplete(configLoadStatus) || !curMentor) {
-    console.log(`Color: ${config.styleHeaderColor}`);
     return (
       <div className={styles.loadingWindow}>
         <div className={styles.loadingContent}>
           <CircularProgress
-            id="loading"
+            data-cy="loading"
             className={styles.loadingIndicator}
             style={{ color: config.styleHeaderColor }}
             size={150}
           />
           <div className={styles.loadingIndicatorContent}>
-            <img
+            {/* Loading Image Placeholder */}
+            {/* <img
               className={styles.loadingImage}
-              src="http://scf.usc.edu/~jtyner/itp104/img/usc-shield.png"
-            ></img>
+              src=""
+            ></img> */}
           </div>
-          {/* <Typography>Loading...</Typography> */}
         </div>
       </div>
     );
