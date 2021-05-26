@@ -76,6 +76,11 @@ export interface Config {
   urlGraphql: string;
   urlVideo: string;
   styleHeaderLogo: string;
+  styleHeaderColor: string;
+  styleHeaderTextColor: string;
+  disclaimerTitle: string;
+  disclaimerText: string;
+  disclaimerDisabled: boolean;
 }
 
 export enum QuestionType {

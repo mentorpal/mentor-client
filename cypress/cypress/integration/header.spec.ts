@@ -44,7 +44,58 @@ describe("Header", () => {
     cy.get("[data-cy=header]").contains("Clinton Anderson: Nuclear Electrician's Mate");
   });
 
-  it("shows alternate header with logo if config.styleHeaderLogo is set", () => {
+  it("does not show legal disclaimer by default", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        cmi5Enabled: false,
+        mentorsDefault: ["clint"],
+      }
+    });
+    cy.visit("/");
+    cy.get("[data-cy=alert-dialog-title]").should("not.exist")
+    cy.get("[data-cy=alert-dialog-description]").should("not.exist")
+    cy.get("[data-cy=info-button]").should("not.exist")
+  });
+
+  it("shows legal disclaimer if disclaimerDisabled is false", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        cmi5Enabled: false,
+        mentorsDefault: ["clint"],
+        disclaimerTitle: "Privacy Policy",
+        disclaimerText: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Imperdiet sed euismod nisi porta lorem mollis aliquam. Eget dolor morbi non arcu risus quis varius quam. Purus sit amet volutpat consequat mauris. Porttitor eget dolor morbi non arcu risus quis varius quam. Integer quis auctor elit sed vulputate mi. Dictumst vestibulum rhoncus est pellentesque. Sed adipiscing diam donec adipiscing tristique risus nec feugiat in. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Enim blandit volutpat maecenas volutpat blandit aliquam etiam erat. Consectetur libero id faucibus nisl tincidunt. Dis parturient montes nascetur ridiculus mus mauris. Pharetra et ultrices neque ornare aenean euismod. Aliquam etiam erat velit scelerisque in dictum. Odio morbi quis commodo odio aenean sed adipiscing diam. Nunc sed velit dignissim sodales ut eu sem integer. Scelerisque eu ultrices vitae auctor eu. Sagittis id consectetur purus ut faucibus pulvinar elementum integer enim.",
+        disclaimerDisabled: false
+      }
+    });
+    cy.visit("/");
+    cy.get("[data-cy=alert-dialog-title]")
+      .contains("Privacy Policy");
+    cy.get("[data-cy=alert-dialog-description]")
+      .contains("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Imperdiet sed euismod nisi porta lorem mollis aliquam. Eget dolor morbi non arcu risus quis varius quam. Purus sit amet volutpat consequat mauris. Porttitor eget dolor morbi non arcu risus quis varius quam. Integer quis auctor elit sed vulputate mi. Dictumst vestibulum rhoncus est pellentesque. Sed adipiscing diam donec adipiscing tristique risus nec feugiat in. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Enim blandit volutpat maecenas volutpat blandit aliquam etiam erat. Consectetur libero id faucibus nisl tincidunt. Dis parturient montes nascetur ridiculus mus mauris. Pharetra et ultrices neque ornare aenean euismod. Aliquam etiam erat velit scelerisque in dictum. Odio morbi quis commodo odio aenean sed adipiscing diam. Nunc sed velit dignissim sodales ut eu sem integer. Scelerisque eu ultrices vitae auctor eu. Sagittis id consectetur purus ut faucibus pulvinar elementum integer enim.");
+  });
+
+  it("dismisses legal disclaimer on agree and shows on icon press", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        cmi5Enabled: false,
+        mentorsDefault: ["clint"],
+        disclaimerTitle: "Privacy Policy",
+        disclaimerText: "Lorem ipsum dolor sit amet.",
+        disclaimerDisabled: false
+      }
+    });
+    cy.visit("/");
+    cy.get("[data-cy=alert-dialog-title]").should("exist")
+    cy.get("[data-cy=alert-dialog-description]").should("exist")
+    cy.get("[data-cy=agree-button]").click()
+    cy.get("[data-cy=alert-dialog-title]").should("not.exist")
+    cy.get("[data-cy=alert-dialog-description]").should("not.exist")
+    cy.get("[data-cy=info-button]").click()
+    cy.get("[data-cy=alert-dialog-title]").should("exist")
+    cy.get("[data-cy=alert-dialog-description]").should("exist")
+  });
+
+  it("shows alternate header with logo and if config.styleHeaderLogo is set", () => {
     mockDefaultSetup(cy, {
       config: {
         cmi5Enabled: false,
@@ -64,5 +115,76 @@ describe("Header", () => {
         "eq",
         "https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png"
       );
+  });
+
+  it("shows alternate color header and text if config.styleHeaderColor and config.styleHeaderTextColor are set", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        cmi5Enabled: false,
+        mentorsDefault: ["clint"],
+        styleHeaderColor: "#990000",
+        styleHeaderTextColor: "#FFFFFF",
+      }
+    });
+    cy.visit("/");
+    cy.get("[data-cy=header]")
+      .should("have.css", "background-color", "rgb(153, 0, 0)");//RGB of #990000
+    cy.get("[data-cy=header] p")
+      .should("have.css", "color", "rgb(255, 255, 255)");//RGB of #FFFFFF
+  });
+
+  it("shows full branding on mobile if config.styleHeaderColor, config.styleHeaderTextColor, and config.styleHeaderLogo are set", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        cmi5Enabled: false,
+        mentorsDefault: ["clint"],
+        styleHeaderColor: "#990000",
+        styleHeaderTextColor: "#FFFFFF",
+        styleHeaderLogo:
+          "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
+      }
+    });
+    cy.intercept(
+      "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
+      { fixture: "uscheader2.png" }
+    );
+    cy.visit("/");
+    cy.get("[data-cy=header] img")
+      .should("have.attr", "src")
+      .and(
+        "eq",
+        "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png"
+      );
+    cy.get("[data-cy=header]")
+      .should("have.css", "background-color", "rgb(153, 0, 0)");//RGB of #990000
+  });
+
+  it("shows full branding on desktop if config.styleHeaderColor, config.styleHeaderTextColor, and config.styleHeaderLogo are set", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        cmi5Enabled: false,
+        mentorsDefault: ["clint"],
+        styleHeaderColor: "#990000",
+        styleHeaderTextColor: "#FFFFFF",
+        styleHeaderLogo:
+          "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
+      }
+    });
+    cy.viewport(750, 550)
+    cy.intercept(
+      "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
+      { fixture: "uscheader2.png" }
+    );
+    cy.visit("/");
+    cy.get("[data-cy=header] img")
+      .should("have.attr", "src")
+      .and(
+        "eq",
+        "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png"
+      );
+    cy.get("[data-cy=header]")
+      .should("have.css", "background-color", "rgb(153, 0, 0)");//RGB of #990000
+    cy.get("[data-cy=header] p")
+      .should("have.css", "color", "rgb(255, 255, 255)");//RGB of #FFFFFF
   });
 });

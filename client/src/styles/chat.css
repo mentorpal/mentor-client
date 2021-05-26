@@ -21,15 +21,20 @@ ul li {
     text-align: left;
 }
 
+ul li p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 .system {
-    background: #e6e6e6;
+    background: #e8e9ea;
     float: left;
     border-bottom-left-radius: 5px;
 }
 
 .user {
     float: right;
-    background: #0084ff;
+    background: #88929e;
     color: #fff;
     border-bottom-right-radius: 5px;
 }
@@ -53,3 +58,18 @@ ul li {
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
 }
+
+#feedback-popup .MuiPaper-rounded {
+    border-radius: 30px;
+}
+
+/* Round Last Bubble */
+
+
+/* .user:last-of-type {
+    border-bottom-right-radius: 30px;
+  }
+
+  .system:last-of-type {
+    border-bottom-left-radius: 30px;
+  } */

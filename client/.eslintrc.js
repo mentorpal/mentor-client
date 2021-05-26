@@ -32,4 +32,11 @@ module.exports = {
       version: "detect", // Tells eslint-plugin-react to automatically detect the version of React to use
     },
   },
+  overrides: [
+    // Override some TypeScript rules just for .js files
+    {
+      files: ["*.js"],
+      rules: {},
+    },
+  ],
 };

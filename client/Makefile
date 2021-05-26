@@ -13,7 +13,7 @@ clean:
 	rm -rf node_modules .cache public
 
 .PHONY: develop
-develop: .env.development node_modules/gatsby-cli
+develop: .env.development node_modules/gatsby
 	npx gatsby develop
 
 .PHONY: format

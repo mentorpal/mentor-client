@@ -17,7 +17,7 @@ describe("Guest Prompt", () => {
     mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
     cy.visit("/");
     cy.get("[data-cy=guest-prompt]").should("exist");
-    cy.get("[data-cy=guest-prompt-header]").contains("Enter a guest name:");
+    cy.get("[data-cy=guest-prompt-header]").contains("Enter Your Name:");
     cy.get("[data-cy=guest-prompt-input]").should("exist");
   });
 

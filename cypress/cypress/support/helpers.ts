@@ -124,6 +124,11 @@ export interface Config {
   urlGraphql: string;
   urlVideo: string;
   styleHeaderLogo: string;
+  styleHeaderColor: string;
+  styleHeaderTextColor: string;
+  disclaimerTitle: string;
+  disclaimerText: string;
+  disclaimerDisabled: boolean;
 }
 
 export function addGuestParams(query = {}, guestName = "guest") {
@@ -193,6 +198,11 @@ export const CONFIG_DEFAULT: Config = {
   urlGraphql: "/graphql",
   urlVideo: "/video",
   styleHeaderLogo: "",
+  styleHeaderColor: "",
+  styleHeaderTextColor: "",
+  disclaimerTitle: "",
+  disclaimerText: "",
+  disclaimerDisabled: true,
 };
 
 const clint = require("../fixtures/clint.json");

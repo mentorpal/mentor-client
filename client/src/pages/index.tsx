@@ -21,7 +21,9 @@ import { Config, LoadStatus, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
 
-const useStyles = makeStyles(() => ({
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
   flexRoot: {
     display: "flex",
     flexFlow: "column nowrap",
@@ -29,11 +31,47 @@ const useStyles = makeStyles(() => ({
     alignItems: "stretch",
     margin: 0,
   },
-  flexFixedChild: {
+  flexFixedChildHeader: {
     flexGrow: 0,
+  },
+  flexFixedChild: {
+    marginTop: 10,
+    flexGrow: 0,
+    width: "calc(100% - 10px)",
+    maxWidth: 1366,
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   flexExpandChild: {
     flexGrow: 1,
+    width: "100%",
+    maxWidth: 1366,
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+  loadingWindow: {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    textAlign: "center",
+    height: 200,
+  },
+  loadingContent: {
+    position: "relative",
+  },
+  loadingIndicatorContent: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  },
+  loadingIndicator: {
+    color: theme.palette.primary.main,
+  },
+  loadingImage: {
+    width: 100,
+    display: "block",
   },
 }));
 
@@ -81,6 +119,19 @@ function IndexPage(props: {
   function isConfigLoadComplete(s: LoadStatus): boolean {
     return s === LoadStatus.LOADED || s === LoadStatus.LOAD_FAILED;
   }
+
+  //Load Theme
+  const styleHeaderColor = useSelector<State, string>(
+    (state) => state.config.styleHeaderColor?.trim() || "#FFFFFF"
+  );
+
+  const brandedTheme = createMuiTheme({
+    palette: {
+      primary: {
+        main: styleHeaderColor,
+      },
+    },
+  });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -159,32 +210,43 @@ function IndexPage(props: {
     }
   }, [guest]);
 
+  //Waiting for config
   if (!isConfigLoadComplete(configLoadStatus) || !curMentor) {
     return (
-      <div>
-        <CircularProgress data-cy="loading" />
+      <div className={styles.loadingWindow}>
+        <div className={styles.loadingContent}>
+          <CircularProgress
+            data-cy="loading"
+            className={styles.loadingIndicator}
+            style={{ color: config.styleHeaderColor }}
+            size={150}
+          />
+          <div className={styles.loadingIndicatorContent}></div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.flexRoot} style={{ height: windowHeight }}>
-      <div className={styles.flexFixedChild}>
-        <VideoPanel />
-        <Header />
+    <MuiThemeProvider theme={brandedTheme}>
+      <div className={styles.flexRoot} style={{ height: windowHeight }}>
+        <div className={styles.flexFixedChildHeader}>
+          <VideoPanel />
+          <Header />
+        </div>
+        <div className={styles.flexExpandChild}>
+          {mentorType === MentorType.CHAT ? (
+            <Chat height={chatHeight} />
+          ) : (
+            <Video playing={hasSessionUser()} />
+          )}
+        </div>
+        <div className={styles.flexFixedChild}>
+          <Input />
+        </div>
+        {!hasSessionUser() ? <GuestPrompt /> : undefined}
       </div>
-      <div className={styles.flexExpandChild}>
-        {mentorType === MentorType.CHAT ? (
-          <Chat height={chatHeight} />
-        ) : (
-          <Video playing={hasSessionUser()} />
-        )}
-      </div>
-      <div className={styles.flexFixedChild}>
-        <Input />
-      </div>
-      {!hasSessionUser() ? <GuestPrompt /> : undefined}
-    </div>
+    </MuiThemeProvider>
   );
 }
 

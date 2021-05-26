@@ -20,6 +20,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
+import CloseIcon from "@material-ui/icons/Close";
 
 import { giveFeedback, getUtterance } from "api";
 import {
@@ -44,9 +45,10 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     width: theme.spacing(4),
     height: theme.spacing(4),
+    backgroundColor: "#88929e",
   },
   GOOD: {
-    backgroundColor: "#0084ff",
+    backgroundColor: "#00bf00",
   },
   BAD: {
     backgroundColor: "#E63535",
@@ -54,6 +56,10 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     position: "absolute",
     right: -40,
+  },
+  feedbackPopup: {
+    borderRadius: "30px",
+    // backgroundColor: "black",
   },
 }));
 
@@ -132,6 +138,7 @@ function ChatItem(props: {
         </div>
       ) : undefined}
       <Popover
+        id="feedback-popup"
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleFeedbackClose}
@@ -144,12 +151,18 @@ function ChatItem(props: {
           horizontal: "center",
         }}
         elevation={0}
+        className={styles.feedbackPopup}
       >
         <div
+          id="feedback-popup-child"
           style={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            backgroundColor: "#88929e",
+            borderRadius: "30px",
+            padding: 10,
+            color: "#FFFFFF",
           }}
         >
           <Typography>Did this answer your question?</Typography>
@@ -178,7 +191,7 @@ function ChatItem(props: {
             >
               <ListItemAvatar>
                 <Avatar className={styles.avatar}>
-                  <ThumbsUpDownIcon />
+                  <CloseIcon />
                 </Avatar>
               </ListItemAvatar>
             </div>
