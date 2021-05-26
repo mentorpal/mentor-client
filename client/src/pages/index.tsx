@@ -221,13 +221,7 @@ function IndexPage(props: {
             style={{ color: config.styleHeaderColor }}
             size={150}
           />
-          <div className={styles.loadingIndicatorContent}>
-            {/* Loading Image Placeholder */}
-            {/* <img
-              className={styles.loadingImage}
-              src=""
-            ></img> */}
-          </div>
+          <div className={styles.loadingIndicatorContent}></div>
         </div>
       </div>
     );

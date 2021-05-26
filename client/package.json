@@ -44,7 +44,6 @@
     "eslint-plugin-react": "^7.23.2",
     "gatsby-plugin-env-variables": "^2.1.0",
     "gatsby-plugin-eslint": "^3.0.0",
-    "gatsby-plugin-manifest": "^3.3.0",
     "gatsby-plugin-material-ui": "^3.0.1",
     "gatsby-plugin-sitemap": "^3.3.0",
     "gatsby-plugin-typescript": "^3.3.0",

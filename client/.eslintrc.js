@@ -25,11 +25,7 @@ module.exports = {
     sourceType: "module", // Allows for the use of imports
   },
   rules: {
-    "no-prototype-builtins": "off",
     "react/display-name": "off",
-    "react/prop-types": "off", // Disable prop-types as we use TypeScript for type checking
-    "@typescript-eslint/ban-ts-ignore": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
   },
   settings: {
     react: {
