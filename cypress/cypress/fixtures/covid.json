@@ -138,21 +138,57 @@
       "transcript": "",
       "question": {
         "name": "_IDLE_"
-      }
+      },
+      "media": [
+        {
+          "type": "video",
+          "tag": "web",
+          "url": "http://videos.org/answer_id.mp4"
+        },
+        {
+          "type": "video",
+          "tag": "mobile",
+          "url": "http://videos.org/answer_id.mp4"
+        }
+      ]
     },
     {
       "_id": "intro",
       "transcript": "I am a COVID-19 chat bot, you can ask me about COVID-19.",
       "question": {
         "name": "_INTRO_"
-      }
+      },
+      "media": [
+        {
+          "type": "video",
+          "tag": "web",
+          "url": "http://videos.org/answer_id.mp4"
+        },
+        {
+          "type": "video",
+          "tag": "mobile",
+          "url": "http://videos.org/answer_id.mp4"
+        }
+      ]
     },
     {
       "_id": "offtopic",
       "transcript": "I'm sorry, I did not understand the question.",
       "question": {
         "name": "_OFF_TOPIC_"
-      }
+      },
+      "media": [
+        {
+          "type": "video",
+          "tag": "web",
+          "url": "http://videos.org/answer_id.mp4"
+        },
+        {
+          "type": "video",
+          "tag": "mobile",
+          "url": "http://videos.org/answer_id.mp4"
+        }
+      ]
     }
   ]
 }

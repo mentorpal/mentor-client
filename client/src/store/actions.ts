@@ -8,7 +8,13 @@ The full terms of this copyright and license should always be found in the root 
 import { ActionCreator, AnyAction, Dispatch } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import Cmi5 from "@xapi/cmi5";
-import { fetchConfig, fetchMentor, getUtterance, queryMentor } from "api";
+import {
+  fetchConfig,
+  fetchMentor,
+  getUtterance,
+  queryMentor,
+  videoUrl,
+} from "api";
 import {
   MentorsLoadRequest,
   MentorsLoadResult,
@@ -265,11 +271,13 @@ export const loadMentors: ActionCreator<
           }
         }
         topicQuestions.push({ topic: "History", questions: [] });
+        const intro = getUtterance(mentor, UtteranceName.INTRO);
         const mentorData: MentorState = {
           mentor: mentor,
           topic_questions: topicQuestions,
           status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
-          answer_id: getUtterance(mentor, UtteranceName.INTRO)?._id,
+          answer_id: intro?._id,
+          answer_media: intro?.media || [],
           answerDuration: Number.NaN,
         };
         mentorLoadResult.mentorsById[mentorId] = {
@@ -463,9 +471,11 @@ export const sendQuestion = (q: {
       queryMentor(mentor, q.question, q.config)
         .then((r) => {
           const { data } = r;
+          console.log(data);
           const response: QuestionResponse = {
             answerId: data.answer_id,
             answerText: data.answer_text,
+            answerMedia: data.answer_media,
             answerClassifier: data.classifier,
             answerConfidence: data.confidence,
             answerIsOffTopic: data.confidence <= RESPONSE_CUTOFF,
