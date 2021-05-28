@@ -56,15 +56,23 @@ export interface Answer {
   _id: string;
   question: Question;
   transcript: string;
+  media: Media[];
+}
+
+export interface Media {
+  type: string;
+  tag: string;
+  url: string;
 }
 
 export interface QuestionApiData {
   query: string;
   answer_id: string;
   answer_text: string;
+  answer_media: Media[];
   confidence: number;
-  classifier: string;
   feedback_id: string;
+  classifier: string;
 }
 
 export interface Config {
@@ -172,6 +180,7 @@ export interface MentorState {
 
   answer_id?: string;
   answer_text?: string;
+  answer_media: Media[];
   answerReceivedAt?: Date;
   answerFeedbackId?: string;
   classifier?: string;
@@ -229,6 +238,7 @@ export interface QuestionInput {
 export interface QuestionResponse {
   answerId: string;
   answerText: string;
+  answerMedia: Media[];
   answerClassifier: string;
   answerConfidence: number;
   answerIsOffTopic: boolean;

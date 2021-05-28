@@ -39,9 +39,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
       return null;
     }
     return {
-      src: state.isIdle
-        ? idleUrl(m.mentor, state.config)
-        : videoUrl(state.curMentor, m.answer_id || "", state.config),
+      src: state.isIdle ? idleUrl(m.mentor) : videoUrl(m.answer_media || []),
       subtitles:
         subtitlesSupported && !state.isIdle
           ? subtitleUrl(state.curMentor, m.answer_id || "", state.config)

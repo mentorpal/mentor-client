@@ -147,6 +147,7 @@ function onMentorsLoadRequested(
       topic_questions: [],
       status: MentorQuestionStatus.NONE,
       answerDuration: Number.NaN,
+      answer_media: [],
     };
     return mentorsByIdAcc;
   }, {});
@@ -305,6 +306,7 @@ export default function reducer(
         ...state.mentorsById[response.mentor],
         answer_id: response.answerId,
         answer_text: response.answerText,
+        answer_media: response.answerMedia,
         answerReceivedAt: new Date(Date.now()),
         answerFeedbackId: response.answerFeedbackId,
         classifier: response.answerClassifier,
