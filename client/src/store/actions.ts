@@ -471,7 +471,6 @@ export const sendQuestion = (q: {
       queryMentor(mentor, q.question, q.config)
         .then((r) => {
           const { data } = r;
-          console.log(data);
           const response: QuestionResponse = {
             answerId: data.answer_id,
             answerText: data.answer_text,
