@@ -2,6 +2,7 @@
   "query": "how old are you",
   "answer_id": "answer_id",
   "answer_text": "Give me feedback",
+  "answer_media": [],
   "confidence": -0.5140574318328217,
   "feedback_id": "feedback_id",
   "classifier": ""

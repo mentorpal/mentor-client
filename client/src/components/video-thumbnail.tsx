@@ -14,7 +14,7 @@ function VideoThumbnail(props: { mentor: string }): JSX.Element {
   const [isPlaying, setPlaying] = useState(true);
   const idle = useSelector<State, string>((s) => {
     const m = s.mentorsById[props.mentor];
-    return m ? idleUrl(m.mentor, s.config) : "";
+    return m ? idleUrl(m.mentor) : "";
   });
   const isDisabled = useSelector<State, boolean>((s) => {
     const m = s.mentorsById[props.mentor];

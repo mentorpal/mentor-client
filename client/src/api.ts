@@ -8,6 +8,7 @@ import axios, { AxiosResponse } from "axios";
 import {
   Answer,
   Config,
+  Media,
   Mentor,
   QuestionApiData,
   Status,
@@ -15,7 +16,6 @@ import {
 } from "types";
 
 export async function fetchConfig(graphqlUrl = "/graphql"): Promise<Config> {
-  // return await axios.get<Config>(process.env.CONFIG || withPrefix("config"));
   const gqlRes = await axios.post<GraphQLResponse<{ config: Config }>>(
     graphqlUrl,
     {
@@ -66,17 +66,18 @@ export function getUtterance(
   return mentor.utterances.find((a) => a.question.name === utterance);
 }
 
-export function videoUrl(
-  mentorId: string,
-  answerId: string,
-  config: Config
-): string {
-  return `${config.urlVideo}/mentors/${mentorId}/${answerId}.mp4`;
+export function videoUrl(media: Media[], tag?: string): string {
+  if (!media) {
+    return "";
+  }
+  return (
+    media.find((m) => m.type === "video" && m.tag === (tag || "web"))?.url || ""
+  );
 }
 
-export function idleUrl(mentor: Mentor, config: Config): string {
+export function idleUrl(mentor: Mentor, tag?: string): string {
   const idle = getUtterance(mentor, UtteranceName.IDLE);
-  return idle ? videoUrl(mentor._id, idle._id, config) : "";
+  return idle ? videoUrl(idle.media, tag) : "";
 }
 
 export function subtitleUrl(
@@ -146,6 +147,11 @@ export async function fetchMentor(
             transcript
             question {
               name
+            }
+            media {
+              type
+              tag
+              url
             }
           }
         }

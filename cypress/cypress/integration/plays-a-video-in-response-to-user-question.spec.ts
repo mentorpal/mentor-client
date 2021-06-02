@@ -20,8 +20,8 @@ describe("Plays a video in response to a user question", () => {
     cy.get("[data-cy=video-container] video")
       .should("have.attr", "src")
       .and("match", /.*answer_id.mp4$/);
-    cy.get("[data-cy=video-container] video track")
-      .should("have.attr", "src")
-      .and("match", /.*answer_id.vtt$/);
+    // cy.get("[data-cy=video-container] video track")
+    //   .should("have.attr", "src")
+    //   .and("match", /.*answer_id.vtt$/);
   });
 });

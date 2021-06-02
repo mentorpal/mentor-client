@@ -84,21 +84,57 @@
       "transcript": "",
       "question": {
         "name": "_IDLE_"
-      }
+      },
+      "media": [
+        {
+          "type": "video",
+          "tag": "web",
+          "url": "http://videos.org/answer_id.mp4"
+        },
+        {
+          "type": "video",
+          "tag": "mobile",
+          "url": "http://videos.org/answer_id.mp4"
+        }
+      ]
     },
     {
       "_id": "intro",
       "transcript": "My name is EMC Clint Anderson. I was born in California and I have lived there most of my life. I graduated from Paramount and a couple of years after I finished high school, I joined the US Navy. I was an Electrician's Mate. I served on an aircraft carrier for eight years and then afterwards, I went to the United States Navy Reserve. During that time I started going to school with some of the abundant benefits that the military reserve has given me and I started working with various companies.",
       "question": {
         "name": "_INTRO_"
-      }
+      },
+      "media": [
+        {
+          "type": "video",
+          "tag": "web",
+          "url": "http://videos.org/answer_id.mp4"
+        },
+        {
+          "type": "video",
+          "tag": "mobile",
+          "url": "http://videos.org/answer_id.mp4"
+        }
+      ]
     },
     {
       "_id": "offtopic",
       "transcript": "That is a great question, but unfortunately I never recorded an answer to that.",
       "question": {
         "name": "_OFF_TOPIC_"
-      }
+      },
+      "media": [
+        {
+          "type": "video",
+          "tag": "web",
+          "url": "http://videos.org/answer_id.mp4"
+        },
+        {
+          "type": "video",
+          "tag": "mobile",
+          "url": "http://videos.org/answer_id.mp4"
+        }
+      ]
     }
   ]
 }
