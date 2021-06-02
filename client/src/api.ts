@@ -29,6 +29,12 @@ export async function fetchConfig(graphqlUrl = "/graphql"): Promise<Config> {
           urlClassifier
           urlGraphql
           urlVideo
+          disclaimerTitle
+          disclaimerText
+          disclaimerDisabled
+          styleHeaderColor
+          styleHeaderTextColor
+          styleHeaderLogo
         }
       }
     `,
