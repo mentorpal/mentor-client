@@ -71,7 +71,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
       })
     );
   }
-  const [toggleCaptions, setCaptions] = React.useState(false);
+  const [toggleCaptions, setCaptions] = React.useState(true);
 
   return (
     <div
@@ -85,7 +85,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
         onPlay={onPlay}
         playing={Boolean(playing)}
         setDuration={setDuration}
-        subtitlesOn={Boolean(subtitlesSupported && toggleCaptions)}
+        subtitlesOn={Boolean(toggleCaptions)}
         subtitlesUrl={video.subtitles}
         videoUrl={video.src}
       />
@@ -98,6 +98,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
               onChange={() => {
                 setCaptions((prev) => !prev);
               }}
+              data-cy="caption-switch"
             />
           }
           label="Captions"
