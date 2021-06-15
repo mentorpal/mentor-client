@@ -12,6 +12,10 @@ import { videoUrl, subtitleUrl, idleUrl } from "api";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import { chromeVersion } from "utils";
+import Switch from "@material-ui/core/Switch";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+
 import {
   answerFinished,
   faveMentor,
@@ -67,6 +71,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
       })
     );
   }
+  const [toggleCaptions, setCaptions] = React.useState(false);
 
   return (
     <div
@@ -80,10 +85,24 @@ function Video(args: { playing?: boolean }): JSX.Element {
         onPlay={onPlay}
         playing={Boolean(playing)}
         setDuration={setDuration}
-        subtitlesOn={Boolean(subtitlesSupported)}
+        subtitlesOn={Boolean(subtitlesSupported && toggleCaptions)}
         subtitlesUrl={video.subtitles}
         videoUrl={video.src}
       />
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={toggleCaptions}
+              onChange={() => {
+                setCaptions((prev) => !prev);
+              }}
+            />
+          }
+          label="Captions"
+        />
+      </FormGroup>
       <FaveButton />
       <LoadingSpinner mentor={curMentor} />
       <MessageStatus mentor={curMentor} />
