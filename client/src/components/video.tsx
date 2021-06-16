@@ -94,8 +94,9 @@ function Video(args: { playing?: boolean }): JSX.Element {
             <Switch
               size="small"
               checked={toggleCaptions}
-              onChange={() => {
+              onChange={(e) => {
                 setCaptions((prev) => !prev);
+                console.log(toggleCaptions ? "ON" : "OFF");
               }}
               data-cy="caption-switch"
             />
@@ -103,6 +104,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
           label="Captions"
         />
       </FormGroup>
+      {toggleCaptions ? "ON" : "OFF"}
       <FaveButton />
       <LoadingSpinner mentor={curMentor} />
       <MessageStatus mentor={curMentor} />
@@ -132,39 +134,43 @@ function VideoPlayer(args: VideoPlayerParams) {
     subtitlesUrl,
     videoUrl,
   } = args;
+
   return (
-    <ReactPlayer
-      style={{
-        backgroundColor: "black",
-        position: "relative",
-        margin: "0 auto",
-      }}
-      url={videoUrl}
-      muted={Boolean(isIdle)}
-      onDuration={setDuration}
-      onEnded={onEnded}
-      onPlay={onPlay}
-      loop={isIdle}
-      controls={!isIdle}
-      playing={Boolean(playing)}
-      playsinline
-      webkit-playsinline="true"
-      config={{
-        file: {
-          tracks: subtitlesOn
-            ? [
-                {
-                  kind: "subtitles",
-                  label: "subtitles",
-                  src: subtitlesUrl,
-                  srcLang: "en",
-                  default: true,
-                },
-              ]
-            : [],
-        },
-      }}
-    />
+    <div>
+      <ReactPlayer
+        style={{
+          backgroundColor: "black",
+          position: "relative",
+          margin: "0 auto",
+        }}
+        url={videoUrl}
+        muted={Boolean(isIdle)}
+        onDuration={setDuration}
+        onEnded={onEnded}
+        onPlay={onPlay}
+        loop={isIdle}
+        controls={!isIdle}
+        playing={Boolean(playing)}
+        playsinline
+        webkit-playsinline="true"
+        config={{
+          file: {
+            tracks: subtitlesOn
+              ? [
+                  {
+                    kind: "subtitles",
+                    label: "subtitles",
+                    src: subtitlesUrl,
+                    srcLang: "en",
+                    default: true,
+                  },
+                ]
+              : [],
+          },
+        }}
+      />
+      {subtitlesOn ? "on" : "off"}
+    </div>
   );
 }
 
