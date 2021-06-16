@@ -28,7 +28,9 @@ describe("Config", () => {
       mentorData: [clint],
     });
     cy.visit("/");
-    cy.get("[data-cy=header]").contains("Clinton Anderson: Nuclear Electrician's Mate");
+    cy.get("[data-cy=header]").contains(
+      "Clinton Anderson: Nuclear Electrician's Mate"
+    );
     cy.get("[data-cy=video-panel]").should("not.exist");
   });
 

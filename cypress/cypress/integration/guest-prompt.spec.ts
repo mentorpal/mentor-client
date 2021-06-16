@@ -24,7 +24,7 @@ describe("Guest Prompt", () => {
   it("does not play video until there is a session user when cmi5 enabled", () => {
     mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
     cy.visit("/");
-    cy.get("[data-cy=video-container]").within($video => {
+    cy.get("[data-cy=video-container]").within(($video) => {
       cy.get("video").should("not.have.attr", "autoplay");
     });
   });
@@ -37,7 +37,7 @@ describe("Guest Prompt", () => {
     cy.url().should("include", "actor=");
     cy.url().should("include", "guestuser1");
     cy.get("[data-cy=guest-prompt]").should("not.exist");
-    cy.get("[data-cy=video-container]").within($video => {
+    cy.get("[data-cy=video-container]").within(($video) => {
       cy.get("video").should("have.attr", "autoplay", "autoplay");
     });
   });
@@ -50,7 +50,7 @@ describe("Guest Prompt", () => {
     cy.url().should("include", "actor=");
     cy.url().should("include", "guestuser1");
     cy.get("[data-cy=guest-prompt]").should("not.exist");
-    cy.get("[data-cy=video-container]").within($video => {
+    cy.get("[data-cy=video-container]").within(($video) => {
       cy.get("video").should("have.attr", "autoplay", "autoplay");
     });
   });
@@ -62,7 +62,7 @@ describe("Guest Prompt", () => {
     cy.url().should("include", "actor=");
     cy.url().should("include", "guestuser2");
     cy.get("[data-cy=guest-prompt]").should("not.exist");
-    cy.get("[data-cy=video-container]").within($video => {
+    cy.get("[data-cy=video-container]").within(($video) => {
       cy.get("video").should("have.attr", "autoplay", "autoplay");
     });
   });

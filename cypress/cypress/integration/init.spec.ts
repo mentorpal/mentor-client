@@ -7,11 +7,11 @@ The full terms of this copyright and license should always be found in the root 
 import { addGuestParams } from "../support/helpers";
 
 describe("Cypress", () => {
-    it("is working", () => {
-        expect(true).to.equal(true);
-    });
+  it("is working", () => {
+    expect(true).to.equal(true);
+  });
 
-    it("visits the app at base URL", () => {
-        cy.visit("/", { qs: addGuestParams() });
-    });
+  it("visits the app at base URL", () => {
+    cy.visit("/", { qs: addGuestParams() });
+  });
 });

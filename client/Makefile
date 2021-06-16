@@ -17,16 +17,17 @@ develop: .env.development node_modules/gatsby
 	npx gatsby develop
 
 .PHONY: format
-format: node_modules/prettier
-	npm run format
+format:
+	cd .. && $(MAKE) format
+
+.PHONY: license
+license:
+	cd .. && $(MAKE) license
 
 node_modules/eslint:
 	npm ci 
 
 node_modules/gatsby-cli:
-	npm ci 
-
-node_modules/prettier:
 	npm ci 
 
 node_modules/typescript:
@@ -36,7 +37,7 @@ node_modules/typescript:
 test:
 	npm run test
 
-PHONY: test-all
+.PHONY: test-all
 test-all:
 	$(MAKE) test-audit
 	$(MAKE) test-format
@@ -49,10 +50,14 @@ test-audit:
 	npm run test:audit
 
 .PHONY: test-format
-test-format: node_modules/prettier
-	npm run test:format
+test-format:
+	cd .. && $(MAKE) test-format
 
-.PHONY: test-format
+.PHONY: test-license
+test-license:
+	cd .. && $(MAKE) test-license
+
+.PHONY: test-lint
 test-lint: node_modules/eslint
 	npm run test:lint
 

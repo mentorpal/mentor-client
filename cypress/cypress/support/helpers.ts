@@ -165,7 +165,9 @@ export function mockMentorVtt(cy) {
 }
 
 export function mockApiQuestions(cy, response?: string) {
-  cy.intercept("**/questions/?mentor=*&query=*", { fixture: response || "response.json" });
+  cy.intercept("**/questions/?mentor=*&query=*", {
+    fixture: response || "response.json",
+  });
 }
 
 export function toGuestUrl(url: string, guestName: string) {
@@ -182,8 +184,9 @@ export function toGuestUrl(url: string, guestName: string) {
     fetch: `https://fake.org.lrs/auth?user=${encodeURIComponent(guestName)}`,
     registration: uuidv1(),
   };
-  const urlBase = `${url}${url.includes("?") ? "" : "?"}${url.includes("&") ? "&" : ""
-    }`;
+  const urlBase = `${url}${url.includes("?") ? "" : "?"}${
+    url.includes("&") ? "&" : ""
+  }`;
   return Object.getOwnPropertyNames(cmiParam).reduce((acc, cur) => {
     return `${acc}&${cur}=${encodeURIComponent(cmiParam[cur])}`;
   }, urlBase);

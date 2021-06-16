@@ -7,74 +7,72 @@ The full terms of this copyright and license should always be found in the root 
 import { addGuestParams, mockDefaultSetup } from "../support/helpers";
 
 describe("Recommended questions", () => {
-    it("do not appear in topic list if no questions are recommended", () => {
-        mockDefaultSetup(cy);
-        cy.visit("/", { qs: addGuestParams() });
-        cy.get("[data-cy=topics]").should("not.have.value", "Recommended");
-    });
+  it("do not appear in topic list if no questions are recommended", () => {
+    mockDefaultSetup(cy);
+    cy.visit("/", { qs: addGuestParams() });
+    cy.get("[data-cy=topics]").should("not.have.value", "Recommended");
+  });
 
-    it("appear in topic list if questions are recommended", () => {
-        mockDefaultSetup(cy);
-        cy.visit("/", {
-            qs: addGuestParams({
-                recommendedQuestions: "Howdy",
-            }),
-        });
-        cy.get("[data-cy=topics]").contains("Recommended");
+  it("appear in topic list if questions are recommended", () => {
+    mockDefaultSetup(cy);
+    cy.visit("/", {
+      qs: addGuestParams({
+        recommendedQuestions: "Howdy",
+      }),
     });
+    cy.get("[data-cy=topics]").contains("Recommended");
+  });
 
-    it("appear as default topic", () => {
-        mockDefaultSetup(cy);
-        cy.visit("/", {
-            qs: addGuestParams({
-                recommendedQuestions: "Howdy",
-            }),
-        });
-        cy.get("[data-cy=topics]")
-            .find(".topic-selected")
-            .contains("Recommended");
+  it("appear as default topic", () => {
+    mockDefaultSetup(cy);
+    cy.visit("/", {
+      qs: addGuestParams({
+        recommendedQuestions: "Howdy",
+      }),
     });
+    cy.get("[data-cy=topics]").find(".topic-selected").contains("Recommended");
+  });
 
-    it("list recommended questions in question list", () => {
-        mockDefaultSetup(cy);
-        cy.visit("/", {
-            qs: addGuestParams({
-                recommendedQuestions: ["Howdy", "Partner"],
-            }),
-        });
-        cy.get("[data-cy=scrolling-questions-list]").contains("Howdy");
-        cy.get("[data-cy=scrolling-questions-list]").contains("Partner");
+  it("list recommended questions in question list", () => {
+    mockDefaultSetup(cy);
+    cy.visit("/", {
+      qs: addGuestParams({
+        recommendedQuestions: ["Howdy", "Partner"],
+      }),
     });
+    cy.get("[data-cy=scrolling-questions-list]").contains("Howdy");
+    cy.get("[data-cy=scrolling-questions-list]").contains("Partner");
+  });
 
-    it("display an icon next to recommended questions", () => {
-        mockDefaultSetup(cy);
-        cy.visit("/", {
-            qs: addGuestParams({
-                recommendedQuestions: "Howdy",
-            }),
-        });
-        cy.get("[data-cy=scrolling-questions-list]")
-            .get(`[data-cy=${CSS.escape("Howdy")}]`)
-            .find(".recommended-question-icon");
+  it("display an icon next to recommended questions", () => {
+    mockDefaultSetup(cy);
+    cy.visit("/", {
+      qs: addGuestParams({
+        recommendedQuestions: "Howdy",
+      }),
     });
+    cy.get("[data-cy=scrolling-questions-list]")
+      .get(`[data-cy=${CSS.escape("Howdy")}]`)
+      .find(".recommended-question-icon");
+  });
 
-    it("appear at the top of other topic questions", () => {
-        mockDefaultSetup(cy);
-        cy.visit("/", {
-            qs: addGuestParams({
-                recommendedQuestions: "Are you fun at parties?",
-            }),
-        });
-        cy.get("[data-cy=topic-0]").find(".topic-selected");
-        cy.get("[data-cy=topic-2]").trigger('mouseover').click();
-        cy.get("[data-cy=topic-2]").find(".topic-selected");
-        cy.get("[data-cy=scrolling-questions-list]")
-            .get("li")
-            .first()
-            .contains("Are you fun at parties?");
-        cy.get("[data-cy=scrolling-questions-list]")
-            .get("li")
-            .first()
-            .find(".recommended-question-icon");
+  it("appear at the top of other topic questions", () => {
+    mockDefaultSetup(cy);
+    cy.visit("/", {
+      qs: addGuestParams({
+        recommendedQuestions: "Are you fun at parties?",
+      }),
     });
+    cy.get("[data-cy=topic-0]").find(".topic-selected");
+    cy.get("[data-cy=topic-2]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-2]").find(".topic-selected");
+    cy.get("[data-cy=scrolling-questions-list]")
+      .get("li")
+      .first()
+      .contains("Are you fun at parties?");
+    cy.get("[data-cy=scrolling-questions-list]")
+      .get("li")
+      .first()
+      .find(".recommended-question-icon");
+  });
 });

@@ -47,7 +47,7 @@ describe("Chat", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["covid"] },
       mentorData: [covid],
-      apiResponse: "response_with_markdown.json"
+      apiResponse: "response_with_markdown.json",
     });
     cy.intercept("**/questions/?mentor=*&query=*", {
       fixture: "response_with_markdown.json",
@@ -82,12 +82,20 @@ describe("Chat", () => {
     cy.get("[data-cy=input-field]").type("test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=chat-msg-2]").contains("Give me feedback");
-    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]").should("exist");
-    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn]").trigger("mouseover").click();
+    cy.get(
+      "[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]"
+    ).should("exist");
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn]")
+      .trigger("mouseover")
+      .click();
     cy.get("[data-cy=click-good]");
     cy.get("[data-cy=click-neutral]");
     cy.get("[data-cy=click-bad]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=bad]").should("exist");
-    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]").should("not.exist");
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=bad]").should(
+      "exist"
+    );
+    cy.get(
+      "[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]"
+    ).should("not.exist");
   });
 });
