@@ -9,23 +9,20 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "14.16"
+      - name: Install
+        run:  npm ci
+      - name: Run format test
+        run: npm run test:format
+      - name: Run license test
+        run: npm run test:license
       - name: Client - Install
         run: cd client && npm ci
       # - name: Client - audit
       #   run: cd client && npm run test:audit
-      - name: Client - test format
-        run: cd client && npm run test:format
-      - name: Client - lint
+      - name: Client - Run lint test
         run: cd client && npm run test:lint
-      - name: Client - test types
+      - name: Client - Run types test
         run: cd client && npm run test:types
-  test-license:
-    name: test license
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: test licenses
-        run: make test-license
   test-e2e:
     name: test e2e
     runs-on: ubuntu-latest

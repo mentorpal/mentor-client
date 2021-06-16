@@ -4,9 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import {
-  mockDefaultSetup,
-} from "../support/helpers";
+import { mockDefaultSetup } from "../support/helpers";
 
 describe("Plays a video in response to a user question", () => {
   it("plays a mentor response and displays subtitles", () => {
@@ -15,7 +13,11 @@ describe("Plays a video in response to a user question", () => {
     cy.visit("/?mentor=clint");
     cy.get("[data-cy=input-field]").type("is the food good");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=video-container]").should("have.attr", "data-video-type", "answer");
+    cy.get("[data-cy=video-container]").should(
+      "have.attr",
+      "data-video-type",
+      "answer"
+    );
     cy.get("[data-cy=video-container] video").should("exist");
     cy.get("[data-cy=video-container] video")
       .should("have.attr", "src")

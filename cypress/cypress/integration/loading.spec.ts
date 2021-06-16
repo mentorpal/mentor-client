@@ -7,9 +7,9 @@ The full terms of this copyright and license should always be found in the root 
 import { mockDefaultSetup } from "../support/helpers";
 
 describe("Loading", () => {
-    it("displays a skeleton until site config has loaded", () => {
-        mockDefaultSetup(cy);
-        cy.visit("/");
-        cy.get("[data-cy=loading]").should("be.visible");
-    });
+  it("displays a skeleton until site config has loaded", () => {
+    mockDefaultSetup(cy);
+    cy.visit("/");
+    cy.get("[data-cy=loading]").should("be.visible");
+  });
 });
