@@ -169,7 +169,6 @@ function VideoPlayer(args: VideoPlayerParams) {
           },
         }}
       />
-      {subtitlesOn ? "on" : "off"}
     </div>
   );
 }
