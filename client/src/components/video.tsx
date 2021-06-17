@@ -78,15 +78,37 @@ function Video(args: { playing?: boolean }): JSX.Element {
       data-test-playing={Boolean(playing)}
       data-video-type={isIdle ? "idle" : "answer"}
     >
-      <MemoVideoPlayer
-        isIdle={Boolean(isIdle)}
+      <ReactPlayer
+        style={{
+          backgroundColor: "black",
+          position: "relative",
+          margin: "0 auto",
+        }}
+        url={video.src}
+        muted={Boolean(isIdle)}
+        onDuration={setDuration}
         onEnded={onEnded}
         onPlay={onPlay}
+        loop={isIdle}
+        controls={!isIdle}
         playing={Boolean(playing)}
-        setDuration={setDuration}
-        subtitlesOn={Boolean(toggleCaptions)}
-        subtitlesUrl={video.subtitles}
-        videoUrl={video.src}
+        playsinline
+        webkit-playsinline="true"
+        config={{
+          file: {
+            tracks: toggleCaptions
+              ? [
+                  {
+                    kind: "subtitles",
+                    label: "subtitles",
+                    src: video.subtitles,
+                    srcLang: "en",
+                    default: true,
+                  },
+                ]
+              : [],
+          },
+        }}
       />
       <FormGroup>
         <FormControlLabel
@@ -111,69 +133,6 @@ function Video(args: { playing?: boolean }): JSX.Element {
     </div>
   );
 }
-
-interface VideoPlayerParams {
-  isIdle: boolean;
-  onEnded: () => void;
-  onPlay: () => void;
-  playing?: boolean;
-  setDuration: (d: number) => void;
-  subtitlesOn: boolean;
-  subtitlesUrl: string;
-  videoUrl: string;
-}
-
-function VideoPlayer(args: VideoPlayerParams) {
-  const {
-    isIdle,
-    onEnded,
-    onPlay,
-    playing,
-    setDuration,
-    subtitlesOn,
-    subtitlesUrl,
-    videoUrl,
-  } = args;
-
-  return (
-    <div>
-      <ReactPlayer
-        style={{
-          backgroundColor: "black",
-          position: "relative",
-          margin: "0 auto",
-        }}
-        url={videoUrl}
-        muted={Boolean(isIdle)}
-        onDuration={setDuration}
-        onEnded={onEnded}
-        onPlay={onPlay}
-        loop={isIdle}
-        controls={!isIdle}
-        playing={Boolean(playing)}
-        playsinline
-        webkit-playsinline="true"
-        config={{
-          file: {
-            tracks: subtitlesOn
-              ? [
-                  {
-                    kind: "subtitles",
-                    label: "subtitles",
-                    src: subtitlesUrl,
-                    srcLang: "en",
-                    default: true,
-                  },
-                ]
-              : [],
-          },
-        }}
-      />
-    </div>
-  );
-}
-
-const MemoVideoPlayer = React.memo(VideoPlayer);
 
 function FaveButton() {
   const dispatch = useDispatch();
