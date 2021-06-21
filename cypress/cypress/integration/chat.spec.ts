@@ -9,6 +9,7 @@ import { mockDefaultSetup } from "../support/helpers";
 
 const clint = require("../fixtures/clint.json");
 const covid = require("../fixtures/covid.json");
+const logged = require("../fixtures/logged.json");
 
 describe("Chat", () => {
   it("does not show if mentor type is video", () => {
@@ -43,11 +44,29 @@ describe("Chat", () => {
     cy.get("[data-cy=chat-msg-2]").contains("I'm thirty seven years old.");
   });
 
+  it("shows users mentor if user is logged in admin", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["logged"] },
+      mentorData: [logged],
+    });
+    cy.visit("/");
+    cy.get("[data-cy=header]").contains("Ben Mai: j");
+  });
+
+  it("shows home icon if user is logged in admin", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["logged"] },
+      mentorData: [logged],
+    });
+    cy.visit("/");
+    cy.get("[data-cy=home-button]").should("exist");
+  });
+
   it("can open external links in chat with markdown", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["covid"] },
       mentorData: [covid],
-      apiResponse: "response_with_markdown.json",
+      apiResponse: "response_with_markdown.json"
     });
     cy.intercept("**/questions/?mentor=*&query=*", {
       fixture: "response_with_markdown.json",
@@ -82,20 +101,12 @@ describe("Chat", () => {
     cy.get("[data-cy=input-field]").type("test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=chat-msg-2]").contains("Give me feedback");
-    cy.get(
-      "[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]"
-    ).should("exist");
-    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn]")
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]").should("exist");
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn]").trigger("mouseover").click();
     cy.get("[data-cy=click-good]");
     cy.get("[data-cy=click-neutral]");
     cy.get("[data-cy=click-bad]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=bad]").should(
-      "exist"
-    );
-    cy.get(
-      "[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]"
-    ).should("not.exist");
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=bad]").should("exist");
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]").should("not.exist");
   });
 });

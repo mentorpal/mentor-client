@@ -47,6 +47,8 @@
     "gatsby-plugin-material-ui": "^3.0.1",
     "gatsby-plugin-sitemap": "^3.3.0",
     "gatsby-plugin-typescript": "^3.3.0",
+    "license-check-and-add": "^4.0.2",
+    "prettier": "^2.2.1",
     "typescript": "^4.2.4"
   },
   "keywords": [
@@ -60,7 +62,9 @@
     "start": "npm run develop",
     "serve": "gatsby serve --prefix-paths",
     "test": "echo 'uses only cypress tests'",
+    "test:all": "npm run test:format && npm run test:lint && npm run test:audit && npm run test:types && npm test",
     "test:audit": "npm audit --production --audit-level=moderate",
+    "test:format": "prettier --check '**/*.{js,jsx,json,ts,tsx}'",
     "test:lint": "eslint src --ext ts --ext tsx --ext js --ext jsx",
     "test:types": "tsc --noEmit"
   },

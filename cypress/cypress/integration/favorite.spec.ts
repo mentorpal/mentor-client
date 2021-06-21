@@ -4,40 +4,32 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import {
-  mockDefaultSetup,
-  addGuestParams,
-  visitAsGuestWithDefaultSetup,
-} from "../support/helpers";
+import { mockDefaultSetup, addGuestParams, visitAsGuestWithDefaultSetup } from "../support/helpers";
 
 describe("Favorite", () => {
-  it("is not toggled by default", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("[data-cy=fave-button]")
-      .invoke("attr", "style")
-      .should("contain", "grey");
-  });
-
-  it("can be toggled", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("[data-cy=video-thumbnail-julianne]").should(
-      "have.attr",
-      "data-ready",
-      "true"
-    );
-    cy.get("[data-cy=fave-button]").trigger("mouseover").click();
-    cy.get("[data-cy=fave-button]")
-      .invoke("attr", "style")
-      .should("contain", "yellow");
-  });
-
-  it("is hidden if there is only one mentor", () => {
-    mockDefaultSetup(cy);
-    cy.visit("/", {
-      qs: addGuestParams({
-        mentor: "clint",
-      }),
+    it("is not toggled by default", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("[data-cy=fave-button]")
+            .invoke("attr", "style")
+            .should("contain", "grey");
     });
-    cy.get("[data-cy=fave-button]").should("not.exist");
-  });
+
+    it("can be toggled", () => {
+        visitAsGuestWithDefaultSetup(cy, "/");
+        cy.get("[data-cy=video-thumbnail-julianne]").should("have.attr", "data-ready", "true")
+        cy.get("[data-cy=fave-button]").trigger('mouseover').click();
+        cy.get("[data-cy=fave-button]")
+            .invoke("attr", "style")
+            .should("contain", "yellow");
+    });
+
+    it("is hidden if there is only one mentor", () => {
+        mockDefaultSetup(cy);
+        cy.visit("/", {
+            qs: addGuestParams({
+                mentor: "clint",
+            }),
+        });
+        cy.get("[data-cy=fave-button]").should("not.exist");
+    });
 });

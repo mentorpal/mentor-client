@@ -4,21 +4,14 @@ TEST_E2E_DOCKER_COMPOSE=docker-compose
 node_modules/license-check-and-add:
 	npm ci
 
-node_modules/prettier:
-	npm ci
-
-.PHONY: clean
+PHONY: clean
 clean:
 	cd client && $(MAKE) clean
 	cd docker && $(MAKE) clean
 
-.PHONY: develop
+PHONY: develop
 develop:
 	cd client && $(MAKE) develop
-
-.PHONY: format
-format: node_modules/prettier
-	npm run format
 
 .PHONY docker-build:
 docker-build:
@@ -27,28 +20,36 @@ docker-build:
 		-t $(DOCKER_IMAGE) \
 	.
 
-.PHONY: test
+PHONY: format
+format:
+	cd client && $(MAKE) format
+
+PHONY: test
 test:
 	cd client && $(MAKE) test
 
-.PHONY: test-all
+PHONY: test-all
 test-all:
-	$(MAKE) test-audit
+	#$(MAKE) test-audit
 	$(MAKE) test-format
 	$(MAKE) test-lint
 	$(MAKE) test-license
 	$(MAKE) test-types
 	$(MAKE) test
 
-.PHONY: test-audit
+PHONY: test-audit
 test-audit:
 	cd client && $(MAKE) test-audit
 
-.PHONY: test-lint
+PHONY: test-format
+test-format:
+	cd client && $(MAKE) test-format
+
+PHONY: test-lint
 test-lint:
 	cd client && $(MAKE) test-lint
 
-.PHONY: test-types
+PHONY: test-types
 test-types:
 	cd client && $(MAKE) test-types
 
@@ -61,15 +62,11 @@ LICENSE_HEADER:
 	exit 1
 
 .PHONY: license
-license: LICENSE LICENSE_HEADER
-	npm run license:fix
-
-.PHONY: test-format
-test-format: node_modules/prettier
-	npm run test:format
+license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
+	npm ci && npm run license:fix
 
 .PHONY: test-license
-test-license: LICENSE LICENSE_HEADER
+test-license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
 	npm run test:license
 
 .PHONY: test-e2e

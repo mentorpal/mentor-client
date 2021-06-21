@@ -38,16 +38,12 @@ describe("Mentor panel", () => {
       .get("[data-cy=video-thumbnail-clint]")
       .trigger("mouseover")
       .click();
-    cy.get("[data-cy=video-panel]")
-      .get("[data-cy=video-thumbnail-clint]")
-      .get(".star-icon");
+    cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-clint]").get(".star-icon");
     cy.get("[data-cy=video-panel]")
       .get("[data-cy=video-thumbnail-carlos]")
       .trigger("mouseover")
       .click();
-    cy.get("[data-cy=video-panel]")
-      .get("[data-cy=video-thumbnail-carlos]")
-      .get(".star-icon");
+    cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-carlos]").get(".star-icon");
   });
 
   it("does not show chat-only mentors in panel", () => {
@@ -55,8 +51,6 @@ describe("Mentor panel", () => {
     cy.visit("/?mentor=clint&mentor=carlos&mentor=covid");
     cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-clint]");
     cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-carlos]");
-    cy.get("[data-cy=video-panel]")
-      .get("[data-cy=video-thumbnail-covid]")
-      .should("not.exist");
+    cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-covid]").should("not.exist");
   });
 });

@@ -20,7 +20,9 @@ import { loadConfig, loadMentors, setGuestName } from "store/actions";
 import { Config, LoadStatus, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
-
+import {
+  fetchMentorByAccessToken,
+} from "api";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -106,7 +108,8 @@ function IndexPage(props: {
   const [windowHeight, setWindowHeight] = React.useState<number>(0);
   const [chatHeight, setChatHeight] = React.useState<number>(0);
   const curTopic = useSelector<State, string>((state) => state.curTopic);
-  const { mentor, guest, subject, recommendedQuestions } = props.search;
+  const { guest, subject, recommendedQuestions } = props.search;
+  let mentor =  props.search;
 
   function hasSessionUser(): boolean {
     return Boolean(
@@ -182,10 +185,22 @@ function IndexPage(props: {
     }
   }, [configLoadStatus]);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (!isConfigLoadComplete(configLoadStatus)) {
       return;
     }
+    // check local store=
+    if(!mentor) {
+      const ACCESS_TOKEN_KEY = "accessToken";
+
+    const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY) || "";
+    if(accessToken) {
+      const tokenResponse = await fetchMentorByAccessToken(accessToken);
+      mentor = tokenResponse._id;
+    }
+    
+    }
+    
     dispatch(
       loadMentors({
         config,

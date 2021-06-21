@@ -5,9 +5,7 @@
   "main": "index.js",
   "scripts": {
     "license:fix": "license-check-and-add remove -f license-config.json && license-check-and-add add -f license-config.json",
-    "test:license": "license-check-and-add check -f license-config.json",
-    "format": "prettier --write '**/*.{js,jsx,json,ts,tsx}'",
-    "test:format": "prettier --check '**/*.{js,jsx,json,ts,tsx}'"
+    "test:license": "license-check-and-add check -f license-config.json"
   },
   "repository": {
     "type": "git",
@@ -20,7 +18,9 @@
   },
   "homepage": "https://github.com/mentorpal/mentor-client#readme",
   "devDependencies": {
-    "license-check-and-add": "^4.0.2",
-    "prettier": "^2.3.0"
+    "license-check-and-add": "^4.0.2"
+  },
+  "dependencies": {
+    "typescript": "^4.3.2"
   }
 }
