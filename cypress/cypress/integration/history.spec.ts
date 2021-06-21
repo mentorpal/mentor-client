@@ -6,7 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import { visitAsGuestWithDefaultSetup } from "../support/helpers";
 
-describe("History", () => {
+describe.only("History", () => {
   it("does not display in topics list if no questions have been asked", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
@@ -30,7 +30,20 @@ describe("History", () => {
     cy.get("[data-cy=scrolling-questions-list]").contains("Hello");
   });
 
-  it("displays questions that have been asked via topic button", () => {
+
+  it("displays both questions and answers as a chat", () => {
+    visitAsGuestWithDefaultSetup(cy, "/");
+    cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
+    cy.get("[data-cy=input-field]").type("user msg 1");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
+    cy.get("[data-cy=history-chat]").should('exist');
+    // cy.get("[data-cy=history]").within(($hc) => {
+    //   cy.get("[data-cy=msg-user-1]").contains("user msg 1");
+    // });
+  });
+
+  it.only("displays questions that have been asked via topic button", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=topic-0]").trigger("mouseover").click();
