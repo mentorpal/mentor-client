@@ -245,8 +245,13 @@ function Chat(props: { height: number }): JSX.Element {
     if (chatDataUpdated.lastQuestionAt !== curQuestionUpdatedAt) {
       updated = true;
       chatDataUpdated.messages.push({
+        name: "",
+        color: "",
         isUser: true,
         text: curQuestion,
+        feedback: Feedback.NONE,
+        feedbackId: "",
+        isFeedbackSendInProgress: false
       });
       chatDataUpdated.lastQuestionAt = curQuestionUpdatedAt;
     }
@@ -254,17 +259,27 @@ function Chat(props: { height: number }): JSX.Element {
       if (chatDataUpdated.messages.length === 0) {
         updated = true;
         chatDataUpdated.messages.push({
+          name: "",
+          color: "",
           isUser: false,
           text:
             getUtterance(mentor.mentor, UtteranceName.INTRO)?.transcript || "",
+
+        feedback: Feedback.NONE,
+        feedbackId: "",
+        isFeedbackSendInProgress: false
         });
       }
       if (chatDataUpdated.lastAnswerAt !== answerReceivedAt) {
         updated = true;
         chatDataUpdated.messages.push({
+          name: "",
+          color: "",
           isUser: false,
           text: mentor.answer_text || "",
-          feedbackId: mentor.answerFeedbackId,
+          feedbackId: mentor.answerFeedbackId || "",
+          feedback: Feedback.NONE,
+          isFeedbackSendInProgress: false
         });
         chatDataUpdated.lastAnswerAt = answerReceivedAt;
       }

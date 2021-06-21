@@ -12,6 +12,7 @@ import {
   fetchConfig,
   fetchMentor,
   getUtterance,
+  giveFeedback,
   queryMentor,
   videoUrl,
 } from "api";
@@ -36,6 +37,7 @@ import {
   QuestionType,
   QuestionInput,
   MentorDataResult,
+  Feedback,
 } from "../types";
 
 const RESPONSE_CUTOFF = -100;
@@ -44,6 +46,9 @@ export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished p
 export const CONFIG_LOAD_FAILED = "CONFIG_LOAD_FAILED";
 export const CONFIG_LOAD_STARTED = "CONFIG_LOAD_STARTED";
 export const CONFIG_LOAD_SUCCEEDED = "CONFIG_LOAD_SUCCEEDED";
+export const FEEDBACK_SENT = "FEEDBACK_SENT"; // mentor video has finished playing
+export const FEEDBACK_SEND_FAILED = "FEEDBACK_SEND_FAILED"; // mentor video has finished playing
+export const FEEDBACK_SEND_SUCCEEDED = "FEEDBACK_SEND_SUCCEEDED"; // mentor video has finished playing
 export const MENTOR_ANSWER_PLAYBACK_STARTED = "MENTOR_ANSWER_PLAYBACK_STARTED";
 export const MENTORS_LOAD_REQUESTED = "MENTORS_LOAD_REQUESTED";
 export const MENTORS_LOAD_RESULT = "MENTORS_LOAD_RESULT";
@@ -58,6 +63,10 @@ export const QUESTION_SENT = "QUESTION_SENT"; // question input was sent
 export const TOPIC_SELECTED = "TOPIC_SELECTED";
 export const GUEST_NAME_SET = "GUEST_NAME_SET";
 
+export interface AnswerFinishedAction {
+  type: typeof ANSWER_FINISHED;
+}
+
 export interface ConfigLoadFailedAction {
   type: typeof CONFIG_LOAD_FAILED;
   errors: string[];
@@ -71,6 +80,36 @@ export interface ConfigLoadSucceededAction {
   type: typeof CONFIG_LOAD_SUCCEEDED;
   payload: Config;
 }
+
+export interface FeedbackSendFailedAction {
+  type: typeof FEEDBACK_SEND_FAILED;
+  payload: {
+    errors: string[];
+    feedbackId: string;
+    feedback: Feedback;
+  };
+}
+
+export interface FeedbackSendSucceededAction {
+  type: typeof FEEDBACK_SEND_SUCCEEDED;
+  payload: {
+    feedbackId: string;
+    feedback: Feedback;
+  };
+}
+
+export interface FeedbackSentAction {
+  type: typeof FEEDBACK_SENT;
+  payload: {
+    feedbackId: string;
+    feedback: Feedback;
+  };
+}
+
+export type FeedbackAction =
+  | FeedbackSendFailedAction
+  | FeedbackSendSucceededAction
+  | FeedbackSentAction
 
 export type ConfigLoadAction =
   | ConfigLoadFailedAction
@@ -98,10 +137,6 @@ export interface MentorsLoadResultAction {
 export type MentorDataAction =
   | MentorsLoadRequestedAction
   | MentorsLoadResultAction;
-
-export interface AnswerFinishedAction {
-  type: typeof ANSWER_FINISHED;
-}
 
 export interface MentorFavedAction {
   type: typeof MENTOR_FAVED;
@@ -172,6 +207,7 @@ export interface QuestionInputChangedAction {
 
 export type MentorClientAction =
   | ConfigLoadAction
+  | FeedbackAction
   | GuestNameSetAction
   | MentorDataAction
   | MentorAction
@@ -181,6 +217,40 @@ export type MentorClientAction =
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
+
+export const feedbackSend =
+  (feedbackId: string, feedback: Feedback) => async (
+    dispatch: ThunkDispatch<State, void, FeedbackAction>, 
+    getState: () => State
+  ) => {
+    dispatch({
+      type: FEEDBACK_SENT,
+      payload: {
+        feedback,
+        feedbackId
+      }
+    });
+    try {
+      await giveFeedback(feedbackId, feedback, getState().config)
+      return dispatch({
+        type: FEEDBACK_SEND_SUCCEEDED,
+        payload: {
+          feedback,
+          feedbackId
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      return dispatch({
+        type: FEEDBACK_SEND_FAILED,
+        payload: {
+          errors: [err.message],
+          feedback,
+          feedbackId
+        }
+      });
+    }
+  };
 
 export const loadConfig =
   () => async (dispatch: ThunkDispatch<State, void, ConfigLoadAction>) => {

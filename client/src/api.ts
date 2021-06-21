@@ -99,10 +99,7 @@ interface GraphQLResponse<T> {
 }
 
 export async function fetchMentorByAccessToken(
-  accessToken: string,
-  subject?: string,
-  topic?: string,
-  status?: string
+  accessToken: string
 ): Promise<Mentor> {
   const headers = { Authorization: `bearer ${accessToken}` };
   const result = await axios.post(
