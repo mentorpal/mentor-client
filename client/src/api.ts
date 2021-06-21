@@ -15,6 +15,7 @@ import {
   UtteranceName,
 } from "types";
 
+export const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT || "/graphql";
 export async function fetchConfig(graphqlUrl = "/graphql"): Promise<Config> {
   const gqlRes = await axios.post<GraphQLResponse<{ config: Config }>>(
     graphqlUrl,
@@ -95,6 +96,95 @@ interface MentorQueryData {
 interface GraphQLResponse<T> {
   errors?: { message: string }[];
   data?: T;
+}
+
+export async function fetchMentorByAccessToken(
+  accessToken: string,
+  subject?: string,
+  topic?: string,
+  status?: string
+): Promise<Mentor> {
+  const headers = { Authorization: `bearer ${accessToken}` };
+  const result = await axios.post(
+    GRAPHQL_ENDPOINT,
+    {
+      query: `
+      query {
+        me {
+          mentorToken {
+            _id
+            name
+            firstName
+            title
+            mentorType
+            lastTrainedAt
+            defaultSubject {
+              _id
+            }
+            subjects {
+              _id
+              name
+              description
+              categories {
+                id
+                name
+                description
+              }
+              topics {
+                id
+                name
+                description
+              }
+              questions {
+                question {
+                  _id
+                  question
+                  type
+                  name
+                  paraphrases
+                  mentor
+                }
+                category {
+                  id
+                  name
+                  description
+                }
+                topics {
+                  id
+                  name
+                  description
+                }
+              }
+            }
+            topics(subject: "${subject || ""}") {
+              id
+              name
+              description
+            }
+            answers(subject: "${subject || ""}", topic: "${
+        topic || ""
+      }", status: "${status || ""}") {
+              _id
+              question {
+                _id
+                question
+                paraphrases
+                type
+                name
+                mentor
+              }
+              transcript
+              status
+            }
+          }  
+        }
+      }
+    `,
+    },
+    { headers: headers }
+  );
+  console.log("result:",result);
+  return result.data.data.me.mentor;
 }
 
 export async function fetchMentor(
