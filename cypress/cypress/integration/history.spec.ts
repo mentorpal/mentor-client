@@ -31,7 +31,7 @@ describe.only("History", () => {
   });
 
 
-  it("displays both questions and answers as a chat", () => {
+  it.only("displays both questions and answers as a chat", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=input-field]").type("user msg 1");
@@ -43,7 +43,7 @@ describe.only("History", () => {
     // });
   });
 
-  it.only("displays questions that have been asked via topic button", () => {
+  it("displays questions that have been asked via topic button", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=topic-0]").trigger("mouseover").click();

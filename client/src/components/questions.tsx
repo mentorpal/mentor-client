@@ -10,6 +10,7 @@ import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import ScrollingQuestions from "components/scrolling-questions";
 import { State } from "types";
 import withLocation from "wrap-with-location";
+import HistoryChat from "./history-chat";
 
 const theme = createMuiTheme({
   palette: {
@@ -62,8 +63,10 @@ function Questions(props: {
     return orderedQuestions;
   });
 
-  return (
-    <MuiThemeProvider theme={theme}>
+  const content =
+    curTopic === "History" ? (
+      <HistoryChat />
+    ) : (
       <ScrollingQuestions
         questions={questions}
         questionsAsked={questionsAsked}
@@ -72,8 +75,9 @@ function Questions(props: {
         mentor={mentorId}
         topic={curTopic}
       />
-    </MuiThemeProvider>
-  );
+    );
+
+  return <MuiThemeProvider theme={theme}>{content}</MuiThemeProvider>;
 }
 
 export default withLocation(Questions);
