@@ -190,32 +190,32 @@ function IndexPage(props: {
 
     const findMentor = async () => {
       // check local store=
-    if (!mentor) {
-      const ACCESS_TOKEN_KEY = "accessToken";
+      if (!mentor) {
+        const ACCESS_TOKEN_KEY = "accessToken";
 
-      const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY) || "";
-      if (accessToken) {
-        const tokenResponse = await fetchMentorByAccessToken(accessToken);
-        mentor = tokenResponse._id;
+        const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY) || "";
+        if (accessToken) {
+          const tokenResponse = await fetchMentorByAccessToken(accessToken);
+          mentor = tokenResponse._id;
+        }
       }
-    }
 
-    dispatch(
-      loadMentors({
-        config,
-        mentors: mentor
-          ? Array.isArray(mentor)
-            ? mentor
-            : [mentor]
-          : config.mentorsDefault,
-        subject,
-        recommendedQuestions: recommendedQuestions
-          ? Array.isArray(recommendedQuestions)
-            ? recommendedQuestions
-            : [recommendedQuestions]
-          : [],
-      })
-    );
+      dispatch(
+        loadMentors({
+          config,
+          mentors: mentor
+            ? Array.isArray(mentor)
+              ? mentor
+              : [mentor]
+            : config.mentorsDefault,
+          subject,
+          recommendedQuestions: recommendedQuestions
+            ? Array.isArray(recommendedQuestions)
+              ? recommendedQuestions
+              : [recommendedQuestions]
+            : [],
+        })
+      );
     };
     findMentor();
   }, [configLoadStatus, mentor, subject, recommendedQuestions]);
