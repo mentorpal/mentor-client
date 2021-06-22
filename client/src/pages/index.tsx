@@ -107,7 +107,7 @@ function IndexPage(props: {
   const [chatHeight, setChatHeight] = React.useState<number>(0);
   const curTopic = useSelector<State, string>((state) => state.curTopic);
   const { guest, subject, recommendedQuestions } = props.search;
-  let mentor = props.search;
+  let { mentor } = props.search;
 
   function hasSessionUser(): boolean {
     return Boolean(
@@ -183,11 +183,13 @@ function IndexPage(props: {
     }
   }, [configLoadStatus]);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (!isConfigLoadComplete(configLoadStatus)) {
       return;
     }
-    // check local store=
+
+    const findMentor = async () => {
+      // check local store=
     if (!mentor) {
       const ACCESS_TOKEN_KEY = "accessToken";
 
@@ -214,6 +216,8 @@ function IndexPage(props: {
           : [],
       })
     );
+    };
+    findMentor();
   }, [configLoadStatus, mentor, subject, recommendedQuestions]);
 
   useEffect(() => {

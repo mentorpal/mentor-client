@@ -180,9 +180,9 @@ export function cyMockMentorData(data: any[]) {
   return cyMockGQL("mentor", data, false);
 }
 
-export function cyMockTokenData(data: any[]) {
-  return cyMockGQL("mentorToken", data, false);
-}
+// export function cyMockTokenData(data: any[]) {
+//   return cyMockGQL("mentorToken", data, false);
+// }
 
 export function cyMockConfig(config: Partial<Config>) {
   return cyMockGQL("config", { ...CONFIG_DEFAULT, ...config }, false);
@@ -266,7 +266,7 @@ export function mockDefaultSetup(
   mockMentorVtt(cy);
   cyInterceptGraphQL(cy, [
     cyMockConfig(config),
-    cyMockTokenData(tokenData),
+    // cyMockTokenData(tokenData),
     cyMockMentorData(mentorData),
     ...gqlQueries,
   ]);
