@@ -35,10 +35,16 @@ describe("History", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.viewport('macbook-11')
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
-    cy.get("[data-cy=input-field]").type("user msg 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should('exist');
+    cy.get("[data-cy=input-field]").type("user msg 1");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=chat-msg-0]");
+    cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
+    cy.get("[data-cy=chat-msg-2]").contains("I'm thirty seven years old.");
+    
+    
+    
     // cy.get("[data-cy=history]").within(($hc) => {
     //   cy.get("[data-cy=msg-user-1]").contains("user msg 1");
     // });
