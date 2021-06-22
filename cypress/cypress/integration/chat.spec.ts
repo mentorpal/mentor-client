@@ -9,6 +9,7 @@ import { mockDefaultSetup } from "../support/helpers";
 
 const clint = require("../fixtures/clint.json");
 const covid = require("../fixtures/covid.json");
+const logged = require("../fixtures/logged.json");
 
 describe("Chat", () => {
   it("does not show if mentor type is video", () => {
@@ -41,6 +42,24 @@ describe("Chat", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=chat-msg-1]").contains("how old are you");
     cy.get("[data-cy=chat-msg-2]").contains("I'm thirty seven years old.");
+  });
+
+  it("shows users mentor if user is logged in admin", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["logged"] },
+      mentorData: [logged],
+    });
+    cy.visit("/");
+    cy.get("[data-cy=header]").contains("Ben Mai: j");
+  });
+
+  it("shows home icon if user is logged in admin", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["logged"] },
+      mentorData: [logged],
+    });
+    cy.visit("/");
+    cy.get("[data-cy=home-button]").should("exist");
   });
 
   it("can open external links in chat with markdown", () => {

@@ -77,7 +77,7 @@ function Header(): JSX.Element {
   };
 
   const handleClickHome = () => {
-    window.location.href="/admin";
+    window.location.href = "/admin";
   };
 
   const handleAgree = () => {
@@ -109,8 +109,8 @@ function Header(): JSX.Element {
             paddingBottom: 10,
           }}
         />
-        {mentor.name!=='USC' ?
-    <IconButton
+        {mentor.name !== "USC" ? (
+          <IconButton
             aria-label="information"
             component="span"
             style={{
@@ -122,8 +122,10 @@ function Header(): JSX.Element {
             data-cy="home-button"
           >
             <HomeIcon />
-          </IconButton>:''
-  }
+          </IconButton>
+        ) : (
+          ""
+        )}
         <Hidden only="xs">
           <Typography>
             {mentor.name}: {mentor.title}
@@ -194,22 +196,24 @@ function Header(): JSX.Element {
         color: `${styleHeaderTextColor}`,
       }}
     >
-    {mentor.name!=='USC' ?
-    <IconButton
-            aria-label="information"
-            component="span"
-            style={{
-              position: "absolute",
-              left: "50px",
-              color: `${styleHeaderTextColor}`,
-            }}
-            onClick={handleClickHome}
-            data-cy="home-button"
-          >
-            <HomeIcon />
-          </IconButton>:''
-  }
-    
+      {mentor.name !== "USC" ? (
+        <IconButton
+          aria-label="information"
+          component="span"
+          style={{
+            position: "absolute",
+            left: "50px",
+            color: `${styleHeaderTextColor}`,
+          }}
+          onClick={handleClickHome}
+          data-cy="home-button"
+        >
+          <HomeIcon />
+        </IconButton>
+      ) : (
+        ""
+      )}
+
       <Typography>
         {mentor.name}: {mentor.title}
       </Typography>

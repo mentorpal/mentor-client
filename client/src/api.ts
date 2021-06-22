@@ -111,7 +111,7 @@ export async function fetchMentorByAccessToken(
       query: `
       query {
         me {
-          mentorToken {
+          mentor {
             _id
             name
             firstName
@@ -183,7 +183,6 @@ export async function fetchMentorByAccessToken(
     },
     { headers: headers }
   );
-  console.log("result:",result);
   return result.data.data.me.mentor;
 }
 
