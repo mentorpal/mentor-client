@@ -6,7 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import { visitAsGuestWithDefaultSetup } from "../support/helpers";
 
-describe.only("History", () => {
+describe("History", () => {
   it("does not display in topics list if no questions have been asked", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
@@ -33,6 +33,7 @@ describe.only("History", () => {
 
   it.only("displays both questions and answers as a chat", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
+    cy.viewport('macbook-11')
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=input-field]").type("user msg 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
