@@ -30,18 +30,20 @@ ul li p {
     background: #e8e9ea;
     float: left;
     border-bottom-left-radius: 5px;
+    
 }
 
 .user {
-    float: right;
+    float: left;
     background: #88929e;
     color: #fff;
     border-bottom-right-radius: 5px;
+    
 }
 
 .system+.user {
     border-bottom-right-radius: 5px;
-    margin-top: 10px;
+    margin-top: 10px;    
 }
 
 .user+.system {

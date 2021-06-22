@@ -103,7 +103,7 @@ function ChatItem(props: {
       </a>
     );
   }
-  console.log(message.text)
+  console.log(message)
   return (
     <ListItem
       data-cy={`chat-msg-${i}`}
@@ -113,7 +113,7 @@ function ChatItem(props: {
       style={{
         paddingRight: 16,
         maxWidth: 750,
-        marginRight: message.feedbackId ? 10 : 0,
+        marginLeft: message.feedbackId ? 50 : 0,
       }}
     >
       <ReactMarkdown source={message.text} renderers={{ link: LinkRenderer }} />
@@ -224,7 +224,7 @@ function ChatItem(props: {
   );
 }
 
-function Chat(props: { height: number }): JSX.Element {
+function HistoryChat(props: { height: number }): JSX.Element {
   const styles = useStyles();
   const [chatData, setChatData] = useState<ChatData>({
     messages: [],
@@ -239,11 +239,11 @@ function Chat(props: { height: number }): JSX.Element {
   const mentor = useSelector<State, MentorState>(
     (state) => state.mentorsById[state.curMentor]
   );
+  
   const curQuestion = useSelector<State, string>((state) => state.curQuestion);
   const curQuestionUpdatedAt = useSelector<State, Date | undefined>(
     (state) => state.curQuestionUpdatedAt
   );
-
   useEffect(() => {
     const chatDataUpdated = {
       ...chatData,
@@ -267,16 +267,15 @@ function Chat(props: { height: number }): JSX.Element {
           text:
             getUtterance(mentor.mentor, UtteranceName.INTRO)?.transcript || "",
         });
-      }
-      
-      
+      }      
       if (chatDataUpdated.lastAnswerAt !== answerReceivedAt) {
         updated = true;
         chatDataUpdated.messages.push({
           isUser: false,
           text: mentor.answer_text || "",
-          feedbackId: mentor.answerFeedbackId,
+          feedbackId: mentor.answer_id, // there is not answerFeedbackId in the mentor object, so it was changed to answer_id
         });
+        console.log(`Mentor: ${mentor}`);
         chatDataUpdated.lastAnswerAt = answerReceivedAt;
       }
     }
@@ -293,7 +292,9 @@ function Chat(props: { height: number }): JSX.Element {
   }, [chatData.messages]);
 
   function onSendFeedback(id: string, feedback: Feedback) {
+    console.log(id, feedback)
     const ix = chatData.messages.findIndex((f) => f.feedbackId === id);
+    console.log(chatData.messages)
     if (ix === -1) {
       return;
     }
@@ -318,7 +319,6 @@ function Chat(props: { height: number }): JSX.Element {
         style={{ height: props.height }}
         disablePadding={true}
         >
-        {console.log(chatData)}
         {chatData.messages.map((m, i) => {
             return (
                 <ChatItem
@@ -335,4 +335,4 @@ function Chat(props: { height: number }): JSX.Element {
   );
 }
 
-export default Chat;
+export default HistoryChat;

@@ -4,7 +4,8 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { visitAsGuestWithDefaultSetup } from "../support/helpers";
+import { visitAsGuestWithDefaultSetup, mockDefaultSetup, cyMockGQL } from "../support/helpers";
+const clint = require("../fixtures/clint.json");
 
 describe("History", () => {
   it("does not display in topics list if no questions have been asked", () => {
@@ -42,12 +43,38 @@ describe("History", () => {
     cy.get("[data-cy=chat-msg-0]");
     cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
     cy.get("[data-cy=chat-msg-2]").contains("I'm thirty seven years old.");
-    
-    
-    
     // cy.get("[data-cy=history]").within(($hc) => {
     //   cy.get("[data-cy=msg-user-1]").contains("user msg 1");
     // });
+  });
+
+  it.only("can give feedback on classifier answer", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint"] },
+      mentorData: [clint],
+      apiResponse: "response_with_feedback.json",
+      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
+    });
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_with_feedback.json",
+    });
+    cy.viewport("macbook-11");
+    cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
+    cy.get(
+      "[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]"
+    ).should("exist");
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn]")
+      .trigger("mouseover")
+      .click();
+    cy.get("[data-cy=click-good]");
+    cy.get("[data-cy=click-neutral]");
+    cy.get("[data-cy=click-bad]").trigger("mouseover").click();
+    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=bad]").should(
+      "exist"
+    );
+    cy.get(
+      "[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]"
+    ).should("not.exist");
   });
 
   it("displays questions that have been asked via topic button", () => {
