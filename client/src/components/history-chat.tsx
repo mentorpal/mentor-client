@@ -21,6 +21,7 @@ import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
 import CloseIcon from "@material-ui/icons/Close";
+import { Visibility, VisibilityOff } from "@material-ui/icons";
 
 import { giveFeedback, getUtterance } from "api";
 import {
@@ -68,6 +69,9 @@ const useStyles = makeStyles((theme) => ({
   },
   introMsg: {
       marginLeft: "0rem !important",
+  },
+  visibilityBtn: {
+    marginLeft: "5px",
   }
 }));
 
@@ -81,6 +85,10 @@ function ChatItem(props: {
   const { message, i, styles, onSendFeedback } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const config = useSelector<State, Config>((s) => s.config);
+  const [showHideAnswer, setshowHideAnswer] = React.useState(true);
+
+  // console.log(`index: ${i}`) 
+  // console.log(` message: ${JSON.stringify(message)}`) 
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(event.currentTarget);
@@ -103,10 +111,24 @@ function ChatItem(props: {
       </a>
     );
   }
-  console.log(message)
+//   console.log(message)
+
+  function onVisibility(idx:number){
+    console.log(`index: ${idx}`)
+    const answer = document.getElementById(`chat-msg-${i+1}`);
+    if(answer){
+      if (answer.style.display === "none") {
+        answer.style.display = "block";
+      } else {
+        answer.style.display = "none";
+      }
+    }
+    setshowHideAnswer(!showHideAnswer)
+  }
   return (
     <ListItem
       data-cy={`chat-msg-${i}`}
+      id={`chat-msg-${i}`}
       disableGutters={false}
       className={message.isUser ? "user" : "system"}
       classes={{ root: styles.root }}
@@ -115,7 +137,9 @@ function ChatItem(props: {
         maxWidth: 750,
         marginLeft: message.feedbackId ? 50 : 0,
       }}
+      
     >
+      {message.isUser ? (showHideAnswer ? (<Visibility className="visibilityBtn" onClick={() => onVisibility(i)}/>): (<VisibilityOff className="visibilityBtn" onClick={() => onVisibility(i)}/>)) : null}
       <ReactMarkdown source={message.text} renderers={{ link: LinkRenderer }} />
       {message.feedbackId ? (
         <div
@@ -244,12 +268,15 @@ function HistoryChat(props: { height: number }): JSX.Element {
   const curQuestionUpdatedAt = useSelector<State, Date | undefined>(
     (state) => state.curQuestionUpdatedAt
   );
+//   console.log(curQuestion)
+//   console.log(chatData)
+  
+
   useEffect(() => {
     const chatDataUpdated = {
       ...chatData,
       messages: [...chatData.messages],
-    };
-    
+    };    
     let updated = false;
     if (chatDataUpdated.lastQuestionAt !== curQuestionUpdatedAt) {
       updated = true;
@@ -273,16 +300,18 @@ function HistoryChat(props: { height: number }): JSX.Element {
         chatDataUpdated.messages.push({
           isUser: false,
           text: mentor.answer_text || "",
-          feedbackId: mentor.answer_id, // there is not answerFeedbackId in the mentor object, so it was changed to answer_id
+          feedbackId: mentor.answerFeedbackId + String(Math.floor(Math.random() * 10000) + 1), // there is not answerFeedbackId in the mentor object, so it was changed to answer_id
         });
-        console.log(`Mentor: ${mentor}`);
+        // console.log(`Mentor: ${mentor}`);
+        // console.log(`chatDataUpdated: ${JSON.stringify(chatDataUpdated.messages)}`);
+    
         chatDataUpdated.lastAnswerAt = answerReceivedAt;
       }
     }
     if (updated) {
       setChatData(chatDataUpdated);
     }
-    console.log(chatData.messages)
+    // console.log(chatData.messages)
   }, [mentor, curQuestionUpdatedAt]);
 
   useEffect(() => {
@@ -294,7 +323,7 @@ function HistoryChat(props: { height: number }): JSX.Element {
   function onSendFeedback(id: string, feedback: Feedback) {
     console.log(id, feedback)
     const ix = chatData.messages.findIndex((f) => f.feedbackId === id);
-    console.log(chatData.messages)
+    console.log("ix:",ix)
     if (ix === -1) {
       return;
     }
@@ -309,7 +338,10 @@ function HistoryChat(props: { height: number }): JSX.Element {
         ...chatData.messages.slice(ix + 1),
       ],
     });
+    // console.log(chatData.messages)
   }
+
+  
 
   return (
       <div data-cy="history-chat" className={styles.chat_container}>

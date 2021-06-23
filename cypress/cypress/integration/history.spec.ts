@@ -10,6 +10,7 @@ const clint = require("../fixtures/clint.json");
 describe("History", () => {
   it("does not display in topics list if no questions have been asked", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
+    cy.viewport('macbook-11')
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=topics]").should("not.have.value", "History");
   });
@@ -38,11 +39,20 @@ describe("History", () => {
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should('exist');
+
+    // Send first test message
     cy.get("[data-cy=input-field]").type("user msg 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=chat-msg-0]");
     cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
     cy.get("[data-cy=chat-msg-2]").contains("I'm thirty seven years old.");
+
+    // Send second test message
+    cy.get("[data-cy=input-field]").type("user msg 2");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=chat-msg-3]");
+    cy.get("[data-cy=chat-msg-3]").contains("user msg 2");
+    cy.get("[data-cy=chat-msg-4]").contains("I'm thirty seven years old.");
     // cy.get("[data-cy=history]").within(($hc) => {
     //   cy.get("[data-cy=msg-user-1]").contains("user msg 1");
     // });
