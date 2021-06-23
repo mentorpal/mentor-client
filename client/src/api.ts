@@ -112,73 +112,10 @@ export async function fetchMentorByAccessToken(
       query {
         me {
           mentor {
-            _id
-            name
-            firstName
-            title
-            mentorType
-            lastTrainedAt
-            defaultSubject {
-              _id
+            _id  
             }
-            subjects {
-              _id
-              name
-              description
-              categories {
-                id
-                name
-                description
-              }
-              topics {
-                id
-                name
-                description
-              }
-              questions {
-                question {
-                  _id
-                  question
-                  type
-                  name
-                  paraphrases
-                  mentor
-                }
-                category {
-                  id
-                  name
-                  description
-                }
-                topics {
-                  id
-                  name
-                  description
-                }
-              }
-            }
-            topics(subject: "${subject || ""}") {
-              id
-              name
-              description
-            }
-            answers(subject: "${subject || ""}", topic: "${
-        topic || ""
-      }", status: "${status || ""}") {
-              _id
-              question {
-                _id
-                question
-                paraphrases
-                type
-                name
-                mentor
-              }
-              transcript
-              status
-            }
-          }  
+          }
         }
-      }
     `,
     },
     { headers: headers }
