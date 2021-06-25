@@ -16,17 +16,17 @@ clean:
 develop: .env.development node_modules/gatsby
 	npx gatsby develop
 
-.PHONY: pretty
-pretty:
-	npm run format
-
 .PHONY: format
 format:
-	cd .. && $(MAKE) license && $(MAKE) pretty
+	cd .. && $(MAKE) format
 
 .PHONY: license
 license:
 	cd .. && $(MAKE) license
+
+.PHONY: pretty
+pretty:
+	cd .. && $(MAKE) pretty
 
 node_modules/eslint:
 	npm ci 

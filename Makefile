@@ -4,12 +4,15 @@ TEST_E2E_DOCKER_COMPOSE=docker-compose
 node_modules/license-check-and-add:
 	npm ci
 
-PHONY: clean
+node_modules/prettier:
+	npm ci
+
+.PHONY: clean
 clean:
 	cd client && $(MAKE) clean
 	cd docker && $(MAKE) clean
 
-PHONY: develop
+.PHONY: develop
 develop:
 	cd client && $(MAKE) develop
 
@@ -28,23 +31,23 @@ LICENSE_HEADER:
 	@echo "you must have a LICENSE_HEADER file" 1>&2
 	exit 1
 
-PHONY: format
-format: LICENSE LICENSE_HEADER node_modules/license-check-and-add
-	npm run license:fix && $(MAKE) pretty
+.PHONY: format
+format:
+	$(MAKE) license && $(MAKE) pretty
 
-PHONY: license
+.PHONY: license
 license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
 	npm run license:fix
 
-PHONY: pretty
-pretty:
-	cd client && $(MAKE) pretty
+.PHONY: pretty
+pretty: node_modules/prettier
+	npm run format
 
-PHONY: test
+.PHONY: test
 test:
 	cd client && $(MAKE) test
 
-PHONY: test-all
+.PHONY: test-all
 test-all:
 	#$(MAKE) test-audit
 	$(MAKE) test-format
@@ -53,19 +56,19 @@ test-all:
 	$(MAKE) test-types
 	$(MAKE) test
 
-PHONY: test-audit
+.PHONY: test-audit
 test-audit:
 	cd client && $(MAKE) test-audit
 
-PHONY: test-format
-test-format:
-	cd client && $(MAKE) test-format
+.PHONY: test-format
+test-format: node_modules/prettier
+	npm run test:format
 
-PHONY: test-lint
+.PHONY: test-lint
 test-lint:
 	cd client && $(MAKE) test-lint
 
-PHONY: test-types
+.PHONY: test-types
 test-types:
 	cd client && $(MAKE) test-types
 
