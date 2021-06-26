@@ -16,10 +16,6 @@ clean:
 develop:
 	cd client && $(MAKE) develop
 
-.PHONY: format
-format: node_modules/prettier
-	npm run format
-
 .PHONY docker-build:
 docker-build:
 	docker build \
@@ -27,13 +23,33 @@ docker-build:
 		-t $(DOCKER_IMAGE) \
 	.
 
+LICENSE:
+	@echo "you must have a LICENSE file" 1>&2
+	exit 1
+
+LICENSE_HEADER:
+	@echo "you must have a LICENSE_HEADER file" 1>&2
+	exit 1
+
+.PHONY: format
+format:
+	$(MAKE) license && $(MAKE) pretty
+
+.PHONY: license
+license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
+	npm run license:fix
+
+.PHONY: pretty
+pretty: node_modules/prettier
+	npm run format
+
 .PHONY: test
 test:
 	cd client && $(MAKE) test
 
 .PHONY: test-all
 test-all:
-	$(MAKE) test-audit
+	#$(MAKE) test-audit
 	$(MAKE) test-format
 	$(MAKE) test-lint
 	$(MAKE) test-license
@@ -44,6 +60,10 @@ test-all:
 test-audit:
 	cd client && $(MAKE) test-audit
 
+.PHONY: test-format
+test-format: node_modules/prettier
+	npm run test:format
+
 .PHONY: test-lint
 test-lint:
 	cd client && $(MAKE) test-lint
@@ -52,24 +72,8 @@ test-lint:
 test-types:
 	cd client && $(MAKE) test-types
 
-LICENSE:
-	@echo "you must have a LICENSE file" 1>&2
-	exit 1
-
-LICENSE_HEADER:
-	@echo "you must have a LICENSE_HEADER file" 1>&2
-	exit 1
-
-.PHONY: license
-license: LICENSE LICENSE_HEADER
-	npm run license:fix
-
-.PHONY: test-format
-test-format: node_modules/prettier
-	npm run test:format
-
 .PHONY: test-license
-test-license: LICENSE LICENSE_HEADER
+test-license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
 	npm run test:license
 
 .PHONY: test-e2e
