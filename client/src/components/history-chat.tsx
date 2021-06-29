@@ -21,7 +21,8 @@ import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
 import CloseIcon from "@material-ui/icons/Close";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { ArrowForwardIos, RotateLeft  } from "@material-ui/icons";
+import {FormGroup, FormControlLabel, Switch, IconButton} from '@material-ui/core'
 
 import { giveFeedback, getUtterance } from "api";
 import {
@@ -34,6 +35,7 @@ import {
   UtteranceName,
 } from "types";
 import "styles/history-chat.css";
+import questions from "./questions";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -80,14 +82,16 @@ function ChatItem(props: {
   i: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   styles: any;
+  iconState: boolean;
   onSendFeedback: (id: string, feedback: Feedback) => void;
 }): JSX.Element {
-  const { message, i, styles, onSendFeedback } = props;
+  const { message, i, styles, onSendFeedback, iconState } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const config = useSelector<State, Config>((s) => s.config);
   const [showHideAnswer, setshowHideAnswer] = React.useState(true);
+  // const [reset, setReset] = useState(false)
 
-  // console.log(`index: ${i}`) 
+  // console.log(`iconState: ${iconState}`) 
   // console.log(` message: ${JSON.stringify(message)}`) 
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
@@ -105,26 +109,51 @@ function ChatItem(props: {
   }
 
   function LinkRenderer(props: { href: string; children: React.ReactNode }) {
+    console.log("**********************")
+    console.log(props.children)
     return (
+      <h3>
       <a href={props.href} target="_blank" rel="noreferrer">
         {props.children}
       </a>
+      </h3>
     );
   }
+
 //   console.log(message)
 
-  function onVisibility(idx:number){
-    console.log(`index: ${idx}`)
-    const answer = document.getElementById(`chat-msg-${i+1}`);
-    if(answer){
-      if (answer.style.display === "none") {
-        answer.style.display = "block";
+  /**
+   * hide or show an answer asked from user using its index
+   * @param  {Number} idx  index of current message
+   */
+  function visibilityState(idx:number){
+    // get answer msg
+    const answerMsg = document.getElementById(`chat-msg-${idx+1}`);
+
+    // hide it or show it
+    if(answerMsg){ 
+      if (answerMsg.style.display === "none") {
+        answerMsg.style.display = "block";
+        answerMsg.classList.add("visible")
+        answerMsg.classList.remove("hidden");
+        console.log(answerMsg)
+        setshowHideAnswer(!showHideAnswer)
       } else {
-        answer.style.display = "none";
+        answerMsg.style.display = "none";  
+        answerMsg.classList.add("hidden")
+        answerMsg.classList.remove("visible");
+
+        console.log(answerMsg)
+        setshowHideAnswer(!showHideAnswer)    
       }
     }
-    setshowHideAnswer(!showHideAnswer)
   }
+
+  // change visibilityBtn based on current state
+  const visibilityBtnState = showHideAnswer && iconState ? (<ArrowForwardIos data-cy={`eyeIcon-${i}`} className="visibilityBtn" onClick={() => visibilityState(i)}/>) :
+    (<ArrowForwardIos data-cy={`eyeIcon-${i}`} className="visibilityBtn" onClick={() => visibilityState(i)}/>);
+    ;
+  
   return (
     <ListItem
       data-cy={`chat-msg-${i}`}
@@ -139,7 +168,7 @@ function ChatItem(props: {
       }}
       
     >
-      {message.isUser ? (showHideAnswer ? (<Visibility className="visibilityBtn" onClick={() => onVisibility(i)}/>): (<VisibilityOff className="visibilityBtn" onClick={() => onVisibility(i)}/>)) : null}
+      {message.isUser ? visibilityBtnState : null}
       <ReactMarkdown source={message.text} renderers={{ link: LinkRenderer }} />
       {message.feedbackId ? (
         <div
@@ -248,11 +277,25 @@ function ChatItem(props: {
   );
 }
 
-function HistoryChat(props: { height: number }): JSX.Element {
+interface ScrollingQuestionsParams {
+  height: number,
+  questionHistory: string[];
+  
+}
+
+function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
+  const {
+    height,
+    questionHistory,
+  } = args;
   const styles = useStyles();
   const [chatData, setChatData] = useState<ChatData>({
     messages: [],
   });
+
+  const [checked, toggleChecked] = useState(true);
+
+  
   const answerReceivedAt = useSelector<State, Date | undefined>((state) => {
     const m = state.mentorsById[state.curMentor];
     if (!(m && m.answerReceivedAt)) {
@@ -276,7 +319,10 @@ function HistoryChat(props: { height: number }): JSX.Element {
     const chatDataUpdated = {
       ...chatData,
       messages: [...chatData.messages],
-    };    
+    };   
+    // console.log(questionHistory)
+    // console.log(chatDataUpdated.messages) 
+    
     let updated = false;
     if (chatDataUpdated.lastQuestionAt !== curQuestionUpdatedAt) {
       updated = true;
@@ -285,6 +331,9 @@ function HistoryChat(props: { height: number }): JSX.Element {
         text: curQuestion,
       });
       chatDataUpdated.lastQuestionAt = curQuestionUpdatedAt;
+
+     
+      // chatDataUpdated.messages.concat(questionHistory)
     }
     if (mentor) {
       if (chatDataUpdated.messages.length === 0) {
@@ -300,7 +349,9 @@ function HistoryChat(props: { height: number }): JSX.Element {
         chatDataUpdated.messages.push({
           isUser: false,
           text: mentor.answer_text || "",
-          feedbackId: mentor.answerFeedbackId + String(Math.floor(Math.random() * 10000) + 1), // there is not answerFeedbackId in the mentor object, so it was changed to answer_id
+          // there is not answerFeedbackId in the mentor object, so it was changed to answer_id
+          // random number added to differentiate message and provide a feedback
+          feedbackId: mentor.answerFeedbackId + String(Math.floor(Math.random() * 10000) + 1), 
         });
         // console.log(`Mentor: ${mentor}`);
         // console.log(`chatDataUpdated: ${JSON.stringify(chatDataUpdated.messages)}`);
@@ -311,7 +362,7 @@ function HistoryChat(props: { height: number }): JSX.Element {
     if (updated) {
       setChatData(chatDataUpdated);
     }
-    // console.log(chatData.messages)
+    console.log('-----updated-----')
   }, [mentor, curQuestionUpdatedAt]);
 
   useEffect(() => {
@@ -321,9 +372,9 @@ function HistoryChat(props: { height: number }): JSX.Element {
   }, [chatData.messages]);
 
   function onSendFeedback(id: string, feedback: Feedback) {
-    console.log(id, feedback)
+    // console.log(id, feedback)
     const ix = chatData.messages.findIndex((f) => f.feedbackId === id);
-    console.log("ix:",ix)
+    // console.log("ix:",ix)
     if (ix === -1) {
       return;
     }
@@ -338,19 +389,119 @@ function HistoryChat(props: { height: number }): JSX.Element {
         ...chatData.messages.slice(ix + 1),
       ],
     });
-    // console.log(chatData.messages)
   }
 
+   function hideAnswers(){
+      // get mentor answers
+      try {
+        const historyChat = document?.getElementById("chat-thread")?.getElementsByClassName('system');
+        if(historyChat !== undefined){
+          for(let i=1;i<historyChat.length;i++){
+            const classes = historyChat[i].className.split(/\s+/)
+            if(classes[classes.length-1] !== 'visible'){
+              historyChat[i].style.display = "none";
+            }
+          } 
+        }
+      }
+      catch(err) {
+        console.log(err)
+      }
+      
+    }
+
+    function showAnswers(){
+      // get mentor msg
+      try{
+        const historyChat = document?.getElementById("chat-thread")?.getElementsByClassName('system');
+        if(historyChat !== undefined){
+          for(let i=1;i<historyChat.length;i++){
+          const classes = historyChat[i]?.className.split(/\s+/)
+            if(classes[classes.length-1] !== 'hidden'){
+              historyChat[i].style.display = "block";
+            }
+          } 
+        }
+      }
+      catch {
+        console.log("not ready")
+      }   
+    }
+
+    function showLast() {
+      const systemNodes = document.querySelectorAll(".system")
+      const lastNode = systemNodes.item(systemNodes.length-1)
+      try {
+        lastNode.style.display = 'block'
+      }catch (err){
+        console.log(err)
+      }      
+    }
+
+    const call = () => {
+      hideAnswers()
+      showLast()
+    }
+
+  checked ? call() : showAnswers();
+
+  function resetVisibility () {
+    console.log("reset")
+    try {
+      const historyChatVisible = document?.getElementById("chat-thread")?.getElementsByClassName('visible');
+      const historyChatHidden = document?.getElementById("chat-thread")?.getElementsByClassName('hidden');
+
+      if(historyChatVisible !== undefined){
+        for(let i=0;i<historyChatVisible.length;i++){
+          historyChatVisible[i].classList.remove("visible");
+        }
+      }
+      if(historyChatHidden !== undefined){
+        for(let i=0;i<historyChatHidden.length;i++){
+          historyChatHidden[i].classList.remove("hidden");
+        }
+      }
+    }catch(err) {
+      console.log(err)
+    }
+    
+  }
+
+  const resetButton = (
+    <IconButton data-cy="visibility-reset-btn" color="primary" aria-label="Reset" style={{marginRight: "5px"}}>
+      <RotateLeft onClick={resetVisibility} />
+    </IconButton>
+  )
   
+  const toggleAnswers = (
+    <div>
+      <FormGroup className='togglePos'>
+        {resetButton}
+        <FormControlLabel
+          control={
+            <Switch
+              size="medium"
+              checked={checked}
+              onChange={() => toggleChecked((prev) => !prev)}
+              data-cy="visibility-switch"
+            />
+          }
+          label="hide/show"
+        />
+      </FormGroup>
+    </div>
+  )
 
   return (
-      <div data-cy="history-chat" className={styles.chat_container}>
-        <List
+    <div data-cy="history-chat" id="history-chat" data-topic="History" className={styles.chat_container}>
+      <List
         data-cy="chat-thread"
         className={styles.list}
-        style={{ height: props.height }}
+        style={{ height: height }}
         disablePadding={true}
+        id="chat-thread"
         >
+      {toggleAnswers}
         {chatData.messages.map((m, i) => {
             return (
                 <ChatItem
@@ -359,10 +510,11 @@ function HistoryChat(props: { height: number }): JSX.Element {
                     i={i}
                     styles={styles}
                     onSendFeedback={onSendFeedback}
+                    iconState={checked}
                 />
             );
         })}
-        </List>
+      </List>
     </div>
   );
 }

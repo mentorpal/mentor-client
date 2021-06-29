@@ -1,16 +1,13 @@
 /*
 This software is Copyright ©️ 2020 The University of Southern California. All Rights Reserved. 
 Permission to use, copy, modify, and distribute this software and its documentation for educational, research and non-profit purposes, without fee, and without a written agreement is hereby granted, provided that the above copyright notice and subject to the full license file found in the root of this software deliverable. Permission to make commercial use of this software may be obtained by contacting:  USC Stevens Center for Innovation University of Southern California 1150 S. Olive Street, Suite 2300, Los Angeles, CA 90115, USA Email: accounting@stevens.usc.edu
-
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { visitAsGuestWithDefaultSetup, mockDefaultSetup, cyMockGQL } from "../support/helpers";
-const clint = require("../fixtures/clint.json");
+import { visitAsGuestWithDefaultSetup } from "../support/helpers";
 
 describe("History", () => {
   it("does not display in topics list if no questions have been asked", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.viewport('macbook-11')
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=topics]").should("not.have.value", "History");
   });
@@ -30,61 +27,6 @@ describe("History", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=topic-2]").trigger("mouseover").click();
     cy.get("[data-cy=scrolling-questions-list]").contains("Hello");
-  });
-
-
-  it.only("displays both questions and answers as a chat", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
-    cy.viewport('macbook-11')
-    cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
-    cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
-    cy.get("[data-cy=history-chat]").should('exist');
-
-    // Send first test message
-    cy.get("[data-cy=input-field]").type("user msg 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-0]");
-    cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
-    cy.get("[data-cy=chat-msg-2]").contains("I'm thirty seven years old.");
-
-    // Send second test message
-    cy.get("[data-cy=input-field]").type("user msg 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-3]");
-    cy.get("[data-cy=chat-msg-3]").contains("user msg 2");
-    cy.get("[data-cy=chat-msg-4]").contains("I'm thirty seven years old.");
-    // cy.get("[data-cy=history]").within(($hc) => {
-    //   cy.get("[data-cy=msg-user-1]").contains("user msg 1");
-    // });
-  });
-
-  it.only("can give feedback on classifier answer", () => {
-    mockDefaultSetup(cy, {
-      config: { mentorsDefault: ["clint"] },
-      mentorData: [clint],
-      apiResponse: "response_with_feedback.json",
-      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
-    });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_feedback.json",
-    });
-    cy.viewport("macbook-11");
-    cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
-    cy.get(
-      "[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]"
-    ).should("exist");
-    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn]")
-      .trigger("mouseover")
-      .click();
-    cy.get("[data-cy=click-good]");
-    cy.get("[data-cy=click-neutral]");
-    cy.get("[data-cy=click-bad]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=bad]").should(
-      "exist"
-    );
-    cy.get(
-      "[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]"
-    ).should("not.exist");
   });
 
   it("displays questions that have been asked via topic button", () => {

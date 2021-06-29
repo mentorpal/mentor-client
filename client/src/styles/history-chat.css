@@ -69,6 +69,14 @@ ul li p {
     margin-right: 5px;
 }
 
+.togglePos {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end;
+}
+
 /* Round Last Bubble */
 
 

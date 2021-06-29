@@ -65,7 +65,7 @@ function Questions(props: {
 
   const content =
     curTopic === "History" ? (
-      <HistoryChat height={500} />
+      <HistoryChat height={500} questionHistory={questions} />
     ) : (
       <ScrollingQuestions
         questions={questions}
