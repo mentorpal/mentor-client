@@ -36,7 +36,7 @@ describe("History", () => {
     cy.get("[data-cy=history-chat]").contains("Hello");
   });
 
-  it.only("displays both questions and answers as a chat", () => {
+  it("displays both questions and answers as a chat", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.viewport("macbook-11");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
@@ -61,7 +61,7 @@ describe("History", () => {
     // });
   });
 
-  it.only("can give feedback on classifier answer", () => {
+  it("can give feedback on classifier answer", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
       mentorData: [clint],
@@ -101,7 +101,7 @@ describe("History", () => {
     cy.get("[data-cy=click-good]").trigger("mouseover").click();
   });
 
-  it.only("Answers can be toggled open to see the transcript of the response", () => {
+  it("Answers can be toggled open to see the transcript of the response", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
       mentorData: [clint],
@@ -138,7 +138,7 @@ describe("History", () => {
     // eyeIcon-1
   });
 
-  it.only("Answers are collapsed by default except the most recent", () => {
+  it("Answers are collapsed by default except the most recent", () => {
     // visitAsGuestWithDefaultSetup(cy, "/");
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
@@ -157,7 +157,7 @@ describe("History", () => {
     cy.get("[data-cy=chat-msg-6]").should("be.visible");
   });
 
-  it.only("When a new answer arrives, it is always open when it lands (regardless of switch)", () => {
+  it("When a new answer arrives, it is always open when it lands (regardless of switch)", () => {
     // visitAsGuestWithDefaultSetup(cy, "/");
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
@@ -192,7 +192,7 @@ describe("History", () => {
     cy.get("[data-cy=chat-msg-8]").scrollIntoView().should("be.visible");
   });
 
-  it.only("If switch is set to Hide, then hides all answers ", () => {
+  it("If switch is set to Hide, then hides all answers ", () => {
     // visitAsGuestWithDefaultSetup(cy, "/");
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
@@ -213,7 +213,7 @@ describe("History", () => {
     cy.get("[data-cy=chat-msg-6]").should("not.visible");
   });
 
-  it.only("If switch is set to Show, then opens all answers", () => {
+  it("If switch is set to Show, then opens all answers", () => {
     // visitAsGuestWithDefaultSetup(cy, "/");
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
@@ -235,7 +235,7 @@ describe("History", () => {
     cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
   });
 
-  it.only("If switch is to *Hide* then when new answer arrives it is open at the bottom and all answers manually opened before it are left in their prior open/closed position", () => {
+  it("If switch is to *Hide* then when new answer arrives it is open at the bottom and all answers manually opened before it are left in their prior open/closed position", () => {
     // visitAsGuestWithDefaultSetup(cy, "/");
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
@@ -265,7 +265,7 @@ describe("History", () => {
     cy.get("[data-cy=chat-msg-4]").scrollIntoView().should("be.visible");
   });
 
-  it.only("If switch is to *Show* then when new answer arrives it is open and all other answers are left in their prior open/closed position", () => {
+  it("If switch is to *Show* then when new answer arrives it is open and all other answers are left in their prior open/closed position", () => {
     // visitAsGuestWithDefaultSetup(cy, "/");
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
@@ -295,7 +295,7 @@ describe("History", () => {
     // cy.get("[data-cy=chat-msg-4]").scrollIntoView().should('be.visible');
   });
 
-  it.only("Button toggles in transcript to expand/collapse all answers ", () => {
+  it("Button toggles in transcript to expand/collapse all answers ", () => {
     // visitAsGuestWithDefaultSetup(cy, "/");
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
