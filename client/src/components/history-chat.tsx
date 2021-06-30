@@ -84,14 +84,17 @@ function ChatItem(props: {
   styles: any;
   iconState: boolean;
   onSendFeedback: (id: string, feedback: Feedback) => void;
+  mentorBubbleProps: object;
 }): JSX.Element {
-  const { message, i, styles, onSendFeedback, iconState } = props;
+  const { message, i, styles, onSendFeedback, iconState, mentorBubbleProps } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const config = useSelector<State, Config>((s) => s.config);
   const [showHideAnswer, setshowHideAnswer] = React.useState(true);
   // const [reset, setReset] = useState(false)
 
   // console.log(`iconState: ${iconState}`) 
+  // console.log(mentorBubbleProps)
+
   // console.log(` message: ${JSON.stringify(message)}`) 
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
@@ -149,6 +152,8 @@ function ChatItem(props: {
     }
   }
 
+  
+
   // change visibilityBtn based on current state
   const visibilityBtnState = showHideAnswer && iconState ? (<ArrowForwardIos data-cy={`eyeIcon-${i}`} className="visibilityBtn" onClick={() => visibilityState(i)}/>) :
     (<ArrowForwardIos data-cy={`eyeIcon-${i}`} className="visibilityBtn" onClick={() => visibilityState(i)}/>);
@@ -165,16 +170,19 @@ function ChatItem(props: {
         paddingRight: 16,
         maxWidth: 750,
         marginLeft: message.feedbackId ? 50 : 0,
+        backgroundColor: message.isUser ? "#88929e" : mentorBubbleProps.color,
       }}
       
     >
       {message.isUser ? visibilityBtnState : null}
-      <ReactMarkdown source={message.text} renderers={{ link: LinkRenderer }} />
+      {/* mentorBubbleProps.name.concat(": ", message.text) */}
+      <ReactMarkdown source={message.isUser ? message.text: mentorBubbleProps.name.concat(": ", message.text)} renderers={{ link: LinkRenderer }} />
       {message.feedbackId ? (
         <div
           data-cy="feedback-btn"
           className={styles.icon}
           onClick={handleFeedbackClick}
+          style={{zIndex: 2}}
         >
           <ListItemAvatar>
             <Avatar
@@ -294,6 +302,7 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   });
 
   const [checked, toggleChecked] = useState(true);
+  const [mentorProps, setMentorProps] = useState([])
 
   
   const answerReceivedAt = useSelector<State, Date | undefined>((state) => {
@@ -307,21 +316,29 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
     (state) => state.mentorsById[state.curMentor]
   );
   
+  // const mentorBubbleProps = {
+  //   name: mentor.mentor.name,
+  //   color: generateColors()
+  // }
+
+  useEffect(() => {
+    setMentorProps({
+      name: mentor.mentor.name,
+      color: generateColors()
+    })
+  }, [mentor.mentor.name])
+
+
   const curQuestion = useSelector<State, string>((state) => state.curQuestion);
   const curQuestionUpdatedAt = useSelector<State, Date | undefined>(
     (state) => state.curQuestionUpdatedAt
   );
-//   console.log(curQuestion)
-//   console.log(chatData)
-  
 
   useEffect(() => {
     const chatDataUpdated = {
       ...chatData,
       messages: [...chatData.messages],
     };   
-    // console.log(questionHistory)
-    // console.log(chatDataUpdated.messages) 
     
     let updated = false;
     if (chatDataUpdated.lastQuestionAt !== curQuestionUpdatedAt) {
@@ -332,8 +349,6 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
       });
       chatDataUpdated.lastQuestionAt = curQuestionUpdatedAt;
 
-     
-      // chatDataUpdated.messages.concat(questionHistory)
     }
     if (mentor) {
       if (chatDataUpdated.messages.length === 0) {
@@ -353,8 +368,7 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
           // random number added to differentiate message and provide a feedback
           feedbackId: mentor.answerFeedbackId + String(Math.floor(Math.random() * 10000) + 1), 
         });
-        // console.log(`Mentor: ${mentor}`);
-        // console.log(`chatDataUpdated: ${JSON.stringify(chatDataUpdated.messages)}`);
+        console.log(`Mentor: ${mentor}`);
     
         chatDataUpdated.lastAnswerAt = answerReceivedAt;
       }
@@ -467,6 +481,12 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
     
   }
 
+  function generateColors (){
+    return  "hsl(" + 360 * Math.random() + ',' +
+    (25 + 70 * Math.random()) + '%,' + 
+    (85 + 10 * Math.random()) + '%)'
+  }
+
   const resetButton = (
     <IconButton data-cy="visibility-reset-btn" color="primary" aria-label="Reset" style={{marginRight: "5px"}}>
       <RotateLeft onClick={resetVisibility} />
@@ -476,6 +496,7 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   const toggleAnswers = (
     <div>
       <FormGroup className='togglePos'>
+        <p style={{backgroundColor: mentorProps.color, borderRadius: "0.5rem", display: "flex", alignItems: "center"}}>{mentorProps.name}</p>
         {resetButton}
         <FormControlLabel
           control={
@@ -511,6 +532,7 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
                     styles={styles}
                     onSendFeedback={onSendFeedback}
                     iconState={checked}
+                    mentorBubbleProps={mentorProps}
                 />
             );
         })}
