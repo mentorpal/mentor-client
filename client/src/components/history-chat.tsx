@@ -21,8 +21,13 @@ import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
 import CloseIcon from "@material-ui/icons/Close";
-import { ArrowForwardIos, RotateLeft  } from "@material-ui/icons";
-import {FormGroup, FormControlLabel, Switch, IconButton} from '@material-ui/core'
+import { ArrowForwardIos, RotateLeft } from "@material-ui/icons";
+import {
+  FormGroup,
+  FormControlLabel,
+  Switch,
+  IconButton,
+} from "@material-ui/core";
 
 import { giveFeedback, getUtterance } from "api";
 import {
@@ -37,7 +42,6 @@ import {
 import "styles/history-chat.css";
 import questions from "./questions";
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "auto",
@@ -45,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   list: {
     marginTop: 1,
     padding: 10,
-    maxHeight: "20vh"
+    maxHeight: "20vh",
   },
   avatar: {
     width: theme.spacing(4),
@@ -67,14 +71,14 @@ const useStyles = makeStyles((theme) => ({
     // backgroundColor: "black",
   },
   chat_container: {
-      backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   introMsg: {
-      marginLeft: "0rem !important",
+    marginLeft: "0rem !important",
   },
   visibilityBtn: {
     marginLeft: "5px",
-  }
+  },
 }));
 
 function ChatItem(props: {
@@ -86,16 +90,17 @@ function ChatItem(props: {
   onSendFeedback: (id: string, feedback: Feedback) => void;
   mentorBubbleProps: object;
 }): JSX.Element {
-  const { message, i, styles, onSendFeedback, iconState, mentorBubbleProps } = props;
+  const { message, i, styles, onSendFeedback, iconState, mentorBubbleProps } =
+    props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const config = useSelector<State, Config>((s) => s.config);
   const [showHideAnswer, setshowHideAnswer] = React.useState(true);
   // const [reset, setReset] = useState(false)
 
-  // console.log(`iconState: ${iconState}`) 
+  // console.log(`iconState: ${iconState}`)
   // console.log(mentorBubbleProps)
 
-  // console.log(` message: ${JSON.stringify(message)}`) 
+  // console.log(` message: ${JSON.stringify(message)}`)
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(event.currentTarget);
@@ -112,53 +117,61 @@ function ChatItem(props: {
   }
 
   function LinkRenderer(props: { href: string; children: React.ReactNode }) {
-    console.log("**********************")
-    console.log(props.children)
+    console.log("**********************");
+    console.log(props.children);
     return (
       <h3>
-      <a href={props.href} target="_blank" rel="noreferrer">
-        {props.children}
-      </a>
+        <a href={props.href} target="_blank" rel="noreferrer">
+          {props.children}
+        </a>
       </h3>
     );
   }
 
-//   console.log(message)
+  //   console.log(message)
 
   /**
    * hide or show an answer asked from user using its index
    * @param  {Number} idx  index of current message
    */
-  function visibilityState(idx:number){
+  function visibilityState(idx: number) {
     // get answer msg
-    const answerMsg = document.getElementById(`chat-msg-${idx+1}`);
+    const answerMsg = document.getElementById(`chat-msg-${idx + 1}`);
 
     // hide it or show it
-    if(answerMsg){ 
+    if (answerMsg) {
       if (answerMsg.style.display === "none") {
         answerMsg.style.display = "block";
-        answerMsg.classList.add("visible")
+        answerMsg.classList.add("visible");
         answerMsg.classList.remove("hidden");
-        console.log(answerMsg)
-        setshowHideAnswer(!showHideAnswer)
+        console.log(answerMsg);
+        setshowHideAnswer(!showHideAnswer);
       } else {
-        answerMsg.style.display = "none";  
-        answerMsg.classList.add("hidden")
+        answerMsg.style.display = "none";
+        answerMsg.classList.add("hidden");
         answerMsg.classList.remove("visible");
 
-        console.log(answerMsg)
-        setshowHideAnswer(!showHideAnswer)    
+        console.log(answerMsg);
+        setshowHideAnswer(!showHideAnswer);
       }
     }
   }
 
-  
-
   // change visibilityBtn based on current state
-  const visibilityBtnState = showHideAnswer && iconState ? (<ArrowForwardIos data-cy={`eyeIcon-${i}`} className="visibilityBtn" onClick={() => visibilityState(i)}/>) :
-    (<ArrowForwardIos data-cy={`eyeIcon-${i}`} className="visibilityBtn" onClick={() => visibilityState(i)}/>);
-    ;
-  
+  const visibilityBtnState =
+    showHideAnswer && iconState ? (
+      <ArrowForwardIos
+        data-cy={`eyeIcon-${i}`}
+        className="visibilityBtn"
+        onClick={() => visibilityState(i)}
+      />
+    ) : (
+      <ArrowForwardIos
+        data-cy={`eyeIcon-${i}`}
+        className="visibilityBtn"
+        onClick={() => visibilityState(i)}
+      />
+    );
   return (
     <ListItem
       data-cy={`chat-msg-${i}`}
@@ -172,17 +185,23 @@ function ChatItem(props: {
         marginLeft: message.feedbackId ? 50 : 0,
         backgroundColor: message.isUser ? "#88929e" : mentorBubbleProps.color,
       }}
-      
     >
       {message.isUser ? visibilityBtnState : null}
       {/* mentorBubbleProps.name.concat(": ", message.text) */}
-      <ReactMarkdown source={message.isUser ? message.text: mentorBubbleProps.name.concat(": ", message.text)} renderers={{ link: LinkRenderer }} />
+      <ReactMarkdown
+        source={
+          message.isUser
+            ? message.text
+            : mentorBubbleProps.name.concat(": ", message.text)
+        }
+        renderers={{ link: LinkRenderer }}
+      />
       {message.feedbackId ? (
         <div
           data-cy="feedback-btn"
           className={styles.icon}
           onClick={handleFeedbackClick}
-          style={{zIndex: 2}}
+          style={{ zIndex: 2 }}
         >
           <ListItemAvatar>
             <Avatar
@@ -286,25 +305,20 @@ function ChatItem(props: {
 }
 
 interface ScrollingQuestionsParams {
-  height: number,
+  height: number;
   questionHistory: string[];
-  
 }
 
 function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
-  const {
-    height,
-    questionHistory,
-  } = args;
+  const { height, questionHistory } = args;
   const styles = useStyles();
   const [chatData, setChatData] = useState<ChatData>({
     messages: [],
   });
 
   const [checked, toggleChecked] = useState(true);
-  const [mentorProps, setMentorProps] = useState([])
+  const [mentorProps, setMentorProps] = useState([]);
 
-  
   const answerReceivedAt = useSelector<State, Date | undefined>((state) => {
     const m = state.mentorsById[state.curMentor];
     if (!(m && m.answerReceivedAt)) {
@@ -315,7 +329,7 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   const mentor = useSelector<State, MentorState>(
     (state) => state.mentorsById[state.curMentor]
   );
-  
+
   // const mentorBubbleProps = {
   //   name: mentor.mentor.name,
   //   color: generateColors()
@@ -324,10 +338,9 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   useEffect(() => {
     setMentorProps({
       name: mentor.mentor.name,
-      color: generateColors()
-    })
-  }, [mentor.mentor.name])
-
+      color: generateColors(),
+    });
+  }, [mentor.mentor.name]);
 
   const curQuestion = useSelector<State, string>((state) => state.curQuestion);
   const curQuestionUpdatedAt = useSelector<State, Date | undefined>(
@@ -338,8 +351,8 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
     const chatDataUpdated = {
       ...chatData,
       messages: [...chatData.messages],
-    };   
-    
+    };
+
     let updated = false;
     if (chatDataUpdated.lastQuestionAt !== curQuestionUpdatedAt) {
       updated = true;
@@ -348,7 +361,6 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
         text: curQuestion,
       });
       chatDataUpdated.lastQuestionAt = curQuestionUpdatedAt;
-
     }
     if (mentor) {
       if (chatDataUpdated.messages.length === 0) {
@@ -358,7 +370,7 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
           text:
             getUtterance(mentor.mentor, UtteranceName.INTRO)?.transcript || "",
         });
-      }      
+      }
       if (chatDataUpdated.lastAnswerAt !== answerReceivedAt) {
         updated = true;
         chatDataUpdated.messages.push({
@@ -366,17 +378,19 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
           text: mentor.answer_text || "",
           // there is not answerFeedbackId in the mentor object, so it was changed to answer_id
           // random number added to differentiate message and provide a feedback
-          feedbackId: mentor.answerFeedbackId + String(Math.floor(Math.random() * 10000) + 1), 
+          feedbackId:
+            mentor.answerFeedbackId +
+            String(Math.floor(Math.random() * 10000) + 1),
         });
         console.log(`Mentor: ${mentor}`);
-    
+
         chatDataUpdated.lastAnswerAt = answerReceivedAt;
       }
     }
     if (updated) {
       setChatData(chatDataUpdated);
     }
-    console.log('-----updated-----')
+    console.log("-----updated-----");
   }, [mentor, curQuestionUpdatedAt]);
 
   useEffect(() => {
@@ -405,98 +419,122 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
     });
   }
 
-   function hideAnswers(){
-      // get mentor answers
-      try {
-        const historyChat = document?.getElementById("chat-thread")?.getElementsByClassName('system');
-        if(historyChat !== undefined){
-          for(let i=1;i<historyChat.length;i++){
-            const classes = historyChat[i].className.split(/\s+/)
-            if(classes[classes.length-1] !== 'visible'){
-              historyChat[i].style.display = "none";
-            }
-          } 
+  function hideAnswers() {
+    // get mentor answers
+    try {
+      const historyChat = document
+        ?.getElementById("chat-thread")
+        ?.getElementsByClassName("system");
+      if (historyChat !== undefined) {
+        for (let i = 1; i < historyChat.length; i++) {
+          const classes = historyChat[i].className.split(/\s+/);
+          if (classes[classes.length - 1] !== "visible") {
+            historyChat[i].style.display = "none";
+          }
         }
       }
-      catch(err) {
-        console.log(err)
-      }
-      
+    } catch (err) {
+      console.log(err);
     }
+  }
 
-    function showAnswers(){
-      // get mentor msg
-      try{
-        const historyChat = document?.getElementById("chat-thread")?.getElementsByClassName('system');
-        if(historyChat !== undefined){
-          for(let i=1;i<historyChat.length;i++){
-          const classes = historyChat[i]?.className.split(/\s+/)
-            if(classes[classes.length-1] !== 'hidden'){
-              historyChat[i].style.display = "block";
-            }
-          } 
+  function showAnswers() {
+    // get mentor msg
+    try {
+      const historyChat = document
+        ?.getElementById("chat-thread")
+        ?.getElementsByClassName("system");
+      if (historyChat !== undefined) {
+        for (let i = 1; i < historyChat.length; i++) {
+          const classes = historyChat[i]?.className.split(/\s+/);
+          if (classes[classes.length - 1] !== "hidden") {
+            historyChat[i].style.display = "block";
+          }
         }
       }
-      catch {
-        console.log("not ready")
-      }   
+    } catch {
+      console.log("not ready");
     }
+  }
 
-    function showLast() {
-      const systemNodes = document.querySelectorAll(".system")
-      const lastNode = systemNodes.item(systemNodes.length-1)
-      try {
-        lastNode.style.display = 'block'
-      }catch (err){
-        console.log(err)
-      }      
+  function showLast() {
+    const systemNodes = document.querySelectorAll(".system");
+    const lastNode = systemNodes.item(systemNodes.length - 1);
+    try {
+      lastNode.style.display = "block";
+    } catch (err) {
+      console.log(err);
     }
+  }
 
-    const call = () => {
-      hideAnswers()
-      showLast()
-    }
+  const call = () => {
+    hideAnswers();
+    showLast();
+  };
 
   checked ? call() : showAnswers();
 
-  function resetVisibility () {
-    console.log("reset")
+  function resetVisibility() {
+    console.log("reset");
     try {
-      const historyChatVisible = document?.getElementById("chat-thread")?.getElementsByClassName('visible');
-      const historyChatHidden = document?.getElementById("chat-thread")?.getElementsByClassName('hidden');
+      const historyChatVisible = document
+        ?.getElementById("chat-thread")
+        ?.getElementsByClassName("visible");
+      const historyChatHidden = document
+        ?.getElementById("chat-thread")
+        ?.getElementsByClassName("hidden");
 
-      if(historyChatVisible !== undefined){
-        for(let i=0;i<historyChatVisible.length;i++){
+      if (historyChatVisible !== undefined) {
+        for (let i = 0; i < historyChatVisible.length; i++) {
           historyChatVisible[i].classList.remove("visible");
         }
       }
-      if(historyChatHidden !== undefined){
-        for(let i=0;i<historyChatHidden.length;i++){
+      if (historyChatHidden !== undefined) {
+        for (let i = 0; i < historyChatHidden.length; i++) {
           historyChatHidden[i].classList.remove("hidden");
         }
       }
-    }catch(err) {
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
-    
   }
 
-  function generateColors (){
-    return  "hsl(" + 360 * Math.random() + ',' +
-    (25 + 70 * Math.random()) + '%,' + 
-    (85 + 10 * Math.random()) + '%)'
+  function generateColors() {
+    return (
+      "hsl(" +
+      360 * Math.random() +
+      "," +
+      (25 + 70 * Math.random()) +
+      "%," +
+      (85 + 10 * Math.random()) +
+      "%)"
+    );
   }
 
   const resetButton = (
-    <IconButton data-cy="visibility-reset-btn" color="primary" aria-label="Reset" style={{marginRight: "5px"}}>
+    <IconButton
+      data-cy="visibility-reset-btn"
+      color="primary"
+      aria-label="Reset"
+      style={{ marginRight: "5px" }}
+    >
       <RotateLeft onClick={resetVisibility} />
     </IconButton>
-  )
-  
+  );
+
   const toggleAnswers = (
     <div>
-      <FormGroup className='togglePos'>
-        <p style={{backgroundColor: mentorProps.color, borderRadius: "0.5rem", display: "flex", alignItems: "center"}}>{mentorProps.name}</p>
+      <FormGroup className="togglePos">
+        <p
+          style={{
+            backgroundColor: mentorProps.color,
+            borderRadius: "0.5rem",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          {mentorProps.name}
+        </p>
         {resetButton}
         <FormControlLabel
           control={
@@ -511,30 +549,35 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
         />
       </FormGroup>
     </div>
-  )
+  );
 
   return (
-    <div data-cy="history-chat" id="history-chat" data-topic="History" className={styles.chat_container}>
+    <div
+      data-cy="history-chat"
+      id="history-chat"
+      data-topic="History"
+      className={styles.chat_container}
+    >
       <List
         data-cy="chat-thread"
         className={styles.list}
         style={{ height: height }}
         disablePadding={true}
         id="chat-thread"
-        >
-      {toggleAnswers}
+      >
+        {toggleAnswers}
         {chatData.messages.map((m, i) => {
-            return (
-                <ChatItem
-                    key={`chat-msg-${i}`}
-                    message={m}
-                    i={i}
-                    styles={styles}
-                    onSendFeedback={onSendFeedback}
-                    iconState={checked}
-                    mentorBubbleProps={mentorProps}
-                />
-            );
+          return (
+            <ChatItem
+              key={`chat-msg-${i}`}
+              message={m}
+              i={i}
+              styles={styles}
+              onSendFeedback={onSendFeedback}
+              iconState={checked}
+              mentorBubbleProps={mentorProps}
+            />
+          );
         })}
       </List>
     </div>

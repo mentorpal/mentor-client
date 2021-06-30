@@ -4,13 +4,17 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { visitAsGuestWithDefaultSetup, mockDefaultSetup, cyMockGQL } from "../support/helpers";
+import {
+  visitAsGuestWithDefaultSetup,
+  mockDefaultSetup,
+  cyMockGQL,
+} from "../support/helpers";
 const clint = require("../fixtures/clint.json");
 
 describe("History", () => {
   it("does not display in topics list if no questions have been asked", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.viewport('macbook-11')
+    cy.viewport("macbook-11");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=topics]").should("not.have.value", "History");
   });
@@ -32,13 +36,12 @@ describe("History", () => {
     cy.get("[data-cy=history-chat]").contains("Hello");
   });
 
-
   it.only("displays both questions and answers as a chat", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.viewport('macbook-11')
+    cy.viewport("macbook-11");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
-    cy.get("[data-cy=history-chat]").should('exist');
+    cy.get("[data-cy=history-chat]").should("exist");
 
     // Send first test message
     cy.get("[data-cy=input-field]").type("user msg 1");
@@ -81,7 +84,7 @@ describe("History", () => {
     // cy.get("[data-cy=click-neutral]");
     // cy.get("[data-cy=click-bad]").trigger("mouseover").click();
 
-    // // check that second msg contains text 
+    // // check that second msg contains text
     cy.get("[data-cy=chat-msg-3]").contains("user msg 2");
     // Check if feedback toggle exists
     cy.get(
@@ -108,20 +111,20 @@ describe("History", () => {
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.viewport('macbook-11')
+    cy.viewport("macbook-11");
 
     // third test message
     cy.get("[data-cy=input-field]").type("test visibility toggle");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=chat-msg-6]").contains("Give me feedback.");
-   
+
     // // hide answer
     cy.get("[data-cy=eyeIcon-5]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-6]").should('not.visible');
-    cy.wait(3000)
+    cy.get("[data-cy=chat-msg-6]").should("not.visible");
+    cy.wait(3000);
     // show answer
     cy.get("[data-cy=eyeIcon-5]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-6]").should('be.visible');
+    cy.get("[data-cy=chat-msg-6]").should("be.visible");
 
     // click on feedback options
     cy.get("[data-cy=chat-msg-6] [data-cy=feedback-btn]")
@@ -131,7 +134,7 @@ describe("History", () => {
     cy.get("[data-cy=click-neutral]");
     // click on good feedback
     cy.get("[data-cy=click-bad]").trigger("mouseover").click();
-    
+
     // eyeIcon-1
   });
 
@@ -146,12 +149,12 @@ describe("History", () => {
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.viewport('macbook-11')
-    cy.get("[data-cy=visibility-switch]").should('exist');
-    cy.get("[data-cy=visibility-switch]").find('input').should('be.checked');
-    cy.get("[data-cy=chat-msg-2]").should('not.visible');
-    cy.get("[data-cy=chat-msg-4]").should('not.visible');
-    cy.get("[data-cy=chat-msg-6]").should('be.visible');
+    cy.viewport("macbook-11");
+    cy.get("[data-cy=visibility-switch]").should("exist");
+    cy.get("[data-cy=visibility-switch]").find("input").should("be.checked");
+    cy.get("[data-cy=chat-msg-2]").should("not.visible");
+    cy.get("[data-cy=chat-msg-4]").should("not.visible");
+    cy.get("[data-cy=chat-msg-6]").should("be.visible");
   });
 
   it.only("When a new answer arrives, it is always open when it lands (regardless of switch)", () => {
@@ -165,27 +168,28 @@ describe("History", () => {
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.viewport('macbook-11')
-    cy.get("[data-cy=visibility-switch]").should('exist');
-    cy.get("[data-cy=visibility-switch]").find('input').should('be.checked');
-    cy.get("[data-cy=chat-msg-2]").should('not.visible');
-    cy.get("[data-cy=chat-msg-4]").should('not.visible');
-    
-    // new test message
-    cy.get("[data-cy=input-field]").type("New message is always open when it lands");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-6]").should('not.visible');
-    cy.get("[data-cy=chat-msg-8]").should('be.visible');
+    cy.viewport("macbook-11");
+    cy.get("[data-cy=visibility-switch]").should("exist");
+    cy.get("[data-cy=visibility-switch]").find("input").should("be.checked");
+    cy.get("[data-cy=chat-msg-2]").should("not.visible");
+    cy.get("[data-cy=chat-msg-4]").should("not.visible");
 
-    
+    // new test message
+    cy.get("[data-cy=input-field]").type(
+      "New message is always open when it lands"
+    );
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=chat-msg-6]").should("not.visible");
+    cy.get("[data-cy=chat-msg-8]").should("be.visible");
+
     // uncheck and check visibility switch (it is always open when regardless of switch)
-    cy.get("[data-cy=visibility-switch]").find('input').uncheck();
-    cy.wait(2000)
-    cy.get("[data-cy=chat-msg-8]").scrollIntoView().should('be.visible')
-    cy.wait(2000)
-    cy.get("[data-cy=visibility-switch]").find('input').check();
-    cy.wait(2000)
-    cy.get("[data-cy=chat-msg-8]").scrollIntoView().should('be.visible')
+    cy.get("[data-cy=visibility-switch]").find("input").uncheck();
+    cy.wait(2000);
+    cy.get("[data-cy=chat-msg-8]").scrollIntoView().should("be.visible");
+    cy.wait(2000);
+    cy.get("[data-cy=visibility-switch]").find("input").check();
+    cy.wait(2000);
+    cy.get("[data-cy=chat-msg-8]").scrollIntoView().should("be.visible");
   });
 
   it.only("If switch is set to Hide, then hides all answers ", () => {
@@ -199,16 +203,14 @@ describe("History", () => {
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.viewport('macbook-11')
-    cy.get("[data-cy=visibility-switch]").should('exist');
-    cy.get("[data-cy=visibility-switch]").find('input').should('be.checked');
+    cy.viewport("macbook-11");
+    cy.get("[data-cy=visibility-switch]").should("exist");
+    cy.get("[data-cy=visibility-switch]").find("input").should("be.checked");
 
-      
     // check answers are hidden
-    cy.get("[data-cy=chat-msg-2]").should('not.visible');
-    cy.get("[data-cy=chat-msg-4]").should('not.visible');
-    cy.get("[data-cy=chat-msg-6]").should('not.visible');
-
+    cy.get("[data-cy=chat-msg-2]").should("not.visible");
+    cy.get("[data-cy=chat-msg-4]").should("not.visible");
+    cy.get("[data-cy=chat-msg-6]").should("not.visible");
   });
 
   it.only("If switch is set to Show, then opens all answers", () => {
@@ -222,17 +224,15 @@ describe("History", () => {
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.viewport('macbook-11')
-    cy.get("[data-cy=visibility-switch]").should('exist');
-    cy.get("[data-cy=visibility-switch]").find('input').should('be.checked');
-    cy.get("[data-cy=visibility-switch]").find('input').uncheck();
+    cy.viewport("macbook-11");
+    cy.get("[data-cy=visibility-switch]").should("exist");
+    cy.get("[data-cy=visibility-switch]").find("input").should("be.checked");
+    cy.get("[data-cy=visibility-switch]").find("input").uncheck();
 
-      
     // check answers are shown
-    cy.get("[data-cy=chat-msg-2]").scrollIntoView().should('be.visible');
-    cy.get("[data-cy=chat-msg-4]").scrollIntoView().should('be.visible');
-    cy.get("[data-cy=chat-msg-6]").scrollIntoView().should('be.visible');
-
+    cy.get("[data-cy=chat-msg-2]").scrollIntoView().should("be.visible");
+    cy.get("[data-cy=chat-msg-4]").scrollIntoView().should("be.visible");
+    cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
   });
 
   it.only("If switch is to *Hide* then when new answer arrives it is open at the bottom and all answers manually opened before it are left in their prior open/closed position", () => {
@@ -246,23 +246,23 @@ describe("History", () => {
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.viewport('macbook-11')
+    cy.viewport("macbook-11");
 
     // visibility for answers is hidden
-    cy.get("[data-cy=visibility-switch]").find('input').check();
-    cy.get("[data-cy=visibility-switch]").should('exist');
-    cy.get("[data-cy=visibility-switch]").find('input').should('be.checked');
-    
+    cy.get("[data-cy=visibility-switch]").find("input").check();
+    cy.get("[data-cy=visibility-switch]").should("exist");
+    cy.get("[data-cy=visibility-switch]").find("input").should("be.checked");
+
     // show answer of question 3
     cy.get("[data-cy=eyeIcon-3]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-4]").scrollIntoView().should('be.visible');
+    cy.get("[data-cy=chat-msg-4]").scrollIntoView().should("be.visible");
 
     // new answer arrives
     cy.get("[data-cy=input-field]").type("answer 2 should be visible");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click()
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // answer 4 should saty open even if switch is hidden
-    cy.get("[data-cy=chat-msg-4]").scrollIntoView().should('be.visible');
+    cy.get("[data-cy=chat-msg-4]").scrollIntoView().should("be.visible");
   });
 
   it.only("If switch is to *Show* then when new answer arrives it is open and all other answers are left in their prior open/closed position", () => {
@@ -276,20 +276,20 @@ describe("History", () => {
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.viewport('macbook-11')
+    cy.viewport("macbook-11");
 
     // visibility for answers is hidden
-    cy.get("[data-cy=visibility-switch]").find('input').uncheck();
-    cy.get("[data-cy=visibility-switch]").should('exist');
-    cy.get("[data-cy=visibility-switch]").find('input').should('not.checked');
-    
+    cy.get("[data-cy=visibility-switch]").find("input").uncheck();
+    cy.get("[data-cy=visibility-switch]").should("exist");
+    cy.get("[data-cy=visibility-switch]").find("input").should("not.checked");
+
     // hide answer of question 3
     cy.get("[data-cy=eyeIcon-3]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-4]").should('not.be.visible')
+    cy.get("[data-cy=chat-msg-4]").should("not.be.visible");
 
     // new answer arrives
     cy.get("[data-cy=input-field]").type("answer 2 shouldn't be visible");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click()
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // answer 4 should saty open even if switch is hidden
     // cy.get("[data-cy=chat-msg-4]").scrollIntoView().should('be.visible');
@@ -306,58 +306,55 @@ describe("History", () => {
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.viewport('macbook-11')
+    cy.viewport("macbook-11");
 
     // visibility-reset-btn test
-    cy.get("[data-cy=visibility-reset-btn]").should('exist');
+    cy.get("[data-cy=visibility-reset-btn]").should("exist");
     cy.get("[data-cy=visibility-reset-btn]").trigger("mouseover").click();
 
     // hide all answers
-    cy.get("[data-cy=visibility-switch]").find('input').check();
+    cy.get("[data-cy=visibility-switch]").find("input").check();
 
     // check all answers are hidden
-    cy.get("[data-cy=chat-msg-2]").should('not.be.visible')
-    cy.get("[data-cy=chat-msg-4]").should('not.be.visible')
-    cy.get("[data-cy=chat-msg-6]").should('not.be.visible')
-    cy.get("[data-cy=chat-msg-8]").should('not.be.visible')
-    cy.get("[data-cy=chat-msg-10]").should('not.be.visible')
-    cy.get("[data-cy=chat-msg-12]").scrollIntoView().should('be.visible')
-
+    cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
+    cy.get("[data-cy=chat-msg-4]").should("not.be.visible");
+    cy.get("[data-cy=chat-msg-6]").should("not.be.visible");
+    cy.get("[data-cy=chat-msg-8]").should("not.be.visible");
+    cy.get("[data-cy=chat-msg-10]").should("not.be.visible");
+    cy.get("[data-cy=chat-msg-12]").scrollIntoView().should("be.visible");
 
     // show all answers
-    cy.get("[data-cy=visibility-switch]").find('input').uncheck();
+    cy.get("[data-cy=visibility-switch]").find("input").uncheck();
 
     // check all answers are shown
-    cy.get("[data-cy=chat-msg-2]").scrollIntoView().should('be.visible')
-    cy.get("[data-cy=chat-msg-4]").scrollIntoView().should('be.visible')
-    cy.get("[data-cy=chat-msg-6]").scrollIntoView().should('be.visible')
-    cy.get("[data-cy=chat-msg-8]").scrollIntoView().should('be.visible')
-    cy.get("[data-cy=chat-msg-10]").scrollIntoView().should('be.visible')
-    cy.get("[data-cy=chat-msg-12]").scrollIntoView().should('be.visible')
+    cy.get("[data-cy=chat-msg-2]").scrollIntoView().should("be.visible");
+    cy.get("[data-cy=chat-msg-4]").scrollIntoView().should("be.visible");
+    cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
+    cy.get("[data-cy=chat-msg-8]").scrollIntoView().should("be.visible");
+    cy.get("[data-cy=chat-msg-10]").scrollIntoView().should("be.visible");
+    cy.get("[data-cy=chat-msg-12]").scrollIntoView().should("be.visible");
   });
 
-// -----------------------------------------------------------------------------------------
+  // -----------------------------------------------------------------------------------------
 
   it("displays questions that have been asked via topic button", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.viewport('macbook-11')
+    cy.viewport("macbook-11");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=topic-0]").trigger("mouseover").click();
     cy.get("[data-cy=topic-0]").trigger("mouseover").click();
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=topic-2]").trigger("mouseover").click();
-    cy.get("[data-cy=history-chat]").contains(
-      "Where were you born?"
-    );
+    cy.get("[data-cy=history-chat]").contains("Where were you born?");
   });
 
   it("displays most recent questions at the top", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.viewport('macbook-11')
+    cy.viewport("macbook-11");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=input-field]").type("Hello");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.wait(500)
+    cy.wait(500);
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=topic-2]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should(
@@ -365,20 +362,15 @@ describe("History", () => {
       "data-topic",
       "History"
     );
-    cy.get("[data-cy=history-chat]")
-      .get("li")
-      .first()
-      .contains("Hello");
+    cy.get("[data-cy=history-chat]").get("li").first().contains("Hello");
     cy.get("[data-cy=input-field]").type("World");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=history-chat]")
-      .get("li")
-      .contains("World");
+    cy.get("[data-cy=history-chat]").get("li").contains("World");
   });
 
   it("does not read duplicate questions", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.viewport('macbook-11')
+    cy.viewport("macbook-11");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=input-field]").type("Hello");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
@@ -388,19 +380,15 @@ describe("History", () => {
       "data-topic",
       "History"
     );
-    cy.wait(500)
+    cy.wait(500);
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").contains("Hello");
     cy.get("[data-cy=input-field]").type("World");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").contains("Hello");
     cy.get("[data-cy=history-chat]").contains("World");
-    cy.get("[data-cy=history-chat]")
-      .find("li")
-      .should("have.length", 5);
-    cy.get("[data-cy=history-chat]")
-      .get("li")
-      .contains("World");
+    cy.get("[data-cy=history-chat]").find("li").should("have.length", 5);
+    cy.get("[data-cy=history-chat]").get("li").contains("World");
     // cy.get("[data-cy=input-field]").type("Hello");
     // cy.get("[data-cy=input-send]").trigger("mouseover").click();
     // cy.get("[data-cy=history-chat]").contains("Hello");
