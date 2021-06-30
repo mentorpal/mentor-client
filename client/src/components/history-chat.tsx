@@ -40,7 +40,6 @@ import {
   UtteranceName,
 } from "types";
 import "styles/history-chat.css";
-import questions from "./questions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -81,6 +80,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+interface MentorBubbleProps {
+  name: string;
+  color: string;
+}
+
 function ChatItem(props: {
   message: ChatMsg;
   i: number;
@@ -88,7 +92,7 @@ function ChatItem(props: {
   styles: any;
   iconState: boolean;
   onSendFeedback: (id: string, feedback: Feedback) => void;
-  mentorBubbleProps: object;
+  mentorBubbleProps: MentorBubbleProps;
 }): JSX.Element {
   const { message, i, styles, onSendFeedback, iconState, mentorBubbleProps } =
     props;
@@ -310,14 +314,17 @@ interface ScrollingQuestionsParams {
 }
 
 function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
-  const { height, questionHistory } = args;
+  const { height } = args;
   const styles = useStyles();
   const [chatData, setChatData] = useState<ChatData>({
     messages: [],
   });
 
   const [checked, toggleChecked] = useState(true);
-  const [mentorProps, setMentorProps] = useState([]);
+  const [mentorProps, setMentorProps] = useState<MentorBubbleProps>({
+    name: "",
+    color: "",
+  });
 
   const answerReceivedAt = useSelector<State, Date | undefined>((state) => {
     const m = state.mentorsById[state.curMentor];
@@ -425,7 +432,7 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
       const historyChat = document
         ?.getElementById("chat-thread")
         ?.getElementsByClassName("system");
-      if (historyChat !== undefined) {
+      if (historyChat) {
         for (let i = 1; i < historyChat.length; i++) {
           const classes = historyChat[i].className.split(/\s+/);
           if (classes[classes.length - 1] !== "visible") {
