@@ -10,6 +10,7 @@ import { Hidden, Typography } from "@material-ui/core";
 import { State } from "types";
 import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from "@material-ui/icons/Info";
+import HomeIcon from "@material-ui/icons/Home";
 import Button from "@material-ui/core/DialogTitle";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -75,6 +76,10 @@ function Header(): JSX.Element {
     setOpen(true);
   };
 
+  const handleClickHome = () => {
+    window.location.href = "/admin";
+  };
+
   const handleAgree = () => {
     setAcceptedTerms("true");
     setOpen(false);
@@ -104,6 +109,23 @@ function Header(): JSX.Element {
             paddingBottom: 10,
           }}
         />
+        {mentor.name !== "USC" ? (
+          <IconButton
+            aria-label="information"
+            component="span"
+            style={{
+              position: "absolute",
+              left: "50px",
+              color: `${styleHeaderTextColor}`,
+            }}
+            onClick={handleClickHome}
+            data-cy="home-button"
+          >
+            <HomeIcon />
+          </IconButton>
+        ) : (
+          ""
+        )}
         <Hidden only="xs">
           <Typography>
             {mentor.name}: {mentor.title}
@@ -174,6 +196,24 @@ function Header(): JSX.Element {
         color: `${styleHeaderTextColor}`,
       }}
     >
+      {mentor.name !== "USC" ? (
+        <IconButton
+          aria-label="information"
+          component="span"
+          style={{
+            position: "absolute",
+            left: "50px",
+            color: `${styleHeaderTextColor}`,
+          }}
+          onClick={handleClickHome}
+          data-cy="home-button"
+        >
+          <HomeIcon />
+        </IconButton>
+      ) : (
+        ""
+      )}
+
       <Typography>
         {mentor.name}: {mentor.title}
       </Typography>

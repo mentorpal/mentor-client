@@ -15,6 +15,7 @@ import {
   UtteranceName,
 } from "types";
 
+export const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT || "/graphql";
 export async function fetchConfig(graphqlUrl = "/graphql"): Promise<Config> {
   const gqlRes = await axios.post<GraphQLResponse<{ config: Config }>>(
     graphqlUrl,
@@ -95,6 +96,31 @@ interface MentorQueryData {
 interface GraphQLResponse<T> {
   errors?: { message: string }[];
   data?: T;
+}
+
+export async function fetchMentorByAccessToken(
+  accessToken: string,
+  subject?: string,
+  topic?: string,
+  status?: string
+): Promise<Mentor> {
+  const headers = { Authorization: `bearer ${accessToken}` };
+  const result = await axios.post(
+    GRAPHQL_ENDPOINT,
+    {
+      query: `
+      query {
+        me {
+          mentor {
+            _id  
+            }
+          }
+        }
+    `,
+    },
+    { headers: headers }
+  );
+  return result.data.data.me.mentor;
 }
 
 export async function fetchMentor(
