@@ -301,9 +301,13 @@ export default function reducer(
     case QUESTION_SENT:
       return onQuestionSent(state, action);
     case QUESTION_ANSWERED: {
+      // NOTE: about answerFeedbackId
+      // It seems like the answerFeedbackId should be 
+      // associated to the chat message
       const response = action.mentor;
       const mentor: MentorState = {
         ...state.mentorsById[response.mentor],
+        // we need chat messages to live up here
         answer_id: response.answerId,
         answer_text: response.answerText,
         answer_media: response.answerMedia,

@@ -68,6 +68,7 @@ describe("History", () => {
       apiResponse: "response_with_feedback.json",
       gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
     });
+    cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
@@ -101,7 +102,7 @@ describe("History", () => {
     cy.get("[data-cy=click-good]").trigger("mouseover").click();
   });
 
-  it("Answers can be toggled open to see the transcript of the response", () => {
+  it.only("Answers can be toggled open to see the transcript of the response", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
       mentorData: [clint],
@@ -112,6 +113,7 @@ describe("History", () => {
       fixture: "response_with_feedback.json",
     });
     cy.viewport("macbook-11");
+    cy.visit("/");
 
     // third test message
     cy.get("[data-cy=input-field]").type("test visibility toggle");

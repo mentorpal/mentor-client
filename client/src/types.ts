@@ -12,6 +12,8 @@ export interface ChatData {
 }
 
 export interface ChatMsg {
+  name: string;
+  color: string;
   isUser: boolean;
   text: string;
   feedback?: Feedback;

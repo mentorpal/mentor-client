@@ -245,6 +245,8 @@ function Chat(props: { height: number }): JSX.Element {
     if (chatDataUpdated.lastQuestionAt !== curQuestionUpdatedAt) {
       updated = true;
       chatDataUpdated.messages.push({
+        name: "",
+        color: "",
         isUser: true,
         text: curQuestion,
       });
@@ -254,6 +256,8 @@ function Chat(props: { height: number }): JSX.Element {
       if (chatDataUpdated.messages.length === 0) {
         updated = true;
         chatDataUpdated.messages.push({
+          name: "",
+          color: "",
           isUser: false,
           text:
             getUtterance(mentor.mentor, UtteranceName.INTRO)?.transcript || "",
@@ -262,6 +266,8 @@ function Chat(props: { height: number }): JSX.Element {
       if (chatDataUpdated.lastAnswerAt !== answerReceivedAt) {
         updated = true;
         chatDataUpdated.messages.push({
+          name: "",
+          color: "",
           isUser: false,
           text: mentor.answer_text || "",
           feedbackId: mentor.answerFeedbackId,

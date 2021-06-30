@@ -80,9 +80,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface MentorBubbleProps {
+interface BubbleProps {
   name: string;
   color: string;
+  hidden?: boolean;
 }
 
 function ChatItem(props: {
@@ -92,7 +93,7 @@ function ChatItem(props: {
   styles: any;
   iconState: boolean;
   onSendFeedback: (id: string, feedback: Feedback) => void;
-  mentorBubbleProps: MentorBubbleProps;
+  mentorBubbleProps: BubbleProps;
 }): JSX.Element {
   const { message, i, styles, onSendFeedback, iconState, mentorBubbleProps } =
     props;
@@ -313,15 +314,20 @@ interface ScrollingQuestionsParams {
   questionHistory: string[];
 }
 
+interface HistoryChatData extends ChatData {
+  bubbleProps: BubbleProps[]; // must have one bubble props per chat msg
+}
+
 function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   const { height } = args;
   const styles = useStyles();
-  const [chatData, setChatData] = useState<ChatData>({
+  const [chatData, setChatData] = useState<HistoryChatData>({
     messages: [],
+    bubbleProps: [],
   });
 
   const [checked, toggleChecked] = useState(true);
-  const [mentorProps, setMentorProps] = useState<MentorBubbleProps>({
+  const [mentorProps, setMentorProps] = useState<BubbleProps>({
     name: "",
     color: "",
   });
@@ -355,9 +361,10 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   );
 
   useEffect(() => {
-    const chatDataUpdated = {
+    const chatDataUpdated: HistoryChatData = {
       ...chatData,
       messages: [...chatData.messages],
+      bubbleProps: [...chatData.bubbleProps],
     };
 
     let updated = false;
@@ -582,7 +589,7 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
               styles={styles}
               onSendFeedback={onSendFeedback}
               iconState={checked}
-              mentorBubbleProps={mentorProps}
+              mentorBubbleProps={chatData.bubbleProps[i]}
             />
           );
         })}
