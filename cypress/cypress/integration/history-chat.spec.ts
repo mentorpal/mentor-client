@@ -11,7 +11,7 @@ import {
 } from "../support/helpers";
 const clint = require("../fixtures/clint.json");
 
-describe("History", () => {
+describe.skip("History", () => {
   it("does not display in topics list if no questions have been asked", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.viewport("macbook-11");
