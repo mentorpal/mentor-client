@@ -99,7 +99,7 @@ describe("Video Chat History", () => {
     cy.get("[data-cy=click-good]").should('exist')
     cy.get("[data-cy=click-good]").should('have.attr', 'data-test-in-progress', "false")
     cy.get("[data-cy=click-good]").trigger("mouseover").click();
-    cy.get("[data-cy=click-good]").should('have.attr', 'data-test-in-progress', "true")
+    cy.get("[data-cy=selected-good]").should("be.visible")
 
 
 

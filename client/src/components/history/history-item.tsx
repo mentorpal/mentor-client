@@ -112,11 +112,11 @@ export function ChatItem(props: {
               ].join(" ")}
             >
               {message.feedback === Feedback.GOOD ? (
-                <ThumbUpIcon data-cy="good" />
+                <ThumbUpIcon data-cy="selected-good" />
               ) : message.feedback === Feedback.BAD ? (
-                <ThumbDownIcon data-cy="bad" />
+                <ThumbDownIcon data-cy="selected-bad" />
               ) : (
-                <ThumbsUpDownIcon data-cy="neutral" />
+                <ThumbsUpDownIcon data-cy="selected-none" />
               )}
             </Avatar>
           </ListItemAvatar>
