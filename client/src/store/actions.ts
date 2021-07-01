@@ -109,7 +109,7 @@ export interface FeedbackSentAction {
 export type FeedbackAction =
   | FeedbackSendFailedAction
   | FeedbackSendSucceededAction
-  | FeedbackSentAction
+  | FeedbackSentAction;
 
 export type ConfigLoadAction =
   | ConfigLoadFailedAction
@@ -219,24 +219,25 @@ export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
 
 export const feedbackSend =
-  (feedbackId: string, feedback: Feedback) => async (
-    dispatch: ThunkDispatch<State, void, FeedbackAction>, 
+  (feedbackId: string, feedback: Feedback) =>
+  async (
+    dispatch: ThunkDispatch<State, void, FeedbackAction>,
     getState: () => State
   ) => {
     dispatch({
       type: FEEDBACK_SENT,
       payload: {
         feedback,
-        feedbackId
-      }
+        feedbackId,
+      },
     });
     try {
-      await giveFeedback(feedbackId, feedback, getState().config)
+      await giveFeedback(feedbackId, feedback, getState().config);
       return dispatch({
         type: FEEDBACK_SEND_SUCCEEDED,
         payload: {
           feedback,
-          feedbackId
+          feedbackId,
         },
       });
     } catch (err) {
@@ -246,8 +247,8 @@ export const feedbackSend =
         payload: {
           errors: [err.message],
           feedback,
-          feedbackId
-        }
+          feedbackId,
+        },
       });
     }
   };

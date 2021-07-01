@@ -251,7 +251,7 @@ function Chat(props: { height: number }): JSX.Element {
         text: curQuestion,
         feedback: Feedback.NONE,
         feedbackId: "",
-        isFeedbackSendInProgress: false
+        isFeedbackSendInProgress: false,
       });
       chatDataUpdated.lastQuestionAt = curQuestionUpdatedAt;
     }
@@ -265,9 +265,9 @@ function Chat(props: { height: number }): JSX.Element {
           text:
             getUtterance(mentor.mentor, UtteranceName.INTRO)?.transcript || "",
 
-        feedback: Feedback.NONE,
-        feedbackId: "",
-        isFeedbackSendInProgress: false
+          feedback: Feedback.NONE,
+          feedbackId: "",
+          isFeedbackSendInProgress: false,
         });
       }
       if (chatDataUpdated.lastAnswerAt !== answerReceivedAt) {
@@ -279,7 +279,7 @@ function Chat(props: { height: number }): JSX.Element {
           text: mentor.answer_text || "",
           feedbackId: mentor.answerFeedbackId || "",
           feedback: Feedback.NONE,
-          isFeedbackSendInProgress: false
+          isFeedbackSendInProgress: false,
         });
         chatDataUpdated.lastAnswerAt = answerReceivedAt;
       }

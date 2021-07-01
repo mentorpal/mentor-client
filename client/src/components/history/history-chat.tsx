@@ -7,23 +7,13 @@ The full terms of this copyright and license should always be found in the root 
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { animateScroll } from "react-scroll";
-import {
-  List,
-} from "@material-ui/core";
+import { List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 // import { ArrowForwardIos } from "@material-ui/icons";
 
-import {
-  FormGroup,
-  FormControlLabel,
-  Switch,
-} from "@material-ui/core";
+import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
-import {
-  ChatData,
-  Feedback,
-  State,
-} from "types";
+import { ChatData, Feedback, State } from "types";
 import "styles/history-chat.css";
 import ChatItem from "./history-item";
 
@@ -73,7 +63,7 @@ interface ScrollingQuestionsParams {
 export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   const { height } = args;
   const styles = useStyles();
-  const chatData = useSelector<State, ChatData>((s)=> s.chat);
+  const chatData = useSelector<State, ChatData>((s) => s.chat);
   const [checked, toggleChecked] = useState<boolean>(false);
   // const [hide, setHide] = useState<boolean>(false);
   const [answerIndex, setAnswerIndex] = useState<number>(-1);
@@ -92,7 +82,6 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   // const mentor = useSelector<State, MentorState>(
   //   (state) => state.mentorsById[state.curMentor]
   // );
-
 
   // const curQuestion = useSelector<State, string>((state) => state.curQuestion);
   // const curQuestionUpdatedAt = useSelector<State, Date | undefined>(
@@ -158,7 +147,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   }, [chatData.messages]);
 
   function onSendFeedback(id: string, feedback: Feedback) {
-    const ix = chatData.messages.findIndex((f) => f.feedbackId === id)
+    const ix = chatData.messages.findIndex((f) => f.feedbackId === id);
     if (ix === -1) {
       return;
     }
@@ -174,7 +163,6 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
     //   ],
     // });
   }
-
 
   const toggleAnswers = (
     <div>
@@ -211,19 +199,26 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
       >
         {toggleAnswers}
         {chatData.messages.map((m, i) => {
-          return (<div key={i} style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-           
-            <ChatItem
-              key={`chat-msg-${i}`}
-              message={m}
-              i={i}
-              styles={styles}
-              onSendFeedback={onSendFeedback}
-              answersVisibility={checked}
-              setAnswerIndex={setAnswerIndex}
-              // answerIndex={answerIndex}
-              // mentorBubbleProps={chatData.bubbleProps[i]}
-            />
+          return (
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <ChatItem
+                key={`chat-msg-${i}`}
+                message={m}
+                i={i}
+                styles={styles}
+                onSendFeedback={onSendFeedback}
+                answersVisibility={checked}
+                setAnswerIndex={setAnswerIndex}
+                // answerIndex={answerIndex}
+                // mentorBubbleProps={chatData.bubbleProps[i]}
+              />
             </div>
           );
         })}

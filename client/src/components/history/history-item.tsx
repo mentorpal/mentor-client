@@ -22,12 +22,7 @@ import Visibility from "@material-ui/icons/Visibility";
 
 import CloseIcon from "@material-ui/icons/Close";
 
-import {
-  ChatMsg,
-  Config,
-  Feedback,
-  State,
-} from "types";
+import { ChatMsg, Config, Feedback, State } from "types";
 import "styles/history-chat.css";
 import { feedbackSend } from "store/actions";
 
@@ -41,10 +36,16 @@ export function ChatItem(props: {
   // answerIndex: number;
   onSendFeedback: (id: string, feedback: Feedback) => void;
 }): JSX.Element {
-  const { message, i, styles, answersVisibility, setAnswerIndex, onSendFeedback } =
-    props;
+  const {
+    message,
+    i,
+    styles,
+    answersVisibility,
+    setAnswerIndex,
+    onSendFeedback,
+  } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   // const config = useSelector<State, Config>((s) => s.config);
   // const [eyeClick, setEyeClick] = useState<boolean>(false)
 
@@ -60,7 +61,7 @@ export function ChatItem(props: {
     // giveFeedback(id, feedback, config);
     setAnchorEl(null);
     // onSendFeedback(id, feedback);
-    dispatch(feedbackSend(message.feedbackId, feedback))
+    dispatch(feedbackSend(message.feedbackId, feedback));
   }
 
   function LinkRenderer(props: { href: string; children: React.ReactNode }) {
@@ -72,14 +73,19 @@ export function ChatItem(props: {
       </h3>
     );
   }
- const [a, setA] = useState<boolean>(false)
-  
+  const [a, setA] = useState<boolean>(false);
+
   return (
     <ListItem
       data-cy={`chat-msg-${i}`}
       id={`chat-msg-${i}`}
       disableGutters={false}
-      className={[message.isUser ? "user" : "system", answersVisibility && message.isUser === false && i !== 0 ? 'hidden' : 'visible'].join(' ')}
+      className={[
+        message.isUser ? "user" : "system",
+        answersVisibility && message.isUser === false && i !== 0
+          ? "hidden"
+          : "visible",
+      ].join(" ")}
       classes={{ root: styles.root }}
       style={{
         paddingRight: 16,
@@ -87,17 +93,19 @@ export function ChatItem(props: {
         marginLeft: message.feedbackId ? 50 : 0,
       }}
     >
-      {message.isUser ? <Visibility onClick={() => {setAnswerIndex(i+1), setA((prev) => !prev)}}/> : null}
-      <ReactMarkdown
-        source={message.text}
-        renderers={{ link: LinkRenderer }}
-      />
+      {message.isUser ? (
+        <Visibility
+          onClick={() => {
+            setAnswerIndex(i + 1), setA((prev) => !prev);
+          }}
+        />
+      ) : null}
+      <ReactMarkdown source={message.text} renderers={{ link: LinkRenderer }} />
       {message.feedbackId ? (
         <div
           data-cy="feedback-btn"
           className={styles.icon}
           onClick={handleFeedbackClick}
-          
           style={{ zIndex: 2 }}
         >
           <ListItemAvatar>

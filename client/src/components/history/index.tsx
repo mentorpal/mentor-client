@@ -1,2 +1,2 @@
-import { HistoryChat } from './history-chat'
+import { HistoryChat } from "./history-chat";
 export default HistoryChat;

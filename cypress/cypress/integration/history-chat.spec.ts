@@ -89,20 +89,21 @@ describe("Video Chat History", () => {
     cy.get("[data-cy=history-chat]").should("exist");
     cy.get("[data-cy=input-field]").type("user msg 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=history-chat").within($hc => {
+    cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-0]").contains("user msg 1");
-      cy.get("[data-cy=chat-msg-1]").within($cm => {
-        cy.get('[data-cy=feedback-btn]').should("exist")
+      cy.get("[data-cy=chat-msg-1]").within(($cm) => {
+        cy.get("[data-cy=feedback-btn]").should("exist");
         cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
       });
-    })
-    cy.get("[data-cy=click-good]").should('exist')
-    cy.get("[data-cy=click-good]").should('have.attr', 'data-test-in-progress', "false")
+    });
+    cy.get("[data-cy=click-good]").should("exist");
+    cy.get("[data-cy=click-good]").should(
+      "have.attr",
+      "data-test-in-progress",
+      "false"
+    );
     cy.get("[data-cy=click-good]").trigger("mouseover").click();
-    cy.get("[data-cy=selected-good]").should("be.visible")
-
-
-
+    cy.get("[data-cy=selected-good]").should("be.visible");
 
     // cy.get("[data-cy=chat-msg-3]").contains("user msg 2");
     // // Check if feedback toggle exists
