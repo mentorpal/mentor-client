@@ -20,8 +20,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
-import Visibility from "@material-ui/icons/Visibility";
-// import { ArrowForwardIos } from "@material-ui/icons";
+// import Visibility from "@material-ui/icons/Visibility";
+import { ArrowForwardIos } from "@material-ui/icons";
 
 import CloseIcon from "@material-ui/icons/Close";
 
@@ -94,11 +94,11 @@ function ChatItem(props: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   styles: any;
   answersVisibility: boolean;
-  setAnswerIndex: (idx: number) => void;
-  answerIndex: number;
+  idxHide: number;
+  hide: boolean;
   onSendFeedback: (id: string, feedback: Feedback) => void;
 }): JSX.Element {
-  const { message, i, styles, answersVisibility, setAnswerIndex,answerIndex, onSendFeedback } =
+  const { message, i, styles, answersVisibility, idxHide, hide, onSendFeedback } =
     props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const config = useSelector<State, Config>((s) => s.config);
@@ -127,24 +127,20 @@ function ChatItem(props: {
       </h3>
     );
   }
-
- const [a, setA] = useState<boolean>(false)
- console.log(a, answerIndex)
   
   return (
     <ListItem
       data-cy={`chat-msg-${i}`}
       id={`chat-msg-${i}`}
       disableGutters={false}
-      className={[message.isUser ? "user" : "system", answersVisibility && message.isUser === false && i !== 0 ? 'hidden' : 'visible'].join(' ')}
+      className={[message.isUser ? "user" : "system", i === idxHide && hide ? 'hidden' : 'visible', answersVisibility && message.isUser === false ? 'hidden' : 'visible'].join(' ')}
       classes={{ root: styles.root }}
       style={{
         paddingRight: 16,
         maxWidth: 750,
-        marginLeft: message.feedbackId ? 50 : 0,
+        marginLeft: message.feedbackId ? 70 : 0,
       }}
     >
-      {message.isUser ? <Visibility onClick={() => {setAnswerIndex(i+1), setA((prev) => !prev)}}/> : null}
       <ReactMarkdown
         source={message.text}
         renderers={{ link: LinkRenderer }}
@@ -275,8 +271,8 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   });
 
   const [checked, toggleChecked] = useState<boolean>(false);
-  // const [hide, setHide] = useState<boolean>(false);
-  const [answerIndex, setAnswerIndex] = useState<number>(-1);
+  const [hide, setHide] = useState<boolean>(false);
+  const [ansIndex, setAnsIndex] = useState<number>(0);
 
 
   // const [mentorProps, setMentorProps] = useState<BubbleProps>({
@@ -396,7 +392,7 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
       </FormGroup>
     </div>
   );
-  // console.log(chatData.messages.map((m, i) => console.log(i, m)))
+  console.log(chatData.messages.map((m, i) => console.log(i, m)))
 
   return (
     <div
@@ -415,7 +411,7 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
         {toggleAnswers}
         {chatData.messages.map((m, i) => {
           return (<div key={i} style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-           
+            {m.isUser ? <ArrowForwardIos onClick={() => {setHide((state) => !state), setAnsIndex(i+1)}} /> : null}
             <ChatItem
               key={`chat-msg-${i}`}
               message={m}
@@ -423,8 +419,8 @@ function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
               styles={styles}
               onSendFeedback={onSendFeedback}
               answersVisibility={checked}
-              setAnswerIndex={setAnswerIndex}
-              answerIndex={answerIndex}
+              idxHide={ansIndex}
+              hide={hide}
               // mentorBubbleProps={chatData.bubbleProps[i]}
             />
             </div>
