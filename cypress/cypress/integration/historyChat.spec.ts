@@ -38,7 +38,7 @@ describe("History", () => {
     cy.get("[data-cy=history-chat]").contains("Hello");
   });
 
-  it.only("displays both questions and answers as a chat", () => {
+  it("displays both questions and answers as a chat", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
       mentorData: [clint],
