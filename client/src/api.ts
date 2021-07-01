@@ -81,12 +81,14 @@ export function idleUrl(mentor: Mentor, tag?: string): string {
   return idle ? videoUrl(idle.media, tag) : "";
 }
 
-export function subtitleUrl(
-  mentorId: string,
-  answerId: string,
-  config: Config
-): string {
-  return `${config.urlClassifier}/mentors/${mentorId}/tracks/${answerId}.vtt`;
+export function subtitleUrl(media: Media[], tag?: string): string {
+  if (!media) {
+    return "";
+  }
+  return (
+    media.find((m) => m.type === "subtitles" && m.tag === (tag || "en"))?.url ||
+    ""
+  );
 }
 
 interface MentorQueryData {
