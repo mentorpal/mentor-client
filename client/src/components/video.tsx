@@ -42,7 +42,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
       src: state.isIdle ? idleUrl(m.mentor) : videoUrl(m.answer_media || []),
       subtitles:
         subtitlesSupported && !state.isIdle
-          ? subtitleUrl(state.curMentor, m.answer_id || "", state.config)
+          ? subtitleUrl(m.answer_media || [])
           : "",
     };
   });
@@ -132,13 +132,16 @@ function VideoPlayer(args: VideoPlayerParams) {
       webkit-playsinline="true"
       config={{
         file: {
+          attributes: {
+            crossOrigin: "true",
+          },
           tracks: subtitlesOn
             ? [
                 {
                   kind: "subtitles",
-                  label: "subtitles",
-                  src: subtitlesUrl,
+                  label: "eng",
                   srcLang: "en",
+                  src: subtitlesUrl,
                   default: true,
                 },
               ]
