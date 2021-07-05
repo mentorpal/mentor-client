@@ -9,11 +9,10 @@ import { useSelector } from "react-redux";
 import { animateScroll } from "react-scroll";
 import { List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-// import { ArrowForwardIos } from "@material-ui/icons";
 
 import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
-import { ChatData, Feedback, State } from "types";
+import { ChatData, State } from "types";
 import "styles/history-chat.css";
 import ChatItem from "./history-item";
 
@@ -64,105 +63,17 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   const { height } = args;
   const styles = useStyles();
   const chatData = useSelector<State, ChatData>((s) => s.chat);
+
   const [checked, toggleChecked] = useState<boolean>(false);
-  // const [hide, setHide] = useState<boolean>(false);
-  const [answerIndex, setAnswerIndex] = useState<number>(-1);
-  // const [mentorProps, setMentorProps] = useState<BubbleProps>({
-  //   name: "",
-  //   color: "",
-  // });
 
-  // const answerReceivedAt = useSelector<State, Date | undefined>((state) => {
-  //   const m = state.mentorsById[state.curMentor];
-  //   if (!(m && m.answerReceivedAt)) {
-  //     return undefined;
-  //   }
-  //   return m.answerReceivedAt;
-  // });
-  // const mentor = useSelector<State, MentorState>(
-  //   (state) => state.mentorsById[state.curMentor]
-  // );
-
-  // const curQuestion = useSelector<State, string>((state) => state.curQuestion);
-  // const curQuestionUpdatedAt = useSelector<State, Date | undefined>(
-  //   (state) => state.curQuestionUpdatedAt
-  // );
-
-  // useEffect(() => {
-  //   const chatDataUpdated: ChatData = {
-  //     ...chatData,
-  //     messages: [...chatData.messages],
-  //   };
-
-  //   let updated = false;
-  //   if (chatDataUpdated.lastQuestionAt !== curQuestionUpdatedAt) {
-  //     updated = true;
-  //     chatDataUpdated.messages.push({
-  //       name: mentor.mentor.name,
-  //       color: "",
-  //       isUser: true,
-  //       text: curQuestion,
-  //     });
-  //     chatDataUpdated.lastQuestionAt = curQuestionUpdatedAt;
-  //   }
-  //   if (mentor) {
-  //     if (chatDataUpdated.messages.length === 0) {
-  //       updated = true;
-  //       chatDataUpdated.messages.push({
-  //         name: mentor.mentor.name,
-  //         color: "",
-  //         isUser: false,
-  //         text:
-  //           getUtterance(mentor.mentor, UtteranceName.INTRO)?.transcript || "",
-  //       });
-  //     }
-  //     if (chatDataUpdated.lastAnswerAt !== answerReceivedAt) {
-  //       updated = true;
-  //       chatDataUpdated.messages.push({
-  //         name: mentor.mentor.name,
-  //         color: "",
-  //         isUser: false,
-  //         text: mentor.answer_text || "",
-  //         // there is not answerFeedbackId in the mentor object, so it was changed to answer_id
-  //         // random number added to differentiate message and provide a feedback
-  //         feedbackId:
-  //           mentor.answerFeedbackId +
-  //           String(Math.floor(Math.random() * 10000) + 1),
-  //       });
-  //       console.log(`chatDataUpdated: ${chatDataUpdated}`);
-
-  //       chatDataUpdated.lastAnswerAt = answerReceivedAt;
-  //     }
-  //   }
-  //   if (updated) {
-  //     setChatData(chatDataUpdated);
-  //   }
-  //   console.log("-----updated-----");
-  // }, [mentor, curQuestionUpdatedAt]);
-
+  function bubbleMentorColor() {
+    return "hsl(" + Math.floor(Math.random() * 361) + ",50%,75%)";
+  }
   useEffect(() => {
     animateScroll.scrollToBottom({
       containerId: "chat-thread",
     });
   }, [chatData.messages]);
-
-  function onSendFeedback(id: string, feedback: Feedback) {
-    const ix = chatData.messages.findIndex((f) => f.feedbackId === id);
-    if (ix === -1) {
-      return;
-    }
-    // setChatData({
-    //   ...chatData,
-    //   messages: [
-    //     ...chatData.messages.slice(0, ix),
-    //     {
-    //       ...chatData.messages[ix],
-    //       feedback,
-    //     },
-    //     ...chatData.messages.slice(ix + 1),
-    //   ],
-    // });
-  }
 
   const toggleAnswers = (
     <div>
@@ -181,7 +92,21 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
       </FormGroup>
     </div>
   );
-  // console.log(chatData.messages.map((m, i) => console.log(i, m)))
+
+  type MentorBubble = {
+    name: string;
+    color: string;
+  };
+  const mentors: Array<MentorBubble> = [];
+
+  function onMentorChange(mentorName: string) {
+    if (mentorName.length > 0) {
+      const pos = mentors.map((item) => item.name).indexOf(mentorName);
+      pos === -1
+        ? mentors.push({ name: mentorName, color: bubbleMentorColor() })
+        : null;
+    }
+  }
 
   return (
     <div
@@ -199,6 +124,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
       >
         {toggleAnswers}
         {chatData.messages.map((m, i) => {
+          onMentorChange(m.name);
           return (
             <div
               key={i}
@@ -213,11 +139,8 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
                 message={m}
                 i={i}
                 styles={styles}
-                onSendFeedback={onSendFeedback}
                 answersVisibility={checked}
-                setAnswerIndex={setAnswerIndex}
-                // answerIndex={answerIndex}
-                // mentorBubbleProps={chatData.bubbleProps[i]}
+                mentorBuubleProps={mentors}
               />
             </div>
           );

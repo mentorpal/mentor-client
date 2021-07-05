@@ -20,6 +20,7 @@ export interface ChatMsg {
   feedback: Feedback;
   feedbackId: string;
   isFeedbackSendInProgress: boolean;
+  visibility: boolean;
 }
 
 export interface Mentor {

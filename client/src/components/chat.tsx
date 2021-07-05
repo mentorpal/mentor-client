@@ -252,6 +252,7 @@ function Chat(props: { height: number }): JSX.Element {
         feedback: Feedback.NONE,
         feedbackId: "",
         isFeedbackSendInProgress: false,
+        visibility: false
       });
       chatDataUpdated.lastQuestionAt = curQuestionUpdatedAt;
     }
@@ -268,6 +269,7 @@ function Chat(props: { height: number }): JSX.Element {
           feedback: Feedback.NONE,
           feedbackId: "",
           isFeedbackSendInProgress: false,
+          visibility: false
         });
       }
       if (chatDataUpdated.lastAnswerAt !== answerReceivedAt) {
@@ -280,6 +282,7 @@ function Chat(props: { height: number }): JSX.Element {
           feedbackId: mentor.answerFeedbackId || "",
           feedback: Feedback.NONE,
           isFeedbackSendInProgress: false,
+          visibility: false
         });
         chatDataUpdated.lastAnswerAt = answerReceivedAt;
       }

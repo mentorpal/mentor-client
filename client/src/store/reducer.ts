@@ -51,7 +51,7 @@ import {
   MentorType,
   Feedback,
 } from "../types";
-import Chat from "components/chat";
+// import Chat from "components/chat";
 
 export const initialState: State = {
   chat: {
@@ -282,6 +282,7 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               feedback: Feedback.NONE,
               feedbackId: "",
               isFeedbackSendInProgress: false,
+              visibility: false,
             },
           ],
         },
@@ -392,6 +393,7 @@ function onQuestionAnswered(
           feedback: Feedback.NONE,
           feedbackId: action.mentor.answerFeedbackId,
           isFeedbackSendInProgress: false,
+          visibility: false
         },
       ],
     },

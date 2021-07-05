@@ -4,9 +4,9 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React, { useState } from "react";
+import React from "react";
 import ReactMarkdown from "react-markdown";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   Avatar,
   ListItem,
@@ -19,12 +19,18 @@ import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
 import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 import CloseIcon from "@material-ui/icons/Close";
 
-import { ChatMsg, Config, Feedback, State } from "types";
+import { ChatMsg, Feedback } from "types";
 import "styles/history-chat.css";
 import { feedbackSend } from "store/actions";
+
+type MentorBubble = {
+  name: string;
+  color: string;
+};
 
 export function ChatItem(props: {
   message: ChatMsg;
@@ -32,22 +38,24 @@ export function ChatItem(props: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   styles: any;
   answersVisibility: boolean;
-  setAnswerIndex: (idx: number) => void;
-  // answerIndex: number;
-  onSendFeedback: (id: string, feedback: Feedback) => void;
+  // setAnswerIndex: (idx: number) => void;
+  mentorBuubleProps: Array<MentorBubble>;
 }): JSX.Element {
   const {
     message,
     i,
     styles,
     answersVisibility,
-    setAnswerIndex,
-    onSendFeedback,
+    mentorBuubleProps,
   } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
-  // const config = useSelector<State, Config>((s) => s.config);
-  // const [eyeClick, setEyeClick] = useState<boolean>(false)
+
+  const mentorColor = mentorBuubleProps.find(
+    (mentor: MentorBubble) => mentor.name === message.name
+  )?.color;
+
+  console.log(mentorColor);
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(event.currentTarget);
@@ -73,7 +81,17 @@ export function ChatItem(props: {
       </h3>
     );
   }
-  const [a, setA] = useState<boolean>(false);
+
+  function onClickVSBY() {
+    console.log(i + 1);
+  }
+
+  const visibilityIcon =
+    message.isUser && answersVisibility ? (
+      <VisibilityOff onClick={onClickVSBY} style={{ marginRight: 7 }} />
+    ) : message.isUser ? (
+      <Visibility onClick={onClickVSBY} style={{ marginRight: 7 }} />
+    ) : null;
 
   return (
     <ListItem
@@ -82,25 +100,25 @@ export function ChatItem(props: {
       disableGutters={false}
       className={[
         message.isUser ? "user" : "system",
-        answersVisibility && message.isUser === false && i !== 0
-          ? "hidden"
-          : "visible",
+        answersVisibility && message.isUser === false ? "hidden" : "visible",
       ].join(" ")}
       classes={{ root: styles.root }}
       style={{
         paddingRight: 16,
         maxWidth: 750,
         marginLeft: message.feedbackId ? 50 : 0,
+        backgroundColor: mentorColor,
       }}
     >
-      {message.isUser ? (
-        <Visibility
-          onClick={() => {
-            setAnswerIndex(i + 1), setA((prev) => !prev);
-          }}
-        />
-      ) : null}
-      <ReactMarkdown source={message.text} renderers={{ link: LinkRenderer }} />
+      {visibilityIcon}
+      <ReactMarkdown
+        source={
+          message.isUser === false
+            ? message.name.concat(": ", message.text)
+            : message.text
+        }
+        renderers={{ link: LinkRenderer }}
+      />
       {message.feedbackId ? (
         <div
           data-cy="feedback-btn"

@@ -36,8 +36,6 @@ function ScrollingQuestions(args: ScrollingQuestionsParams): JSX.Element {
     smoothscroll.polyfill();
   }, []);
 
-  console.log(`questions scrolling : ${questions}`);
-
   useEffect(() => {
     const topQuestion = questions.find((q) => {
       return !questionsAsked.includes(normalizeString(q));
