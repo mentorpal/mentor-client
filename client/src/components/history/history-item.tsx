@@ -40,18 +40,16 @@ export function ChatItem(props: {
   // setAnswerIndex: (idx: number) => void;
   mentorBuubleProps: Array<MentorBubble>;
 }): JSX.Element {
-  const {
-    message,
-    i,
-    styles,
-    mentorBuubleProps,
-  } = props;
+  const { message, i, styles, mentorBuubleProps } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
 
-  const mentorColor = message.name.length > 0 ? mentorBuubleProps.find(
-    (mentor: MentorBubble) => mentor.name === message.name
-  )?.color : "#88929e";
+  const mentorColor =
+    message.name.length > 0
+      ? mentorBuubleProps.find(
+          (mentor: MentorBubble) => mentor.name === message.name
+        )?.color
+      : "#88929e";
 
   // dispatch(setMentorBubbleColor(message.name, mentorColor))
 
@@ -82,17 +80,25 @@ export function ChatItem(props: {
 
   function onClickVSBY() {
     const answerIdxs: Array<number> = [];
-    for(let x=i;x<=i+mentorBuubleProps.length;x++){
-      answerIdxs.push(x)
+    for (let x = i; x <= i + mentorBuubleProps.length; x++) {
+      answerIdxs.push(x);
     }
-    dispatch(answerVisibility(answerIdxs, message.visibility))
+    dispatch(answerVisibility(answerIdxs, message.visibility));
   }
 
   const visibilityIcon =
     message.isUser && message.visibility === false ? (
-      <VisibilityOff data-cy={`vsbyIcon-${i}`} onClick={onClickVSBY} style={{ marginRight: 7 }} />
+      <VisibilityOff
+        data-cy={`vsbyIcon-${i}`}
+        onClick={onClickVSBY}
+        style={{ marginRight: 7 }}
+      />
     ) : message.isUser && message.visibility ? (
-      <Visibility onClick={onClickVSBY} data-cy={`vsbyIcon-${i}`} style={{ marginRight: 7 }} />
+      <Visibility
+        onClick={onClickVSBY}
+        data-cy={`vsbyIcon-${i}`}
+        style={{ marginRight: 7 }}
+      />
     ) : null;
 
   return (

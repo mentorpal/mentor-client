@@ -12,7 +12,6 @@ import {
 const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
 
-
 describe("Video Chat History", () => {
   it("does not display in topics list if no questions have been asked", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
@@ -38,7 +37,7 @@ describe("Video Chat History", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").contains("Hello");
   });
-  
+
   it("displays questions that have been asked via topic button", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.viewport("macbook-11");
@@ -57,7 +56,7 @@ describe("Video Chat History", () => {
     cy.viewport("macbook-11");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=input-field]").type("Hello");
-    cy.wait(1000)
+    cy.wait(1000);
 
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
@@ -67,10 +66,7 @@ describe("Video Chat History", () => {
     //   "data-topic",
     //   "History"
     // );
-    cy.get("[data-cy=history-chat]")
-      .get("li")
-      .first()
-      .contains("Hello");
+    cy.get("[data-cy=history-chat]").get("li").first().contains("Hello");
     cy.get("[data-cy=input-field]").type("World");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     // cy.get("[data-cy=history-chat]")
@@ -84,7 +80,7 @@ describe("Video Chat History", () => {
     cy.viewport("macbook-11");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=input-field]").type("hello");
-    cy.wait(1000)
+    cy.wait(1000);
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=topic-2]").trigger("mouseover").click();
@@ -94,8 +90,8 @@ describe("Video Chat History", () => {
     //   "History"
     // );
     cy.get("[data-cy=history-chat]").contains("hello");
-    
-    cy.wait(1000)
+
+    cy.wait(1000);
     cy.get("[data-cy=input-field]").type("helo");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").contains("helo");
@@ -120,12 +116,6 @@ describe("Video Chat History", () => {
     //   .first()
     //   .contains("World");
   });
-
-
-
-
-
-
 
   it("displays both questions and answers as a chat", () => {
     mockDefaultSetup(cy, {
@@ -192,11 +182,11 @@ describe("Video Chat History", () => {
     cy.get("[data-cy=click-good]").trigger("mouseover").click();
     cy.get("[data-cy=selected-good]").should("be.visible");
   });
-// -----------------------------------------------------------------
+  // -----------------------------------------------------------------
   it("Show different feedback answers and mentors", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
-      mentorData: [clint,carlos],
+      mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
       gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
     });
@@ -214,7 +204,7 @@ describe("Video Chat History", () => {
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.wait(1000)
+    cy.wait(1000);
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
@@ -225,14 +215,14 @@ describe("Video Chat History", () => {
 
       cy.get("[data-cy=chat-msg-3]").contains("Question 2");
       cy.get("[data-cy=chat-msg-4]").contains("clint: Another feedback");
-      cy.get("[data-cy=chat-msg-5]").contains("carlos: Give me feedback.");      
+      cy.get("[data-cy=chat-msg-5]").contains("carlos: Give me feedback.");
     });
   });
 
   it("can give feedback on multiple mentor answers", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
-      mentorData: [clint,carlos],
+      mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
       gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
     });
@@ -250,11 +240,10 @@ describe("Video Chat History", () => {
     // write msgs
     cy.get("[data-cy=input-field]").type("Good feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.wait(1000)
+    cy.wait(1000);
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
-    
     // provide feedback
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-0]").contains("Good feedback test");
@@ -294,7 +283,7 @@ describe("Video Chat History", () => {
   it("Compare mentor's bubble colors", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
-      mentorData: [clint,carlos],
+      mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
       gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
     });
@@ -312,22 +301,27 @@ describe("Video Chat History", () => {
     // write msgs
     cy.get("[data-cy=input-field]").type("Good feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.wait(1000)
+    cy.wait(1000);
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
-
     cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get('[data-cy=chat-msg-1]').invoke('css', 'background-color').then($backgroundMentor1 => {
-        cy.get('[data-cy=chat-msg-2]').should('not.have.css', "background", $backgroundMentor1)
-      });
+      cy.get("[data-cy=chat-msg-1]")
+        .invoke("css", "background-color")
+        .then(($backgroundMentor1) => {
+          cy.get("[data-cy=chat-msg-2]").should(
+            "not.have.css",
+            "background",
+            $backgroundMentor1
+          );
+        });
     });
   });
 
   it("Answers can be toggled open to see the transcript of the response", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
-      mentorData: [clint,carlos],
+      mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
       gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
     });
@@ -348,40 +342,38 @@ describe("Video Chat History", () => {
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.wait(1000)
+    cy.wait(1000);
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-  
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=visibility-switch]").should('exist');
-        cy.get('[data-cy=visibility-switch]').find('input').should('be.checked');
+        cy.get("[data-cy=visibility-switch]").should("exist");
+        cy.get("[data-cy=visibility-switch]")
+          .find("input")
+          .should("be.checked");
 
         // show answers
-        cy.get('[data-cy=visibility-switch]').find('input').uncheck()
+        cy.get("[data-cy=visibility-switch]").find("input").uncheck();
         cy.get("[data-cy=chat-msg-1]").should("be.visible");
         cy.get("[data-cy=chat-msg-2]").should("be.visible");
         cy.get("[data-cy=chat-msg-4]").scrollIntoView().should("be.visible");
         cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
 
         // Hide answers
-        cy.get('[data-cy=visibility-switch]').find('input').check()
+        cy.get("[data-cy=visibility-switch]").find("input").check();
         cy.get("[data-cy=chat-msg-1]").should("not.be.visible");
         cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
         cy.get("[data-cy=chat-msg-4]").should("not.be.visible");
         cy.get("[data-cy=chat-msg-5]").should("not.be.visible");
-
-        
-
-      })
+      });
     });
   });
 
   it("Answers can be toggled individually", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
-      mentorData: [clint,carlos],
+      mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
       gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
     });
@@ -402,39 +394,35 @@ describe("Video Chat History", () => {
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.wait(1000)
+    cy.wait(1000);
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        // Hide answers 
-        cy.get("[data-cy=vsbyIcon-0]").should('exist');
+        // Hide answers
+        cy.get("[data-cy=vsbyIcon-0]").should("exist");
         cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
         cy.get("[data-cy=chat-msg-0]").scrollIntoView();
         cy.get("[data-cy=chat-msg-1]").should("not.be.visible");
         cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
 
-
         // Hide answers
         cy.get("[data-cy=chat-msg-3]").scrollIntoView();
-        cy.get("[data-cy=vsbyIcon-3]").should('exist');
+        cy.get("[data-cy=vsbyIcon-3]").should("exist");
         cy.get("[data-cy=vsbyIcon-3]").trigger("mouseover").click();
         cy.get("[data-cy=chat-msg-1]").should("not.be.visible");
         cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
-        cy.wait(1000)
+        cy.wait(1000);
 
         // show answers
-        cy.get("[data-cy=vsbyIcon-3]").should('exist');
+        cy.get("[data-cy=vsbyIcon-3]").should("exist");
         cy.get("[data-cy=vsbyIcon-3]").trigger("mouseover").click();
         cy.get("[data-cy=chat-msg-4]").should("be.visible");
         cy.get("[data-cy=chat-msg-5]").should("be.visible");
-
-      })
+      });
     });
   });
 
   // -----------------------------------------------------------
-
 });

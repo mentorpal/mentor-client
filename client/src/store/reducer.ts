@@ -271,46 +271,50 @@ function onMentorLoadResults(
 }
 
 function onQuestionSent(state: State, action: QuestionSentAction): State {
-  const idx = state.chat.messages.findIndex(m => m.text === action.payload.question)
-  return idx === -1 ? onMentorNext(
-    onQuestionInputChanged(
-      {
-        ...state,
-        chat: {
-          ...state.chat,
-          messages: [
-              ...state.chat.messages,
-              {
-                name: "",
-                color: "",
-                isUser: true,
-                text: action.payload.question,
-                feedback: Feedback.NONE,
-                feedbackId: "",
-                isFeedbackSendInProgress: false,
-                visibility: true,
-              },
-            ],
-        },
-        curQuestion: action.payload.question,
-        curQuestionSource: action.payload.source,
-        curQuestionUpdatedAt: new Date(Date.now()),
-        questionsAsked: Array.from(
-          new Set([
-            ...state.questionsAsked,
-            normalizeString(action.payload.question),
-          ])
-        ),
-      },
-      {
-        type: QUESTION_INPUT_CHANGED,
-        payload: {
-          question: "",
-          source: MentorQuestionSource.NONE,
-        },
-      }
-    )
-  ) : state;
+  const idx = state.chat.messages.findIndex(
+    (m) => m.text === action.payload.question
+  );
+  return idx === -1
+    ? onMentorNext(
+        onQuestionInputChanged(
+          {
+            ...state,
+            chat: {
+              ...state.chat,
+              messages: [
+                ...state.chat.messages,
+                {
+                  name: "",
+                  color: "",
+                  isUser: true,
+                  text: action.payload.question,
+                  feedback: Feedback.NONE,
+                  feedbackId: "",
+                  isFeedbackSendInProgress: false,
+                  visibility: true,
+                },
+              ],
+            },
+            curQuestion: action.payload.question,
+            curQuestionSource: action.payload.source,
+            curQuestionUpdatedAt: new Date(Date.now()),
+            questionsAsked: Array.from(
+              new Set([
+                ...state.questionsAsked,
+                normalizeString(action.payload.question),
+              ])
+            ),
+          },
+          {
+            type: QUESTION_INPUT_CHANGED,
+            payload: {
+              question: "",
+              source: MentorQuestionSource.NONE,
+            },
+          }
+        )
+      )
+    : state;
 }
 
 function onConfigLoadStarted(state: State): State {
@@ -412,10 +416,7 @@ function onQuestionAnswered(
   };
 }
 
-function onQuestionClick(
-  state: State,
-  action: visibilityAnswerAction
-): State {
+function onQuestionClick(state: State, action: visibilityAnswerAction): State {
   return {
     ...state,
     chat: {
@@ -424,7 +425,7 @@ function onQuestionClick(
         return action.payload.indexes.includes(i)
           ? {
               ...m,
-              visibility: action.payload.newVisibility
+              visibility: action.payload.newVisibility,
             }
           : m;
       }),
@@ -444,14 +445,13 @@ function onSwitchVSBYToggle(
         return action.payload.messagesLength > 0
           ? {
               ...m,
-              visibility: !action.payload.currVisibility
+              visibility: !action.payload.currVisibility,
             }
           : m;
       }),
     },
   };
 }
-
 
 function topicSelected(state: State, action: TopicSelectedAction): State {
   return {
@@ -496,7 +496,7 @@ export default function reducer(
     case VISIBILITY_SINGLE_QUESTION:
       return onQuestionClick(state, action);
     case VISIBILITY_SWITCH:
-      return onSwitchVSBYToggle(state, action)
+      return onSwitchVSBYToggle(state, action);
     case QUESTION_ERROR:
       return {
         ...state,

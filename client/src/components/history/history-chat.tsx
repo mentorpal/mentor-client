@@ -11,7 +11,6 @@ import { List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { visibilitySwitch } from "store/actions";
 
-
 import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
 import { ChatData, State } from "types";
@@ -61,8 +60,6 @@ interface ScrollingQuestionsParams {
   questionHistory: string[];
 }
 
-
-
 export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   const { height } = args;
   const styles = useStyles();
@@ -72,11 +69,15 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   const [checked, toggleChecked] = useState<boolean>(true);
 
   function bubbleMentorColor() {
-    return  'rgb(' + 
-    (Math.floor(Math.random()*56)+200) + ', ' +
-    (Math.floor(Math.random()*56)+200) + ', ' +
-    (Math.floor(Math.random()*56)+200) +
-    ')';
+    return (
+      "rgb(" +
+      (Math.floor(Math.random() * 56) + 200) +
+      ", " +
+      (Math.floor(Math.random() * 56) + 200) +
+      ", " +
+      (Math.floor(Math.random() * 56) + 200) +
+      ")"
+    );
   }
 
   /*
@@ -120,26 +121,33 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
     color: string;
   };
 
-  const [mentorBubbleProps, setmentorBubbleProps] = useState<MentorBubble[]>([])
+  const [mentorBubbleProps, setmentorBubbleProps] = useState<MentorBubble[]>(
+    []
+  );
 
   function onMentorChange(mentorName: string) {
     if (mentorName.length > 0) {
-      const pos = mentorBubbleProps.map((item) => item.name).indexOf(mentorName);
-      pos === -1 ? setmentorBubbleProps([...mentorBubbleProps, { name: mentorName, color: bubbleMentorColor() }]) : ""
+      const pos = mentorBubbleProps
+        .map((item) => item.name)
+        .indexOf(mentorName);
+      pos === -1
+        ? setmentorBubbleProps([
+            ...mentorBubbleProps,
+            { name: mentorName, color: bubbleMentorColor() },
+          ])
+        : "";
     }
   }
 
   useEffect(() => {
-    chatData.messages.map(m => {
-      m.isUser === false ? onMentorChange(m.name) : null
-    })
-  }, [chatData.messages])
+    chatData.messages.map((m) => {
+      m.isUser === false ? onMentorChange(m.name) : null;
+    });
+  }, [chatData.messages]);
 
   useEffect(() => {
-    dispatch(visibilitySwitch(chatData.messages.length, checked))
-  }, [checked])
-
-
+    dispatch(visibilitySwitch(chatData.messages.length, checked));
+  }, [checked]);
 
   return (
     <div
