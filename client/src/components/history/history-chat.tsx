@@ -5,10 +5,12 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { animateScroll } from "react-scroll";
 import { List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { visibilitySwitch } from "store/actions";
+
 
 import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
@@ -59,16 +61,36 @@ interface ScrollingQuestionsParams {
   questionHistory: string[];
 }
 
+
+
 export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   const { height } = args;
   const styles = useStyles();
   const chatData = useSelector<State, ChatData>((s) => s.chat);
+  const dispatch = useDispatch();
 
-  const [checked, toggleChecked] = useState<boolean>(false);
+  const [checked, toggleChecked] = useState<boolean>(true);
 
   function bubbleMentorColor() {
-    return "hsl(" + Math.floor(Math.random() * 361) + ",50%,75%)";
+    return  'rgb(' + 
+    (Math.floor(Math.random()*56)+200) + ', ' +
+    (Math.floor(Math.random()*56)+200) + ', ' +
+    (Math.floor(Math.random()*56)+200) +
+    ')';
   }
+
+  /*
+  messages = [
+    0: {name: "", color: "", isUser: true, text: "Hello", feedback: "NONE", …}
+    1: {name: "clint", color: "", isUser: false, text: "I'm thirty seven years old.", feedback: "NONE", …}
+    2: {name: "carlos", color: "", isUser: false, text: "I'm thirty seven years old.", feedback: "NONE", …}
+    3: {name: "julianne", color: "", isUser: false, text: "I'm thirty seven years old.", feedback: "NONE", …}
+    4: {name: "", color: "", isUser: true, text: "World", feedback: "NONE", …}
+    5: {name: "clint", color: "", isUser: false, text: "I'm thirty seven years old.", feedback: "NONE", …}
+    6: {name: "carlos", color: "", isUser: false, text: "I'm thirty seven years old.", feedback: "NONE", …}
+    7: {name: "julianne", color: "", isUser: false, text: "I'm thirty seven years old.", feedback: "NONE", …}
+  ]
+  */
   useEffect(() => {
     animateScroll.scrollToBottom({
       containerId: "chat-thread",
@@ -87,7 +109,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
               data-cy="visibility-switch"
             />
           }
-          label="hide/show"
+          label="hide/show answers"
         />
       </FormGroup>
     </div>
@@ -97,16 +119,27 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
     name: string;
     color: string;
   };
-  const mentors: Array<MentorBubble> = [];
+
+  const [mentorBubbleProps, setmentorBubbleProps] = useState<MentorBubble[]>([])
 
   function onMentorChange(mentorName: string) {
     if (mentorName.length > 0) {
-      const pos = mentors.map((item) => item.name).indexOf(mentorName);
-      pos === -1
-        ? mentors.push({ name: mentorName, color: bubbleMentorColor() })
-        : null;
+      const pos = mentorBubbleProps.map((item) => item.name).indexOf(mentorName);
+      pos === -1 ? setmentorBubbleProps([...mentorBubbleProps, { name: mentorName, color: bubbleMentorColor() }]) : ""
     }
   }
+
+  useEffect(() => {
+    chatData.messages.map(m => {
+      m.isUser === false ? onMentorChange(m.name) : null
+    })
+  }, [chatData.messages])
+
+  useEffect(() => {
+    dispatch(visibilitySwitch(chatData.messages.length, checked))
+  }, [checked])
+
+
 
   return (
     <div
@@ -124,7 +157,6 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
       >
         {toggleAnswers}
         {chatData.messages.map((m, i) => {
-          onMentorChange(m.name);
           return (
             <div
               key={i}
@@ -139,8 +171,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
                 message={m}
                 i={i}
                 styles={styles}
-                answersVisibility={checked}
-                mentorBuubleProps={mentors}
+                mentorBuubleProps={mentorBubbleProps}
               />
             </div>
           );

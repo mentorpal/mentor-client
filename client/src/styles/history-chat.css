@@ -44,7 +44,6 @@ ul li p {
     background: #e8e9ea;
     float: left;
     border-bottom-left-radius: 5px;
-    
 }
 
 .user {
@@ -52,7 +51,7 @@ ul li p {
     background: #88929e;
     color: #fff;
     border-bottom-right-radius: 5px;
-    
+    display: flex !important;
 }
 
 

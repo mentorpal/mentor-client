@@ -39,9 +39,11 @@ import {
   MentorDataResult,
   Feedback,
 } from "../types";
+import { Visibility } from "@material-ui/icons";
 
 const RESPONSE_CUTOFF = -100;
-
+export const VISIBILITY_SINGLE_QUESTION = 'VISIBILITY_SINGLE_QUESTION';
+export const VISIBILITY_SWITCH = "VISIBILITY_SWITCH";
 export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished playing
 export const CONFIG_LOAD_FAILED = "CONFIG_LOAD_FAILED";
 export const CONFIG_LOAD_STARTED = "CONFIG_LOAD_STARTED";
@@ -213,10 +215,53 @@ export type MentorClientAction =
   | MentorAction
   | QuestionAction
   | TopicSelectedAction
-  | QuestionInputChangedAction;
+  | QuestionInputChangedAction
+  | visibilityAnswerAction
+  | visibilitySwitchAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
+
+export interface visibilityAnswerAction {
+  type: typeof VISIBILITY_SINGLE_QUESTION;
+  payload: {
+    newVisibility: boolean;
+    indexes: number[];
+  };
+}
+
+export interface visibilitySwitchAction {
+  type: typeof VISIBILITY_SWITCH;
+  payload: {
+    messagesLength: number;
+    currVisibility: boolean;
+  };
+}
+
+export const answerVisibility = (indexes:number[], visibility: boolean) => async (
+  dispatch: ThunkDispatch<State, void, visibilityAnswerAction>,
+) => {
+  const newVisibility = !visibility;
+  return dispatch({
+    type: VISIBILITY_SINGLE_QUESTION,
+    payload: {
+      newVisibility,
+      indexes,
+    },
+  });
+}
+
+export const visibilitySwitch = (messagesLength:number, currVisibility: boolean) => async (
+  dispatch: ThunkDispatch<State, void, visibilitySwitchAction>,
+) => {
+  return dispatch({
+    type: VISIBILITY_SWITCH,
+    payload: {
+      messagesLength,
+      currVisibility
+    },
+  });
+}
 
 export const feedbackSend =
   (feedbackId: string, feedback: Feedback) =>

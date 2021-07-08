@@ -6,6 +6,10 @@ The full terms of this copyright and license should always be found in the root 
 */
 import { normalizeString } from "utils";
 import {
+  VISIBILITY_SINGLE_QUESTION,
+  visibilityAnswerAction,
+  visibilitySwitchAction,
+  VISIBILITY_SWITCH,
   ANSWER_FINISHED,
   FEEDBACK_SEND_SUCCEEDED,
   FEEDBACK_SENT,
@@ -51,6 +55,7 @@ import {
   MentorType,
   Feedback,
 } from "../types";
+// import { stat } from "fs";
 // import Chat from "components/chat";
 
 export const initialState: State = {
@@ -158,7 +163,7 @@ function onFeedbackSendSucceeded(
     state,
     action.payload.feedbackId,
     action.payload.feedback,
-    false
+    true
   );
 }
 
@@ -266,25 +271,26 @@ function onMentorLoadResults(
 }
 
 function onQuestionSent(state: State, action: QuestionSentAction): State {
-  return onMentorNext(
+  const idx = state.chat.messages.findIndex(m => m.text === action.payload.question)
+  return idx === -1 ? onMentorNext(
     onQuestionInputChanged(
       {
         ...state,
         chat: {
           ...state.chat,
           messages: [
-            ...state.chat.messages,
-            {
-              name: "",
-              color: "",
-              isUser: true,
-              text: action.payload.question,
-              feedback: Feedback.NONE,
-              feedbackId: "",
-              isFeedbackSendInProgress: false,
-              visibility: false,
-            },
-          ],
+              ...state.chat.messages,
+              {
+                name: "",
+                color: "",
+                isUser: true,
+                text: action.payload.question,
+                feedback: Feedback.NONE,
+                feedbackId: "",
+                isFeedbackSendInProgress: false,
+                visibility: true,
+              },
+            ],
         },
         curQuestion: action.payload.question,
         curQuestionSource: action.payload.source,
@@ -304,7 +310,7 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
         },
       }
     )
-  );
+  ) : state;
 }
 
 function onConfigLoadStarted(state: State): State {
@@ -379,6 +385,7 @@ function onQuestionAnswered(
   if (!mentor.topic_questions[history].questions.includes(response.question)) {
     mentor.topic_questions[history].questions.push(response.question);
   }
+  // console.log(state.questionsAsked.length + state.config.mentorsDefault.length)
   return {
     ...state,
     chat: {
@@ -393,7 +400,7 @@ function onQuestionAnswered(
           feedback: Feedback.NONE,
           feedbackId: action.mentor.answerFeedbackId,
           isFeedbackSendInProgress: false,
-          visibility: false
+          visibility: true,
         },
       ],
     },
@@ -404,6 +411,47 @@ function onQuestionAnswered(
     },
   };
 }
+
+function onQuestionClick(
+  state: State,
+  action: visibilityAnswerAction
+): State {
+  return {
+    ...state,
+    chat: {
+      ...state.chat,
+      messages: state.chat.messages.map((m, i) => {
+        return action.payload.indexes.includes(i)
+          ? {
+              ...m,
+              visibility: action.payload.newVisibility
+            }
+          : m;
+      }),
+    },
+  };
+}
+
+function onSwitchVSBYToggle(
+  state: State,
+  action: visibilitySwitchAction
+): State {
+  return {
+    ...state,
+    chat: {
+      ...state.chat,
+      messages: state.chat.messages.map((m) => {
+        return action.payload.messagesLength > 0
+          ? {
+              ...m,
+              visibility: !action.payload.currVisibility
+            }
+          : m;
+      }),
+    },
+  };
+}
+
 
 function topicSelected(state: State, action: TopicSelectedAction): State {
   return {
@@ -445,6 +493,10 @@ export default function reducer(
       return onQuestionSent(state, action);
     case QUESTION_ANSWERED:
       return onQuestionAnswered(state, action);
+    case VISIBILITY_SINGLE_QUESTION:
+      return onQuestionClick(state, action);
+    case VISIBILITY_SWITCH:
+      return onSwitchVSBYToggle(state, action)
     case QUESTION_ERROR:
       return {
         ...state,

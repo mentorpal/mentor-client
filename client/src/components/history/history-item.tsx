@@ -25,7 +25,7 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import { ChatMsg, Feedback } from "types";
 import "styles/history-chat.css";
-import { feedbackSend } from "store/actions";
+import { feedbackSend, answerVisibility } from "store/actions";
 
 type MentorBubble = {
   name: string;
@@ -37,7 +37,6 @@ export function ChatItem(props: {
   i: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   styles: any;
-  answersVisibility: boolean;
   // setAnswerIndex: (idx: number) => void;
   mentorBuubleProps: Array<MentorBubble>;
 }): JSX.Element {
@@ -45,17 +44,16 @@ export function ChatItem(props: {
     message,
     i,
     styles,
-    answersVisibility,
     mentorBuubleProps,
   } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
 
-  const mentorColor = mentorBuubleProps.find(
+  const mentorColor = message.name.length > 0 ? mentorBuubleProps.find(
     (mentor: MentorBubble) => mentor.name === message.name
-  )?.color;
+  )?.color : "#88929e";
 
-  console.log(mentorColor);
+  // dispatch(setMentorBubbleColor(message.name, mentorColor))
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(event.currentTarget);
@@ -83,14 +81,18 @@ export function ChatItem(props: {
   }
 
   function onClickVSBY() {
-    console.log(i + 1);
+    const answerIdxs: Array<number> = [];
+    for(let x=i;x<=i+mentorBuubleProps.length;x++){
+      answerIdxs.push(x)
+    }
+    dispatch(answerVisibility(answerIdxs, message.visibility))
   }
 
   const visibilityIcon =
-    message.isUser && answersVisibility ? (
-      <VisibilityOff onClick={onClickVSBY} style={{ marginRight: 7 }} />
-    ) : message.isUser ? (
-      <Visibility onClick={onClickVSBY} style={{ marginRight: 7 }} />
+    message.isUser && message.visibility === false ? (
+      <VisibilityOff data-cy={`vsbyIcon-${i}`} onClick={onClickVSBY} style={{ marginRight: 7 }} />
+    ) : message.isUser && message.visibility ? (
+      <Visibility onClick={onClickVSBY} data-cy={`vsbyIcon-${i}`} style={{ marginRight: 7 }} />
     ) : null;
 
   return (
@@ -100,13 +102,13 @@ export function ChatItem(props: {
       disableGutters={false}
       className={[
         message.isUser ? "user" : "system",
-        answersVisibility && message.isUser === false ? "hidden" : "visible",
+        message.visibility ? "visible" : "hidden",
       ].join(" ")}
       classes={{ root: styles.root }}
       style={{
         paddingRight: 16,
         maxWidth: 750,
-        marginLeft: message.feedbackId ? 50 : 0,
+        marginLeft: message.isUser ? 0 : 50,
         backgroundColor: mentorColor,
       }}
     >
