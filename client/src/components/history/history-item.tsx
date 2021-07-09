@@ -37,7 +37,6 @@ export function ChatItem(props: {
   i: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   styles: any;
-  // setAnswerIndex: (idx: number) => void;
   mentorBuubleProps: Array<MentorBubble>;
 }): JSX.Element {
   const { message, i, styles, mentorBuubleProps } = props;
@@ -50,8 +49,6 @@ export function ChatItem(props: {
           (mentor: MentorBubble) => mentor.name === message.name
         )?.color
       : "#88929e";
-
-  // dispatch(setMentorBubbleColor(message.name, mentorColor))
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(event.currentTarget);

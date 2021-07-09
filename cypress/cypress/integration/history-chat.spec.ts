@@ -51,67 +51,65 @@ describe("Video Chat History", () => {
     });
   });
 
-  it("displays most recent questions at the top", () => {
+  // it("displays most recent questions at the top", () => {
+  //   visitAsGuestWithDefaultSetup(cy, "/");
+  //   cy.viewport("macbook-11");
+  //   cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
+  //   cy.get("[data-cy=input-field]").type("Hello");
+  //   cy.wait(1000);
+
+  //   cy.get("[data-cy=input-send]").trigger("mouseover").click();
+  //   cy.get("[data-cy=input-send]").trigger("mouseover").click();
+  //   cy.get("[data-cy=topic-2]").trigger("mouseover").click();
+  //   // cy.get("[data-cy=history-chat]").should(
+  //   //   "have.attr",
+  //   //   "data-topic",
+  //   //   "History"
+  //   // );
+  //   cy.get("[data-cy=history-chat]").get("li").first().contains("Hello");
+  //   cy.get("[data-cy=input-field]").type("World");
+  //   cy.get("[data-cy=input-send]").trigger("mouseover").click();
+  //   // cy.get("[data-cy=history-chat]")
+  //   //   .get("li")
+  //   //   .first()
+  //   //   .contains("World");
+  // });
+
+  it("does not read duplicate questions", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.viewport("macbook-11");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=input-field]").type("Hello");
-    cy.wait(1000);
-
+    cy.wait(1000)
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=topic-2]").trigger("mouseover").click();
-    // cy.get("[data-cy=history-chat]").should(
-    //   "have.attr",
-    //   "data-topic",
-    //   "History"
-    // );
-    cy.get("[data-cy=history-chat]").get("li").first().contains("Hello");
+    cy.get("[data-cy=history-chat]").should(
+      "have.attr",
+      "data-topic",
+      "History"
+    );
+    cy.get("[data-cy=history-chat]").contains("Hello");
     cy.get("[data-cy=input-field]").type("World");
+    cy.wait(1000)
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=history-chat]").contains("Hello");
+    cy.get("[data-cy=history-chat]").contains("World");
+    cy.get("[data-cy=history-chat]")
+      .find("li")
+      .should("have.length", 8);
     // cy.get("[data-cy=history-chat]")
     //   .get("li")
     //   .first()
     //   .contains("World");
-  });
-
-  it.only("does not read duplicate questions", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
-    cy.viewport("macbook-11");
-    cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
-    cy.get("[data-cy=input-field]").type("hello");
-    cy.wait(1000);
+    cy.get("[data-cy=input-field]").type("Hello");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=topic-2]").trigger("mouseover").click();
-    // cy.get("[data-cy=scrolling-questions-list]").should(
-    //   "have.attr",
-    //   "data-topic",
-    //   "History"
-    // );
-    cy.get("[data-cy=history-chat]").contains("hello");
-
-    cy.wait(1000);
-    cy.get("[data-cy=input-field]").type("helo");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=history-chat]").contains("helo");
-    // cy.get("[data-cy=history-chat]").contains("World");
-
+    cy.get("[data-cy=history-chat]").contains("Hello");
+    cy.get("[data-cy=history-chat]").contains("World");
+    cy.get("[data-cy=history-chat]")
+      .find("li")
+      .should("have.length", 8);
     // cy.get("[data-cy=history-chat]")
-    //   .find("li")
-    //   .should("have.length", 8);
-    // // cy.get("[data-cy=history-chat]")
-    // //   .get("li")
-    // //   .first()
-    // //   .contains("World");
-    // cy.get("[data-cy=input-field]").type("Hello");
-    // cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    // cy.get("[data-cy=history-chat]").contains("Hello");
-    // cy.get("[data-cy=history-chat]").contains("World");
-    // cy.get("[data-cy=scrolling-questions-list]")
-    //   .find("li")
-    //   .should("have.length", 2);
-    // cy.get("[data-cy=scrolling-questions-list]")
     //   .get("li")
     //   .first()
     //   .contains("World");
@@ -182,7 +180,7 @@ describe("Video Chat History", () => {
     cy.get("[data-cy=click-good]").trigger("mouseover").click();
     cy.get("[data-cy=selected-good]").should("be.visible");
   });
-  // -----------------------------------------------------------------
+ 
   it("Show different feedback answers and mentors", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
@@ -423,6 +421,4 @@ describe("Video Chat History", () => {
       });
     });
   });
-
-  // -----------------------------------------------------------
 });

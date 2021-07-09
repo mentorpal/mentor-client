@@ -389,8 +389,9 @@ function onQuestionAnswered(
   if (!mentor.topic_questions[history].questions.includes(response.question)) {
     mentor.topic_questions[history].questions.push(response.question);
   }
-  // console.log(state.questionsAsked.length + state.config.mentorsDefault.length)
-  return {
+  const repeatedQuestion = state.questionsAsked.map(q => normalizeString(q) === normalizeString(state.questionInput.question))
+   
+  return repeatedQuestion.some((q) => q === true) ? state : {
     ...state,
     chat: {
       ...state.chat,

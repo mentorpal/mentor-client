@@ -80,18 +80,6 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
     );
   }
 
-  /*
-  messages = [
-    0: {name: "", color: "", isUser: true, text: "Hello", feedback: "NONE", …}
-    1: {name: "clint", color: "", isUser: false, text: "I'm thirty seven years old.", feedback: "NONE", …}
-    2: {name: "carlos", color: "", isUser: false, text: "I'm thirty seven years old.", feedback: "NONE", …}
-    3: {name: "julianne", color: "", isUser: false, text: "I'm thirty seven years old.", feedback: "NONE", …}
-    4: {name: "", color: "", isUser: true, text: "World", feedback: "NONE", …}
-    5: {name: "clint", color: "", isUser: false, text: "I'm thirty seven years old.", feedback: "NONE", …}
-    6: {name: "carlos", color: "", isUser: false, text: "I'm thirty seven years old.", feedback: "NONE", …}
-    7: {name: "julianne", color: "", isUser: false, text: "I'm thirty seven years old.", feedback: "NONE", …}
-  ]
-  */
   useEffect(() => {
     animateScroll.scrollToBottom({
       containerId: "chat-thread",
@@ -152,7 +140,6 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   return (
     <div
       data-cy="history-chat"
-      // id="history-chat"
       data-topic="History"
       className={styles.chat_container}
     >
