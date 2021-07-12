@@ -27,10 +27,10 @@ import { ChatMsg, Feedback } from "types";
 import "styles/history-chat.css";
 import { feedbackSend, answerVisibility } from "store/actions";
 
-type MentorBubble = {
-  name: string;
-  color: string;
-};
+// type MentorBubble = {
+//   name: string;
+//   color: string;
+// };
 
 type stylesProps = {
   root: string;
@@ -45,23 +45,29 @@ type stylesProps = {
   visibilityBtn: string;
 };
 
+export interface ChatItemData extends ChatMsg {
+  name: string;
+  color: string;
+  isVisible: boolean; // a little weird because it's really a question/answer thing
+}
 export function ChatItem(props: {
-  message: ChatMsg;
+  message: ChatItemData;
   i: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   styles: stylesProps;
-  mentorBuubleProps: Array<MentorBubble>;
+  // mentorBuubleProps: Array<MentorBubble>;
 }): JSX.Element {
-  const { message, i, styles, mentorBuubleProps } = props;
+  const { message, i, styles } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
+  const isUser = !message.mentorId;
 
-  const mentorColor =
-    message.name.length > 0
-      ? mentorBuubleProps.find(
-          (mentor: MentorBubble) => mentor.name === message.name
-        )?.color
-      : "#88929e";
+  const mentorColor = message.color || "#88929e";
+  // (message.name)?
+  //   ? mentorBuubleProps.find(
+  //       (mentor: MentorBubble) => mentor.name === message.name
+  //     )?.color
+  // : "#88929e";
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(event.currentTarget);
@@ -89,21 +95,21 @@ export function ChatItem(props: {
   }
 
   function onClickVSBY() {
-    const answerIdxs: Array<number> = [];
-    for (let x = i; x <= i + mentorBuubleProps.length; x++) {
-      answerIdxs.push(x);
-    }
-    dispatch(answerVisibility(answerIdxs, message.visibility));
+    // const answerIdxs: Array<number> = [];
+    // for (let x = i; x <= i + mentorBuubleProps.length; x++) {
+    //   answerIdxs.push(x);
+    // }
+    // dispatch(answerVisibility(answerIdxs, message.visibility));
   }
 
   const visibilityIcon =
-    message.isUser && message.visibility === false ? (
+    isUser && message.isVisible === false ? (
       <VisibilityOff
         data-cy={`vsbyIcon-${i}`}
         onClick={onClickVSBY}
         style={{ marginRight: 7 }}
       />
-    ) : message.isUser && message.visibility ? (
+    ) : isUser && message.isVisible ? (
       <Visibility
         onClick={onClickVSBY}
         data-cy={`vsbyIcon-${i}`}
@@ -117,21 +123,21 @@ export function ChatItem(props: {
       id={`chat-msg-${i}`}
       disableGutters={false}
       className={[
-        message.isUser ? "user" : "system",
-        message.visibility ? "visible" : "hidden",
+        isUser ? "user" : "system",
+        message.isVisible ? "visible" : "hidden",
       ].join(" ")}
       classes={{ root: styles.root }}
       style={{
         paddingRight: 16,
         maxWidth: 750,
-        marginLeft: message.isUser ? 0 : 50,
+        marginLeft: isUser ? 0 : 50,
         backgroundColor: mentorColor,
       }}
     >
       {visibilityIcon}
       <ReactMarkdown
         source={
-          message.isUser === false
+          isUser === false
             ? message.name.concat(": ", message.text)
             : message.text
         }

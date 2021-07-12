@@ -13,9 +13,10 @@ export interface ChatData {
 
 export interface ChatMsg {
   // we should change name, color, and isUser to just mentorId
-  name: string;
-  color: string;
-  isUser: boolean;
+  // name: string;
+  // color: string;
+  mentorId: string;
+  // isUser: boolean;
   text: string;
   feedback: Feedback;
   feedbackId: string;

@@ -13,9 +13,10 @@ import { visibilitySwitch } from "store/actions";
 
 import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
-import { ChatData, State } from "types";
+import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
-import ChatItem from "./history-item";
+import ChatItem, { ChatItemData } from "./history-item";
+// import { DialpadRounded } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,25 +61,48 @@ interface ScrollingQuestionsParams {
   questionHistory: string[];
 }
 
+function bubbleMentorColor() {
+  return (
+    "rgb(" +
+    (Math.floor(Math.random() * 56) + 200) +
+    ", " +
+    (Math.floor(Math.random() * 56) + 200) +
+    ", " +
+    (Math.floor(Math.random() * 56) + 200) +
+    ")"
+  );
+}
+
+const MENTOR_COLORS = [
+  bubbleMentorColor(),
+  bubbleMentorColor(),
+  bubbleMentorColor(),
+  bubbleMentorColor(),
+];
+
 export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   const { height } = args;
   const styles = useStyles();
+  const colorByMentorId = useSelector<State, Record<string, string>>((s) => {
+    const mentorIds = Object.getOwnPropertyNames(s.mentorsById);
+    mentorIds.sort();
+    return mentorIds.reduce<Record<string, string>>((acc, cur, i) => {
+      acc[cur] = MENTOR_COLORS[i % MENTOR_COLORS.length];
+      return acc;
+    }, {});
+  });
+  const namesByMentorId = useSelector<State, Record<string, string>>((s) => {
+    const mentorIds = Object.getOwnPropertyNames(s.mentorsById);
+    mentorIds.sort();
+    return mentorIds.reduce<Record<string, string>>((acc, cur, i) => {
+      acc[cur] = s.mentorsById[cur].mentor.name;
+      return acc;
+    }, {});
+  });
   const chatData = useSelector<State, ChatData>((s) => s.chat);
   const dispatch = useDispatch();
 
   const [checked, toggleChecked] = useState<boolean>(true);
-
-  function bubbleMentorColor() {
-    return (
-      "rgb(" +
-      (Math.floor(Math.random() * 56) + 200) +
-      ", " +
-      (Math.floor(Math.random() * 56) + 200) +
-      ", " +
-      (Math.floor(Math.random() * 56) + 200) +
-      ")"
-    );
-  }
 
   useEffect(() => {
     animateScroll.scrollToBottom({
@@ -104,34 +128,34 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
     </div>
   );
 
-  type MentorBubble = {
-    name: string;
-    color: string;
-  };
+  // type MentorBubble = {
+  //   name: string;
+  //   color: string;
+  // };
 
-  const [mentorBubbleProps, setmentorBubbleProps] = useState<MentorBubble[]>(
-    []
-  );
+  // const [mentorBubbleProps, setmentorBubbleProps] = useState<MentorBubble[]>(
+  //   []
+  // );
 
-  function onMentorChange(mentorName: string) {
-    if (mentorName.length > 0) {
-      const pos = mentorBubbleProps
-        .map((item) => item.name)
-        .indexOf(mentorName);
-      pos === -1
-        ? setmentorBubbleProps([
-            ...mentorBubbleProps,
-            { name: mentorName, color: bubbleMentorColor() },
-          ])
-        : "";
-    }
-  }
+  // function onMentorChange(mentorName: string) {
+  //   if (mentorName.length > 0) {
+  //     const pos = mentorBubbleProps
+  //       .map((item) => item.name)
+  //       .indexOf(mentorName);
+  //     pos === -1
+  //       ? setmentorBubbleProps([
+  //           ...mentorBubbleProps,
+  //           { name: mentorName, color: bubbleMentorColor() },
+  //         ])
+  //       : "";
+  //   }
+  // }
 
-  useEffect(() => {
-    chatData.messages.map((m) => {
-      m.isUser === false ? onMentorChange(m.name) : null;
-    });
-  }, [chatData.messages]);
+  // useEffect(() => {
+  //   chatData.messages.map((m) => {
+  //     m.isUser === false ? onMentorChange(m.name) : null;
+  //   });
+  // }, [chatData.messages]);
 
   useEffect(() => {
     dispatch(visibilitySwitch(chatData.messages.length, checked));
@@ -151,7 +175,13 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
         id="chat-thread"
       >
         {toggleAnswers}
-        {chatData.messages.map((m, i) => {
+        {chatData.messages.map((m: ChatMsg, i: number) => {
+          const itemData: ChatItemData = {
+            ...m,
+            color: colorByMentorId[m.mentorId] || "",
+            name: namesByMentorId[m.mentorId] || "",
+            isVisible: true,
+          };
           return (
             <div
               key={i}
@@ -163,10 +193,10 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
             >
               <ChatItem
                 key={`chat-msg-${i}`}
-                message={m}
+                message={itemData}
                 i={i}
                 styles={styles}
-                mentorBuubleProps={mentorBubbleProps}
+                // mentorBuubleProps={mentorBubbleProps}
               />
             </div>
           );

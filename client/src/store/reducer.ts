@@ -272,44 +272,42 @@ function onMentorLoadResults(
 
 function onQuestionSent(state: State, action: QuestionSentAction): State {
   return onMentorNext(
-        onQuestionInputChanged(
-          {
-            ...state,
-            chat: {
-              ...state.chat,
-              messages: [
-                ...state.chat.messages,
-                {
-                  name: "",
-                  color: "",
-                  isUser: true,
-                  text: action.payload.question,
-                  feedback: Feedback.NONE,
-                  feedbackId: "",
-                  isFeedbackSendInProgress: false,
-                  visibility: true,
-                },
-              ],
+    onQuestionInputChanged(
+      {
+        ...state,
+        chat: {
+          ...state.chat,
+          messages: [
+            ...state.chat.messages,
+            {
+              mentorId: "",
+              text: action.payload.question,
+              feedback: Feedback.NONE,
+              feedbackId: "",
+              isFeedbackSendInProgress: false,
+              visibility: true,
             },
-            curQuestion: action.payload.question,
-            curQuestionSource: action.payload.source,
-            curQuestionUpdatedAt: new Date(Date.now()),
-            questionsAsked: Array.from(
-              new Set([
-                ...state.questionsAsked,
-                normalizeString(action.payload.question),
-              ])
-            ),
-          },
-          {
-            type: QUESTION_INPUT_CHANGED,
-            payload: {
-              question: "",
-              source: MentorQuestionSource.NONE,
-            },
-          }
-        )
-      );
+          ],
+        },
+        curQuestion: action.payload.question,
+        curQuestionSource: action.payload.source,
+        curQuestionUpdatedAt: new Date(Date.now()),
+        questionsAsked: Array.from(
+          new Set([
+            ...state.questionsAsked,
+            normalizeString(action.payload.question),
+          ])
+        ),
+      },
+      {
+        type: QUESTION_INPUT_CHANGED,
+        payload: {
+          question: "",
+          source: MentorQuestionSource.NONE,
+        },
+      }
+    )
+  );
 }
 
 function onConfigLoadStarted(state: State): State {
@@ -384,7 +382,7 @@ function onQuestionAnswered(
   if (!mentor.topic_questions[history].questions.includes(response.question)) {
     mentor.topic_questions[history].questions.push(response.question);
   }
-   
+
   return {
     ...state,
     chat: {
@@ -392,9 +390,7 @@ function onQuestionAnswered(
       messages: [
         ...state.chat.messages,
         {
-          name: action.mentor.mentor,
-          color: "",
-          isUser: false,
+          mentorId: action.mentor.mentor,
           text: action.mentor.answerText,
           feedback: Feedback.NONE,
           feedbackId: action.mentor.answerFeedbackId,
