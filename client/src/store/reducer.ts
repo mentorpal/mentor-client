@@ -271,11 +271,7 @@ function onMentorLoadResults(
 }
 
 function onQuestionSent(state: State, action: QuestionSentAction): State {
-  const idx = state.chat.messages.findIndex(
-    (m) => m.text === action.payload.question
-  );
-  return idx === -1
-    ? onMentorNext(
+  return onMentorNext(
         onQuestionInputChanged(
           {
             ...state,
@@ -313,8 +309,7 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
             },
           }
         )
-      )
-    : state;
+      );
 }
 
 function onConfigLoadStarted(state: State): State {
@@ -389,9 +384,8 @@ function onQuestionAnswered(
   if (!mentor.topic_questions[history].questions.includes(response.question)) {
     mentor.topic_questions[history].questions.push(response.question);
   }
-  const repeatedQuestion = state.questionsAsked.map(q => normalizeString(q) === normalizeString(state.questionInput.question))
    
-  return repeatedQuestion.some((q) => q === true) ? state : {
+  return {
     ...state,
     chat: {
       ...state.chat,

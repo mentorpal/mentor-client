@@ -32,11 +32,24 @@ type MentorBubble = {
   color: string;
 };
 
+type stylesProps = {
+  root: string;
+  list: string;
+  icon: string;
+  avatar: string;
+  GOOD: string;
+  BAD: string;
+  feedbackPopup: string;
+  chat_container: string;
+  introMsg: string;
+  visibilityBtn: string;
+};
+
 export function ChatItem(props: {
   message: ChatMsg;
   i: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  styles: any;
+  styles: stylesProps;
   mentorBuubleProps: Array<MentorBubble>;
 }): JSX.Element {
   const { message, i, styles, mentorBuubleProps } = props;
