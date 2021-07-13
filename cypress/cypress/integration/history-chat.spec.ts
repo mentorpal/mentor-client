@@ -12,7 +12,7 @@ import {
 const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
 
-describe.only("Video Chat History", () => {
+describe("Video Chat History", () => {
   it("does not display in topics list if no questions have been asked", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.viewport("macbook-11");
@@ -141,16 +141,6 @@ describe.only("Video Chat History", () => {
     cy.wait(1000);
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-
-    cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-msg-0]").contains("Question 1");
-      cy.get("[data-cy=chat-msg-1]").contains("carlos: Give me feedback.");
-      cy.get("[data-cy=chat-msg-2]").contains("clint: Another feedback.");
-
-      cy.get("[data-cy=chat-msg-3]").contains("Question 2");
-      cy.get("[data-cy=chat-msg-4]").contains("clint: Another feedback");
-      cy.get("[data-cy=chat-msg-5]").contains("carlos: Give me feedback.");
-    });
   });
 
   it("can give feedback on multiple mentor answers", () => {

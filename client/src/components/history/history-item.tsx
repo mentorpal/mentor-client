@@ -27,11 +27,6 @@ import { ChatMsg, Feedback } from "types";
 import "styles/history-chat.css";
 import { feedbackSend, answerVisibility } from "store/actions";
 
-// type MentorBubble = {
-//   name: string;
-//   color: string;
-// };
-
 type stylesProps = {
   root: string;
   list: string;
@@ -55,19 +50,15 @@ export function ChatItem(props: {
   i: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   styles: stylesProps;
-  // mentorBuubleProps: Array<MentorBubble>;
+  totalMentors: number;
 }): JSX.Element {
-  const { message, i, styles } = props;
+  const { message, i, styles, totalMentors } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
   const isUser = !message.mentorId;
 
   const mentorColor = message.color || "#88929e";
-  // (message.name)?
-  //   ? mentorBuubleProps.find(
-  //       (mentor: MentorBubble) => mentor.name === message.name
-  //     )?.color
-  // : "#88929e";
+  const isVisible = message.isVisible;
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(event.currentTarget);
@@ -95,21 +86,21 @@ export function ChatItem(props: {
   }
 
   function onClickVSBY() {
-    // const answerIdxs: Array<number> = [];
-    // for (let x = i; x <= i + mentorBuubleProps.length; x++) {
-    //   answerIdxs.push(x);
-    // }
-    // dispatch(answerVisibility(answerIdxs, message.visibility));
+    const answerIdxs: Array<number> = [];
+    for (let x = i; x <= i + totalMentors; x++) {
+      answerIdxs.push(x);
+    }
+    dispatch(answerVisibility(answerIdxs, isVisible));
   }
 
   const visibilityIcon =
-    isUser && message.isVisible === false ? (
+    isUser && isVisible === false ? (
       <VisibilityOff
         data-cy={`vsbyIcon-${i}`}
         onClick={onClickVSBY}
         style={{ marginRight: 7 }}
       />
-    ) : isUser && message.isVisible ? (
+    ) : isUser && isVisible ? (
       <Visibility
         onClick={onClickVSBY}
         data-cy={`vsbyIcon-${i}`}
@@ -124,7 +115,7 @@ export function ChatItem(props: {
       disableGutters={false}
       className={[
         isUser ? "user" : "system",
-        message.isVisible ? "visible" : "hidden",
+        isVisible ? "visible" : "hidden",
       ].join(" ")}
       classes={{ root: styles.root }}
       style={{
