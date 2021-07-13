@@ -217,7 +217,7 @@ export type MentorClientAction =
   | TopicSelectedAction
   | QuestionInputChangedAction
   | visibilityAnswerAction
-  | visibilitySwitchAction;
+  | VisibilityAnswerAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
@@ -230,7 +230,7 @@ export interface visibilityAnswerAction {
   };
 }
 
-export interface visibilitySwitchAction {
+export interface VisibilityAnswerAction {
   type: typeof VISIBILITY_SWITCH;
   payload: {
     messagesLength: number;
@@ -253,7 +253,7 @@ export const answerVisibility =
 
 export const visibilitySwitch =
   (messagesLength: number, currVisibility: boolean) =>
-  async (dispatch: ThunkDispatch<State, void, visibilitySwitchAction>) => {
+  async (dispatch: ThunkDispatch<State, void, VisibilityAnswerAction>) => {
     return dispatch({
       type: VISIBILITY_SWITCH,
       payload: {

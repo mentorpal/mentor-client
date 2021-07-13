@@ -14,7 +14,7 @@ import {
   Popover,
   Typography,
 } from "@material-ui/core";
-// import { makeStyles } from "@material-ui/core/styles";
+
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
@@ -27,7 +27,7 @@ import { ChatMsg, Feedback } from "types";
 import "styles/history-chat.css";
 import { feedbackSend, answerVisibility } from "store/actions";
 
-type stylesProps = {
+type StyleProps = {
   root: string;
   list: string;
   icon: string;
@@ -48,8 +48,7 @@ export interface ChatItemData extends ChatMsg {
 export function ChatItem(props: {
   message: ChatItemData;
   i: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  styles: stylesProps;
+  styles: StyleProps;
   totalMentors: number;
 }): JSX.Element {
   const { message, i, styles, totalMentors } = props;
@@ -69,9 +68,7 @@ export function ChatItem(props: {
   }
 
   function handleSelectFeedback(id: string, feedback: Feedback) {
-    // giveFeedback(id, feedback, config);
     setAnchorEl(null);
-    // onSendFeedback(id, feedback);
     dispatch(feedbackSend(message.feedbackId, feedback));
   }
 

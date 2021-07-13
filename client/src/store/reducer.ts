@@ -8,7 +8,7 @@ import { normalizeString } from "utils";
 import {
   VISIBILITY_SINGLE_QUESTION,
   visibilityAnswerAction,
-  visibilitySwitchAction,
+  VisibilityAnswerAction,
   VISIBILITY_SWITCH,
   ANSWER_FINISHED,
   FEEDBACK_SEND_SUCCEEDED,
@@ -55,8 +55,6 @@ import {
   MentorType,
   Feedback,
 } from "../types";
-// import { stat } from "fs";
-// import Chat from "components/chat";
 
 export const initialState: State = {
   chat: {
@@ -289,7 +287,6 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               feedbackId: "",
               isFeedbackSendInProgress: false,
               visibility: true,
-              clicked: false,
             },
           ],
         },
@@ -403,7 +400,6 @@ function onQuestionAnswered(
           feedbackId: action.mentor.answerFeedbackId,
           isFeedbackSendInProgress: false,
           visibility: true,
-          clicked: false,
         },
       ],
     },
@@ -415,7 +411,10 @@ function onQuestionAnswered(
   };
 }
 
-function onQuestionClick(state: State, action: visibilityAnswerAction): State {
+function onAnswerVisibilityUpdate(
+  state: State,
+  action: visibilityAnswerAction
+): State {
   return {
     ...state,
     chat: {
@@ -425,7 +424,6 @@ function onQuestionClick(state: State, action: visibilityAnswerAction): State {
           ? {
               ...m,
               visibility: action.payload.newVisibility,
-              clicked: action.payload.newVisibility,
             }
           : m;
       }),
@@ -433,16 +431,16 @@ function onQuestionClick(state: State, action: visibilityAnswerAction): State {
   };
 }
 
-function onSwitchVSBYToggle(
+function onAnswerVisibilityToggle(
   state: State,
-  action: visibilitySwitchAction
+  action: VisibilityAnswerAction
 ): State {
   return {
     ...state,
     chat: {
       ...state.chat,
       messages: state.chat.messages.map((m) => {
-        return action.payload.messagesLength > 0 && m.clicked === false
+        return action.payload.messagesLength > 0
           ? {
               ...m,
               visibility: !action.payload.currVisibility,
@@ -494,9 +492,9 @@ export default function reducer(
     case QUESTION_ANSWERED:
       return onQuestionAnswered(state, action);
     case VISIBILITY_SINGLE_QUESTION:
-      return onQuestionClick(state, action);
+      return onAnswerVisibilityUpdate(state, action);
     case VISIBILITY_SWITCH:
-      return onSwitchVSBYToggle(state, action);
+      return onAnswerVisibilityToggle(state, action);
     case QUESTION_ERROR:
       return {
         ...state,

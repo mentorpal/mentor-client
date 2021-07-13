@@ -254,7 +254,6 @@ function Chat(props: { height: number }): JSX.Element {
         feedbackId: "",
         isFeedbackSendInProgress: false,
         visibility: false,
-        clicked: false,
       });
       chatDataUpdated.lastQuestionAt = curQuestionUpdatedAt;
     }
@@ -273,7 +272,6 @@ function Chat(props: { height: number }): JSX.Element {
           feedbackId: "",
           isFeedbackSendInProgress: false,
           visibility: false,
-          clicked: false,
         });
       }
       if (chatDataUpdated.lastAnswerAt !== answerReceivedAt) {
@@ -288,7 +286,6 @@ function Chat(props: { height: number }): JSX.Element {
           feedback: Feedback.NONE,
           isFeedbackSendInProgress: false,
           visibility: false,
-          clicked: false,
         });
         chatDataUpdated.lastAnswerAt = answerReceivedAt;
       }
