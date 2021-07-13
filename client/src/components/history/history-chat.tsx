@@ -69,7 +69,6 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
 
   const colorByMentorId = useSelector<State, Record<string, string>>((s) => {
     const mentorIds = Object.getOwnPropertyNames(s.mentorsById);
-    console.log(mentorIds);
     mentorIds.sort();
     return mentorIds.reduce<Record<string, string>>((acc, cur, i) => {
       acc[cur] = MENTOR_COLORS[i % MENTOR_COLORS.length];

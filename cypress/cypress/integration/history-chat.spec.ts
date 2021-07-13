@@ -116,7 +116,7 @@ describe("Video Chat History", () => {
     cy.get("[data-cy=click-good]").trigger("mouseover").click();
     cy.get("[data-cy=selected-good]").should("be.visible");
   });
- 
+
   it("Show different feedback answers and mentors", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
@@ -242,7 +242,7 @@ describe("Video Chat History", () => {
     });
   });
 
-  it("Answers can be toggled open to see the transcript of the response", () => {
+  it.only("Answers can be toggled open to see the transcript of the response", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],

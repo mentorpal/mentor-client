@@ -280,12 +280,16 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
           messages: [
             ...state.chat.messages,
             {
+              name: "",
+              color: "",
               mentorId: "",
+              isUser: true,
               text: action.payload.question,
               feedback: Feedback.NONE,
               feedbackId: "",
               isFeedbackSendInProgress: false,
               visibility: true,
+              clicked: false,
             },
           ],
         },
@@ -390,12 +394,16 @@ function onQuestionAnswered(
       messages: [
         ...state.chat.messages,
         {
+          name: "",
+          color: "",
           mentorId: action.mentor.mentor,
+          isUser: false,
           text: action.mentor.answerText,
           feedback: Feedback.NONE,
           feedbackId: action.mentor.answerFeedbackId,
           isFeedbackSendInProgress: false,
           visibility: true,
+          clicked: false,
         },
       ],
     },
@@ -417,6 +425,7 @@ function onQuestionClick(state: State, action: visibilityAnswerAction): State {
           ? {
               ...m,
               visibility: action.payload.newVisibility,
+              clicked: action.payload.newVisibility,
             }
           : m;
       }),
@@ -433,7 +442,7 @@ function onSwitchVSBYToggle(
     chat: {
       ...state.chat,
       messages: state.chat.messages.map((m) => {
-        return action.payload.messagesLength > 0
+        return action.payload.messagesLength > 0 && m.clicked === false
           ? {
               ...m,
               visibility: !action.payload.currVisibility,

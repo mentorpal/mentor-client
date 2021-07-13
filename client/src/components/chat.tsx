@@ -247,12 +247,14 @@ function Chat(props: { height: number }): JSX.Element {
       chatDataUpdated.messages.push({
         name: "",
         color: "",
+        mentorId: "",
         isUser: true,
         text: curQuestion,
         feedback: Feedback.NONE,
         feedbackId: "",
         isFeedbackSendInProgress: false,
         visibility: false,
+        clicked: false,
       });
       chatDataUpdated.lastQuestionAt = curQuestionUpdatedAt;
     }
@@ -262,6 +264,7 @@ function Chat(props: { height: number }): JSX.Element {
         chatDataUpdated.messages.push({
           name: "",
           color: "",
+          mentorId: "",
           isUser: false,
           text:
             getUtterance(mentor.mentor, UtteranceName.INTRO)?.transcript || "",
@@ -270,6 +273,7 @@ function Chat(props: { height: number }): JSX.Element {
           feedbackId: "",
           isFeedbackSendInProgress: false,
           visibility: false,
+          clicked: false,
         });
       }
       if (chatDataUpdated.lastAnswerAt !== answerReceivedAt) {
@@ -277,12 +281,14 @@ function Chat(props: { height: number }): JSX.Element {
         chatDataUpdated.messages.push({
           name: "",
           color: "",
+          mentorId: "",
           isUser: false,
           text: mentor.answer_text || "",
           feedbackId: mentor.answerFeedbackId || "",
           feedback: Feedback.NONE,
           isFeedbackSendInProgress: false,
           visibility: false,
+          clicked: false,
         });
         chatDataUpdated.lastAnswerAt = answerReceivedAt;
       }
