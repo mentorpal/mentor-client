@@ -61,7 +61,7 @@ interface ScrollingQuestionsParams {
   questionHistory: string[];
 }
 
-const MENTOR_COLORS = ["#cfe0f9", "#FFEBE7", "#69af86", "#ffeb94"];
+const MENTOR_COLORS = ["#d8e7f8", "#d4e8d9", "#ffebcf", "#f5cccd"];
 
 export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   const { height } = args;
