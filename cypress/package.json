@@ -3,7 +3,7 @@
   "description": "cypress testing",
   "version": "1.0.0",
   "dependencies": {
-    "cypress": "^7.1.0",
+    "cypress": "^7.6.0",
     "cypress-fill-command": "^1.0.2",
     "cypress-image-snapshot": "^4.0.1"
   },
@@ -15,6 +15,6 @@
     "cy:verify": "npx cypress verify"
   },
   "devDependencies": {
-    "typescript": "^4.3.4"
+    "typescript": "^4.3.5"
   }
 }

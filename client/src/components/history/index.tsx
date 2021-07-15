@@ -4,19 +4,5 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React from "react";
-import { createStore, applyMiddleware } from "redux";
-import { Provider } from "react-redux";
-import thunk from "redux-thunk";
-
-import store from "store/reducer";
-import logger from "redux-logger";
-
-const storeObj = createStore(store, applyMiddleware(...[thunk, logger]));
-
-// eslint-disable-next-line react/prop-types , @typescript-eslint/explicit-module-boundary-types
-export default function WrappedWithProvider({ element }) {
-  return <Provider store={storeObj}>{element}</Provider>;
-}
-
-WrappedWithProvider.displayName = "WrappedWithProvider";
+import { HistoryChat } from "./history-chat";
+export default HistoryChat;
