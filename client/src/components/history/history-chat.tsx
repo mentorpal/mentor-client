@@ -13,7 +13,7 @@ import { visibilitySwitch } from "store/actions";
 
 import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
-import { ChatData, ChatMsg, State, Config } from "types";
+import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
 import ChatItem, { ChatItemData } from "./history-item";
 // import { DialpadRounded } from "@material-ui/icons";
@@ -85,12 +85,9 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   });
 
   const chatData = useSelector<State, ChatData>((s) => s.chat);
-  const configData = useSelector<State, Config>((s) => s.config);
 
   const dispatch = useDispatch();
   const [checked, toggleChecked] = useState<boolean>(true);
-
-  const totalMentors = configData.mentorsDefault.length;
 
   useEffect(() => {
     animateScroll.scrollToBottom({
@@ -110,7 +107,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
               data-cy="visibility-switch"
             />
           }
-          label="hide/show answers"
+          label="show/hide answers"
         />
       </FormGroup>
     </div>
@@ -119,6 +116,10 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   useEffect(() => {
     dispatch(visibilitySwitch(chatData.messages.length, checked));
   }, [checked]);
+
+  const totalMentors: Array<string> = [
+    ...new Set(chatData.messages.map((item) => item.mentorId)),
+  ];
 
   return (
     <div
@@ -155,7 +156,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
                 message={itemData}
                 i={i}
                 styles={styles}
-                totalMentors={totalMentors}
+                totalMentors={totalMentors.filter((msg) => msg).length}
               />
             </div>
           );
