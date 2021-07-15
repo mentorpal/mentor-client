@@ -6,10 +6,10 @@ The full terms of this copyright and license should always be found in the root 
 */
 import { normalizeString } from "utils";
 import {
-  VISIBILITY_SINGLE_QUESTION,
-  visibilityAnswerAction,
-  VisibilityAnswerAction,
-  VISIBILITY_SWITCH,
+  ChatQuestionVisibilitySetAction,
+  ChatQuestionsVisibilityShowAllAction,
+  CHAT_QUESTION_VISIBILITY_SET,
+  CHAT_QUESTION_VISIBILITY_SHOW_ALL,
   ANSWER_FINISHED,
   FEEDBACK_SEND_SUCCEEDED,
   FEEDBACK_SENT,
@@ -59,6 +59,7 @@ import {
 export const initialState: State = {
   chat: {
     messages: [],
+    showAllAnswers: true,
   },
   config: {
     cmi5Enabled: false,
@@ -411,9 +412,9 @@ function onQuestionAnswered(
   };
 }
 
-function onAnswerVisibilityUpdate(
+function onChatAnswerVisibiltyShowQuestion(
   state: State,
-  action: visibilityAnswerAction
+  action: ChatQuestionVisibilitySetAction
 ): State {
   return {
     ...state,
@@ -431,22 +432,21 @@ function onAnswerVisibilityUpdate(
   };
 }
 
-function onAnswerVisibilityToggle(
+function onChatAnwerVisibilityShowAll(
   state: State,
-  action: VisibilityAnswerAction
+  action: ChatQuestionsVisibilityShowAllAction
 ): State {
   return {
     ...state,
     chat: {
       ...state.chat,
       messages: state.chat.messages.map((m) => {
-        return action.payload.messagesLength > 0
-          ? {
-              ...m,
-              visibility: !action.payload.currVisibility,
-            }
-          : m;
+        return {
+          ...m,
+          visibility: !action.payload.newValue,
+        };
       }),
+      showAllAnswers: !action.payload.newValue,
     },
   };
 }
@@ -491,10 +491,10 @@ export default function reducer(
       return onQuestionSent(state, action);
     case QUESTION_ANSWERED:
       return onQuestionAnswered(state, action);
-    case VISIBILITY_SINGLE_QUESTION:
-      return onAnswerVisibilityUpdate(state, action);
-    case VISIBILITY_SWITCH:
-      return onAnswerVisibilityToggle(state, action);
+    case CHAT_QUESTION_VISIBILITY_SET:
+      return onChatAnswerVisibiltyShowQuestion(state, action);
+    case CHAT_QUESTION_VISIBILITY_SHOW_ALL:
+      return onChatAnwerVisibilityShowAll(state, action);
     case QUESTION_ERROR:
       return {
         ...state,

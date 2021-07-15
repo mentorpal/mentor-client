@@ -25,7 +25,7 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import { ChatMsg, Feedback } from "types";
 import "styles/history-chat.css";
-import { feedbackSend, answerVisibility } from "store/actions";
+import { feedbackSend, onChatAnwerVisibilityShowItem } from "store/actions";
 
 type StyleProps = {
   root: string;
@@ -87,7 +87,7 @@ export function ChatItem(props: {
     for (let x = i; x <= i + totalMentors; x++) {
       answerIdxs.push(x);
     }
-    dispatch(answerVisibility(answerIdxs, isVisible));
+    dispatch(onChatAnwerVisibilityShowItem(answerIdxs, isVisible));
   }
 
   const visibilityIcon =

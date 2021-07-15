@@ -9,6 +9,7 @@ export interface ChatData {
   lastQuestionAt?: Date;
   lastAnswerAt?: Date;
   messages: ChatMsg[];
+  showAllAnswers: boolean;
 }
 
 export interface ChatMsg {

@@ -9,14 +9,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { animateScroll } from "react-scroll";
 import { List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { visibilitySwitch } from "store/actions";
+import { onChatAnwerVisibilityShowAll } from "store/actions";
 
 import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
 import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
 import ChatItem, { ChatItemData } from "./history-item";
-// import { DialpadRounded } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -114,12 +113,8 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   );
 
   useEffect(() => {
-    dispatch(visibilitySwitch(chatData.messages.length, checked));
+    dispatch(onChatAnwerVisibilityShowAll(checked));
   }, [checked]);
-
-  const totalMentors: Array<string> = [
-    ...new Set(chatData.messages.map((item) => item.mentorId)),
-  ];
 
   return (
     <div
@@ -156,7 +151,9 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
                 message={itemData}
                 i={i}
                 styles={styles}
-                totalMentors={totalMentors.filter((msg) => msg).length}
+                totalMentors={
+                  Object.getOwnPropertyNames(namesByMentorId).length
+                }
               />
             </div>
           );

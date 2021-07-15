@@ -42,8 +42,9 @@ import {
 import { Visibility } from "@material-ui/icons";
 
 const RESPONSE_CUTOFF = -100;
-export const VISIBILITY_SINGLE_QUESTION = "VISIBILITY_SINGLE_QUESTION";
-export const VISIBILITY_SWITCH = "VISIBILITY_SWITCH";
+export const CHAT_QUESTION_VISIBILITY_SET = "CHAT_QUESTION_VISIBILITY_SET ";
+export const CHAT_QUESTION_VISIBILITY_SHOW_ALL =
+  "CHAT_QUESTION_VISIBILITY_SHOW_ALL  ";
 export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished playing
 export const CONFIG_LOAD_FAILED = "CONFIG_LOAD_FAILED";
 export const CONFIG_LOAD_STARTED = "CONFIG_LOAD_STARTED";
@@ -216,34 +217,35 @@ export type MentorClientAction =
   | QuestionAction
   | TopicSelectedAction
   | QuestionInputChangedAction
-  | visibilityAnswerAction
-  | VisibilityAnswerAction;
+  | ChatQuestionVisibilitySetAction
+  | ChatQuestionsVisibilityShowAllAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
 
-export interface visibilityAnswerAction {
-  type: typeof VISIBILITY_SINGLE_QUESTION;
+export interface ChatQuestionVisibilitySetAction {
+  type: typeof CHAT_QUESTION_VISIBILITY_SET;
   payload: {
     newVisibility: boolean;
     indexes: number[];
   };
 }
 
-export interface VisibilityAnswerAction {
-  type: typeof VISIBILITY_SWITCH;
+export interface ChatQuestionsVisibilityShowAllAction {
+  type: typeof CHAT_QUESTION_VISIBILITY_SHOW_ALL;
   payload: {
-    messagesLength: number;
-    currVisibility: boolean;
+    newValue: boolean;
   };
 }
 
-export const answerVisibility =
+export const onChatAnwerVisibilityShowItem =
   (indexes: number[], visibility: boolean) =>
-  async (dispatch: ThunkDispatch<State, void, visibilityAnswerAction>) => {
+  async (
+    dispatch: ThunkDispatch<State, void, ChatQuestionVisibilitySetAction>
+  ) => {
     const newVisibility = !visibility;
     return dispatch({
-      type: VISIBILITY_SINGLE_QUESTION,
+      type: CHAT_QUESTION_VISIBILITY_SET,
       payload: {
         newVisibility,
         indexes,
@@ -251,14 +253,15 @@ export const answerVisibility =
     });
   };
 
-export const visibilitySwitch =
-  (messagesLength: number, currVisibility: boolean) =>
-  async (dispatch: ThunkDispatch<State, void, VisibilityAnswerAction>) => {
+export const onChatAnwerVisibilityShowAll =
+  (newValue: boolean) =>
+  async (
+    dispatch: ThunkDispatch<State, void, ChatQuestionsVisibilityShowAllAction>
+  ) => {
     return dispatch({
-      type: VISIBILITY_SWITCH,
+      type: CHAT_QUESTION_VISIBILITY_SHOW_ALL,
       payload: {
-        messagesLength,
-        currVisibility,
+        newValue,
       },
     });
   };
