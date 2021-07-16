@@ -352,33 +352,4 @@ describe("Video Chat History", () => {
       });
     });
   });
-
-  it("Answers can be toggled individually", () => {
-    mockDefaultSetup(cy, {
-      config: { mentorsDefault: ["clint", "carlos"] },
-      mentorData: [clint, carlos],
-      apiResponse: "response_with_feedback.json",
-      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
-    });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_feedback.json",
-    });
-    cy.visit("/");
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_feedback.json",
-    });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_feedback2.json",
-    });
-    cy.viewport("macbook-11");
-    cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
-    cy.get("[data-cy=history-chat]").should("exist");
-
-    // write msgs
-    cy.get("[data-cy=input-field]").type("Question 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
-
-    cy.get("[data-cy=input-field]").type("Question 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
-  });
 });
