@@ -9,13 +9,20 @@ export interface ChatData {
   lastQuestionAt?: Date;
   lastAnswerAt?: Date;
   messages: ChatMsg[];
+  showAllAnswers: boolean;
 }
 
 export interface ChatMsg {
+  // we should change name, color, and isUser to just mentorIds
+  name: string;
+  color: string;
+  mentorId: string;
   isUser: boolean;
   text: string;
-  feedback?: Feedback;
-  feedbackId?: string;
+  feedback: Feedback;
+  feedbackId: string;
+  isFeedbackSendInProgress: boolean;
+  visibility: boolean;
 }
 
 export interface Mentor {
@@ -118,6 +125,7 @@ export enum MentorType {
 }
 
 export enum Feedback {
+  NONE = "NONE",
   GOOD = "GOOD",
   BAD = "BAD",
   NEUTRAL = "NEUTRAL",
@@ -212,6 +220,7 @@ export interface QuestionResult {
 }
 
 export interface State {
+  chat: ChatData;
   config: Config;
   configLoadStatus: LoadStatus;
   curMentor: string; // id of selected mentor
