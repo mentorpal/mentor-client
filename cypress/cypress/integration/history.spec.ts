@@ -299,7 +299,7 @@ describe("Video Chat History", () => {
     });
   });
 
-  it("Answers can be toggled individually", () => {
+  it("Question's answers can be toggled individually", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
