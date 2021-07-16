@@ -99,6 +99,8 @@ describe("Video Chat History", () => {
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
+    cy.get("[data-cy=visibility-switch]").find("input").uncheck();
+
     // provide feedback
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-0]").contains("Good feedback test");
@@ -167,6 +169,7 @@ describe("Video Chat History", () => {
     cy.wait(1000);
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=visibility-switch]").find("input").uncheck();
 
     // provide feedback
     cy.get("[data-cy=history-chat").within(($hc) => {
@@ -228,6 +231,8 @@ describe("Video Chat History", () => {
     cy.wait(1000);
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    cy.get("[data-cy=visibility-switch]").find("input").uncheck();
 
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-1]")
@@ -320,6 +325,8 @@ describe("Video Chat History", () => {
     cy.wait(1000);
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    cy.get("[data-cy=visibility-switch]").find("input").uncheck();
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {

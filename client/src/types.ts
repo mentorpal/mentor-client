@@ -13,7 +13,7 @@ export interface ChatData {
 }
 
 export interface ChatMsg {
-  // we should change name, color, and isUser to just mentorId
+  // we should change name, color, and isUser to just mentorIds
   name: string;
   color: string;
   mentorId: string;

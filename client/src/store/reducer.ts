@@ -59,7 +59,7 @@ import {
 export const initialState: State = {
   chat: {
     messages: [],
-    showAllAnswers: true,
+    showAllAnswers: false,
   },
   config: {
     cmi5Enabled: false,
@@ -287,7 +287,7 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               feedback: Feedback.NONE,
               feedbackId: "",
               isFeedbackSendInProgress: false,
-              visibility: true,
+              visibility: false,
             },
           ],
         },
@@ -384,7 +384,6 @@ function onQuestionAnswered(
   if (!mentor.topic_questions[history].questions.includes(response.question)) {
     mentor.topic_questions[history].questions.push(response.question);
   }
-
   return {
     ...state,
     chat: {
@@ -400,7 +399,7 @@ function onQuestionAnswered(
           feedback: Feedback.NONE,
           feedbackId: action.mentor.answerFeedbackId,
           isFeedbackSendInProgress: false,
-          visibility: true,
+          visibility: false,
         },
       ],
     },
