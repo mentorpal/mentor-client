@@ -140,7 +140,7 @@ describe("Video Chat History", () => {
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.wait(1000);
+
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
   });
@@ -166,7 +166,7 @@ describe("Video Chat History", () => {
     // write msgs
     cy.get("[data-cy=input-field]").type("Good feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.wait(1000);
+
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=visibility-switch]").find("input").uncheck();
@@ -228,7 +228,7 @@ describe("Video Chat History", () => {
     // write msgs
     cy.get("[data-cy=input-field]").type("Good feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.wait(1000);
+
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
@@ -271,7 +271,7 @@ describe("Video Chat History", () => {
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.wait(1000);
+
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
@@ -322,7 +322,7 @@ describe("Video Chat History", () => {
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.wait(1000);
+
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
@@ -343,7 +343,6 @@ describe("Video Chat History", () => {
         cy.get("[data-cy=vsbyIcon-3]").trigger("mouseover").click();
         cy.get("[data-cy=chat-msg-1]").should("not.be.visible");
         cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
-        cy.wait(1000);
 
         // show answers
         cy.get("[data-cy=vsbyIcon-3]").should("exist");
@@ -352,5 +351,34 @@ describe("Video Chat History", () => {
         cy.get("[data-cy=chat-msg-5]").should("be.visible");
       });
     });
+  });
+
+  it("Answers can be toggled individually", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint", "carlos"] },
+      mentorData: [clint, carlos],
+      apiResponse: "response_with_feedback.json",
+      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
+    });
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_with_feedback.json",
+    });
+    cy.visit("/");
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_with_feedback.json",
+    });
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_with_feedback2.json",
+    });
+    cy.viewport("macbook-11");
+    cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
+    cy.get("[data-cy=history-chat]").should("exist");
+
+    // write msgs
+    cy.get("[data-cy=input-field]").type("Question 1");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    cy.get("[data-cy=input-field]").type("Question 2");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
   });
 });
