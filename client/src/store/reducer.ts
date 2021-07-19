@@ -60,6 +60,7 @@ export const initialState: State = {
   chat: {
     messages: [],
     showAllAnswers: false,
+    lastChatAnswerId: 0,
   },
   config: {
     cmi5Enabled: false,
@@ -288,8 +289,10 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               feedbackId: "",
               isFeedbackSendInProgress: false,
               visibility: false,
+              chatAnswerId: state.questionsAsked.length + 1,
             },
           ],
+          lastChatAnswerId: state.questionsAsked.length + 1,
         },
         curQuestion: action.payload.question,
         curQuestionSource: action.payload.source,
@@ -400,6 +403,7 @@ function onQuestionAnswered(
           feedbackId: action.mentor.answerFeedbackId,
           isFeedbackSendInProgress: false,
           visibility: false,
+          chatAnswerId: state.questionsAsked.length,
         },
       ],
     },

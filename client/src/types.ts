@@ -10,6 +10,7 @@ export interface ChatData {
   lastAnswerAt?: Date;
   messages: ChatMsg[];
   showAllAnswers: boolean;
+  lastChatAnswerId: number;
 }
 
 export interface ChatMsg {
@@ -23,6 +24,7 @@ export interface ChatMsg {
   feedbackId: string;
   isFeedbackSendInProgress: boolean;
   visibility: boolean;
+  chatAnswerId: number;
 }
 
 export interface Mentor {

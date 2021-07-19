@@ -108,7 +108,12 @@ function ChatItem(props: {
         marginRight: message.feedbackId ? 10 : 0,
       }}
     >
-      <ReactMarkdown source={message.text} renderers={{ link: LinkRenderer }} />
+      <ReactMarkdown
+        // children={message.text}
+        renderers={{ link: LinkRenderer }}
+      >
+        {message.text}
+      </ReactMarkdown>
       {message.feedbackId ? (
         <div
           data-cy="feedback-btn"
