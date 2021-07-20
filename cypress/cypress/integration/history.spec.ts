@@ -557,9 +557,5 @@ describe("Video Chat History", () => {
         cy.get("[data-cy=chat-msg-14]").should("be.visible");
       });
     });
-<<<<<<< HEAD
-=======
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
->>>>>>> f5fa29103fcefe7580374589a39dfd78c6f35677
   });
 });
