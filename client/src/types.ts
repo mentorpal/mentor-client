@@ -25,6 +25,7 @@ export interface ChatMsg {
   isFeedbackSendInProgress: boolean;
   visibility: boolean;
   chatAnswerId: number;
+  clicked: boolean;
 }
 
 export interface Mentor {

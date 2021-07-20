@@ -290,6 +290,7 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               isFeedbackSendInProgress: false,
               visibility: false,
               chatAnswerId: state.questionsAsked.length + 1,
+              clicked: false,
             },
           ],
           lastChatAnswerId: state.questionsAsked.length + 1,
@@ -360,6 +361,21 @@ function onQuestionInputChanged(
   });
 }
 
+function onLastQuestionAnswered(state: State): State {
+  return {
+    ...state,
+    chat: {
+      ...state.chat,
+      messages: state.chat.messages.map((m) => {
+        return m.chatAnswerId === state.chat.lastChatAnswerId ||
+          m.clicked === true
+          ? { ...m, visibility: true }
+          : { ...m, visibility: false };
+      }),
+    },
+  };
+}
+
 function onQuestionAnswered(
   state: State,
   action: QuestionAnsweredAction
@@ -387,7 +403,8 @@ function onQuestionAnswered(
   if (!mentor.topic_questions[history].questions.includes(response.question)) {
     mentor.topic_questions[history].questions.push(response.question);
   }
-  return {
+
+  return onLastQuestionAnswered({
     ...state,
     chat: {
       ...state.chat,
@@ -404,6 +421,7 @@ function onQuestionAnswered(
           isFeedbackSendInProgress: false,
           visibility: false,
           chatAnswerId: state.questionsAsked.length,
+          clicked: false,
         },
       ],
     },
@@ -412,7 +430,7 @@ function onQuestionAnswered(
       ...state.mentorsById,
       [response.mentor]: mentor,
     },
-  };
+  });
 }
 
 function onChatAnswerVisibiltyShowQuestion(
@@ -428,6 +446,7 @@ function onChatAnswerVisibiltyShowQuestion(
           ? {
               ...m,
               visibility: action.payload.newVisibility,
+              clicked: true,
             }
           : m;
       }),
@@ -444,10 +463,13 @@ function onChatAnwerVisibilityShowAll(
     chat: {
       ...state.chat,
       messages: state.chat.messages.map((m) => {
-        return {
-          ...m,
-          visibility: !action.payload.newValue,
-        };
+        return m.chatAnswerId !== state.chat.lastChatAnswerId &&
+          m.clicked === false
+          ? {
+              ...m,
+              visibility: !action.payload.newValue,
+            }
+          : m;
       }),
       showAllAnswers: !action.payload.newValue,
     },
