@@ -20,7 +20,7 @@ export async function fetchConfig(graphqlUrl = "/graphql"): Promise<Config> {
     graphqlUrl,
     {
       query: `
-      query {
+      query FetchConfig {
         config {
           cmi5Enabled
           cmi5Endpoint
@@ -103,7 +103,7 @@ export async function fetchMentor(
 ): Promise<AxiosResponse<GraphQLResponse<MentorQueryData>>> {
   return await axios.post<GraphQLResponse<MentorQueryData>>(config.urlGraphql, {
     query: `
-      query Mentor($id: ID!, $status: String!){
+      query FetchMentor($id: ID!, $status: String!){
         mentor(id: $id) {
           _id
           name
@@ -177,7 +177,7 @@ export async function giveFeedback(
 ): Promise<AxiosResponse<GraphQLResponse<GiveFeedbackResult>>> {
   return await axios.post(config.urlGraphql, {
     query: `
-      mutation UserQuestionSetFeedback ($id: ID!, $feedback: String!){
+      mutation UserQuestionSetFeedback($id: ID!, $feedback: String!){
         userQuestionSetFeedback(id: $id, feedback: $feedback) {
           _id
         }

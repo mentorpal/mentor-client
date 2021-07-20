@@ -45,6 +45,7 @@ interface MockGraphQLQuery {
   query: string;
   data: any | any[];
   me: boolean;
+  returnAsIs: boolean;
 }
 
 export function cySetup(cy) {
@@ -74,13 +75,16 @@ export function cyInterceptGraphQL(cy, mocks: MockGraphQLQuery[]): void {
     const queryBody = body.query.replace(/\s+/g, " ").replace("\n", "").trim();
     for (const mock of mocks) {
       if (
+        queryBody.match(new RegExp(`^(mutation|query) ${mock.query}[{(\\s]`)) ||
         queryBody.indexOf(`{ ${mock.query}(`) !== -1 ||
         queryBody.indexOf(`{ ${mock.query} {`) !== -1
       ) {
         const data = Array.isArray(mock.data) ? mock.data : [mock.data];
         const val = data[Math.min(queryCalls[mock.query], data.length - 1)];
-        const body = {};
-        if (mock.me) {
+        let body = {};
+        if (mock.returnAsIs) {
+          body = val;
+        } else if (mock.me) {
           const _inner = {};
           _inner[mock.query] = val;
           body["me"] = _inner;
@@ -106,12 +110,14 @@ export function cyInterceptGraphQL(cy, mocks: MockGraphQLQuery[]): void {
 export function cyMockGQL(
   query: string,
   data: any | any[],
-  me = false
+  me = false,
+  returnAsIs = false
 ): MockGraphQLQuery {
   return {
     query,
     data,
     me,
+    returnAsIs,
   };
 }
 
@@ -149,11 +155,25 @@ export function addGuestParams(query = {}, guestName = "guest") {
 }
 
 export function cyMockMentorData(data: any[]) {
-  return cyMockGQL("mentor", data, false);
+  const mentorList = [];
+  if (Array.isArray(data)) {
+    data.forEach((mentor) => {
+      mentorList.push({ mentor: mentor });
+    });
+  } else {
+    mentorList.push({ mentor: data });
+  }
+
+  return [cyMockGQL("FetchMentor", mentorList, false, true)];
 }
 
 export function cyMockConfig(config: Partial<Config>) {
-  return cyMockGQL("config", { ...CONFIG_DEFAULT, ...config }, false);
+  return cyMockGQL(
+    "FetchConfig",
+    { config: { ...CONFIG_DEFAULT, ...config } },
+    false,
+    true
+  );
 }
 
 export function mockMentorVideos(cy) {
@@ -232,7 +252,7 @@ export function mockDefaultSetup(
   mockMentorVtt(cy);
   cyInterceptGraphQL(cy, [
     cyMockConfig(config),
-    cyMockMentorData(mentorData),
+    ...cyMockMentorData(mentorData),
     ...gqlQueries,
   ]);
   cy.viewport("iphone-x");
