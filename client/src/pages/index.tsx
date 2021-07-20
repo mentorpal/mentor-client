@@ -20,7 +20,7 @@ import { loadConfig, loadMentors, setGuestName } from "store/actions";
 import { Config, LoadStatus, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
-
+import { fetchMentorByAccessToken } from "api";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -106,7 +106,8 @@ function IndexPage(props: {
   const [windowHeight, setWindowHeight] = React.useState<number>(0);
   const [chatHeight, setChatHeight] = React.useState<number>(0);
   const curTopic = useSelector<State, string>((state) => state.curTopic);
-  const { mentor, guest, subject, recommendedQuestions } = props.search;
+  const { guest, subject, recommendedQuestions } = props.search;
+  let { mentor } = props.search;
 
   function hasSessionUser(): boolean {
     return Boolean(
@@ -186,22 +187,37 @@ function IndexPage(props: {
     if (!isConfigLoadComplete(configLoadStatus)) {
       return;
     }
-    dispatch(
-      loadMentors({
-        config,
-        mentors: mentor
-          ? Array.isArray(mentor)
-            ? mentor
-            : [mentor]
-          : config.mentorsDefault,
-        subject,
-        recommendedQuestions: recommendedQuestions
-          ? Array.isArray(recommendedQuestions)
-            ? recommendedQuestions
-            : [recommendedQuestions]
-          : [],
-      })
-    );
+
+    const findMentor = async () => {
+      // check local store=
+      if (!mentor) {
+        const ACCESS_TOKEN_KEY = "accessToken";
+
+        const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY) || "";
+        if (accessToken) {
+          const tokenResponse = await fetchMentorByAccessToken(accessToken);
+          mentor = tokenResponse._id;
+        }
+      }
+
+      dispatch(
+        loadMentors({
+          config,
+          mentors: mentor
+            ? Array.isArray(mentor)
+              ? mentor
+              : [mentor]
+            : config.mentorsDefault,
+          subject,
+          recommendedQuestions: recommendedQuestions
+            ? Array.isArray(recommendedQuestions)
+              ? recommendedQuestions
+              : [recommendedQuestions]
+            : [],
+        })
+      );
+    };
+    findMentor();
   }, [configLoadStatus, mentor, subject, recommendedQuestions]);
 
   useEffect(() => {

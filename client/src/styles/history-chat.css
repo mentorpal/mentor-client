@@ -32,6 +32,14 @@ ul li p {
     margin-bottom: 5px;
 }
 
+.hidden {
+    display: none !important;
+}
+
+.visible {
+    display: block;
+}
+
 .system {
     background: #e8e9ea;
     float: left;
@@ -39,15 +47,17 @@ ul li p {
 }
 
 .user {
-    float: right;
+    float: left;
     background: #88929e;
     color: #fff;
     border-bottom-right-radius: 5px;
+    display: flex !important;
 }
+
 
 .system+.user {
     border-bottom-right-radius: 5px;
-    margin-top: 10px;
+    margin-top: 10px;    
 }
 
 .user+.system {
@@ -67,6 +77,18 @@ ul li p {
 
 #feedback-popup .MuiPaper-rounded {
     border-radius: 30px;
+}
+
+.visibilityBtn {
+    margin-right: 5px;
+}
+
+.togglePos {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end;
 }
 
 /* Round Last Bubble */

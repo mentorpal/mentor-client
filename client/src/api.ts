@@ -15,6 +15,7 @@ import {
   UtteranceName,
 } from "types";
 
+export const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT || "/graphql";
 export async function fetchConfig(graphqlUrl = "/graphql"): Promise<Config> {
   const gqlRes = await axios.post<GraphQLResponse<{ config: Config }>>(
     graphqlUrl,
@@ -80,12 +81,14 @@ export function idleUrl(mentor: Mentor, tag?: string): string {
   return idle ? videoUrl(idle.media, tag) : "";
 }
 
-export function subtitleUrl(
-  mentorId: string,
-  answerId: string,
-  config: Config
-): string {
-  return `${config.urlClassifier}/mentors/${mentorId}/tracks/${answerId}.vtt`;
+export function subtitleUrl(media: Media[], tag?: string): string {
+  if (!media) {
+    return "";
+  }
+  return (
+    media.find((m) => m.type === "subtitles" && m.tag === (tag || "en"))?.url ||
+    ""
+  );
 }
 
 interface MentorQueryData {
@@ -95,6 +98,28 @@ interface MentorQueryData {
 interface GraphQLResponse<T> {
   errors?: { message: string }[];
   data?: T;
+}
+
+export async function fetchMentorByAccessToken(
+  accessToken: string
+): Promise<Mentor> {
+  const headers = { Authorization: `bearer ${accessToken}` };
+  const result = await axios.post(
+    GRAPHQL_ENDPOINT,
+    {
+      query: `
+      query {
+        me {
+          mentor {
+            _id  
+            }
+          }
+        }
+    `,
+    },
+    { headers: headers }
+  );
+  return result.data.data.me.mentor;
 }
 
 export async function fetchMentor(

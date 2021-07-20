@@ -24,6 +24,10 @@ format:
 license:
 	cd .. && $(MAKE) license
 
+.PHONY: pretty
+pretty:
+	cd .. && $(MAKE) pretty
+
 node_modules/eslint:
 	npm ci 
 

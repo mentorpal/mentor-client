@@ -220,6 +220,7 @@ function Chat(props: { height: number }): JSX.Element {
   const styles = useStyles();
   const [chatData, setChatData] = useState<ChatData>({
     messages: [],
+    showAllAnswers: true,
   });
   const answerReceivedAt = useSelector<State, Date | undefined>((state) => {
     const m = state.mentorsById[state.curMentor];
@@ -245,8 +246,15 @@ function Chat(props: { height: number }): JSX.Element {
     if (chatDataUpdated.lastQuestionAt !== curQuestionUpdatedAt) {
       updated = true;
       chatDataUpdated.messages.push({
+        name: "",
+        color: "",
+        mentorId: "",
         isUser: true,
         text: curQuestion,
+        feedback: Feedback.NONE,
+        feedbackId: "",
+        isFeedbackSendInProgress: false,
+        visibility: false,
       });
       chatDataUpdated.lastQuestionAt = curQuestionUpdatedAt;
     }
@@ -254,17 +262,31 @@ function Chat(props: { height: number }): JSX.Element {
       if (chatDataUpdated.messages.length === 0) {
         updated = true;
         chatDataUpdated.messages.push({
+          name: "",
+          color: "",
+          mentorId: "",
           isUser: false,
           text:
             getUtterance(mentor.mentor, UtteranceName.INTRO)?.transcript || "",
+
+          feedback: Feedback.NONE,
+          feedbackId: "",
+          isFeedbackSendInProgress: false,
+          visibility: false,
         });
       }
       if (chatDataUpdated.lastAnswerAt !== answerReceivedAt) {
         updated = true;
         chatDataUpdated.messages.push({
+          name: "",
+          color: "",
+          mentorId: "",
           isUser: false,
           text: mentor.answer_text || "",
-          feedbackId: mentor.answerFeedbackId,
+          feedbackId: mentor.answerFeedbackId || "",
+          feedback: Feedback.NONE,
+          isFeedbackSendInProgress: false,
+          visibility: false,
         });
         chatDataUpdated.lastAnswerAt = answerReceivedAt;
       }
