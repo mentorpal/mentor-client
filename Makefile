@@ -16,10 +16,6 @@ clean:
 develop:
 	cd client && $(MAKE) develop
 
-.PHONY: format
-format: node_modules/prettier
-	npm run format
-
 .PHONY docker-build:
 docker-build:
 	docker build \
@@ -77,7 +73,7 @@ test-types:
 	cd client && $(MAKE) test-types
 
 .PHONY: test-license
-test-license: LICENSE LICENSE_HEADER
+test-license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
 	npm run test:license
 
 .PHONY: test-e2e
