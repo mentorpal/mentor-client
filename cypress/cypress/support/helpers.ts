@@ -45,7 +45,7 @@ interface MockGraphQLQuery {
   query: string;
   data: any | any[];
   me: boolean;
-  returnAsIs: boolean;
+  asIs: boolean;
 }
 
 export function cySetup(cy) {
@@ -80,20 +80,40 @@ export function cyInterceptGraphQL(cy, mocks: MockGraphQLQuery[]): void {
         queryBody.indexOf(`{ ${mock.query}(`) !== -1 ||
         queryBody.indexOf(`{ ${mock.query} {`) !== -1
       ) {
-        const data = Array.isArray(mock.data) ? mock.data : [mock.data];
-        const val = data[Math.min(queryCalls[mock.query], data.length - 1)];
-        let body = {};
-        if (mock.returnAsIs) {
-          body = val;
-        } else if (mock.me) {
-          const _inner = {};
-          _inner[mock.query] = val;
-          body["me"] = _inner;
+        if (
+          headers["authorization"] &&
+          headers["authorization"].indexOf("undefined") == -1
+        ) {
+          const data = Array.isArray(mock.data) ? mock.data : [mock.data];
+          const val = data[Math.min(queryCalls[mock.query], data.length - 1)];
+          let body = {};
+          if (mock.asIs) {
+            body = val;
+          } else if (mock.me) {
+            const _inner = {};
+            _inner[mock.query] = val;
+            body["me"] = _inner;
+          } else {
+            body[mock.query] = val;
+          }
+          req.alias = mock.query;
+          req.reply(
+            staticResponse({
+              body: {
+                data: mock.data,
+                errors: null,
+              },
+            })
+          );
+          queryCalls[mock.query] = queryCalls[mock.query] + 1;
+          break;
         } else {
           const data = Array.isArray(mock.data) ? mock.data : [mock.data];
           const val = data[Math.min(queryCalls[mock.query], data.length - 1)];
-          const body = {};
-          if (mock.me) {
+          let body = {};
+          if (mock.asIs) {
+            body = val;
+          } else if (mock.me) {
             const _inner = {};
             _inner[mock.query] = val;
             body["me"] = _inner;
@@ -121,13 +141,13 @@ export function cyMockGQL(
   query: string,
   data: any | any[],
   me = false,
-  returnAsIs = false
+  asIs = false
 ): MockGraphQLQuery {
   return {
     query,
     data,
     me,
-    returnAsIs,
+    asIs,
   };
 }
 
@@ -165,7 +185,8 @@ export function addGuestParams(query = {}, guestName = "guest") {
 }
 
 export function cyMockMentorData(data: any[]) {
-  const mentorList = [];
+  // return cyMockGQL("mentor", data, false);
+  let mentorList = [];
   if (Array.isArray(data)) {
     data.forEach((mentor) => {
       mentorList.push({ mentor: mentor });
@@ -173,8 +194,7 @@ export function cyMockMentorData(data: any[]) {
   } else {
     mentorList.push({ mentor: data });
   }
-
-  return [cyMockGQL("FetchMentor", mentorList, false, true)];
+  return cyMockGQL("FetchMentor", mentorList, false, true);
 }
 
 // export function cyMockTokenData(data: any[]) {
@@ -182,6 +202,7 @@ export function cyMockMentorData(data: any[]) {
 // }
 
 export function cyMockConfig(config: Partial<Config>) {
+  // return cyMockGQL("config", { ...CONFIG_DEFAULT, ...config }, false);
   return cyMockGQL(
     "FetchConfig",
     { config: { ...CONFIG_DEFAULT, ...config } },
@@ -260,7 +281,7 @@ export function mockDefaultSetup(
   const config = args.config || {};
   const mentorData = args.mentorData || [clint, carlos, julianne];
   const gqlQueries = args.gqlQueries || [];
-  const tokenData = args.tokenToData || tokenToData;
+  // const tokenData = args.tokenToData || tokenToData;
   mockMentorVideos(cy);
   if (!args.noMockApi) {
     mockApiQuestions(cy, args.apiResponse);
@@ -268,7 +289,8 @@ export function mockDefaultSetup(
   mockMentorVtt(cy);
   cyInterceptGraphQL(cy, [
     cyMockConfig(config),
-    ...cyMockMentorData(mentorData),
+    // cyMockTokenData(tokenData),
+    cyMockMentorData(mentorData),
     ...gqlQueries,
   ]);
   cy.viewport("iphone-x");

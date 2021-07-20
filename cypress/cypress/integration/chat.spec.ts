@@ -91,7 +91,12 @@ describe("Chat", () => {
       mentorData: [covid],
       apiResponse: "response_with_feedback.json",
       gqlQueries: [
-        cyMockGQL("UserQuestionSetFeedback", { userQuestionSetFeedback: null }),
+        cyMockGQL(
+          "UserQuestionSetFeedback",
+          { userQuestionSetFeedback: null },
+          false,
+          true
+        ),
       ],
     });
     cy.intercept("**/questions/?mentor=covid&query=*", {
