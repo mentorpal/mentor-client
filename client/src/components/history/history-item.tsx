@@ -90,6 +90,15 @@ export function ChatItem(props: {
     dispatch(onChatAnwerVisibilityShowItem(answerIdxs, isVisible));
   }
 
+  function findLinks(text: string) {
+    const matchs =
+      /\[(.+)\]\((https?:\/\/[^\s]+)(?: "(.+)")?\)|(https?:\/\/[^\s]+)/gi.exec(
+        text
+      );
+    const url = matchs ? matchs[2] : "";
+    return url;
+  }
+
   const visibilityIcon =
     isUser && isVisible === false ? (
       <VisibilityOff

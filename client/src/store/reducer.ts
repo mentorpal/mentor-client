@@ -60,6 +60,7 @@ export const initialState: State = {
   chat: {
     messages: [],
     showAllAnswers: false,
+    lastAnswerLink: "",
   },
   config: {
     cmi5Enabled: false,
@@ -357,6 +358,15 @@ function onQuestionInputChanged(
   });
 }
 
+function findLinks(text: string) {
+  const matchs =
+    /\[(.+)\]\((https?:\/\/[^\s]+)(?: "(.+)")?\)|(https?:\/\/[^\s]+)/gi.exec(
+      text
+    );
+  const url = matchs ? matchs[2] : "";
+  return url;
+}
+let answerLinks: Array<string> = [];
 function onQuestionAnswered(
   state: State,
   action: QuestionAnsweredAction
@@ -384,6 +394,11 @@ function onQuestionAnswered(
   if (!mentor.topic_questions[history].questions.includes(response.question)) {
     mentor.topic_questions[history].questions.push(response.question);
   }
+  const link = findLinks(action.mentor.answerText);
+
+  if (link) {
+    answerLinks.unshift(link);
+  }
   return {
     ...state,
     chat: {
@@ -402,6 +417,7 @@ function onQuestionAnswered(
           visibility: false,
         },
       ],
+      lastAnswerLink: answerLinks[0],
     },
     isIdle: false,
     mentorsById: {

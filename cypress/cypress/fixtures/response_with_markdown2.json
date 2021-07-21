@@ -1,0 +1,9 @@
+{
+  "query": "how old are you",
+  "answer_id": "answer_id",
+  "answer_text": "Click [url](https://ict.usc.edu/)",
+  "answer_media": [],
+  "confidence": -0.5140574318328217,
+  "feedback_id": "",
+  "classifier": ""
+}

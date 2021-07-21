@@ -17,7 +17,7 @@ import {
   faveMentor,
   mentorAnswerPlaybackStarted,
 } from "store/actions";
-import { State } from "types";
+import { State, ChatData } from "types";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
@@ -47,6 +47,8 @@ function Video(args: { playing?: boolean }): JSX.Element {
     };
   });
   const isIdle = useSelector<State, boolean>((state) => state.isIdle);
+  const chatData = useSelector<State, ChatData>((state) => state.chat);
+  console.log(chatData);
   const [duration, setDuration] = useState(Number.NaN);
   if (!(curMentor && video)) {
     return <div />;
@@ -87,6 +89,9 @@ function Video(args: { playing?: boolean }): JSX.Element {
       <FaveButton />
       <LoadingSpinner mentor={curMentor} />
       <MessageStatus mentor={curMentor} />
+      <a href="www.google.com" target="_blank" rel="noreferrer">
+        {chatData.lastAnswerLink}
+      </a>
     </div>
   );
 }
