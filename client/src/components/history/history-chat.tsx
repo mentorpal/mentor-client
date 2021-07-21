@@ -16,6 +16,7 @@ import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
 import ChatItem, { ChatItemData } from "./history-item";
+import { useWithChatData } from "./use-chat-data";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,6 +66,13 @@ const MENTOR_COLORS = ["#d8e7f8", "#d4e8d9", "#ffebcf", "#f5cccd"];
 export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   const { height } = args;
   const styles = useStyles();
+  const {
+    visibiltityPrefByChatMessageId,
+    toggleQuestionVisibilityPref,
+    getItemVisibilityPref,
+    updateNewMessages,
+    hideAllPref,
+  } = useWithChatData();
 
   const colorByMentorId = useSelector<State, Record<string, string>>((s) => {
     const mentorIds = Object.getOwnPropertyNames(s.mentorsById);
@@ -84,29 +92,23 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   });
 
   const chatData = useSelector<State, ChatData>((s) => s.chat);
-
   const dispatch = useDispatch();
   const [checked, toggleChecked] = useState<boolean>(true);
-  // const [idxQuestion, setIdxQuestion] = useState<number>(-1);
-
-  interface hashMap {
-    [item: number]: boolean;
-  }
-  const chatMap: hashMap = {};
 
   useEffect(() => {
     animateScroll.scrollToBottom({
       containerId: "chat-thread",
     });
-    console.log(chatMap);
+    updateNewMessages(chatData.messages);
   }, [chatData.messages]);
 
-  function updateHashMap(i: number) {
-    const totalMentors = Object.getOwnPropertyNames(namesByMentorId).length;
-    for (let x = i; x <= i + totalMentors; x++) {
-      chatMap[x] = !chatMap[x];
-    }
-    console.log(chatMap);
+  // then in the component itself, you can have a function
+  // that determines the visibility given an item and following the rules of visibility, e.g.
+  function isAnswerVisible(chatMsgId: number): boolean {
+    // if (chatMsgId >= chatData.lastChatAnswerId)
+    //   return getItemVisibilityPref(chatMsgId, true);
+    const defaultVisForItem = !hideAllPref; // true if hideAll pref is false OR if this is the last item
+    return getItemVisibilityPref(chatMsgId, defaultVisForItem);
   }
 
   const toggleAnswers = (
@@ -131,6 +133,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
     dispatch(onChatAnwerVisibilityShowAll(checked));
   }, [checked]);
 
+  console.log("rerender with hashmap: ", visibiltityPrefByChatMessageId);
   return (
     <div
       data-cy="history-chat"
@@ -152,7 +155,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
             name: namesByMentorId[m.mentorId] || "",
             isVisible: m.visibility,
           };
-          chatMap[i] = false;
+          // chatMap[i] = false;
           return (
             <div
               key={i}
@@ -167,11 +170,8 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
                 message={itemData}
                 i={i}
                 styles={styles}
-                totalMentors={
-                  Object.getOwnPropertyNames(namesByMentorId).length
-                }
-                updateHashMap={updateHashMap}
-                visibility={chatMap[i]}
+                updateHashMap={toggleQuestionVisibilityPref}
+                visibility={isAnswerVisible(i)}
               />
             </div>
           );

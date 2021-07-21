@@ -25,7 +25,7 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import { ChatMsg, Feedback } from "types";
 import "styles/history-chat.css";
-import { feedbackSend, onChatAnwerVisibilityShowItem } from "store/actions";
+import { feedbackSend } from "store/actions";
 
 type StyleProps = {
   root: string;
@@ -49,11 +49,11 @@ export function ChatItem(props: {
   message: ChatItemData;
   i: number;
   styles: StyleProps;
-  totalMentors: number;
   updateHashMap: (idx: number) => void;
   visibility: boolean;
 }): JSX.Element {
-  const { message, i, styles, totalMentors, updateHashMap, visibility } = props;
+  const { message, i, styles, updateHashMap, visibility } = props;
+  console.log(i + " with visiblity " + visibility);
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
   const isUser = !message.mentorId;
