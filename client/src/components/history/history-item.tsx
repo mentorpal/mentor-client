@@ -50,14 +50,16 @@ export function ChatItem(props: {
   i: number;
   styles: StyleProps;
   totalMentors: number;
+  updateHashMap: (idx: number) => void;
+  visibility: boolean;
 }): JSX.Element {
-  const { message, i, styles, totalMentors } = props;
+  const { message, i, styles, totalMentors, updateHashMap, visibility } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
   const isUser = !message.mentorId;
 
   const mentorColor = message.color || "#88929e";
-  const isVisible = message.isVisible;
+  const isVisible = visibility;
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(event.currentTarget);
@@ -83,11 +85,7 @@ export function ChatItem(props: {
   }
 
   function onClickVSBY() {
-    const answerIdxs: Array<number> = [];
-    for (let x = i; x <= i + totalMentors; x++) {
-      answerIdxs.push(x);
-    }
-    dispatch(onChatAnwerVisibilityShowItem(answerIdxs, isVisible));
+    updateHashMap(i);
   }
 
   const visibilityIcon =

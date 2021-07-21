@@ -119,7 +119,7 @@ describe("Video Chat History", () => {
     cy.get("[data-cy=selected-good]").should("be.visible");
   });
 
-  it("Show different feedback answers and mentors", () => {
+  it.only("Show different feedback answers and mentors", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
@@ -127,6 +127,7 @@ describe("Video Chat History", () => {
       gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
     });
     cy.visit("/");
+    cy.viewport("macbook-11");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
@@ -362,6 +363,7 @@ describe("Video Chat History", () => {
       fixture: "response_with_feedback.json",
     });
     cy.visit("/");
+    cy.viewport("macbook-11");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });

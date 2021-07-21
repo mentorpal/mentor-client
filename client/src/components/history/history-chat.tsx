@@ -87,12 +87,27 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
 
   const dispatch = useDispatch();
   const [checked, toggleChecked] = useState<boolean>(true);
+  // const [idxQuestion, setIdxQuestion] = useState<number>(-1);
+
+  interface hashMap {
+    [item: number]: boolean;
+  }
+  const chatMap: hashMap = {};
 
   useEffect(() => {
     animateScroll.scrollToBottom({
       containerId: "chat-thread",
     });
+    console.log(chatMap);
   }, [chatData.messages]);
+
+  function updateHashMap(i: number) {
+    const totalMentors = Object.getOwnPropertyNames(namesByMentorId).length;
+    for (let x = i; x <= i + totalMentors; x++) {
+      chatMap[x] = !chatMap[x];
+    }
+    console.log(chatMap);
+  }
 
   const toggleAnswers = (
     <div>
@@ -137,6 +152,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
             name: namesByMentorId[m.mentorId] || "",
             isVisible: m.visibility,
           };
+          chatMap[i] = false;
           return (
             <div
               key={i}
@@ -154,6 +170,8 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
                 totalMentors={
                   Object.getOwnPropertyNames(namesByMentorId).length
                 }
+                updateHashMap={updateHashMap}
+                visibility={chatMap[i]}
               />
             </div>
           );
