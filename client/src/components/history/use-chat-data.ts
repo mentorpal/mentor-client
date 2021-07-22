@@ -18,6 +18,7 @@ export function useWithChatData(): UseWithChatData {
   const numMentors = useSelector<State, number>(
     (s) => Object.keys(s.mentorsById).length
   );
+
   //const chatData = useSelector<State, ChatData>((s) => s.chat);
 
   function toggleQuestionVisibilityPref(questionId: number): void {
@@ -31,8 +32,11 @@ export function useWithChatData(): UseWithChatData {
   }
 
   function getItemVisibilityPref(chatMsgId: number, dft: boolean): boolean {
+    console.log(visibiltityPrefByChatMessageId);
+    // return visibiltityPrefByChatMessageId[chatMsgId] === dft
     return chatMsgId in visibiltityPrefByChatMessageId
-      ? visibiltityPrefByChatMessageId[chatMsgId]
+      ? //
+        visibiltityPrefByChatMessageId[chatMsgId]
       : dft;
   }
 

@@ -102,11 +102,15 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
     updateNewMessages(chatData.messages);
   }, [chatData.messages]);
 
+  // const lastChatAnswerId = useSelector<State, number>(
+  //   (s) => s.questionsAsked.length
+  // );
   // then in the component itself, you can have a function
   // that determines the visibility given an item and following the rules of visibility, e.g.
   function isAnswerVisible(chatMsgId: number): boolean {
-    // if (chatMsgId >= chatData.lastChatAnswerId)
+    // if (chatMsgId >= lastChatAnswerId)
     //   return getItemVisibilityPref(chatMsgId, true);
+
     const defaultVisForItem = !hideAllPref; // true if hideAll pref is false OR if this is the last item
     return getItemVisibilityPref(chatMsgId, defaultVisForItem);
   }

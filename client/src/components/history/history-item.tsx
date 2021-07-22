@@ -53,7 +53,6 @@ export function ChatItem(props: {
   visibility: boolean;
 }): JSX.Element {
   const { message, i, styles, updateHashMap, visibility } = props;
-  console.log(i + " with visiblity " + visibility);
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
   const isUser = !message.mentorId;

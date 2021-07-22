@@ -42,7 +42,6 @@ import {
 import { Visibility } from "@material-ui/icons";
 
 const RESPONSE_CUTOFF = -100;
-export const CHAT_QUESTION_VISIBILITY_SET = "CHAT_QUESTION_VISIBILITY_SET ";
 export const CHAT_QUESTION_VISIBILITY_SHOW_ALL =
   "CHAT_QUESTION_VISIBILITY_SHOW_ALL  ";
 export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished playing
@@ -217,19 +216,10 @@ export type MentorClientAction =
   | QuestionAction
   | TopicSelectedAction
   | QuestionInputChangedAction
-  | ChatQuestionVisibilitySetAction
   | ChatQuestionsVisibilityShowAllAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
-
-export interface ChatQuestionVisibilitySetAction {
-  type: typeof CHAT_QUESTION_VISIBILITY_SET;
-  payload: {
-    newVisibility: boolean;
-    indexes: number[];
-  };
-}
 
 export interface ChatQuestionsVisibilityShowAllAction {
   type: typeof CHAT_QUESTION_VISIBILITY_SHOW_ALL;
@@ -237,21 +227,6 @@ export interface ChatQuestionsVisibilityShowAllAction {
     newValue: boolean;
   };
 }
-
-export const onChatAnwerVisibilityShowItem =
-  (indexes: number[], visibility: boolean) =>
-  async (
-    dispatch: ThunkDispatch<State, void, ChatQuestionVisibilitySetAction>
-  ) => {
-    const newVisibility = !visibility;
-    return dispatch({
-      type: CHAT_QUESTION_VISIBILITY_SET,
-      payload: {
-        newVisibility,
-        indexes,
-      },
-    });
-  };
 
 export const onChatAnwerVisibilityShowAll =
   (newValue: boolean) =>

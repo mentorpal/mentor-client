@@ -6,9 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import { normalizeString } from "utils";
 import {
-  ChatQuestionVisibilitySetAction,
   ChatQuestionsVisibilityShowAllAction,
-  CHAT_QUESTION_VISIBILITY_SET,
   CHAT_QUESTION_VISIBILITY_SHOW_ALL,
   ANSWER_FINISHED,
   FEEDBACK_SEND_SUCCEEDED,
@@ -289,8 +287,6 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               feedbackId: "",
               isFeedbackSendInProgress: false,
               visibility: false,
-              chatAnswerId: state.questionsAsked.length + 1,
-              clicked: false,
             },
           ],
           lastChatAnswerId: state.chat.messages.length,
@@ -361,21 +357,6 @@ function onQuestionInputChanged(
   });
 }
 
-function onLastQuestionAnswered(state: State): State {
-  return {
-    ...state,
-    chat: {
-      ...state.chat,
-      messages: state.chat.messages.map((m) => {
-        return m.chatAnswerId === state.chat.lastChatAnswerId ||
-          m.clicked === true
-          ? { ...m, visibility: true }
-          : { ...m, visibility: false };
-      }),
-    },
-  };
-}
-
 function onQuestionAnswered(
   state: State,
   action: QuestionAnsweredAction
@@ -404,7 +385,7 @@ function onQuestionAnswered(
     mentor.topic_questions[history].questions.push(response.question);
   }
 
-  return onLastQuestionAnswered({
+  return {
     ...state,
     chat: {
       ...state.chat,
@@ -420,8 +401,6 @@ function onQuestionAnswered(
           feedbackId: action.mentor.answerFeedbackId,
           isFeedbackSendInProgress: false,
           visibility: false,
-          chatAnswerId: state.chat.messages.length,
-          clicked: false,
         },
       ],
     },
@@ -429,27 +408,6 @@ function onQuestionAnswered(
     mentorsById: {
       ...state.mentorsById,
       [response.mentor]: mentor,
-    },
-  });
-}
-
-function onChatAnswerVisibiltyShowQuestion(
-  state: State,
-  action: ChatQuestionVisibilitySetAction
-): State {
-  return {
-    ...state,
-    chat: {
-      ...state.chat,
-      messages: state.chat.messages.map((m, i) => {
-        return action.payload.indexes.includes(i)
-          ? {
-              ...m,
-              visibility: action.payload.newVisibility,
-              clicked: true,
-            }
-          : m;
-      }),
     },
   };
 }
@@ -463,13 +421,10 @@ function onChatAnwerVisibilityShowAll(
     chat: {
       ...state.chat,
       messages: state.chat.messages.map((m) => {
-        return m.chatAnswerId !== state.chat.lastChatAnswerId &&
-          m.clicked === false
-          ? {
-              ...m,
-              visibility: !action.payload.newValue,
-            }
-          : m;
+        return {
+          ...m,
+          visibility: !action.payload.newValue,
+        };
       }),
       showAllAnswers: !action.payload.newValue,
     },
@@ -516,8 +471,6 @@ export default function reducer(
       return onQuestionSent(state, action);
     case QUESTION_ANSWERED:
       return onQuestionAnswered(state, action);
-    case CHAT_QUESTION_VISIBILITY_SET:
-      return onChatAnswerVisibiltyShowQuestion(state, action);
     case CHAT_QUESTION_VISIBILITY_SHOW_ALL:
       return onChatAnwerVisibilityShowAll(state, action);
     case QUESTION_ERROR:
