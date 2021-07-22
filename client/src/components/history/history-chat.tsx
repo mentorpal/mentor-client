@@ -16,7 +16,7 @@ import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
 import ChatItem, { ChatItemData } from "./history-item";
-import { useWithChatData } from "./use-chat-data";
+import { ItemVisibilityPrefs, useWithChatData } from "./use-chat-data";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,11 +67,10 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   const { height } = args;
   const styles = useStyles();
   const {
-    visibiltityPrefByChatMessageId,
     toggleQuestionVisibilityPref,
     getItemVisibilityPref,
     updateNewMessages,
-    hideAllPref,
+    lastChatAnswerId,
   } = useWithChatData();
 
   const colorByMentorId = useSelector<State, Record<string, string>>((s) => {
@@ -100,19 +99,20 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
       containerId: "chat-thread",
     });
     updateNewMessages(chatData.messages);
-  }, [chatData.messages]);
+  }, [chatData.messages.length]);
 
-  // const lastChatAnswerId = useSelector<State, number>(
-  //   (s) => s.questionsAsked.length
-  // );
-  // then in the component itself, you can have a function
-  // that determines the visibility given an item and following the rules of visibility, e.g.
   function isAnswerVisible(chatMsgId: number): boolean {
-    // if (chatMsgId >= lastChatAnswerId)
-    //   return getItemVisibilityPref(chatMsgId, true);
-
-    const defaultVisForItem = !hideAllPref; // true if hideAll pref is false OR if this is the last item
-    return getItemVisibilityPref(chatMsgId, defaultVisForItem);
+    //the answer is visible if:
+    // it is the most recent one && no invis preference
+    // OR
+    // invis preference === true
+    return (
+      (chatMsgId > lastChatAnswerId &&
+        getItemVisibilityPref(chatMsgId, ItemVisibilityPrefs.NONE) !==
+          ItemVisibilityPrefs.INVISIBLE) ||
+      getItemVisibilityPref(chatMsgId, ItemVisibilityPrefs.NONE) ===
+        ItemVisibilityPrefs.VISIBLE
+    );
   }
 
   const toggleAnswers = (
@@ -134,10 +134,9 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   );
 
   useEffect(() => {
-    dispatch(onChatAnwerVisibilityShowAll(checked));
+    dispatch(onChatAnwerVisibilityShowAll(!checked));
   }, [checked]);
 
-  console.log("rerender with hashmap: ", visibiltityPrefByChatMessageId);
   return (
     <div
       data-cy="history-chat"
@@ -174,7 +173,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
                 message={itemData}
                 i={i}
                 styles={styles}
-                updateHashMap={toggleQuestionVisibilityPref}
+                toggleQuestionVisibilityPref={toggleQuestionVisibilityPref}
                 visibility={isAnswerVisible(i)}
               />
             </div>

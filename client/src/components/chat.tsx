@@ -220,7 +220,7 @@ function Chat(props: { height: number }): JSX.Element {
   const styles = useStyles();
   const [chatData, setChatData] = useState<ChatData>({
     messages: [],
-    showAllAnswers: true,
+    hideAllAnswers: true,
     lastChatAnswerId: 0,
   });
   const answerReceivedAt = useSelector<State, Date | undefined>((state) => {

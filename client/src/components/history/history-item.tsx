@@ -49,10 +49,11 @@ export function ChatItem(props: {
   message: ChatItemData;
   i: number;
   styles: StyleProps;
-  updateHashMap: (idx: number) => void;
+  toggleQuestionVisibilityPref: (idx: number) => void;
   visibility: boolean;
 }): JSX.Element {
-  const { message, i, styles, updateHashMap, visibility } = props;
+  const { message, i, styles, toggleQuestionVisibilityPref, visibility } =
+    props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
   const isUser = !message.mentorId;
@@ -84,7 +85,7 @@ export function ChatItem(props: {
   }
 
   function onClickVSBY() {
-    updateHashMap(i);
+    toggleQuestionVisibilityPref(i);
   }
 
   const visibilityIcon =

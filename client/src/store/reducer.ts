@@ -57,7 +57,7 @@ import {
 export const initialState: State = {
   chat: {
     messages: [],
-    showAllAnswers: false,
+    hideAllAnswers: true,
     lastChatAnswerId: 0,
   },
   config: {
@@ -426,7 +426,7 @@ function onChatAnwerVisibilityShowAll(
           visibility: !action.payload.newValue,
         };
       }),
-      showAllAnswers: !action.payload.newValue,
+      hideAllAnswers: !action.payload.newValue,
     },
   };
 }

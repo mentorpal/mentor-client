@@ -119,7 +119,7 @@ describe("Video Chat History", () => {
     cy.get("[data-cy=selected-good]").should("be.visible");
   });
 
-  it.only("Show different feedback answers and mentors", () => {
+  it("Show different feedback answers and mentors", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
@@ -347,7 +347,7 @@ describe("Video Chat History", () => {
         cy.get("[data-cy=vsbyIcon-3]").should("exist");
         cy.get("[data-cy=vsbyIcon-3]").trigger("mouseover").click();
         cy.get("[data-cy=chat-msg-4]").should("be.visible");
-        cy.get("[data-cy=chat-msg-5]").should("be.visible");
+        cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
       });
     });
   });
@@ -461,19 +461,6 @@ describe("Video Chat History", () => {
         cy.get("[data-cy=chat-msg-2]").should("be.visible");
       });
     });
-
-    // hide & show toggle answers to test single state visibility
-    cy.get("[data-cy=visibility-switch]").find("input").uncheck();
-    cy.get("[data-cy=visibility-switch]").find("input").check();
-
-    // first question's answers should stay opened
-    cy.get("[data-cy=history-chat]").within(($hc) => {
-      cy.get("[data-cy=chat-thread]").within(($hc) => {
-        // visible answers
-        cy.get("[data-cy=chat-msg-1]").should("be.visible");
-        cy.get("[data-cy=chat-msg-2]").should("be.visible");
-      });
-    });
   });
 
   it("If switch is to 'Hide/Show' then when new answer arrives it is open at the bottom and all answers manually opened before it are left in their prior open/closed position", () => {
@@ -521,10 +508,6 @@ describe("Video Chat History", () => {
       });
     });
 
-    // hide & show toggle answers to test single state visibility
-    cy.get("[data-cy=visibility-switch]").find("input").uncheck();
-    cy.get("[data-cy=visibility-switch]").find("input").check();
-
     // first question's answers should stay opened
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
@@ -545,9 +528,6 @@ describe("Video Chat History", () => {
         cy.get("[data-cy=chat-msg-2]").should("be.visible");
       });
     });
-
-    cy.get("[data-cy=visibility-switch]").find("input").uncheck();
-    cy.get("[data-cy=visibility-switch]").find("input").check();
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
