@@ -10,7 +10,6 @@ export interface ChatData {
   lastAnswerAt?: Date;
   messages: ChatMsg[];
   showAllAnswers: boolean;
-  lastAnswerLink: string;
 }
 
 export interface ChatMsg {

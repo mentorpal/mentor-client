@@ -74,11 +74,9 @@ export function ChatItem(props: {
 
   function LinkRenderer(props: { href: string; children: React.ReactNode }) {
     return (
-      <h3>
-        <a href={props.href} target="_blank" rel="noreferrer">
-          {props.children}
-        </a>
-      </h3>
+      <a href={props.href} target="_blank" rel="noreferrer">
+        {props.children}
+      </a>
     );
   }
 
@@ -88,15 +86,6 @@ export function ChatItem(props: {
       answerIdxs.push(x);
     }
     dispatch(onChatAnwerVisibilityShowItem(answerIdxs, isVisible));
-  }
-
-  function findLinks(text: string) {
-    const matchs =
-      /\[(.+)\]\((https?:\/\/[^\s]+)(?: "(.+)")?\)|(https?:\/\/[^\s]+)/gi.exec(
-        text
-      );
-    const url = matchs ? matchs[2] : "";
-    return url;
   }
 
   const visibilityIcon =

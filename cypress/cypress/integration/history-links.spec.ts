@@ -14,29 +14,6 @@ const covid = require("../fixtures/covid.json");
 const carlos = require("../fixtures/carlos.json");
 
 describe("Video Chat History", () => {
-  // it("can open external links in chat with markdown", () => {
-  //   mockDefaultSetup(cy, {
-  //     config: { mentorsDefault: ["covid"] },
-  //     mentorData: [covid],
-  //     apiResponse: "response_with_markdown.json",
-  //   });
-  //   cy.intercept("**/questions/?mentor=*&query=*", {
-  //     fixture: "response_with_markdown.json",
-  //   });
-  //   cy.viewport("macbook-11");
-  //   cy.visit("/");
-  //   cy.get("[data-cy=chat-thread]").should("exist");
-  //   cy.get("[data-cy=input-field]").type("test");
-  //   cy.get("[data-cy=input-send]").trigger("mouseover").click();
-  //   cy.get("[data-cy=chat-msg-2]").contains("Click here");
-  //   cy.get("[data-cy=chat-msg-2] a").should(
-  //     "have.attr",
-  //     "href",
-  //     "https://www.google.com"
-  //   );
-  //   cy.get("[data-cy=chat-msg-2] a").should("have.attr", "target", "_blank");
-  // });
-
   it("Answer with link", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
@@ -49,9 +26,9 @@ describe("Video Chat History", () => {
       fixture: "response_with_markdown.json",
     });
     cy.intercept("**/questions/?mentor=carlos&query=*", {
-      fixture: "response_with_feedback.json",
+      fixture: "response_with_markdown2.json",
     });
-    cy.viewport("macbook-11");
+    // cy.viewport("macbook-11");
     cy.visit("/");
 
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
@@ -59,10 +36,6 @@ describe("Video Chat History", () => {
 
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
-
-    cy.get("[data-cy=input-field]").type("Question 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
   });
 });
