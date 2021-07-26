@@ -20,6 +20,7 @@ import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import RecordVoiceOverIcon from "@material-ui/icons/RecordVoiceOver";
 
 import CloseIcon from "@material-ui/icons/Close";
 
@@ -75,7 +76,7 @@ export function ChatItem(props: {
   function LinkRenderer(props: { href: string; children: React.ReactNode }) {
     return (
       <a href={props.href} target="_blank" rel="noreferrer">
-        {props.children}
+        {props.href.length > 30 ? props.href.slice(0, 30) : props.href}
       </a>
     );
   }
@@ -103,138 +104,165 @@ export function ChatItem(props: {
       />
     ) : null;
 
-  return (
-    <ListItem
-      data-cy={`chat-msg-${i}`}
-      id={`chat-msg-${i}`}
-      disableGutters={false}
-      className={[
-        isUser ? "user" : "system",
-        isVisible ? "visible" : "hidden",
-      ].join(" ")}
-      classes={{ root: styles.root }}
+  const askQuestionIcon = !isUser ? (
+    <RecordVoiceOverIcon
       style={{
-        paddingRight: 16,
+        paddingRight: 10,
         maxWidth: 750,
-        marginLeft: isUser ? 0 : 50,
         backgroundColor: mentorColor,
+        color: "#88929e",
       }}
-    >
-      {visibilityIcon}
-      <ReactMarkdown
-        source={
-          isUser === false
-            ? message.name.concat(": ", message.text)
-            : message.text
-        }
-        renderers={{ link: LinkRenderer }}
-      />
-      {message.feedbackId ? (
-        <div
-          data-cy="feedback-btn"
-          className={styles.icon}
-          onClick={handleFeedbackClick}
-          style={{ zIndex: 2 }}
-        >
-          <ListItemAvatar>
-            <Avatar
-              className={[
-                styles.avatar,
-                message.feedback === Feedback.GOOD
-                  ? styles.GOOD
-                  : message.feedback === Feedback.BAD
-                  ? styles.BAD
-                  : undefined,
-              ].join(" ")}
-            >
-              {message.feedback === Feedback.GOOD ? (
-                <ThumbUpIcon data-cy="selected-good" />
-              ) : message.feedback === Feedback.BAD ? (
-                <ThumbDownIcon data-cy="selected-bad" />
-              ) : (
-                <ThumbsUpDownIcon data-cy="selected-none" />
-              )}
-            </Avatar>
-          </ListItemAvatar>
-        </div>
-      ) : undefined}
-      <Popover
-        id="feedback-popup"
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={handleFeedbackClose}
-        anchorOrigin={{
-          vertical: "center",
-          horizontal: "center",
+    />
+  ) : null;
+
+  return (
+    <div>
+      <p
+        style={{
+          margin: "0px",
+          display: "inline-block",
+          float: "left",
+          marginTop: isUser ? 5 : 0,
+          marginLeft: 62,
+          color: "#000",
+          fontSize: 15,
         }}
-        transformOrigin={{
-          vertical: "center",
-          horizontal: "center",
-        }}
-        elevation={0}
-        className={styles.feedbackPopup}
       >
-        <div
-          id="feedback-popup-child"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            backgroundColor: "#88929e",
-            borderRadius: "30px",
-            padding: 10,
-            color: "#FFFFFF",
+        {!isUser && isVisible ? message.name : null}
+      </p>
+      <ListItem
+        data-cy={`chat-msg-${i}`}
+        id={`chat-msg-${i}`}
+        disableGutters={false}
+        className={[
+          isUser ? "user" : "system",
+          isVisible ? "visible" : "hidden",
+        ].join(" ")}
+        classes={{ root: styles.root }}
+        style={{
+          paddingRight: 16,
+          maxWidth: 750,
+          marginLeft: isUser ? 0 : 50,
+          backgroundColor: mentorColor,
+        }}
+      >
+        {visibilityIcon}
+        {message.text.includes("Ask") ? askQuestionIcon : null}
+        <ReactMarkdown
+          source={
+            message.text.includes("ask")
+              ? "Ask: ".concat(message.text)
+              : message.text
+          }
+          renderers={{ link: LinkRenderer }}
+        />
+        {message.feedbackId ? (
+          <div
+            data-cy="feedback-btn"
+            className={styles.icon}
+            onClick={handleFeedbackClick}
+            style={{ zIndex: 2 }}
+          >
+            <ListItemAvatar>
+              <Avatar
+                className={[
+                  styles.avatar,
+                  message.feedback === Feedback.GOOD
+                    ? styles.GOOD
+                    : message.feedback === Feedback.BAD
+                    ? styles.BAD
+                    : undefined,
+                ].join(" ")}
+              >
+                {message.feedback === Feedback.GOOD ? (
+                  <ThumbUpIcon data-cy="selected-good" />
+                ) : message.feedback === Feedback.BAD ? (
+                  <ThumbDownIcon data-cy="selected-bad" />
+                ) : (
+                  <ThumbsUpDownIcon data-cy="selected-none" />
+                )}
+              </Avatar>
+            </ListItemAvatar>
+          </div>
+        ) : undefined}
+        <Popover
+          id="feedback-popup"
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
+          onClose={handleFeedbackClose}
+          anchorOrigin={{
+            vertical: "center",
+            horizontal: "center",
           }}
+          transformOrigin={{
+            vertical: "center",
+            horizontal: "center",
+          }}
+          elevation={0}
+          className={styles.feedbackPopup}
         >
-          <Typography>Did this answer your question?</Typography>
-          <div style={{ display: "flex", flexDirection: "row" }}>
-            <div
-              data-cy="click-good"
-              data-test-in-progress={message.isFeedbackSendInProgress}
-              onClick={() => {
-                if (message.feedbackId) {
-                  handleSelectFeedback(message.feedbackId, Feedback.GOOD);
-                }
-              }}
-            >
-              <ListItemAvatar>
-                <Avatar className={[styles.avatar, styles.GOOD].join(" ")}>
-                  <ThumbUpIcon />
-                </Avatar>
-              </ListItemAvatar>
-            </div>
-            <div
-              data-cy="click-neutral"
-              onClick={() => {
-                if (message.feedbackId) {
-                  handleSelectFeedback(message.feedbackId, Feedback.NEUTRAL);
-                }
-              }}
-            >
-              <ListItemAvatar>
-                <Avatar className={styles.avatar}>
-                  <CloseIcon />
-                </Avatar>
-              </ListItemAvatar>
-            </div>
-            <div
-              data-cy="click-bad"
-              onClick={() => {
-                if (message.feedbackId) {
-                  handleSelectFeedback(message.feedbackId, Feedback.BAD);
-                }
-              }}
-            >
-              <ListItemAvatar>
-                <Avatar className={[styles.avatar, styles.BAD].join(" ")}>
-                  <ThumbDownIcon />
-                </Avatar>
-              </ListItemAvatar>
+          <div
+            id="feedback-popup-child"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              backgroundColor: "#88929e",
+              borderRadius: "30px",
+              padding: 10,
+              color: "#FFFFFF",
+            }}
+          >
+            <Typography>Did this answer your question?</Typography>
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <div
+                data-cy="click-good"
+                data-test-in-progress={message.isFeedbackSendInProgress}
+                onClick={() => {
+                  if (message.feedbackId) {
+                    handleSelectFeedback(message.feedbackId, Feedback.GOOD);
+                  }
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar className={[styles.avatar, styles.GOOD].join(" ")}>
+                    <ThumbUpIcon />
+                  </Avatar>
+                </ListItemAvatar>
+              </div>
+              <div
+                data-cy="click-neutral"
+                onClick={() => {
+                  if (message.feedbackId) {
+                    handleSelectFeedback(message.feedbackId, Feedback.NEUTRAL);
+                  }
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar className={styles.avatar}>
+                    <CloseIcon />
+                  </Avatar>
+                </ListItemAvatar>
+              </div>
+              <div
+                data-cy="click-bad"
+                onClick={() => {
+                  if (message.feedbackId) {
+                    handleSelectFeedback(message.feedbackId, Feedback.BAD);
+                  }
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar className={[styles.avatar, styles.BAD].join(" ")}>
+                    <ThumbDownIcon />
+                  </Avatar>
+                </ListItemAvatar>
+              </div>
             </div>
           </div>
-        </div>
-      </Popover>
-    </ListItem>
+        </Popover>
+      </ListItem>
+    </div>
   );
 }
 export default ChatItem;

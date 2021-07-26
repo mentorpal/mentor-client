@@ -8,6 +8,7 @@ import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import { useSelector, useDispatch } from "react-redux";
 import { Star, StarBorder } from "@material-ui/icons";
+import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import { videoUrl, subtitleUrl, idleUrl } from "api";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
@@ -46,13 +47,26 @@ function Video(args: { playing?: boolean }): JSX.Element {
           : "",
     };
   });
+
+  const [hideLinkLabel, setHideLinkLabel] = useState<boolean>(false);
   const isIdle = useSelector<State, boolean>((state) => state.isIdle);
+
   const lastAnswerLink = useSelector<State, string>((state) => {
-    const link = state.chat.messages.reverse().map((m) => {
-      return m.isUser ? "" : findLinks(m.text);
+    const totalMentors = Object.keys(state.mentorsById).length;
+    const chatAnswers = state.chat.messages.map((m) => {
+      return !m.isUser ? findLinks(m.text) : "";
     });
-    return link[link.length - 1];
+    const lastMentorAnswers = chatAnswers.slice(-totalMentors);
+    return getLastAnswerLink(lastMentorAnswers.reverse())!;
   });
+
+  function getLastAnswerLink(lastMentorAnswers: Array<string>) {
+    for (let i = 0; i < lastMentorAnswers.length; i++) {
+      if (lastMentorAnswers[i] !== "") {
+        return lastMentorAnswers[i];
+      }
+    }
+  }
 
   function findLinks(text: string): string {
     const matchs =
@@ -64,16 +78,20 @@ function Video(args: { playing?: boolean }): JSX.Element {
   }
 
   const [duration, setDuration] = useState(Number.NaN);
+
   if (!(curMentor && video)) {
     return <div />;
   }
 
   function onEnded() {
+    setHideLinkLabel(true);
     dispatch(answerFinished());
   }
 
   function onPlay() {
+    setHideLinkLabel(false);
     if (isIdle) {
+      setHideLinkLabel(true);
       return;
     }
     dispatch(
@@ -99,20 +117,12 @@ function Video(args: { playing?: boolean }): JSX.Element {
         subtitlesOn={Boolean(subtitlesSupported)}
         subtitlesUrl={video.subtitles}
         videoUrl={video.src}
+        lastAnswerLink={lastAnswerLink}
+        hideLinkLabel={hideLinkLabel}
       />
       <FaveButton />
       <LoadingSpinner mentor={curMentor} />
       <MessageStatus mentor={curMentor} />
-      <div>
-        <a
-          href={lastAnswerLink}
-          style={{ color: "#acacac" }}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {lastAnswerLink}
-        </a>
-      </div>
     </div>
   );
 }
@@ -126,6 +136,8 @@ interface VideoPlayerParams {
   subtitlesOn: boolean;
   subtitlesUrl: string;
   videoUrl: string;
+  lastAnswerLink: string;
+  hideLinkLabel: boolean;
 }
 
 function VideoPlayer(args: VideoPlayerParams) {
@@ -138,43 +150,76 @@ function VideoPlayer(args: VideoPlayerParams) {
     subtitlesOn,
     subtitlesUrl,
     videoUrl,
+    lastAnswerLink,
+    hideLinkLabel,
   } = args;
-  return (
-    <ReactPlayer
+  const answerLinkCard = (
+    <div
+      data-cy="answer-link-card"
       style={{
-        backgroundColor: "black",
-        position: "relative",
-        margin: "0 auto",
+        backgroundColor: "#ddd",
+        position: "absolute",
+        right: 5,
+        top: 5,
+        display: "inline-block",
+        zIndex: 1,
       }}
-      url={videoUrl}
-      muted={Boolean(isIdle)}
-      onDuration={setDuration}
-      onEnded={onEnded}
-      onPlay={onPlay}
-      loop={isIdle}
-      controls={!isIdle}
-      playing={Boolean(playing)}
-      playsinline
-      webkit-playsinline="true"
-      config={{
-        file: {
-          attributes: {
-            crossOrigin: "true",
+    >
+      <a
+        href={lastAnswerLink}
+        style={{ position: "relative", color: "#000", bottom: 6, left: 5 }}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {lastAnswerLink?.length > 30
+          ? lastAnswerLink.slice(0, 30)
+          : lastAnswerLink}
+      </a>
+      <InfoOutlinedIcon
+        style={{ marginLeft: 10, position: "relative", top: 2 }}
+      />
+    </div>
+  );
+  return (
+    <div style={{ position: "relative", display: "inline-block" }}>
+      {!hideLinkLabel && lastAnswerLink ? answerLinkCard : null}
+      <ReactPlayer
+        style={{
+          backgroundColor: "black",
+          position: "relative",
+          margin: "0 auto",
+          zIndex: 0,
+        }}
+        url={videoUrl}
+        muted={Boolean(isIdle)}
+        onDuration={setDuration}
+        onEnded={onEnded}
+        onPlay={onPlay}
+        loop={isIdle}
+        controls={!isIdle}
+        playing={Boolean(playing)}
+        playsinline
+        webkit-playsinline="true"
+        config={{
+          file: {
+            attributes: {
+              crossOrigin: "true",
+            },
+            tracks: subtitlesOn
+              ? [
+                  {
+                    kind: "subtitles",
+                    label: "eng",
+                    srcLang: "en",
+                    src: subtitlesUrl,
+                    default: true,
+                  },
+                ]
+              : [],
           },
-          tracks: subtitlesOn
-            ? [
-                {
-                  kind: "subtitles",
-                  label: "eng",
-                  srcLang: "en",
-                  src: subtitlesUrl,
-                  default: true,
-                },
-              ]
-            : [],
-        },
-      }}
-    />
+        }}
+      />
+    </div>
   );
 }
 
