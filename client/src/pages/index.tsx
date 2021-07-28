@@ -23,7 +23,6 @@ import "styles/layout.css";
 import { fetchMentorByAccessToken } from "api";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import HistoryChat from "components/history";
-import Questions from "components/questions";
 
 const useStyles = makeStyles((theme) => ({
   flexRoot: {

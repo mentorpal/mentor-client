@@ -10,7 +10,6 @@ import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import ScrollingQuestions from "components/scrolling-questions";
 import { State } from "types";
 import withLocation from "wrap-with-location";
-import HistoryChat from "./history";
 
 const theme = createMuiTheme({
   palette: {
