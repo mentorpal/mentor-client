@@ -1,7 +1,7 @@
 {
   "query": "how old are you",
   "answer_id": "answer_id",
-  "answer_text": "How old are you? [ask](https://www.google.com)",
+  "answer_text": "Computer programmer [Tell me more](question://display={what+does+a+computer+programmer+do?})",
   "answer_media": [],
   "confidence": -0.5140574318328217,
   "feedback_id": "",

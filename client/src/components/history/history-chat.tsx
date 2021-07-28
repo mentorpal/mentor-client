@@ -13,7 +13,7 @@ import { onChatAnwerVisibilityShowAll } from "store/actions";
 
 import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
-import { ChatData, ChatMsg, State } from "types";
+import { ChatData, ChatMsg, Config, State } from "types";
 import "styles/history-chat.css";
 import ChatItem, { ChatItemData } from "./history-item";
 
@@ -84,6 +84,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   });
 
   const chatData = useSelector<State, ChatData>((s) => s.chat);
+  const config = useSelector<State, Config>((s) => s.config);
 
   const dispatch = useDispatch();
   const [checked, toggleChecked] = useState<boolean>(true);
@@ -154,6 +155,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
                 totalMentors={
                   Object.getOwnPropertyNames(namesByMentorId).length
                 }
+                config={config}
               />
             </div>
           );

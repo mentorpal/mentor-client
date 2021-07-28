@@ -166,16 +166,10 @@ describe("Video Chat History", () => {
       });
   });
 
-  it("Answer asks a question with prefix", () => {
+  it("Answer recommends a question with prefix", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_feedback.json",
-    });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_markdown2.json",
-    });
-    cy.intercept("**/questions/?mentor=carlos&query=*", {
-      fixture: "response_with_markdown.json",
+      fixture: "response_with_prefix.json",
     });
 
     cy.visit("/");
@@ -184,7 +178,48 @@ describe("Video Chat History", () => {
     cy.get("[data-cy=history-chat]").should("exist");
 
     // write msgs
-    cy.get("[data-cy=input-field]").type("Question 1");
+    cy.get("[data-cy=input-field]").type("What do you do for living?");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    cy.get("[data-cy=history-chat]").within(($hc) => {
+      cy.get("[data-cy=chat-thread]").within(($hc) => {
+        cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
+        cy.get("[data-cy=aks-icon-1]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=question-link-1]").trigger("mouseover").click();
+        cy.get("[data-cy=chat-msg-4]").contains(
+          "what does a computer programmer do?"
+        );
+      });
+    });
+  });
+
+  it("Answer recommends a question with prefix and link label over video as well", () => {
+    visitAsGuestWithDefaultSetup(cy, "/");
+
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_with_prefix.json",
+    });
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
+      fixture: "response_with_markdown.json",
+    });
+    cy.visit("/");
+
+    cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
+    cy.get("[data-cy=history-chat]").should("exist");
+
+    // write msgs
+    cy.get("[data-cy=input-field]").type("What do you do for living?");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    cy.get("[data-cy=history-chat]").within(($hc) => {
+      cy.get("[data-cy=chat-thread]").within(($hc) => {
+        cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
+        cy.get("[data-cy=aks-icon-1]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=question-link-1]").trigger("mouseover").click();
+        cy.get("[data-cy=chat-msg-4]").contains(
+          "what does a computer programmer do?"
+        );
+      });
+    });
   });
 });

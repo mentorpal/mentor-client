@@ -180,6 +180,7 @@ function VideoPlayer(args: VideoPlayerParams) {
       />
     </div>
   );
+
   return (
     <div style={{ position: "relative", display: "inline-block" }}>
       {!hideLinkLabel && lastAnswerLink ? answerLinkCard : null}

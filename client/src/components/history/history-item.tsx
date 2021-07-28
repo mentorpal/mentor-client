@@ -24,9 +24,13 @@ import RecordVoiceOverIcon from "@material-ui/icons/RecordVoiceOver";
 
 import CloseIcon from "@material-ui/icons/Close";
 
-import { ChatMsg, Feedback } from "types";
+import { ChatMsg, Config, Feedback, MentorQuestionSource } from "types";
 import "styles/history-chat.css";
-import { feedbackSend, onChatAnwerVisibilityShowItem } from "store/actions";
+import {
+  feedbackSend,
+  onChatAnwerVisibilityShowItem,
+  sendQuestion,
+} from "store/actions";
 
 type StyleProps = {
   root: string;
@@ -51,14 +55,16 @@ export function ChatItem(props: {
   i: number;
   styles: StyleProps;
   totalMentors: number;
+  config: Config;
 }): JSX.Element {
-  const { message, i, styles, totalMentors } = props;
+  const { message, i, styles, totalMentors, config } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
   const isUser = !message.mentorId;
 
   const mentorColor = message.color || "#88929e";
   const isVisible = message.isVisible;
+  const prefix = "question://";
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(event.currentTarget);
@@ -74,11 +80,50 @@ export function ChatItem(props: {
   }
 
   function LinkRenderer(props: { href: string; children: React.ReactNode }) {
-    return (
-      <a href={props.href} target="_blank" rel="noreferrer">
-        {props.href.length > 30 ? props.href.slice(0, 30) : props.href}
+    const linkAnswer =
+      props.href.length > 30 ? props.href.slice(0, 30) : props.href;
+    return message.text.includes(prefix) ? (
+      <a
+        href="#"
+        rel="noreferrer"
+        onClick={sentQuestion}
+        data-cy={`question-link-${i}`}
+      >
+        {props.children}
+      </a>
+    ) : (
+      <a
+        href={props.href}
+        target="_blank"
+        rel="noreferrer"
+        onClick={sentQuestion}
+      >
+        {linkAnswer}
       </a>
     );
+  }
+
+  function sentQuestion() {
+    const answerArray = message.text.match(/[^()]+/g);
+    if (answerArray) {
+      const questionSplit = answerArray[1].includes(prefix)
+        ? answerArray[1].replace("question://display=", "").match(/[^{}]+/g)
+        : "";
+      const question = questionSplit
+        ? questionSplit[0].split("+").join(" ")
+        : "";
+
+      handleQuestionSend(question, MentorQuestionSource.USER);
+    }
+    return;
+  }
+
+  function handleQuestionSend(question: string, source: MentorQuestionSource) {
+    if (!question) {
+      return;
+    }
+    dispatch(sendQuestion({ question, source, config }));
+    window.focus();
   }
 
   function onClickVSBY() {
@@ -106,6 +151,7 @@ export function ChatItem(props: {
 
   const askQuestionIcon = !isUser ? (
     <RecordVoiceOverIcon
+      data-cy={`aks-icon-${i}`}
       style={{
         paddingRight: 10,
         maxWidth: 750,
@@ -147,13 +193,9 @@ export function ChatItem(props: {
         }}
       >
         {visibilityIcon}
-        {message.text.includes("Ask") ? askQuestionIcon : null}
+        {message.text.includes(prefix) ? askQuestionIcon : null}
         <ReactMarkdown
-          source={
-            message.text.includes("ask")
-              ? "Ask: ".concat(message.text)
-              : message.text
-          }
+          source={message.text}
           renderers={{ link: LinkRenderer }}
         />
         {message.feedbackId ? (
