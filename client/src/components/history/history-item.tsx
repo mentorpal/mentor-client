@@ -30,6 +30,7 @@ import {
   feedbackSend,
   onChatAnwerVisibilityShowItem,
   sendQuestion,
+  userInputChanged,
 } from "store/actions";
 
 type StyleProps = {
@@ -107,22 +108,37 @@ export function ChatItem(props: {
     const answerArray = message.text.match(/[^()]+/g);
     if (answerArray) {
       const questionSplit = answerArray[1].includes(prefix)
-        ? answerArray[1].replace("question://display=", "").match(/[^{}]+/g)
+        ? answerArray[1].replace("question://display=", "")
         : "";
-      const question = questionSplit
-        ? questionSplit[0].split("+").join(" ")
-        : "";
+      const question = questionSplit.split("+").join(" ");
 
+      handleQuestionChanged(question, MentorQuestionSource.USER);
       handleQuestionSend(question, MentorQuestionSource.USER);
     }
     return;
   }
 
-  function handleQuestionSend(question: string, source: MentorQuestionSource) {
+  const addDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+  function handleQuestionChanged(
+    question: string,
+    source: MentorQuestionSource
+  ) {
+    dispatch(userInputChanged({ question, source }));
+  }
+  async function handleQuestionSend(
+    question: string,
+    source: MentorQuestionSource
+  ) {
     if (!question) {
       return;
     }
+    // add animation when question is asked
+    const inputField = document.querySelector("#input-field");
+    inputField?.classList.add("input-field-animation");
+    await addDelay(1000);
     dispatch(sendQuestion({ question, source, config }));
+    inputField?.classList.remove("input-field-animation");
     window.focus();
   }
 
@@ -153,7 +169,7 @@ export function ChatItem(props: {
     <RecordVoiceOverIcon
       data-cy={`aks-icon-${i}`}
       style={{
-        paddingRight: 10,
+        paddingLeft: 10,
         maxWidth: 750,
         backgroundColor: mentorColor,
         color: "#88929e",
@@ -168,7 +184,7 @@ export function ChatItem(props: {
           margin: "0px",
           display: "inline-block",
           float: "left",
-          marginTop: isUser ? 5 : 0,
+          marginTop: isUser ? 6 : 3,
           marginLeft: 62,
           color: "#000",
           fontSize: 15,
@@ -193,11 +209,12 @@ export function ChatItem(props: {
         }}
       >
         {visibilityIcon}
-        {message.text.includes(prefix) ? askQuestionIcon : null}
         <ReactMarkdown
           source={message.text}
           renderers={{ link: LinkRenderer }}
         />
+        {message.text.includes(prefix) ? askQuestionIcon : null}
+
         {message.feedbackId ? (
           <div
             data-cy="feedback-btn"

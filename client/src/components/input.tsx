@@ -106,6 +106,7 @@ function Input(): JSX.Element {
     <div data-cy="input-field-wrapper" data-topic={curTopic}>
       <Paper className={classes.root} square style={{ height: 60 }}>
         <InputBase
+          id="input-field"
           data-cy="input-field"
           className={classes.inputField}
           value={questionInput.question}

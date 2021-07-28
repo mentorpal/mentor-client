@@ -173,7 +173,6 @@ describe("Video Chat History", () => {
     });
 
     cy.visit("/");
-
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 
