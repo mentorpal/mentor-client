@@ -4,6 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
+import { should } from "chai";
 import {
   visitAsGuestWithDefaultSetup,
   mockDefaultSetup,
@@ -23,16 +24,12 @@ describe("Video Chat History", () => {
     cy.intercept("**/questions/?mentor=*&query=*", {
       fixture: "response_with_markdown.json",
     });
-
     cy.visit("/");
-
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
-
     cy.get("[data-cy=chat-msg-2]").contains("Click https://www.google.com");
     cy.get("[data-cy=chat-msg-2] a").should(
       "have.attr",
@@ -49,41 +46,31 @@ describe("Video Chat History", () => {
       apiResponse: "response_with_markdown2.json",
       gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
     });
-
+    cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_markdown.json",
     });
     cy.intercept("**/questions/?mentor=carlos&query=*", {
       fixture: "response_with_markdown2.json",
     });
-
-    cy.visit("/");
     cy.get("[data-cy=answer-link-card]").should("not.exist");
-
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
-
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-
     // display label over a corner of the video
     cy.get("[data-cy=answer-link-card]").should("exist");
   });
 
   it("It doesn't display link-label over a corner of the video", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-
-    cy.visit("/");
     cy.get("[data-cy=answer-link-card]").should("not.exist");
-
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
-
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-
     // display label over a corner of the video
     cy.get("[data-cy=answer-link-card]").should("not.exist");
   });
@@ -93,17 +80,11 @@ describe("Video Chat History", () => {
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_markdown.json",
     });
-
-    cy.visit("/");
-    cy.get("[data-cy=answer-link-card]").should("not.exist");
-
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
-
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-
     cy.get("[data-cy=video-thumbnail-carlos]").trigger("mouseover").click();
     cy.get("[data-cy=answer-link-card]", { timeout: 8000 }).should("not.exist");
   });
@@ -115,13 +96,13 @@ describe("Video Chat History", () => {
       apiResponse: "response_with_markdown.json",
       gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
     });
+    cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_markdown.json",
     });
     cy.intercept("**/questions/?mentor=carlos&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.visit("/");
     cy.get("[data-cy=answer-link-card]").should("not.exist");
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
@@ -141,18 +122,19 @@ describe("Video Chat History", () => {
   });
 
   it("Link text for video-area link is same as text used in link", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_feedback.json",
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint", "carlos"] },
+      mentorData: [clint, carlos],
+      apiResponse: "response_with_markdown.json",
+      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
     });
+    cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_markdown2.json",
     });
     cy.intercept("**/questions/?mentor=carlos&query=*", {
       fixture: "response_with_markdown.json",
     });
-
-    cy.visit("/");
 
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
@@ -172,12 +154,19 @@ describe("Video Chat History", () => {
   });
 
   it("Answer recommends a question with prefix", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint", "carlos"] },
+      mentorData: [clint, carlos],
+      apiResponse: "response_with_markdown.json",
+      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
+    });
+    cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_prefix.json",
     });
-
-    cy.visit("/");
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
+      fixture: "response_with_feedback.json",
+    });
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 
@@ -190,35 +179,7 @@ describe("Video Chat History", () => {
         cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
         cy.get("[data-cy=aks-icon-1]").scrollIntoView().should("be.visible");
         cy.get("[data-cy=question-link-1]").trigger("mouseover").click();
-        cy.get("[data-cy=chat-msg-4]").contains(
-          "what does a computer programmer do?"
-        );
-      });
-    });
-  });
-
-  it("Answer recommends a question with prefix and link label over video as well", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_prefix.json",
-    });
-    cy.intercept("**/questions/?mentor=carlos&query=*", {
-      fixture: "response_with_markdown.json",
-    });
-    cy.visit("/");
-    cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
-    cy.get("[data-cy=history-chat]").should("exist");
-
-    // write msgs
-    cy.get("[data-cy=input-field]").type("What do you do for living?");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
-
-    cy.get("[data-cy=history-chat]").within(($hc) => {
-      cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
-        cy.get("[data-cy=aks-icon-1]").should("be.visible");
-        cy.get("[data-cy=question-link-1]").trigger("mouseover").click();
-        cy.get("[data-cy=chat-msg-4]").contains(
+        cy.get("[data-cy=chat-msg-3]").contains(
           "what does a computer programmer do?"
         );
       });
