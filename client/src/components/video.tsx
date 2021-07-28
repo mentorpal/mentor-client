@@ -57,15 +57,16 @@ function Video(args: { playing?: boolean }): JSX.Element {
       return !m.isUser ? findLinks(m.text) : "";
     });
     const lastMentorAnswers = chatAnswers.slice(-totalMentors);
-    return getLastAnswerLink(lastMentorAnswers.reverse())!;
+    return getLastAnswerLink(lastMentorAnswers.reverse());
   });
 
-  function getLastAnswerLink(lastMentorAnswers: Array<string>) {
+  function getLastAnswerLink(lastMentorAnswers: Array<string>): string {
     for (let i = 0; i < lastMentorAnswers.length; i++) {
       if (lastMentorAnswers[i] !== "") {
         return lastMentorAnswers[i];
       }
     }
+    return "";
   }
 
   function findLinks(text: string): string {
