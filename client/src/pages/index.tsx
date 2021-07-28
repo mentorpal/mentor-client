@@ -22,6 +22,8 @@ import withLocation from "wrap-with-location";
 import "styles/layout.css";
 import { fetchMentorByAccessToken } from "api";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import HistoryChat from "components/history";
+import Questions from "components/questions";
 
 const useStyles = makeStyles((theme) => ({
   flexRoot: {
@@ -243,24 +245,51 @@ function IndexPage(props: {
     );
   }
 
+  // console.log(recommendedQuestions);
   return (
     <MuiThemeProvider theme={brandedTheme}>
-      <div className={styles.flexRoot} style={{ height: windowHeight }}>
-        <div className={styles.flexFixedChildHeader}>
-          <VideoPanel />
-          <Header />
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "auto auto",
+          padding: 10,
+          gridGap: "1rem",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <div className={styles.flexRoot} style={{ height: windowHeight }}>
+            <div className={styles.flexFixedChildHeader}>
+              <VideoPanel />
+              <Header />
+            </div>
+            <div className={styles.flexExpandChild}>
+              {mentorType === MentorType.CHAT ? (
+                <Chat height={chatHeight} />
+              ) : (
+                <Video playing={hasSessionUser()} />
+              )}
+            </div>
+            <div className={styles.flexFixedChild}>
+              <Input />
+            </div>
+            {!hasSessionUser() ? <GuestPrompt /> : undefined}
+          </div>
         </div>
-        <div className={styles.flexExpandChild}>
-          {mentorType === MentorType.CHAT ? (
-            <Chat height={chatHeight} />
-          ) : (
-            <Video playing={hasSessionUser()} />
-          )}
+        <div
+          style={{
+            backgroundColor: "#e0e0e0",
+            width: "40vw",
+            height: windowHeight - 30,
+          }}
+        >
+          <HistoryChat height={windowHeight} questionHistory={[""]} />
         </div>
-        <div className={styles.flexFixedChild}>
-          <Input />
-        </div>
-        {!hasSessionUser() ? <GuestPrompt /> : undefined}
       </div>
     </MuiThemeProvider>
   );

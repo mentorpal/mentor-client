@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   list: {
     marginTop: 1,
     padding: 10,
-    maxHeight: "20vh",
+    maxHeight: "90vh",
   },
   avatar: {
     width: theme.spacing(4),
@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
   chat_container: {
     backgroundColor: "#fff",
+    margin: "1rem",
   },
   introMsg: {
     marginLeft: "0rem !important",
