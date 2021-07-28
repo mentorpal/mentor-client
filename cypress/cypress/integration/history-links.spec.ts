@@ -109,9 +109,17 @@ describe("Video Chat History", () => {
   });
 
   it("Display link-label from most recent answer is shown", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint", "carlos"] },
+      mentorData: [clint, carlos],
+      apiResponse: "response_with_markdown.json",
+      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
+    });
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_markdown.json",
+    });
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
+      fixture: "response_with_feedback.json",
     });
     cy.visit("/");
     cy.get("[data-cy=answer-link-card]").should("not.exist");
