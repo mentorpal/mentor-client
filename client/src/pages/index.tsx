@@ -22,7 +22,6 @@ import withLocation from "wrap-with-location";
 import "styles/layout.css";
 import { fetchMentorByAccessToken } from "api";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import HistoryChat from "components/history";
 
@@ -80,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const isMobile = () =>
+export const isMobile = (): boolean =>
   window.matchMedia && window.matchMedia("(max-width: 600px)").matches;
 
 function IndexPage(props: {
