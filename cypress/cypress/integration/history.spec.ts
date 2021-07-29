@@ -12,7 +12,7 @@ import {
 const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
 
-describe("Video Chat History", () => {
+describe("Chat History (Video Mentors)", () => {
   it("does not display in topics list if no questions have been asked", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
 
