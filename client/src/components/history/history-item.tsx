@@ -43,17 +43,15 @@ type StyleProps = {
 export interface ChatItemData extends ChatMsg {
   name: string;
   color: string;
-  isVisible: boolean; // a little weird because it's really a question/answer thing
 }
 export function ChatItem(props: {
   message: ChatItemData;
   i: number;
   styles: StyleProps;
-  toggleQuestionVisibilityPref: (idx: number) => void;
+  setAnswerVisibility: (show: boolean) => void;
   visibility: boolean;
 }): JSX.Element {
-  const { message, i, styles, toggleQuestionVisibilityPref, visibility } =
-    props;
+  const { message, i, styles, setAnswerVisibility, visibility } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
   const isUser = !message.mentorId;
@@ -85,7 +83,7 @@ export function ChatItem(props: {
   }
 
   function onClickVSBY() {
-    toggleQuestionVisibilityPref(i);
+    setAnswerVisibility(!isVisible);
   }
 
   const visibilityIcon =

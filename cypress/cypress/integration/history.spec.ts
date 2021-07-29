@@ -92,18 +92,14 @@ describe("Chat History (Video Mentors)", () => {
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
-
     // write msgs
     cy.get("[data-cy=input-field]").type("Good feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-
     cy.get("[data-cy=visibility-switch]").find("input").uncheck();
-
     // provide feedback
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-0]").contains("Good feedback test");
@@ -292,19 +288,22 @@ describe("Chat History (Video Mentors)", () => {
         cy.get("[data-cy=visibility-switch]").should("exist");
         cy.get("[data-cy=visibility-switch]")
           .find("input")
-          .should("be.checked");
+          .should("not.be.checked");
 
         // show answers
-        cy.get("[data-cy=visibility-switch]").find("input").uncheck();
-        cy.get("[data-cy=chat-msg-1]").should("be.visible");
-        cy.get("[data-cy=chat-msg-2]").should("be.visible");
+        cy.get("[data-cy=chat-msg-1]").should("not.be.visible");
+        cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
+        // the answers for the last question are visible by default
+        // even if the show-all toggle is left unchecked
         cy.get("[data-cy=chat-msg-4]").scrollIntoView().should("be.visible");
         cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
 
         // Hide answers
         cy.get("[data-cy=visibility-switch]").find("input").check();
-        cy.get("[data-cy=chat-msg-1]").should("not.be.visible");
-        cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
+        cy.get("[data-cy=chat-msg-1]").should("be.visible");
+        cy.get("[data-cy=chat-msg-2]").should("be.visible");
+        cy.get("[data-cy=chat-msg-4]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
       });
     });
   });
