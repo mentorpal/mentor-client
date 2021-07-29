@@ -12,6 +12,7 @@ import { normalizeString } from "utils";
 import { selectTopic } from "store/actions";
 import { State, TopicQuestions } from "types";
 import withLocation from "wrap-with-location";
+import { isMobile } from "pages";
 
 function Topics(args: {
   onSelected: (question: string) => void;
@@ -45,30 +46,51 @@ function Topics(args: {
       onSelected(topQ);
     }
   }
+  // if mobile -> show history button
+  // if not mobile -> hide history button
+
+  const topicButtons = topicQuestions.map((tq, i) => {
+    return isMobile() ? (
+      <div data-cy={`topic-${i}`} className="slide topic-slide" key={i}>
+        <Button
+          className={curTopic === tq.topic ? "topic-selected" : ""}
+          variant="contained"
+          color={curTopic === tq.topic ? "primary" : "default"}
+          onClick={() => onTopicSelected(tq.topic)}
+        >
+          {tq.topic === "History" ? (
+            <History style={{ marginRight: "5px" }} />
+          ) : undefined}
+          {tq.topic === "Recommended" ? (
+            <Whatshot style={{ marginRight: "5px" }} />
+          ) : undefined}
+          {tq.topic}
+        </Button>
+      </div>
+    ) : tq.topic !== "History" ? (
+      <div data-cy={`topic-${i}`} className="slide topic-slide" key={i}>
+        <Button
+          className={curTopic === tq.topic ? "topic-selected" : ""}
+          variant="contained"
+          color={curTopic === tq.topic ? "primary" : "default"}
+          onClick={() => onTopicSelected(tq.topic)}
+        >
+          {tq.topic === "History" ? (
+            <History style={{ marginRight: "5px" }} />
+          ) : undefined}
+          {tq.topic === "Recommended" ? (
+            <Whatshot style={{ marginRight: "5px" }} />
+          ) : undefined}
+          {tq.topic}
+        </Button>
+      </div>
+    ) : null;
+  });
 
   return (
     <Paper elevation={2} square>
       <div data-cy="topics" className="carousel" style={{ height: 70 }}>
-        {topicQuestions.map((tq, i) => {
-          return (
-            <div data-cy={`topic-${i}`} className="slide topic-slide" key={i}>
-              <Button
-                className={curTopic === tq.topic ? "topic-selected" : ""}
-                variant="contained"
-                color={curTopic === tq.topic ? "primary" : "default"}
-                onClick={() => onTopicSelected(tq.topic)}
-              >
-                {tq.topic === "History" ? (
-                  <History style={{ marginRight: "5px" }} />
-                ) : undefined}
-                {tq.topic === "Recommended" ? (
-                  <Whatshot style={{ marginRight: "5px" }} />
-                ) : undefined}
-                {tq.topic}
-              </Button>
-            </div>
-          );
-        })}
+        {topicButtons}
       </div>
     </Paper>
   );

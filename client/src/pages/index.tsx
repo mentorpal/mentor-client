@@ -22,7 +22,11 @@ import withLocation from "wrap-with-location";
 import "styles/layout.css";
 import { fetchMentorByAccessToken } from "api";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
+
 import HistoryChat from "components/history";
+
+import "../styles/history-chat-responsive.css";
 
 const useStyles = makeStyles((theme) => ({
   flexRoot: {
@@ -75,6 +79,9 @@ const useStyles = makeStyles((theme) => ({
     display: "block",
   },
 }));
+
+export const isMobile = () =>
+  window.matchMedia && window.matchMedia("(max-width: 600px)").matches;
 
 function IndexPage(props: {
   search: {
@@ -153,6 +160,7 @@ function IndexPage(props: {
     const panelHeight = mentorCount > 1 ? 50 : 0;
     const inputHeight = 130;
     const questionsHeight = curTopic ? 200 : 0;
+    console.log(windowHeight);
     setChatHeight(
       Math.max(
         0,
@@ -244,24 +252,23 @@ function IndexPage(props: {
     );
   }
 
+  const historyChatLandscape = (
+    <div
+      style={{
+        height: isMobile() ? "250px" : windowHeight,
+      }}
+      className="history-chat-wrapper"
+    >
+      {/* <h3 className="history-chat-title">History Chat</h3> */}
+      <HistoryChat height={windowHeight} />
+    </div>
+  );
+
   // console.log(recommendedQuestions);
   return (
     <MuiThemeProvider theme={brandedTheme}>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "auto auto",
-          padding: 10,
-          gridGap: "1rem",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
+      <div className="history-template">
+        <div className="video-mentor-wrapper">
           <div className={styles.flexRoot} style={{ height: windowHeight }}>
             <div className={styles.flexFixedChildHeader}>
               <VideoPanel />
@@ -280,15 +287,7 @@ function IndexPage(props: {
             {!hasSessionUser() ? <GuestPrompt /> : undefined}
           </div>
         </div>
-        <div
-          style={{
-            backgroundColor: "#e0e0e0",
-            width: "40vw",
-            height: windowHeight - 30,
-          }}
-        >
-          <HistoryChat height={windowHeight} questionHistory={[""]} />
-        </div>
+        {!isMobile() ? historyChatLandscape : null}
       </div>
     </MuiThemeProvider>
   );

@@ -10,6 +10,8 @@ import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import ScrollingQuestions from "components/scrolling-questions";
 import { State } from "types";
 import withLocation from "wrap-with-location";
+import HistoryChat from "./history";
+import { isMobile } from "pages";
 
 const theme = createMuiTheme({
   palette: {
@@ -62,8 +64,11 @@ function Questions(props: {
     return orderedQuestions;
   });
 
+  const historyComponent = isMobile() ? <HistoryChat height={500} /> : null;
   const content =
-    curTopic === "History" ? null : (
+    curTopic === "History" ? (
+      historyComponent
+    ) : (
       <ScrollingQuestions
         questions={questions}
         questionsAsked={questionsAsked}

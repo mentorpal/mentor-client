@@ -1,0 +1,35 @@
+.history-template {
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  justify-content: space-around;
+  background-color: #eeeeee;
+}
+
+.history-chat-wrapper {
+  width: 40vw;
+  border-radius: 10px;
+}
+
+.video-mentor-wrapper {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 10px;
+}
+.history-chat-title {
+  color: #444c54;
+  font-size: 1.7rem;
+  margin-bottom: 0;
+}
+
+@media only screen and (max-width: 600px) {
+  .history-template {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    /* justify-content: space-around; */
+  }
+  .video-mentor-wrapper {
+    padding: 0;
+  }
+}

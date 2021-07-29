@@ -116,7 +116,7 @@ describe("Topics list", () => {
   it("does not recommend a topic question that has already been asked (via manual input)", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=input-field]").type("where were you born?");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
     cy.get("[data-cy=topic-1]").trigger("mouseover").click();
     cy.get("[data-cy=input-field-wrapper]").should(
       "have.attr",
@@ -155,7 +155,7 @@ describe("Topics list", () => {
   it("skips topic questions that have already been asked", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=input-field]").type("where were you born?");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
     cy.get("[data-cy=topic-1]").trigger("mouseover").click();
     cy.get("[data-cy=input-field-wrapper]").should(
       "have.attr",

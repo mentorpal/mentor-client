@@ -35,6 +35,7 @@ describe("Video Chat History", () => {
     cy.get("[data-cy=topic-2]").trigger("mouseover").click();
     cy.get("[data-cy=input-field]").type("Hello");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").contains("Hello");
   });
 
@@ -69,9 +70,9 @@ describe("Video Chat History", () => {
     cy.get("[data-cy=history-chat]").should("exist");
 
     cy.get("[data-cy=input-field]").type("user msg 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
     cy.get("[data-cy=input-field]").type("user msg 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
 
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-0]").contains("user msg 1");
@@ -98,9 +99,9 @@ describe("Video Chat History", () => {
 
     // write msgs
     cy.get("[data-cy=input-field]").type("Good feedback test");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
     cy.get("[data-cy=input-field]").type("Bad feedback test");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
 
     cy.get("[data-cy=visibility-switch]").find("input").uncheck();
 
@@ -144,10 +145,10 @@ describe("Video Chat History", () => {
 
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
 
     cy.get("[data-cy=input-field]").type("Question 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
   });
 
   it("can give feedback on multiple mentor answers", () => {
@@ -172,7 +173,7 @@ describe("Video Chat History", () => {
 
     // write msgs
     cy.get("[data-cy=input-field]").type("Good feedback test");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
 
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
@@ -236,10 +237,10 @@ describe("Video Chat History", () => {
 
     // write msgs
     cy.get("[data-cy=input-field]").type("Good feedback test");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
 
     cy.get("[data-cy=input-field]").type("Bad feedback test");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
 
     cy.get("[data-cy=visibility-switch]").find("input").uncheck();
 
@@ -281,10 +282,10 @@ describe("Video Chat History", () => {
 
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
 
     cy.get("[data-cy=input-field]").type("Question 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
@@ -334,10 +335,10 @@ describe("Video Chat History", () => {
 
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
 
     cy.get("[data-cy=input-field]").type("Question 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
 
     cy.get("[data-cy=visibility-switch]").find("input").uncheck();
 

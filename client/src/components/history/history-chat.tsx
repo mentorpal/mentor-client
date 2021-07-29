@@ -16,6 +16,7 @@ import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
 import ChatItem, { ChatItemData } from "./history-item";
+import { isMobile } from "pages";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,6 +48,10 @@ const useStyles = makeStyles((theme) => ({
   chat_container: {
     backgroundColor: "#fff",
     margin: "1rem",
+    borderRadius: 10,
+  },
+  chat_container_mobile: {
+    border: 0,
   },
   introMsg: {
     marginLeft: "0rem !important",
@@ -58,7 +63,6 @@ const useStyles = makeStyles((theme) => ({
 
 interface ScrollingQuestionsParams {
   height: number;
-  questionHistory: string[];
 }
 
 const MENTOR_COLORS = ["#d8e7f8", "#d4e8d9", "#ffebcf", "#f5cccd"];
@@ -121,12 +125,14 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
     <div
       data-cy="history-chat"
       data-topic="History"
-      className={styles.chat_container}
+      className={
+        !isMobile() ? styles.chat_container : styles.chat_container_mobile
+      }
     >
       <List
         data-cy="chat-thread"
         className={styles.list}
-        style={{ height: height }}
+        style={{ height: isMobile() ? "200px" : height }}
         disablePadding={true}
         id="chat-thread"
       >
