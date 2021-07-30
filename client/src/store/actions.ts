@@ -14,7 +14,6 @@ import {
   getUtterance,
   giveFeedback,
   queryMentor,
-  videoUrl,
 } from "api";
 import {
   MentorsLoadRequest,
@@ -39,11 +38,9 @@ import {
   MentorDataResult,
   Feedback,
 } from "../types";
-import { Visibility } from "@material-ui/icons";
+import * as uuid from "uuid";
 
 const RESPONSE_CUTOFF = -100;
-export const CHAT_QUESTION_VISIBILITY_SHOW_ALL =
-  "CHAT_QUESTION_VISIBILITY_SHOW_ALL  ";
 export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished playing
 export const CONFIG_LOAD_FAILED = "CONFIG_LOAD_FAILED";
 export const CONFIG_LOAD_STARTED = "CONFIG_LOAD_STARTED";
@@ -164,7 +161,7 @@ export type MentorAction =
 
 export interface QuestionAnsweredAction {
   type: typeof QUESTION_ANSWERED;
-  mentor: QuestionResponse;
+  payload: QuestionResponse;
 }
 
 export interface QuestionErrorAction {
@@ -182,6 +179,7 @@ export interface QuestionSentAction {
   type: typeof QUESTION_SENT;
   payload: {
     question: string;
+    questionId: string;
     source: MentorQuestionSource;
   };
 }
@@ -215,86 +213,64 @@ export type MentorClientAction =
   | MentorAction
   | QuestionAction
   | TopicSelectedAction
-  | QuestionInputChangedAction
-  | ChatQuestionsVisibilityShowAllAction;
+  | QuestionInputChangedAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
 
-export interface ChatQuestionsVisibilityShowAllAction {
-  type: typeof CHAT_QUESTION_VISIBILITY_SHOW_ALL;
-  payload: {
-    newValue: boolean;
-  };
-}
-
-export const onChatAnwerVisibilityShowAll =
-  (newValue: boolean) =>
-  async (
-    dispatch: ThunkDispatch<State, void, ChatQuestionsVisibilityShowAllAction>
-  ) => {
+export const feedbackSend = (feedbackId: string, feedback: Feedback) => async (
+  dispatch: ThunkDispatch<State, void, FeedbackAction>,
+  getState: () => State
+) => {
+  dispatch({
+    type: FEEDBACK_SENT,
+    payload: {
+      feedback,
+      feedbackId,
+    },
+  });
+  try {
+    await giveFeedback(feedbackId, feedback, getState().config);
     return dispatch({
-      type: CHAT_QUESTION_VISIBILITY_SHOW_ALL,
-      payload: {
-        newValue,
-      },
-    });
-  };
-
-export const feedbackSend =
-  (feedbackId: string, feedback: Feedback) =>
-  async (
-    dispatch: ThunkDispatch<State, void, FeedbackAction>,
-    getState: () => State
-  ) => {
-    dispatch({
-      type: FEEDBACK_SENT,
+      type: FEEDBACK_SEND_SUCCEEDED,
       payload: {
         feedback,
         feedbackId,
       },
     });
-    try {
-      await giveFeedback(feedbackId, feedback, getState().config);
-      return dispatch({
-        type: FEEDBACK_SEND_SUCCEEDED,
-        payload: {
-          feedback,
-          feedbackId,
-        },
-      });
-    } catch (err) {
-      console.error(err);
-      return dispatch({
-        type: FEEDBACK_SEND_FAILED,
-        payload: {
-          errors: [err.message],
-          feedback,
-          feedbackId,
-        },
-      });
-    }
-  };
-
-export const loadConfig =
-  () => async (dispatch: ThunkDispatch<State, void, ConfigLoadAction>) => {
-    dispatch({
-      type: CONFIG_LOAD_STARTED,
-    });
-    try {
-      const config = await fetchConfig();
-      return dispatch({
-        type: CONFIG_LOAD_SUCCEEDED,
-        payload: config,
-      });
-    } catch (err) {
-      console.error(err);
-      return dispatch({
-        type: CONFIG_LOAD_FAILED,
+  } catch (err) {
+    console.error(err);
+    return dispatch({
+      type: FEEDBACK_SEND_FAILED,
+      payload: {
         errors: [err.message],
-      });
-    }
-  };
+        feedback,
+        feedbackId,
+      },
+    });
+  }
+};
+
+export const loadConfig = () => async (
+  dispatch: ThunkDispatch<State, void, ConfigLoadAction>
+) => {
+  dispatch({
+    type: CONFIG_LOAD_STARTED,
+  });
+  try {
+    const config = await fetchConfig();
+    return dispatch({
+      type: CONFIG_LOAD_SUCCEEDED,
+      payload: config,
+    });
+  } catch (err) {
+    console.error(err);
+    return dispatch({
+      type: CONFIG_LOAD_FAILED,
+      errors: [err.message],
+    });
+  }
+};
 
 export const loadMentors: ActionCreator<
   ThunkAction<
@@ -303,104 +279,103 @@ export const loadMentors: ActionCreator<
     string, // The type of the parameter for the nested function
     MentorsLoadResultAction // The type of the last action to be dispatched
   >
-> =
-  (args: {
-    config: Config;
-    mentors: string[];
-    subjectId?: string;
-    recommendedQuestions?: string[];
-  }) =>
-  async (
-    dispatch: ThunkDispatch<State, void, AnyAction>,
-    getState: () => State
-  ) => {
-    const { config, mentors, subjectId, recommendedQuestions } = args;
-    dispatch<MentorsLoadRequestedAction>({
-      type: MENTORS_LOAD_REQUESTED,
-      payload: {
-        mentors,
-        recommendedQuestions: recommendedQuestions || [],
+> = (args: {
+  config: Config;
+  mentors: string[];
+  subjectId?: string;
+  recommendedQuestions?: string[];
+}) => async (
+  dispatch: ThunkDispatch<State, void, AnyAction>,
+  getState: () => State
+) => {
+  const { config, mentors, subjectId, recommendedQuestions } = args;
+  dispatch<MentorsLoadRequestedAction>({
+    type: MENTORS_LOAD_REQUESTED,
+    payload: {
+      mentors,
+      recommendedQuestions: recommendedQuestions || [],
+    },
+  });
+  const mentorLoadResult: MentorsLoadResult = {
+    mentorsById: mentors.reduce(
+      (acc: Record<string, MentorDataResult>, cur: string) => {
+        acc[cur] = {
+          status: ResultStatus.FAILED,
+        };
+        return acc;
       },
-    });
-    const mentorLoadResult: MentorsLoadResult = {
-      mentorsById: mentors.reduce(
-        (acc: Record<string, MentorDataResult>, cur: string) => {
-          acc[cur] = {
-            status: ResultStatus.FAILED,
-          };
-          return acc;
-        },
-        {}
-      ),
-    };
-    for (const mentorId of mentors) {
-      try {
-        const result = await fetchMentor(config, mentorId);
-        if (result.status === 200 && result.data.data) {
-          const mentor: Mentor = result.data.data.mentor;
-          const subject = mentor.subjects.find(
-            (s) => s._id === (subjectId || mentor.defaultSubject?._id)
-          );
-          const topics = subject ? subject.topics : mentor.topics;
-          const questions = (
-            subject ? subject.questions : mentor.questions
-          ).filter((q) => q.question.type === QuestionType.QUESTION);
-          const topicQuestions: TopicQuestions[] = [];
-          const recommendedQuestions = getState().recommendedQuestions;
-          if (recommendedQuestions.length > 0) {
+      {}
+    ),
+  };
+  for (const mentorId of mentors) {
+    try {
+      const result = await fetchMentor(config, mentorId);
+      if (result.status === 200 && result.data.data) {
+        const mentor: Mentor = result.data.data.mentor;
+        const subject = mentor.subjects.find(
+          (s) => s._id === (subjectId || mentor.defaultSubject?._id)
+        );
+        const topics = subject ? subject.topics : mentor.topics;
+        const questions = (subject
+          ? subject.questions
+          : mentor.questions
+        ).filter((q) => q.question.type === QuestionType.QUESTION);
+        const topicQuestions: TopicQuestions[] = [];
+        const recommendedQuestions = getState().recommendedQuestions;
+        if (recommendedQuestions.length > 0) {
+          topicQuestions.push({
+            topic: "Recommended",
+            questions: recommendedQuestions,
+          });
+        }
+        for (const topic of topics) {
+          const tq = questions
+            .filter((q) => q.topics.find((t) => t.id === topic.id))
+            .map((q) => q.question.question);
+          if (tq.length > 0) {
             topicQuestions.push({
-              topic: "Recommended",
-              questions: recommendedQuestions,
+              topic: topic.name,
+              questions: tq,
             });
           }
-          for (const topic of topics) {
-            const tq = questions
-              .filter((q) => q.topics.find((t) => t.id === topic.id))
-              .map((q) => q.question.question);
-            if (tq.length > 0) {
-              topicQuestions.push({
-                topic: topic.name,
-                questions: tq,
-              });
-            }
-          }
-          topicQuestions.push({ topic: "History", questions: [] });
-          const intro = getUtterance(mentor, UtteranceName.INTRO);
-          const mentorData: MentorState = {
-            mentor: mentor,
-            topic_questions: topicQuestions,
-            status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
-            answer_id: intro?._id,
-            answer_media: intro?.media || [],
-            answerDuration: Number.NaN,
-          };
-          mentorLoadResult.mentorsById[mentorId] = {
-            data: mentorData,
-            status: ResultStatus.SUCCEEDED,
-          };
-        } else {
-          console.error(`error loading mentor ${mentorId}`, result);
         }
-      } catch (mentorErr) {
-        console.error(mentorErr);
+        topicQuestions.push({ topic: "History", questions: [] });
+        const intro = getUtterance(mentor, UtteranceName.INTRO);
+        const mentorData: MentorState = {
+          mentor: mentor,
+          topic_questions: topicQuestions,
+          status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
+          answer_id: intro?._id,
+          answer_media: intro?.media || [],
+          answerDuration: Number.NaN,
+        };
+        mentorLoadResult.mentorsById[mentorId] = {
+          data: mentorData,
+          status: ResultStatus.SUCCEEDED,
+        };
+      } else {
+        console.error(`error loading mentor ${mentorId}`, result);
       }
+    } catch (mentorErr) {
+      console.error(mentorErr);
     }
-    mentorLoadResult.mentor = mentors.find(
-      (id) => mentorLoadResult.mentorsById[id].status === ResultStatus.SUCCEEDED
-    );
-    if (mentorLoadResult.mentor) {
-      const tqs =
-        mentorLoadResult.mentorsById[mentorLoadResult.mentor]?.data
-          ?.topic_questions;
-      if (tqs && tqs.length > 0) {
-        mentorLoadResult.topic = tqs[0].topic;
-      }
+  }
+  mentorLoadResult.mentor = mentors.find(
+    (id) => mentorLoadResult.mentorsById[id].status === ResultStatus.SUCCEEDED
+  );
+  if (mentorLoadResult.mentor) {
+    const tqs =
+      mentorLoadResult.mentorsById[mentorLoadResult.mentor]?.data
+        ?.topic_questions;
+    if (tqs && tqs.length > 0) {
+      mentorLoadResult.topic = tqs[0].topic;
     }
-    return dispatch<MentorsLoadResultAction>({
-      type: MENTORS_LOAD_RESULT,
-      payload: mentorLoadResult,
-    });
-  };
+  }
+  return dispatch<MentorsLoadResultAction>({
+    type: MENTORS_LOAD_RESULT,
+    payload: mentorLoadResult,
+  });
+};
 
 function sendCmi5Statement(statement: any) {
   if (!Cmi5.isCmiAvailable) {
@@ -483,27 +458,31 @@ export function mentorAnswerPlaybackStarted(video: {
       },
       result: {
         extensions: {
-          "https://mentorpal.org/xapi/verb/answer-playback-started":
-            toXapiResultExt(mentorData, curState),
+          "https://mentorpal.org/xapi/verb/answer-playback-started": toXapiResultExt(
+            mentorData,
+            curState
+          ),
         },
       },
     });
   };
 }
 
-export const selectMentor =
-  (mentor: string, reason: MentorSelectReason, setFav = false) =>
-  (dispatch: ThunkDispatch<State, void, MentorSelectedAction>) => {
-    clearNextMentorTimer();
-    return dispatch({
-      payload: {
-        id: mentor,
-        reason,
-        setFav,
-      },
-      type: MENTOR_SELECTED,
-    });
-  };
+export const selectMentor = (
+  mentor: string,
+  reason: MentorSelectReason,
+  setFav = false
+) => (dispatch: ThunkDispatch<State, void, MentorSelectedAction>) => {
+  clearNextMentorTimer();
+  return dispatch({
+    payload: {
+      id: mentor,
+      reason,
+      setFav,
+    },
+    type: MENTOR_SELECTED,
+  });
+};
 
 export const selectTopic = (topic: any) => ({
   topic,
@@ -523,162 +502,163 @@ export const setGuestName = (name: string) => ({
 const currentQuestionIndex = (state: { questionsAsked: { length: any } }) =>
   Array.isArray(state.questionsAsked) ? state.questionsAsked.length : -1;
 
-export const sendQuestion =
-  (q: { question: string; source: MentorQuestionSource; config: Config }) =>
-  async (
-    dispatch: ThunkDispatch<State, void, AnyAction>,
-    getState: () => State
-  ) => {
-    if (Cmi5.isCmiAvailable && Cmi5.instance.isAuthenticated) {
-      sendCmi5Statement({
-        verb: {
-          id: "https://mentorpal.org/xapi/verb/asked",
-          display: {
-            "en-US": "asked",
+export const sendQuestion = (q: {
+  question: string;
+  source: MentorQuestionSource;
+  config: Config;
+}) => async (
+  dispatch: ThunkDispatch<State, void, AnyAction>,
+  getState: () => State
+) => {
+  if (Cmi5.isCmiAvailable && Cmi5.instance.isAuthenticated) {
+    sendCmi5Statement({
+      verb: {
+        id: "https://mentorpal.org/xapi/verb/asked",
+        display: {
+          "en-US": "asked",
+        },
+      },
+      result: {
+        extensions: {
+          "https://mentorpal.org/xapi/verb/asked": {
+            questionIndex: currentQuestionIndex(getState()) + 1,
+            text: q.question,
+            source: q.source,
           },
         },
-        result: {
-          extensions: {
-            "https://mentorpal.org/xapi/verb/asked": {
-              questionIndex: currentQuestionIndex(getState()) + 1,
-              text: q.question,
-              source: q.source,
-            },
-          },
-        },
-      });
-    }
-    clearNextMentorTimer();
-    dispatch(onQuestionSent(q));
-    const state = getState();
-    const mentorIds = Object.keys(state.mentorsById);
-    const tick = Date.now();
-    // query all the mentors without waiting for the answers one by one
-    const promises = mentorIds.map((mentor) => {
-      return new Promise<QuestionResponse>((resolve, reject) => {
-        queryMentor(mentor, q.question, q.config)
-          .then((r) => {
-            const { data } = r;
-            const response: QuestionResponse = {
-              answerId: data.answer_id,
-              answerText: data.answer_text,
-              answerMedia: data.answer_media,
-              answerClassifier: data.classifier,
-              answerConfidence: data.confidence,
-              answerIsOffTopic: data.confidence <= RESPONSE_CUTOFF,
-              answerFeedbackId: data.feedback_id,
-              answerResponseTimeSecs: Number(Date.now() - tick) / 1000,
-              mentor,
-              question: q.question,
-              questionSource: q.source,
-              status: MentorQuestionStatus.ANSWERED,
-            };
-            sendCmi5Statement({
-              verb: {
-                id: "https://mentorpal.org/xapi/verb/answered",
-                display: {
-                  "en-US": "answered",
-                },
-              },
-              result: {
-                extensions: {
-                  "https://mentorpal.org/xapi/verb/answered": {
-                    ...response,
-                    questionIndex: currentQuestionIndex(getState()),
-                  },
-                },
-              },
-            });
-            dispatch(onQuestionAnswered(response));
-            resolve(response);
-          })
-          .catch((err: any) => {
-            dispatch(onQuestionError(mentor, q.question));
-            reject(err);
-          });
-      });
+      },
     });
-    // ...but still don't move forward till we have all the answers,
-    // because we will prefer the user's fav and then highest confidence
-    const responses = (
-      await Promise.all<QuestionResponse>(
-        promises.map((p) => p.catch((e) => e))
-      )
-    ).filter((r) => !(r instanceof Error));
-    if (responses.length === 0) {
+  }
+  const questionId = uuid.v4();
+  clearNextMentorTimer();
+  dispatch(onQuestionSent({ ...q, questionId }));
+  const state = getState();
+  const mentorIds = Object.keys(state.mentorsById);
+  const tick = Date.now();
+  // query all the mentors without waiting for the answers one by one
+  const promises = mentorIds.map((mentor) => {
+    return new Promise<QuestionResponse>((resolve, reject) => {
+      queryMentor(mentor, q.question, q.config)
+        .then((r) => {
+          const { data } = r;
+          const response: QuestionResponse = {
+            answerId: data.answer_id,
+            answerText: data.answer_text,
+            answerMedia: data.answer_media,
+            answerClassifier: data.classifier,
+            answerConfidence: data.confidence,
+            answerIsOffTopic: data.confidence <= RESPONSE_CUTOFF,
+            answerFeedbackId: data.feedback_id,
+            answerResponseTimeSecs: Number(Date.now() - tick) / 1000,
+            mentor,
+            question: q.question,
+            questionId,
+            questionSource: q.source,
+            status: MentorQuestionStatus.ANSWERED,
+          };
+          sendCmi5Statement({
+            verb: {
+              id: "https://mentorpal.org/xapi/verb/answered",
+              display: {
+                "en-US": "answered",
+              },
+            },
+            result: {
+              extensions: {
+                "https://mentorpal.org/xapi/verb/answered": {
+                  ...response,
+                  questionIndex: currentQuestionIndex(getState()),
+                },
+              },
+            },
+          });
+          dispatch(onQuestionAnswered(response));
+          resolve(response);
+        })
+        .catch((err: any) => {
+          dispatch(onQuestionError(mentor, q.question));
+          reject(err);
+        });
+    });
+  });
+  // ...but still don't move forward till we have all the answers,
+  // because we will prefer the user's fav and then highest confidence
+  const responses = (
+    await Promise.all<QuestionResponse>(promises.map((p) => p.catch((e) => e)))
+  ).filter((r) => !(r instanceof Error));
+  if (responses.length === 0) {
+    return;
+  }
+  // Play favored mentor if an answer exists
+  if (state.mentorFaved) {
+    const favResponse = responses.find((response) => {
+      return response.mentor === state.mentorFaved;
+    });
+    if (favResponse && !favResponse.answerIsOffTopic) {
+      dispatch(selectMentor(state.mentorFaved, MentorSelectReason.USER_FAV));
       return;
     }
-    // Play favored mentor if an answer exists
-    if (state.mentorFaved) {
-      const favResponse = responses.find((response) => {
-        return response.mentor === state.mentorFaved;
-      });
-      if (favResponse && !favResponse.answerIsOffTopic) {
-        dispatch(selectMentor(state.mentorFaved, MentorSelectReason.USER_FAV));
-        return;
-      }
-    }
-    // Otherwise play mentor with highest confidence answer
-    responses.sort((a, b) =>
-      a.answerConfidence > b.answerConfidence ? -1 : 1
-    );
-    if (responses[0].answerIsOffTopic) {
-      dispatch(
-        selectMentor(
-          state.mentorFaved ? state.mentorFaved : state.curMentor,
-          state.mentorFaved
-            ? MentorSelectReason.OFF_TOPIC_FAV
-            : MentorSelectReason.OFF_TOPIC_CUR
-        )
-      );
-      return;
-    }
+  }
+  // Otherwise play mentor with highest confidence answer
+  responses.sort((a, b) => (a.answerConfidence > b.answerConfidence ? -1 : 1));
+  if (responses[0].answerIsOffTopic) {
     dispatch(
-      selectMentor(responses[0].mentor, MentorSelectReason.HIGHEST_CONFIDENCE)
+      selectMentor(
+        state.mentorFaved ? state.mentorFaved : state.curMentor,
+        state.mentorFaved
+          ? MentorSelectReason.OFF_TOPIC_FAV
+          : MentorSelectReason.OFF_TOPIC_CUR
+      )
     );
-  };
+    return;
+  }
+  dispatch(
+    selectMentor(responses[0].mentor, MentorSelectReason.HIGHEST_CONFIDENCE)
+  );
+};
 
 const NEXT_MENTOR_DELAY = 3000;
 let timer: NodeJS.Timer | null;
-export const answerFinished =
-  () =>
-  (dispatch: ThunkDispatch<State, void, AnyAction>, getState: () => State) => {
-    dispatch(onIdle());
-    // order mentors by highest answer confidence
-    const state = getState();
-    const mentors = state.mentorsById;
-    const responses: {
-      confidence: number;
-      id: string;
-      is_off_topic: boolean;
-      status: MentorQuestionStatus;
-    }[] = [];
-    Object.keys(mentors).forEach((id) => {
-      responses.push({
-        confidence: mentors[id].confidence || -1.0,
-        id: mentors[id].mentor._id,
-        is_off_topic: mentors[id].is_off_topic || false,
-        status: mentors[id].status,
-      });
+export const answerFinished = () => (
+  dispatch: ThunkDispatch<State, void, AnyAction>,
+  getState: () => State
+) => {
+  dispatch(onIdle());
+  // order mentors by highest answer confidence
+  const state = getState();
+  const mentors = state.mentorsById;
+  const responses: {
+    confidence: number;
+    id: string;
+    is_off_topic: boolean;
+    status: MentorQuestionStatus;
+  }[] = [];
+  Object.keys(mentors).forEach((id) => {
+    responses.push({
+      confidence: mentors[id].confidence || -1.0,
+      id: mentors[id].mentor._id,
+      is_off_topic: mentors[id].is_off_topic || false,
+      status: mentors[id].status,
     });
-    responses.sort((a, b) => (a.confidence > b.confidence ? -1 : 1));
-    // get the most confident answer that has not been given
-    const mentorNext = responses.find((response) => {
-      return (
-        response.status === MentorQuestionStatus.READY && !response.is_off_topic
-      );
-    });
-    // set the next mentor to start playing, if there is one
-    if (!mentorNext) {
-      return;
-    }
-    dispatch(nextMentor(mentorNext.id));
-    // play the next mentor after the timeout
-    clearNextMentorTimer();
-    timer = setTimeout(() => {
-      dispatch(selectMentor(mentorNext.id, MentorSelectReason.NEXT_READY));
-    }, NEXT_MENTOR_DELAY);
-  };
+  });
+  responses.sort((a, b) => (a.confidence > b.confidence ? -1 : 1));
+  // get the most confident answer that has not been given
+  const mentorNext = responses.find((response) => {
+    return (
+      response.status === MentorQuestionStatus.READY && !response.is_off_topic
+    );
+  });
+  // set the next mentor to start playing, if there is one
+  if (!mentorNext) {
+    return;
+  }
+  dispatch(nextMentor(mentorNext.id));
+  // play the next mentor after the timeout
+  clearNextMentorTimer();
+  timer = setTimeout(() => {
+    dispatch(selectMentor(mentorNext.id, MentorSelectReason.NEXT_READY));
+  }, NEXT_MENTOR_DELAY);
+};
 
 function clearNextMentorTimer(): void {
   if (timer) {
@@ -710,6 +690,7 @@ const onMentorAnswerPlaybackStarted = (
 
 const onQuestionSent = (payload: {
   question: string;
+  questionId: string;
   source: MentorQuestionSource;
 }): QuestionSentAction => ({
   payload,
@@ -718,7 +699,7 @@ const onQuestionSent = (payload: {
 
 function onQuestionAnswered(response: QuestionResponse) {
   return {
-    mentor: response,
+    payload: response,
     type: QUESTION_ANSWERED,
   };
 }

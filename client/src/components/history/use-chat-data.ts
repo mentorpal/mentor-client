@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { ChatMsg, State } from "types";
+import { State } from "types";
 
 export interface UseWithChatData {
-  visibiltityPrefByChatMessageId: Record<number, ItemVisibilityPrefs>;
-  toggleQuestionVisibilityPref: (questionId: number) => void;
-  getItemVisibilityPref: (
-    chatMsgId: number,
-    dft: ItemVisibilityPrefs
-  ) => ItemVisibilityPrefs;
-  updateNewMessages: (messages: ChatMsg[]) => void;
-  lastChatAnswerId: number;
+  lastQuestionId: string;
+  visibilityShowAllPref: boolean;
+  getQuestionVisibilityPref: (questionId: string) => ItemVisibilityPrefs;
+  setQuestionVisibilityPref: (questionId: string, show: boolean) => void;
+  setVisibilityShowAllPref: (show: boolean) => void;
 }
 
 export enum ItemVisibilityPrefs {
@@ -20,81 +17,47 @@ export enum ItemVisibilityPrefs {
 }
 
 export function useWithChatData(): UseWithChatData {
-  const [visibiltityPrefByChatMessageId, setVisibiltityPrefByChatMessageId] =
-    useState<Record<number, ItemVisibilityPrefs>>({});
-  const hideAllPref = useSelector<State, boolean>((s) => s.chat.hideAllAnswers);
-  const numMentors = useSelector<State, number>(
-    (s) => Object.keys(s.mentorsById).length
-  );
-  const lastChatAnswerId = useSelector<State, number>(
-    (s) =>
-      s.questionsAsked.length - 2 + numMentors * (s.questionsAsked.length - 1)
-  );
+  const [visibiltityPrefByQuestionId, setVisibiltityPrefByQuestionId] =
+    useState<Record<string, ItemVisibilityPrefs>>({});
+  const [visibilityShowAllPref, setVisibilityShowAllPref] =
+    useState<boolean>(false);
+  const lastQuestionId = useSelector<State, string>((s) => {
+    return s.chat.messages.length > 0
+      ? s.chat.messages[s.chat.messages.length - 1].questionId
+      : "";
+  });
 
   useEffect(() => {
+    // when the user toggle's their show-all pref,
+    // it clears all their question-specific prefs,
+    // but actually visibility can otherwise be calculated on the fly
     clearUserPrefs();
-  }, [hideAllPref]);
+  }, [visibilityShowAllPref]);
 
-  function toggleQuestionVisibilityPref(questionId: number): void {
-    const tempChatMap = JSON.parse(
-      JSON.stringify(visibiltityPrefByChatMessageId)
-    );
-    for (let x = questionId; x <= questionId + numMentors; x++) {
-      if (x > lastChatAnswerId && tempChatMap[x] === ItemVisibilityPrefs.NONE) {
-        tempChatMap[x] = ItemVisibilityPrefs.INVISIBLE;
-        continue;
-      }
-      switch (tempChatMap[x]) {
-        case ItemVisibilityPrefs.NONE:
-          tempChatMap[x] = ItemVisibilityPrefs.VISIBLE;
-          break;
-        case ItemVisibilityPrefs.VISIBLE:
-          tempChatMap[x] = ItemVisibilityPrefs.INVISIBLE;
-          break;
-        case ItemVisibilityPrefs.INVISIBLE:
-          tempChatMap[x] = ItemVisibilityPrefs.VISIBLE;
-          break;
-      }
-    }
-    setVisibiltityPrefByChatMessageId(tempChatMap);
+  function setQuestionVisibilityPref(questionId: string, show: boolean): void {
+    setVisibiltityPrefByQuestionId({
+      ...visibiltityPrefByQuestionId,
+      [questionId]: show
+        ? ItemVisibilityPrefs.VISIBLE
+        : ItemVisibilityPrefs.INVISIBLE,
+    });
   }
 
   function clearUserPrefs() {
-    const tempChatMap = JSON.parse(
-      JSON.stringify(visibiltityPrefByChatMessageId)
-    );
-    for (let i = 0; i < Object.keys(tempChatMap).length; i++) {
-      if (!hideAllPref || i > lastChatAnswerId)
-        tempChatMap[i] = ItemVisibilityPrefs.VISIBLE;
-      else tempChatMap[i] = ItemVisibilityPrefs.INVISIBLE;
-    }
-    setVisibiltityPrefByChatMessageId(tempChatMap);
+    setVisibiltityPrefByQuestionId({});
   }
 
-  function getItemVisibilityPref(
-    chatMsgId: number,
-    dft: ItemVisibilityPrefs
-  ): ItemVisibilityPrefs {
-    return chatMsgId in visibiltityPrefByChatMessageId
-      ? visibiltityPrefByChatMessageId[chatMsgId]
-      : dft;
-  }
-
-  function updateNewMessages(messages: ChatMsg[]) {
-    const tempChatMap = JSON.parse(
-      JSON.stringify(visibiltityPrefByChatMessageId)
-    );
-    messages.map((m: ChatMsg, i: number) => {
-      tempChatMap[i] = getItemVisibilityPref(i, ItemVisibilityPrefs.NONE);
-    });
-    setVisibiltityPrefByChatMessageId(tempChatMap);
+  function getQuestionVisibilityPref(questionId: string): ItemVisibilityPrefs {
+    return questionId in visibiltityPrefByQuestionId
+      ? visibiltityPrefByQuestionId[questionId]
+      : ItemVisibilityPrefs.NONE;
   }
 
   return {
-    visibiltityPrefByChatMessageId,
-    toggleQuestionVisibilityPref,
-    getItemVisibilityPref,
-    updateNewMessages,
-    lastChatAnswerId,
+    lastQuestionId,
+    visibilityShowAllPref,
+    getQuestionVisibilityPref,
+    setQuestionVisibilityPref,
+    setVisibilityShowAllPref,
   };
 }

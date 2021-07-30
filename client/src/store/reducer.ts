@@ -6,8 +6,6 @@ The full terms of this copyright and license should always be found in the root 
 */
 import { normalizeString } from "utils";
 import {
-  ChatQuestionsVisibilityShowAllAction,
-  CHAT_QUESTION_VISIBILITY_SHOW_ALL,
   ANSWER_FINISHED,
   FEEDBACK_SEND_SUCCEEDED,
   FEEDBACK_SENT,
@@ -57,8 +55,6 @@ import {
 export const initialState: State = {
   chat: {
     messages: [],
-    hideAllAnswers: true,
-    lastChatAnswerId: 0,
   },
   config: {
     cmi5Enabled: false,
@@ -283,13 +279,12 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               mentorId: "",
               isUser: true,
               text: action.payload.question,
+              questionId: action.payload.questionId,
               feedback: Feedback.NONE,
               feedbackId: "",
               isFeedbackSendInProgress: false,
-              visibility: false,
             },
           ],
-          lastChatAnswerId: state.chat.messages.length,
         },
         curQuestion: action.payload.question,
         curQuestionSource: action.payload.source,
@@ -364,27 +359,29 @@ function onQuestionAnswered(
   // NOTE: about answerFeedbackId
   // It seems like the answerFeedbackId should be
   // associated to the chat message
-  const response = action.mentor;
   const mentor: MentorState = {
-    ...state.mentorsById[response.mentor],
+    ...state.mentorsById[action.payload.mentor],
     // we need chat messages to live up here
-    answer_id: response.answerId,
-    answer_text: response.answerText,
-    answer_media: response.answerMedia,
+    answer_id: action.payload.answerId,
+    answer_text: action.payload.answerText,
+    answer_media: action.payload.answerMedia,
     answerReceivedAt: new Date(Date.now()),
-    answerFeedbackId: response.answerFeedbackId,
-    classifier: response.answerClassifier,
-    confidence: response.answerConfidence,
-    is_off_topic: response.answerIsOffTopic,
-    question: response.question,
-    response_time: response.answerResponseTimeSecs,
+    answerFeedbackId: action.payload.answerFeedbackId,
+    classifier: action.payload.answerClassifier,
+    confidence: action.payload.answerConfidence,
+    is_off_topic: action.payload.answerIsOffTopic,
+    question: action.payload.question,
+    response_time: action.payload.answerResponseTimeSecs,
     status: MentorQuestionStatus.READY,
   };
   const history = mentor.topic_questions.length - 1;
-  if (!mentor.topic_questions[history].questions.includes(response.question)) {
-    mentor.topic_questions[history].questions.push(response.question);
+  // TODO: this mutation of history is DEEPLY suspect, we should get rid of it
+  // or it needs to copy data before editting
+  if (
+    !mentor.topic_questions[history].questions.includes(action.payload.question)
+  ) {
+    mentor.topic_questions[history].questions.push(action.payload.question);
   }
-
   return {
     ...state,
     chat: {
@@ -394,39 +391,20 @@ function onQuestionAnswered(
         {
           name: "",
           color: "",
-          mentorId: action.mentor.mentor,
+          mentorId: action.payload.mentor,
           isUser: false,
-          text: action.mentor.answerText,
+          questionId: action.payload.questionId,
+          text: action.payload.answerText,
           feedback: Feedback.NONE,
-          feedbackId: action.mentor.answerFeedbackId,
+          feedbackId: action.payload.answerFeedbackId,
           isFeedbackSendInProgress: false,
-          visibility: false,
         },
       ],
     },
     isIdle: false,
     mentorsById: {
       ...state.mentorsById,
-      [response.mentor]: mentor,
-    },
-  };
-}
-
-function onChatAnwerVisibilityShowAll(
-  state: State,
-  action: ChatQuestionsVisibilityShowAllAction
-): State {
-  return {
-    ...state,
-    chat: {
-      ...state.chat,
-      messages: state.chat.messages.map((m) => {
-        return {
-          ...m,
-          visibility: !action.payload.newValue,
-        };
-      }),
-      hideAllAnswers: !action.payload.newValue,
+      [action.payload.mentor]: mentor,
     },
   };
 }
@@ -471,8 +449,6 @@ export default function reducer(
       return onQuestionSent(state, action);
     case QUESTION_ANSWERED:
       return onQuestionAnswered(state, action);
-    case CHAT_QUESTION_VISIBILITY_SHOW_ALL:
-      return onChatAnwerVisibilityShowAll(state, action);
     case QUESTION_ERROR:
       return {
         ...state,

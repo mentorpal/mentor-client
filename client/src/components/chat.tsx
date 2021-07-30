@@ -220,8 +220,6 @@ function Chat(props: { height: number }): JSX.Element {
   const styles = useStyles();
   const [chatData, setChatData] = useState<ChatData>({
     messages: [],
-    hideAllAnswers: true,
-    lastChatAnswerId: 0,
   });
   const answerReceivedAt = useSelector<State, Date | undefined>((state) => {
     const m = state.mentorsById[state.curMentor];
@@ -255,7 +253,7 @@ function Chat(props: { height: number }): JSX.Element {
         feedback: Feedback.NONE,
         feedbackId: "",
         isFeedbackSendInProgress: false,
-        visibility: false,
+        questionId: "",
       });
       chatDataUpdated.lastQuestionAt = curQuestionUpdatedAt;
     }
@@ -273,7 +271,7 @@ function Chat(props: { height: number }): JSX.Element {
           feedback: Feedback.NONE,
           feedbackId: "",
           isFeedbackSendInProgress: false,
-          visibility: false,
+          questionId: "",
         });
       }
       if (chatDataUpdated.lastAnswerAt !== answerReceivedAt) {
@@ -287,7 +285,7 @@ function Chat(props: { height: number }): JSX.Element {
           feedbackId: mentor.answerFeedbackId || "",
           feedback: Feedback.NONE,
           isFeedbackSendInProgress: false,
-          visibility: false,
+          questionId: "",
         });
         chatDataUpdated.lastAnswerAt = answerReceivedAt;
       }
