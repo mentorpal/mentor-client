@@ -14,7 +14,7 @@ const clint = require("../fixtures/clint.json");
 const covid = require("../fixtures/covid.json");
 const carlos = require("../fixtures/carlos.json");
 
-describe("Video Chat History", () => {
+describe("Chat History (Video Mentors Links)", () => {
   it("Tap link opens link in new tab", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
@@ -44,7 +44,7 @@ describe("Video Chat History", () => {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
       apiResponse: "response_with_markdown2.json",
-      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
+      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null)],
     });
     cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
@@ -94,7 +94,7 @@ describe("Video Chat History", () => {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
       apiResponse: "response_with_markdown.json",
-      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
+      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null)],
     });
     cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
@@ -126,7 +126,7 @@ describe("Video Chat History", () => {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
       apiResponse: "response_with_markdown.json",
-      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
+      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null)],
     });
     cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
@@ -158,7 +158,7 @@ describe("Video Chat History", () => {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
       apiResponse: "response_with_markdown.json",
-      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
+      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null)],
     });
     cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
@@ -176,10 +176,10 @@ describe("Video Chat History", () => {
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
-        cy.get("[data-cy=aks-icon-1]").scrollIntoView().should("be.visible");
+        // cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
+        cy.get("[data-cy=aks-icon-1]").should("be.visible");
         cy.get("[data-cy=question-link-1]").trigger("mouseover").click();
-        cy.get("[data-cy=chat-msg-3]").contains(
+        cy.get("[data-cy=chat-msg-3]", { timeout: 2000 }).contains(
           "what does a computer programmer do?"
         );
       });

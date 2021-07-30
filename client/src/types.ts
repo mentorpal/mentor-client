@@ -9,7 +9,6 @@ export interface ChatData {
   lastQuestionAt?: Date;
   lastAnswerAt?: Date;
   messages: ChatMsg[];
-  showAllAnswers: boolean;
 }
 
 export interface ChatMsg {
@@ -22,7 +21,7 @@ export interface ChatMsg {
   feedback: Feedback;
   feedbackId: string;
   isFeedbackSendInProgress: boolean;
-  visibility: boolean;
+  questionId: string;
 }
 
 export interface Mentor {
@@ -255,6 +254,7 @@ export interface QuestionResponse {
   answerFeedbackId: string;
   mentor: string;
   question: string;
+  questionId: string;
   questionSource: MentorQuestionSource;
   status: MentorQuestionStatus;
 }
