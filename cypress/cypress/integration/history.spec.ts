@@ -99,7 +99,7 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=visibility-switch]").find("input").uncheck();
+    cy.get("[data-cy=visibility-switch]").find("input").check();
     // provide feedback
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-0]").contains("Good feedback test");
@@ -173,7 +173,7 @@ describe("Chat History (Video Mentors)", () => {
 
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=visibility-switch]").find("input").uncheck();
+    cy.get("[data-cy=visibility-switch]").find("input").check();
 
     // provide feedback
     cy.get("[data-cy=history-chat").within(($hc) => {
@@ -317,16 +317,16 @@ describe("Chat History (Video Mentors)", () => {
         cyMockGQL("UserQuestionSetFeedback", { userQuestionSetFeedback: null }),
       ],
     });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_feedback.json",
-    });
     cy.visit("/");
+
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback2.json",
     });
+    cy.viewport("macbook-11");
+
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 
@@ -337,7 +337,7 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
-    cy.get("[data-cy=visibility-switch]").find("input").uncheck();
+    cy.get("[data-cy=visibility-switch]").find("input").check();
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
@@ -369,7 +369,7 @@ describe("Chat History (Video Mentors)", () => {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
-      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
+      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null)],
     });
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
@@ -434,7 +434,7 @@ describe("Chat History (Video Mentors)", () => {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
-      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
+      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null)],
     });
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
@@ -480,7 +480,7 @@ describe("Chat History (Video Mentors)", () => {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
-      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null, false)],
+      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null)],
     });
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
