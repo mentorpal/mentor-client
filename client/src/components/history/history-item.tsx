@@ -101,17 +101,15 @@ export function ChatItem(props: {
   }
 
   async function sentQuestion() {
-    const REGEX_ASK_LINK = /ask:\/\/display=(.*)/;
+    const REGEX_ASK_LINK = /ask:\/\/(.*)/;
     const answerArray = REGEX_ASK_LINK.exec(message.text);
     if (answerArray) {
       const questionSplit = answerArray ? answerArray[1].replace(")", "") : "";
       const question = questionSplit.split("+").join(" ");
-      await handleAskLinkClicked(question, MentorQuestionSource.USER);
+      await handleAskLinkClicked(question, MentorQuestionSource.CHAT_LINK);
     }
     return;
   }
-
-  const addDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
   function handleQuestionChanged(
     question: string,
@@ -122,6 +120,7 @@ export function ChatItem(props: {
       setTimeout(res, 1000);
     });
   }
+  const addDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
   async function handleQuestionSend(
     question: string,
@@ -130,12 +129,8 @@ export function ChatItem(props: {
     if (!question) {
       return;
     }
-    // add animation when question is asked
-    const inputField = document.querySelector("#input-field");
-    inputField?.classList.add("input-field-animation");
-    await addDelay(1000);
+    await addDelay(800);
     dispatch(sendQuestion({ question, source, config }));
-    inputField?.classList.remove("input-field-animation");
     window.focus();
   }
 

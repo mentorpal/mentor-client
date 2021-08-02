@@ -148,6 +148,7 @@ export enum MentorQuestionSource {
   NONE = "NONE",
   USER = "USER",
   TOPIC_LIST = "TOPIC_LIST",
+  CHAT_LINK = "CHAT_LINK",
 }
 
 export enum MentorSelectReason {

@@ -1,7 +1,7 @@
 {
   "query": "how old are you",
   "answer_id": "answer_id",
-  "answer_text": "I'm a computer programmer (I think) [Tell me more](ask://display=what+does+a+computer+programmer+do?)",
+  "answer_text": "I'm a computer programmer (I think) [Tell me more](ask://what+does+a+computer+programmer+do?)",
   "answer_media": [],
   "confidence": -0.5140574318328217,
   "feedback_id": "",
