@@ -128,7 +128,6 @@ describe("Chat History (Video Mentors)", () => {
       ],
     });
     cy.visit("/");
-    cy.viewport("macbook-11");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
@@ -298,10 +297,18 @@ describe("Chat History (Video Mentors)", () => {
         cy.get("[data-cy=chat-msg-4]").scrollIntoView().should("be.visible");
         cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
 
-        // Hide answers
+        // show answers toggle
         cy.get("[data-cy=visibility-switch]").find("input").check();
         cy.get("[data-cy=chat-msg-1]").should("be.visible");
-        cy.get("[data-cy=chat-msg-2]").should("be.visible");
+        cy.get("[data-cy=chat-msg-2]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=chat-msg-4]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
+
+        // show answers toggle
+        cy.get("[data-cy=chat-msg-1]").should("not.be.visible");
+        cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
+        // the answers for the last question are visible by default
+        // even if the show-all toggle is left unchecked
         cy.get("[data-cy=chat-msg-4]").scrollIntoView().should("be.visible");
         cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
       });
@@ -325,7 +332,6 @@ describe("Chat History (Video Mentors)", () => {
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback2.json",
     });
-    cy.viewport("macbook-11");
 
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
@@ -375,7 +381,6 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "response_with_feedback.json",
     });
     cy.visit("/");
-    cy.viewport("macbook-11");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });

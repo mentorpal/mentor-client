@@ -12,7 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
-import { ChatData, ChatMsg, Config, State } from "types";
+import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
 import ChatItem, { ChatItemData } from "./history-item";
 import { ItemVisibilityPrefs, useWithChatData } from "./use-chat-data";
@@ -91,7 +91,6 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   });
 
   const chatData = useSelector<State, ChatData>((s) => s.chat);
-  const config = useSelector<State, Config>((s) => s.config);
 
   useEffect(() => {
     animateScroll.scrollToBottom({
@@ -136,7 +135,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
               data-cy="visibility-switch"
             />
           }
-          label="show/hide answers"
+          label="hide/show answers"
         />
       </FormGroup>
     </div>
@@ -184,7 +183,6 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
                   setQuestionVisibilityPref(m.questionId, show);
                 }}
                 visibility={isQuestionsAnswersVisible(m.questionId)}
-                config={config}
               />
             </div>
           );

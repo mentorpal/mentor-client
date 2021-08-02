@@ -167,6 +167,7 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.intercept("**/questions/?mentor=carlos&query=*", {
       fixture: "response_with_feedback.json",
     });
+
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 
@@ -184,5 +185,63 @@ describe("Chat History (Video Mentors Links)", () => {
         );
       });
     });
+  });
+
+  it("Can display answer text with the word 'ask' and not mistake it for a link", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint", "carlos"] },
+      mentorData: [clint, carlos],
+      apiResponse: "response_with_markdown.json",
+      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null)],
+    });
+    cy.visit("/");
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_with_prefix.json",
+    });
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
+      fixture: "response_with_feedback.json",
+    });
+    cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
+    cy.get("[data-cy=history-chat]").should("exist");
+
+    // write msgs
+    cy.get("[data-cy=input-field]").type(
+      "I want to ask what do you do for living?"
+    );
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    // not mistake it for a link
+    cy.get("[data-cy=answer-link-card]").should("not.exist");
+    cy.get("[data-cy=history-chat]").within(($hc) => {
+      cy.get("[data-cy=chat-thread]").within(($hc) => {
+        cy.get("[data-cy=aks-icon-1]").should("be.visible");
+      });
+    });
+    // not mistake it for a link
+    cy.get("[data-cy=answer-link-card]").should("not.exist");
+  });
+
+  it("Can display answer text open and close parentheses and not mistake them for links", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint", "carlos"] },
+      mentorData: [clint, carlos],
+      apiResponse: "response_with_feedback2.json",
+      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null)],
+    });
+    cy.visit("/");
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_with_prefix.json",
+    });
+    cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
+    cy.get("[data-cy=history-chat]").should("exist");
+
+    // write msgs
+    cy.get("[data-cy=input-field]").type(
+      "I want to ask what do you do for living?"
+    );
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    // not mistake it for a link
+    cy.get("[data-cy=answer-link-card]").should("not.exist");
   });
 });

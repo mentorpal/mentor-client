@@ -6,7 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React from "react";
 import ReactMarkdown from "react-markdown";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Avatar,
   ListItem,
@@ -24,7 +24,7 @@ import RecordVoiceOverIcon from "@material-ui/icons/RecordVoiceOver";
 
 import CloseIcon from "@material-ui/icons/Close";
 
-import { ChatMsg, Config, Feedback, MentorQuestionSource } from "types";
+import { ChatMsg, Config, Feedback, MentorQuestionSource, State } from "types";
 import "styles/history-chat.css";
 import { feedbackSend, sendQuestion, userInputChanged } from "store/actions";
 
@@ -51,15 +51,16 @@ export function ChatItem(props: {
   styles: StyleProps;
   setAnswerVisibility: (show: boolean) => void;
   visibility: boolean;
-  config: Config;
 }): JSX.Element {
-  const { message, i, styles, setAnswerVisibility, visibility, config } = props;
+  const { message, i, styles, setAnswerVisibility, visibility } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
+  const config = useSelector<State, Config>((s) => s.config);
+
   const isUser = !message.mentorId;
 
   const mentorColor = message.color || "#88929e";
-  const prefix = "question://";
+  const prefix = "ask://";
   const isVisible = visibility;
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
@@ -99,16 +100,13 @@ export function ChatItem(props: {
     );
   }
 
-  function sentQuestion() {
-    const answerArray = message.text.match(/[^()]+/g);
+  async function sentQuestion() {
+    const REGEX_ASK_LINK = /ask:\/\/display=(.*)/;
+    const answerArray = REGEX_ASK_LINK.exec(message.text);
     if (answerArray) {
-      const questionSplit = answerArray[1].includes(prefix)
-        ? answerArray[1].replace("question://display=", "")
-        : "";
+      const questionSplit = answerArray ? answerArray[1].replace(")", "") : "";
       const question = questionSplit.split("+").join(" ");
-
-      handleQuestionChanged(question, MentorQuestionSource.USER);
-      handleQuestionSend(question, MentorQuestionSource.USER);
+      await handleAskLinkClicked(question, MentorQuestionSource.USER);
     }
     return;
   }
@@ -120,7 +118,11 @@ export function ChatItem(props: {
     source: MentorQuestionSource
   ) {
     dispatch(userInputChanged({ question, source }));
+    return new Promise((res) => {
+      setTimeout(res, 1000);
+    });
   }
+
   async function handleQuestionSend(
     question: string,
     source: MentorQuestionSource
@@ -135,6 +137,16 @@ export function ChatItem(props: {
     dispatch(sendQuestion({ question, source, config }));
     inputField?.classList.remove("input-field-animation");
     window.focus();
+  }
+
+  async function handleAskLinkClicked(
+    question: string,
+    source: MentorQuestionSource
+  ) {
+    await Promise.all([
+      handleQuestionChanged(question, source),
+      handleQuestionSend(question, source),
+    ]);
   }
 
   function onClickVSBY() {
@@ -167,6 +179,8 @@ export function ChatItem(props: {
       }}
     />
   ) : null;
+
+  const REGEX_HAS_ASK_LINK = new RegExp("(ask://.+)");
 
   return (
     <div>
@@ -204,7 +218,7 @@ export function ChatItem(props: {
           source={message.text}
           renderers={{ link: LinkRenderer }}
         />
-        {message.text.includes(prefix) ? askQuestionIcon : null}
+        {REGEX_HAS_ASK_LINK.test(message.text) ? askQuestionIcon : null}
 
         {message.feedbackId ? (
           <div
