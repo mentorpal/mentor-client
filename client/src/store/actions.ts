@@ -14,7 +14,6 @@ import {
   getUtterance,
   giveFeedback,
   queryMentor,
-  videoUrl,
 } from "api";
 import {
   MentorsLoadRequest,
@@ -39,12 +38,9 @@ import {
   MentorDataResult,
   Feedback,
 } from "../types";
-import { Visibility } from "@material-ui/icons";
+import * as uuid from "uuid";
 
 const RESPONSE_CUTOFF = -100;
-export const CHAT_QUESTION_VISIBILITY_SET = "CHAT_QUESTION_VISIBILITY_SET ";
-export const CHAT_QUESTION_VISIBILITY_SHOW_ALL =
-  "CHAT_QUESTION_VISIBILITY_SHOW_ALL  ";
 export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished playing
 export const CONFIG_LOAD_FAILED = "CONFIG_LOAD_FAILED";
 export const CONFIG_LOAD_STARTED = "CONFIG_LOAD_STARTED";
@@ -165,7 +161,7 @@ export type MentorAction =
 
 export interface QuestionAnsweredAction {
   type: typeof QUESTION_ANSWERED;
-  mentor: QuestionResponse;
+  payload: QuestionResponse;
 }
 
 export interface QuestionErrorAction {
@@ -183,6 +179,7 @@ export interface QuestionSentAction {
   type: typeof QUESTION_SENT;
   payload: {
     question: string;
+    questionId: string;
     source: MentorQuestionSource;
   };
 }
@@ -216,55 +213,10 @@ export type MentorClientAction =
   | MentorAction
   | QuestionAction
   | TopicSelectedAction
-  | QuestionInputChangedAction
-  | ChatQuestionVisibilitySetAction
-  | ChatQuestionsVisibilityShowAllAction;
+  | QuestionInputChangedAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
-
-export interface ChatQuestionVisibilitySetAction {
-  type: typeof CHAT_QUESTION_VISIBILITY_SET;
-  payload: {
-    newVisibility: boolean;
-    indexes: number[];
-  };
-}
-
-export interface ChatQuestionsVisibilityShowAllAction {
-  type: typeof CHAT_QUESTION_VISIBILITY_SHOW_ALL;
-  payload: {
-    newValue: boolean;
-  };
-}
-
-export const onChatAnwerVisibilityShowItem =
-  (indexes: number[], visibility: boolean) =>
-  async (
-    dispatch: ThunkDispatch<State, void, ChatQuestionVisibilitySetAction>
-  ) => {
-    const newVisibility = !visibility;
-    return dispatch({
-      type: CHAT_QUESTION_VISIBILITY_SET,
-      payload: {
-        newVisibility,
-        indexes,
-      },
-    });
-  };
-
-export const onChatAnwerVisibilityShowAll =
-  (newValue: boolean) =>
-  async (
-    dispatch: ThunkDispatch<State, void, ChatQuestionsVisibilityShowAllAction>
-  ) => {
-    return dispatch({
-      type: CHAT_QUESTION_VISIBILITY_SHOW_ALL,
-      payload: {
-        newValue,
-      },
-    });
-  };
 
 export const feedbackSend =
   (feedbackId: string, feedback: Feedback) =>
@@ -573,8 +525,9 @@ export const sendQuestion =
         },
       });
     }
+    const questionId = uuid.v4();
     clearNextMentorTimer();
-    dispatch(onQuestionSent(q));
+    dispatch(onQuestionSent({ ...q, questionId }));
     const state = getState();
     const mentorIds = Object.keys(state.mentorsById);
     const tick = Date.now();
@@ -595,6 +548,7 @@ export const sendQuestion =
               answerResponseTimeSecs: Number(Date.now() - tick) / 1000,
               mentor,
               question: q.question,
+              questionId,
               questionSource: q.source,
               status: MentorQuestionStatus.ANSWERED,
             };
@@ -735,6 +689,7 @@ const onMentorAnswerPlaybackStarted = (
 
 const onQuestionSent = (payload: {
   question: string;
+  questionId: string;
   source: MentorQuestionSource;
 }): QuestionSentAction => ({
   payload,
@@ -743,7 +698,7 @@ const onQuestionSent = (payload: {
 
 function onQuestionAnswered(response: QuestionResponse) {
   return {
-    mentor: response,
+    payload: response,
     type: QUESTION_ANSWERED,
   };
 }

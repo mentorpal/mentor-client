@@ -4,18 +4,18 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { animateScroll } from "react-scroll";
 import { List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { onChatAnwerVisibilityShowAll } from "store/actions";
 
 import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
 import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
 import ChatItem, { ChatItemData } from "./history-item";
+import { ItemVisibilityPrefs, useWithChatData } from "./use-chat-data";
 import { isMobile } from "pages";
 
 const useStyles = makeStyles((theme) => ({
@@ -70,6 +70,13 @@ const MENTOR_COLORS = ["#d8e7f8", "#d4e8d9", "#ffebcf", "#f5cccd"];
 export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   const { height } = args;
   const styles = useStyles();
+  const {
+    lastQuestionId,
+    visibilityShowAllPref,
+    getQuestionVisibilityPref,
+    setQuestionVisibilityPref,
+    setVisibilityShowAllPref,
+  } = useWithChatData();
 
   const colorByMentorId = useSelector<State, Record<string, string>>((s) => {
     const mentorIds = Object.getOwnPropertyNames(s.mentorsById);
@@ -90,14 +97,34 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
 
   const chatData = useSelector<State, ChatData>((s) => s.chat);
 
-  const dispatch = useDispatch();
-  const [checked, toggleChecked] = useState<boolean>(true);
-
   useEffect(() => {
     animateScroll.scrollToBottom({
       containerId: "chat-thread",
     });
-  }, [chatData.messages]);
+  }, [chatData.messages.length]);
+
+  function isQuestionsAnswersVisible(questionId: string): boolean {
+    const userPref = getQuestionVisibilityPref(questionId);
+    /**
+     * RULE #1: if this is the most recent question,
+     * it will be visible REGARDLESS of the user's SHOW ALL pref
+     * UNLESS the user explicitly seleced to hide the answers
+     */
+    if (questionId === lastQuestionId) {
+      return Boolean(userPref !== ItemVisibilityPrefs.INVISIBLE);
+    }
+    return visibilityShowAllPref
+      ? /**
+         * RULE #2: if the user set SHOW ALL,
+         * then only hide answers if the user explicitly hid them
+         */
+        Boolean(userPref !== ItemVisibilityPrefs.INVISIBLE)
+      : /**
+         * RULE #3: if the user did NOT set SHOW ALL toggle,
+         * then only SHOW answers if the user explicitly asked to SHOW them
+         */
+        Boolean(userPref === ItemVisibilityPrefs.VISIBLE);
+  }
 
   const toggleAnswers = (
     <div>
@@ -106,8 +133,10 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
           control={
             <Switch
               size="medium"
-              checked={checked}
-              onChange={() => toggleChecked((prev) => !prev)}
+              checked={visibilityShowAllPref}
+              onChange={(_, checked: boolean) => {
+                setVisibilityShowAllPref(checked);
+              }}
               data-cy="visibility-switch"
             />
           }
@@ -118,8 +147,8 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   );
 
   useEffect(() => {
-    dispatch(onChatAnwerVisibilityShowAll(checked));
-  }, [checked]);
+    setVisibilityShowAllPref(visibilityShowAllPref);
+  }, [visibilityShowAllPref]);
 
   return (
     <div
@@ -142,7 +171,6 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
             ...m,
             color: colorByMentorId[m.mentorId] || "",
             name: namesByMentorId[m.mentorId] || "",
-            isVisible: m.visibility,
           };
           return (
             <div
@@ -158,9 +186,10 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
                 message={itemData}
                 i={i}
                 styles={styles}
-                totalMentors={
-                  Object.getOwnPropertyNames(namesByMentorId).length
-                }
+                setAnswerVisibility={(show: boolean) => {
+                  setQuestionVisibilityPref(m.questionId, show);
+                }}
+                visibility={isQuestionsAnswersVisible(m.questionId)}
               />
             </div>
           );

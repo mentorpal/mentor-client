@@ -25,7 +25,7 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import { ChatMsg, Feedback } from "types";
 import "styles/history-chat.css";
-import { feedbackSend, onChatAnwerVisibilityShowItem } from "store/actions";
+import { feedbackSend } from "store/actions";
 
 type StyleProps = {
   root: string;
@@ -43,21 +43,21 @@ type StyleProps = {
 export interface ChatItemData extends ChatMsg {
   name: string;
   color: string;
-  isVisible: boolean; // a little weird because it's really a question/answer thing
 }
 export function ChatItem(props: {
   message: ChatItemData;
   i: number;
   styles: StyleProps;
-  totalMentors: number;
+  setAnswerVisibility: (show: boolean) => void;
+  visibility: boolean;
 }): JSX.Element {
-  const { message, i, styles, totalMentors } = props;
+  const { message, i, styles, setAnswerVisibility, visibility } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
   const isUser = !message.mentorId;
 
   const mentorColor = message.color || "#88929e";
-  const isVisible = message.isVisible;
+  const isVisible = visibility;
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(event.currentTarget);
@@ -83,11 +83,7 @@ export function ChatItem(props: {
   }
 
   function onClickVSBY() {
-    const answerIdxs: Array<number> = [];
-    for (let x = i; x <= i + totalMentors; x++) {
-      answerIdxs.push(x);
-    }
-    dispatch(onChatAnwerVisibilityShowItem(answerIdxs, isVisible));
+    setAnswerVisibility(!isVisible);
   }
 
   const visibilityIcon =
