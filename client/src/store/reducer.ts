@@ -283,6 +283,7 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               feedback: Feedback.NONE,
               feedbackId: "",
               isFeedbackSendInProgress: false,
+              askLink: { question: "" },
             },
           ],
         },
@@ -383,6 +384,13 @@ function onQuestionAnswered(
     mentor.topic_questions[history].questions.push(action.payload.question);
   }
 
+  const REGEX_ASK_LINK = /ask:\/\/(.*)/;
+  const answerArray = REGEX_ASK_LINK.exec(action.payload.answerText);
+  let questionFromLink = "";
+  if (answerArray) {
+    const questionSplit = answerArray ? answerArray[1].replace(")", "") : "";
+    questionFromLink = questionSplit.split("+").join(" ");
+  }
   return {
     ...state,
     chat: {
@@ -399,6 +407,7 @@ function onQuestionAnswered(
           feedback: Feedback.NONE,
           feedbackId: action.payload.answerFeedbackId,
           isFeedbackSendInProgress: false,
+          askLink: { question: questionFromLink },
         },
       ],
     },

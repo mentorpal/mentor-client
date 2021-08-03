@@ -254,6 +254,7 @@ function Chat(props: { height: number }): JSX.Element {
         feedbackId: "",
         isFeedbackSendInProgress: false,
         questionId: "",
+        askLink: { question: "" },
       });
       chatDataUpdated.lastQuestionAt = curQuestionUpdatedAt;
     }
@@ -272,6 +273,7 @@ function Chat(props: { height: number }): JSX.Element {
           feedbackId: "",
           isFeedbackSendInProgress: false,
           questionId: "",
+          askLink: { question: "" },
         });
       }
       if (chatDataUpdated.lastAnswerAt !== answerReceivedAt) {
@@ -286,6 +288,7 @@ function Chat(props: { height: number }): JSX.Element {
           feedback: Feedback.NONE,
           isFeedbackSendInProgress: false,
           questionId: "",
+          askLink: { question: "" },
         });
         chatDataUpdated.lastAnswerAt = answerReceivedAt;
       }

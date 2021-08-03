@@ -79,7 +79,7 @@ export function ChatItem(props: {
   function LinkRenderer(props: { href: string; children: React.ReactNode }) {
     const linkAnswer =
       props.href.length > 30 ? props.href.slice(0, 30) : props.href;
-    return message.text.includes(prefix) ? (
+    return message.askLink.question ? (
       <a
         href="#"
         rel="noreferrer"
@@ -100,14 +100,12 @@ export function ChatItem(props: {
     );
   }
 
-  async function sentQuestion() {
-    const REGEX_ASK_LINK = /ask:\/\/(.*)/;
-    const answerArray = REGEX_ASK_LINK.exec(message.text);
-    if (answerArray) {
-      const questionSplit = answerArray ? answerArray[1].replace(")", "") : "";
-      const question = questionSplit.split("+").join(" ");
-      await handleAskLinkClicked(question, MentorQuestionSource.CHAT_LINK);
-    }
+  function sentQuestion() {
+    handleAskLinkClicked(
+      message.askLink.question,
+      MentorQuestionSource.CHAT_LINK
+    );
+
     return;
   }
 
@@ -117,7 +115,7 @@ export function ChatItem(props: {
   ) {
     dispatch(userInputChanged({ question, source }));
     return new Promise((res) => {
-      setTimeout(res, 1000);
+      setTimeout(res, 200);
     });
   }
   const addDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
@@ -144,7 +142,7 @@ export function ChatItem(props: {
     ]);
   }
 
-  function onClickVSBY() {
+  function onToggleVisibilityItem() {
     setAnswerVisibility(!isVisible);
   }
 
@@ -152,12 +150,12 @@ export function ChatItem(props: {
     isUser && isVisible === false ? (
       <VisibilityOff
         data-cy={`vsbyIcon-${i}`}
-        onClick={onClickVSBY}
+        onClick={onToggleVisibilityItem}
         style={{ marginRight: 7 }}
       />
     ) : isUser && isVisible ? (
       <Visibility
-        onClick={onClickVSBY}
+        onClick={onToggleVisibilityItem}
         data-cy={`vsbyIcon-${i}`}
         style={{ marginRight: 7 }}
       />
@@ -174,8 +172,6 @@ export function ChatItem(props: {
       }}
     />
   ) : null;
-
-  const REGEX_HAS_ASK_LINK = new RegExp("(ask://.+)");
 
   return (
     <div>
@@ -213,7 +209,7 @@ export function ChatItem(props: {
           source={message.text}
           renderers={{ link: LinkRenderer }}
         />
-        {REGEX_HAS_ASK_LINK.test(message.text) ? askQuestionIcon : null}
+        {message.askLink.question ? askQuestionIcon : null}
 
         {message.feedbackId ? (
           <div

@@ -11,6 +11,10 @@ export interface ChatData {
   messages: ChatMsg[];
 }
 
+export interface AskLink {
+  question: string;
+}
+
 export interface ChatMsg {
   // we should change name, color, and isUser to just mentorIds
   name: string;
@@ -22,6 +26,7 @@ export interface ChatMsg {
   feedbackId: string;
   isFeedbackSendInProgress: boolean;
   questionId: string;
+  askLink: AskLink;
 }
 
 export interface Mentor {

@@ -8,6 +8,7 @@ export interface UseWithChatData {
   getQuestionVisibilityPref: (questionId: string) => ItemVisibilityPrefs;
   setQuestionVisibilityPref: (questionId: string, show: boolean) => void;
   setVisibilityShowAllPref: (show: boolean) => void;
+  mentorNameForChatMsg: Record<string, string>;
 }
 
 export enum ItemVisibilityPrefs {
@@ -53,11 +54,23 @@ export function useWithChatData(): UseWithChatData {
       : ItemVisibilityPrefs.NONE;
   }
 
+  const mentorNameForChatMsg = useSelector<State, Record<string, string>>(
+    (s) => {
+      const mentorIds = Object.getOwnPropertyNames(s.mentorsById);
+      mentorIds.sort();
+      return mentorIds.reduce<Record<string, string>>((acc, cur) => {
+        acc[cur] = s.mentorsById[cur].mentor.name;
+        return acc;
+      }, {});
+    }
+  );
+
   return {
     lastQuestionId,
     visibilityShowAllPref,
     getQuestionVisibilityPref,
     setQuestionVisibilityPref,
     setVisibilityShowAllPref,
+    mentorNameForChatMsg,
   };
 }
