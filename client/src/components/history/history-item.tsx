@@ -58,9 +58,7 @@ export function ChatItem(props: {
   const config = useSelector<State, Config>((s) => s.config);
 
   const isUser = !message.mentorId;
-
   const mentorColor = message.color || "#88929e";
-  const prefix = "ask://";
   const isVisible = visibility;
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
