@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   list: {
     marginTop: 1,
     padding: 10,
-    maxHeight: "90vh",
+    maxHeight: isMobile() ? "22vh" : "90vh",
   },
   avatar: {
     width: theme.spacing(4),
@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "30px",
   },
   chat_container: {
+    // height: "700px",
     backgroundColor: "#fff",
     margin: "1rem",
     borderRadius: 10,

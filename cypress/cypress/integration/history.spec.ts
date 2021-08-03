@@ -35,7 +35,6 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=topic-2]").trigger("mouseover").click();
     cy.get("[data-cy=input-field]").type("Hello");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").contains("Hello");
   });
 
@@ -70,9 +69,9 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat]").should("exist");
 
     cy.get("[data-cy=input-field]").type("user msg 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=input-field]").type("user msg 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-0]").contains("user msg 1");
@@ -97,7 +96,7 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat]").should("exist");
     // write msgs
     cy.get("[data-cy=input-field]").type("Good feedback test");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=visibility-switch]").find("input").check();
@@ -141,10 +140,10 @@ describe("Chat History (Video Mentors)", () => {
 
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=input-field]").type("Question 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
   });
 
   it("can give feedback on multiple mentor answers", () => {
@@ -169,7 +168,7 @@ describe("Chat History (Video Mentors)", () => {
 
     // write msgs
     cy.get("[data-cy=input-field]").type("Good feedback test");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
@@ -233,10 +232,10 @@ describe("Chat History (Video Mentors)", () => {
 
     // write msgs
     cy.get("[data-cy=input-field]").type("Good feedback test");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=input-field]").type("Bad feedback test");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=visibility-switch]").find("input").uncheck();
 
@@ -278,10 +277,10 @@ describe("Chat History (Video Mentors)", () => {
 
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=input-field]").type("Question 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
@@ -331,10 +330,10 @@ describe("Chat History (Video Mentors)", () => {
 
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=input-field]").type("Question 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=visibility-switch]").find("input").check();
 
@@ -363,7 +362,7 @@ describe("Chat History (Video Mentors)", () => {
     });
   });
 
-  it.only("Question's answers can be toggled individually", () => {
+  it("Question's answers can be toggled individually", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
@@ -386,10 +385,10 @@ describe("Chat History (Video Mentors)", () => {
 
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=input-field]").type("Question 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
@@ -405,7 +404,7 @@ describe("Chat History (Video Mentors)", () => {
 
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 3");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {

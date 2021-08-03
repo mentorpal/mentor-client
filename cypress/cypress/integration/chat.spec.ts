@@ -40,7 +40,6 @@ describe("Chat", () => {
     );
     cy.get("[data-cy=input-field]").type("how old are you");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=chat-msg-1]").contains("how old are you");
     cy.get("[data-cy=chat-msg-2]").contains("I'm thirty seven years old.");
   });
@@ -77,7 +76,6 @@ describe("Chat", () => {
     cy.get("[data-cy=chat-thread]").should("exist");
     cy.get("[data-cy=input-field]").type("test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=chat-msg-2]").contains("Click here");
     cy.get("[data-cy=chat-msg-2] a").should(
       "have.attr",
@@ -103,7 +101,6 @@ describe("Chat", () => {
     cy.visit("/");
     cy.get("[data-cy=chat-thread]").should("exist");
     cy.get("[data-cy=input-field]").type("test");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=chat-msg-2]").contains("Give me feedback");
     cy.get(

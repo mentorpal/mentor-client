@@ -15,19 +15,7 @@ const carlos = require("../fixtures/carlos.json");
 describe("Responsive Video Chat History", () => {
   it("does not display in topics list if no questions have been asked", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=topics]").should("not.have.value", "History");
-  });
-
-  it("displays in topics list if questions have been asked", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
-    cy.viewport("macbook-11");
-    // cy.viewport("iphone-x");
-    cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
-    cy.get("[data-cy=input-field]").type("How are you?");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
-    cy.get("[data-cy=topics]").contains("History").should("not.exist");
-    // cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
   });
 });

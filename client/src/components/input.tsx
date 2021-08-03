@@ -97,10 +97,10 @@ function Input(): JSX.Element {
   }
 
   // Input field keyboard was lowered
-  const onBlur = () => {
-    window.scrollTo(0, 0);
-    document.body.scrollTop = 0;
-  };
+  // const onBlur = () => {
+  //   window.scrollTo(0, 0);
+  //   document.body.scrollTop = 0;
+  // };
 
   return (
     <div data-cy="input-field-wrapper" data-topic={curTopic}>
@@ -117,7 +117,7 @@ function Input(): JSX.Element {
             onQuestionInputChanged(e.target.value);
           }}
           onClick={onQuestionInputSelected}
-          onBlur={onBlur}
+          // onBlur={onBlur}
           onKeyPress={onKeyPress}
         />
         <Divider className={classes.divider} />

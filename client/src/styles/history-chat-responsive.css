@@ -9,6 +9,8 @@
 .history-chat-wrapper {
   width: 40vw;
   border-radius: 10px;
+  height: 100vh !important;
+  background-color: #fff;
 }
 
 .video-mentor-wrapper {

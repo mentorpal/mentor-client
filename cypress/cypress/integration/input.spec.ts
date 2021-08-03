@@ -45,13 +45,13 @@ describe("Input field", () => {
   it("updates placeholder message to last question asked", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=input-field]").type("Hello");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=input-field] textarea")
       .should("have.attr", "placeholder")
       .should("contain", "Hello");
 
     cy.get("[data-cy=input-field]").type("Test");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=input-field] textarea").should(
       "have.attr",
       "placeholder",
@@ -62,7 +62,7 @@ describe("Input field", () => {
   it("clears text after sending input", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=input-field]").type("Hello");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=input-field]").should("not.have.value", "Hello");
   });
 
@@ -84,7 +84,7 @@ describe("Input field", () => {
     }).as("askCarlos");
 
     cy.get("[data-cy=input-field]").type("how old are you");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.wait(["@askClint", "@askJulianne", "@askCarlos"], {
       responseTimeout: 15000,

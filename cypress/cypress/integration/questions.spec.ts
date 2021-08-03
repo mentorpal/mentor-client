@@ -113,7 +113,7 @@ describe("Questions list", () => {
       "About Me"
     );
     cy.get("[data-cy=input-field]").type("where were you born?");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=scrolling-questions-list]")
       .get(`[data-cy=${CSS.escape("Where were you born?")}]`)
       .find("div")
@@ -124,7 +124,7 @@ describe("Questions list", () => {
   it("keeps greyed out questions when switching mentors if new mentor also has it", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=input-field]").type("where were you born?");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=scrolling-questions-list]")
       .get(`[data-cy=${CSS.escape("Where were you born?")}]`)
       .find("div")
@@ -146,7 +146,7 @@ describe("Questions list", () => {
   it("keeps greyed out questions when switching topics if new topic also has it", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=input-field]").type("Are you fun at parties?");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click().click();
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=scrolling-questions-list]")
       .get(`[data-cy=${CSS.escape("Are you fun at parties?")}]`)
       .find("div")

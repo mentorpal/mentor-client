@@ -159,7 +159,6 @@ function IndexPage(props: {
     const panelHeight = mentorCount > 1 ? 50 : 0;
     const inputHeight = 130;
     const questionsHeight = curTopic ? 200 : 0;
-    console.log(windowHeight);
     setChatHeight(
       Math.max(
         0,
@@ -258,12 +257,10 @@ function IndexPage(props: {
       }}
       className="history-chat-wrapper"
     >
-      {/* <h3 className="history-chat-title">History Chat</h3> */}
       <HistoryChat height={windowHeight} />
     </div>
   );
 
-  // console.log(recommendedQuestions);
   return (
     <MuiThemeProvider theme={brandedTheme}>
       <div className="history-template">
