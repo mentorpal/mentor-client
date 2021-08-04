@@ -82,8 +82,6 @@ const useStyles = makeStyles((theme) => ({
 export const shouldDisplayPortrait = (): boolean =>
   window.matchMedia && window.matchMedia("(max-width: 700px)").matches;
 
-console.log(window.matchMedia("(max-width: 700px)"));
-
 function IndexPage(props: {
   search: {
     mentor?: string | string[];
