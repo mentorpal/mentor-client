@@ -16,6 +16,7 @@ import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
 import ChatItem, { ChatItemData } from "./history-item";
 import { ItemVisibilityPrefs, useWithChatData } from "./use-chat-data";
+import { shouldDisplayPortrait } from "pages";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,8 +24,10 @@ const useStyles = makeStyles((theme) => ({
   },
   list: {
     marginTop: 1,
-    padding: 10,
-    maxHeight: "20vh",
+    padding: shouldDisplayPortrait() ? 0 : 10,
+    width: shouldDisplayPortrait() ? "100%" : "40vw",
+    backgroundColor: "#fff",
+    borderRadius: 10,
   },
   avatar: {
     width: theme.spacing(4),
@@ -46,6 +49,11 @@ const useStyles = makeStyles((theme) => ({
   },
   chat_container: {
     backgroundColor: "#fff",
+    margin: "1rem",
+    borderRadius: 10,
+  },
+  chat_container_mobile: {
+    border: 0,
   },
   introMsg: {
     marginLeft: "0rem !important",
@@ -57,7 +65,6 @@ const useStyles = makeStyles((theme) => ({
 
 interface ScrollingQuestionsParams {
   height: number;
-  questionHistory: string[];
 }
 
 const MENTOR_COLORS = ["#d8e7f8", "#d4e8d9", "#ffebcf", "#f5cccd"];
@@ -142,12 +149,18 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
     <div
       data-cy="history-chat"
       data-topic="History"
-      className={styles.chat_container}
+      className={
+        !shouldDisplayPortrait()
+          ? styles.chat_container
+          : styles.chat_container_mobile
+      }
     >
       <List
         data-cy="chat-thread"
         className={styles.list}
-        style={{ height: height }}
+        style={{
+          height: shouldDisplayPortrait() ? "200px" : height,
+        }}
         disablePadding={true}
         id="chat-thread"
       >
