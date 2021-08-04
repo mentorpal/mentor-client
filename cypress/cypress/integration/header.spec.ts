@@ -192,7 +192,8 @@ describe("Header", () => {
           "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
       },
     });
-    cy.viewport(1200, 700);
+    cy.viewport(700, 565);
+
     cy.intercept(
       "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
       { fixture: "uscheader2.png" }

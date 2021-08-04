@@ -9,7 +9,7 @@
 .history-chat-wrapper {
   width: 40vw;
   border-radius: 10px;
-  height: 100vh !important;
+  /* height: 90vh !important; */
   background-color: #fff;
 }
 
@@ -24,12 +24,11 @@
   margin-bottom: 0;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 700px) {
   .history-template {
-    display: flex;
+    display: contents;
     flex-direction: column;
     padding: 10px;
-    /* justify-content: space-around; */
   }
   .video-mentor-wrapper {
     padding: 0;

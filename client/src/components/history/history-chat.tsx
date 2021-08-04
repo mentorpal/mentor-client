@@ -24,8 +24,10 @@ const useStyles = makeStyles((theme) => ({
   },
   list: {
     marginTop: 1,
-    padding: 10,
-    maxHeight: shouldDisplayPortrait() ? "22vh" : "90vh",
+    padding: shouldDisplayPortrait() ? 0 : 10,
+    width: shouldDisplayPortrait() ? "100%" : "40vw",
+    backgroundColor: "#fff",
+    borderRadius: 10,
   },
   avatar: {
     width: theme.spacing(4),
@@ -163,7 +165,9 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
       <List
         data-cy="chat-thread"
         className={styles.list}
-        style={{ height: shouldDisplayPortrait() ? "200px" : height }}
+        style={{
+          height: shouldDisplayPortrait() ? "200px" : height,
+        }}
         disablePadding={true}
         id="chat-thread"
       >

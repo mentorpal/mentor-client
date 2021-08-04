@@ -103,7 +103,6 @@ function Input(): JSX.Element {
       window.scrollTo(0, 0);
       document.body.scrollTop = 0;
     }
-    return;
   };
 
   return (

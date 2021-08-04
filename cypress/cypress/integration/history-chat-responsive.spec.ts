@@ -17,5 +17,9 @@ describe("Responsive Video Chat History", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=topics]").should("not.have.value", "History");
+    cy.get("[data-cy=input-field]").type("user msg 1");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=input-field]").type("user msg 2");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
   });
 });

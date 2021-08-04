@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: "auto",
   },
   flexExpandChild: {
-    flexGrow: 1,
+    flexGrow: 0.2,
     width: "100%",
     maxWidth: 1366,
     marginLeft: "auto",
@@ -80,7 +80,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const shouldDisplayPortrait = (): boolean =>
-  window.matchMedia && window.matchMedia("(max-width: 600px)").matches;
+  window.matchMedia && window.matchMedia("(max-width: 700px)").matches;
+
+console.log(window.matchMedia("(max-width: 700px)"));
 
 function IndexPage(props: {
   search: {
@@ -253,22 +255,24 @@ function IndexPage(props: {
   const historyChatLandscape = (
     <div
       style={{
-        height: shouldDisplayPortrait() ? "250px" : windowHeight,
+        height: shouldDisplayPortrait() ? "250px" : windowHeight - 100,
       }}
-      className="history-chat-wrapper"
     >
-      <HistoryChat height={windowHeight} />
+      <HistoryChat height={windowHeight - 100} />
     </div>
   );
 
   return (
     <MuiThemeProvider theme={brandedTheme}>
+      <Header />
       <div className="history-template">
-        <div className="video-mentor-wrapper">
+        <div
+          className="video-mentor-wrapper"
+          style={{ height: windowHeight - 100 }}
+        >
           <div className={styles.flexRoot} style={{ height: windowHeight }}>
             <div className={styles.flexFixedChildHeader}>
               <VideoPanel />
-              <Header />
             </div>
             <div className={styles.flexExpandChild}>
               {mentorType === MentorType.CHAT ? (
