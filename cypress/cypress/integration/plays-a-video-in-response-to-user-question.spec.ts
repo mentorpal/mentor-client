@@ -9,7 +9,6 @@ import { mockDefaultSetup } from "../support/helpers";
 describe("Plays a video in response to a user question", () => {
   it("plays a mentor response and displays subtitles", () => {
     mockDefaultSetup(cy);
-    // cy.viewport("iphone-x");
     cy.visit("/?mentor=clint");
     cy.get("[data-cy=input-field]").type("is the food good");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
@@ -22,8 +21,5 @@ describe("Plays a video in response to a user question", () => {
     cy.get("[data-cy=video-container] video")
       .should("have.attr", "src")
       .and("match", /.*answer_id.mp4$/);
-    // cy.get("[data-cy=video-container] video track")
-    //   .should("have.attr", "src")
-    //   .and("match", /.*answer_id.vtt$/);
   });
 });

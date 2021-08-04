@@ -46,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "30px",
   },
   chat_container: {
-    // height: "700px",
     backgroundColor: "#fff",
     margin: "1rem",
     borderRadius: 10,
