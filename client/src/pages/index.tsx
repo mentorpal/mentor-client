@@ -79,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const isMobile = (): boolean =>
+export const shouldDisplayPortrait = (): boolean =>
   window.matchMedia && window.matchMedia("(max-width: 600px)").matches;
 
 function IndexPage(props: {
@@ -253,7 +253,7 @@ function IndexPage(props: {
   const historyChatLandscape = (
     <div
       style={{
-        height: isMobile() ? "250px" : windowHeight,
+        height: shouldDisplayPortrait() ? "250px" : windowHeight,
       }}
       className="history-chat-wrapper"
     >
@@ -283,7 +283,7 @@ function IndexPage(props: {
             {!hasSessionUser() ? <GuestPrompt /> : undefined}
           </div>
         </div>
-        {!isMobile() ? historyChatLandscape : null}
+        {!shouldDisplayPortrait() ? historyChatLandscape : null}
       </div>
     </MuiThemeProvider>
   );

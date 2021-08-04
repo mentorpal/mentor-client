@@ -12,7 +12,7 @@ import { normalizeString } from "utils";
 import { selectTopic } from "store/actions";
 import { State, TopicQuestions } from "types";
 import withLocation from "wrap-with-location";
-import { isMobile } from "pages";
+import { shouldDisplayPortrait } from "pages";
 
 function Topics(args: {
   onSelected: (question: string) => void;
@@ -50,7 +50,7 @@ function Topics(args: {
   // if not mobile -> hide history button
 
   const topicButtons = topicQuestions.map((tq, i) => {
-    return isMobile() ? (
+    return shouldDisplayPortrait() ? (
       <div data-cy={`topic-${i}`} className="slide topic-slide" key={i}>
         <Button
           className={curTopic === tq.topic ? "topic-selected" : ""}

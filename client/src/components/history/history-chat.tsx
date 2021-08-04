@@ -16,7 +16,7 @@ import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
 import ChatItem, { ChatItemData } from "./history-item";
 import { ItemVisibilityPrefs, useWithChatData } from "./use-chat-data";
-import { isMobile } from "pages";
+import { shouldDisplayPortrait } from "pages";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   list: {
     marginTop: 1,
     padding: 10,
-    maxHeight: isMobile() ? "22vh" : "90vh",
+    maxHeight: shouldDisplayPortrait() ? "22vh" : "90vh",
   },
   avatar: {
     width: theme.spacing(4),
@@ -156,13 +156,15 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
       data-cy="history-chat"
       data-topic="History"
       className={
-        !isMobile() ? styles.chat_container : styles.chat_container_mobile
+        !shouldDisplayPortrait()
+          ? styles.chat_container
+          : styles.chat_container_mobile
       }
     >
       <List
         data-cy="chat-thread"
         className={styles.list}
-        style={{ height: isMobile() ? "200px" : height }}
+        style={{ height: shouldDisplayPortrait() ? "200px" : height }}
         disablePadding={true}
         id="chat-thread"
       >

@@ -181,7 +181,7 @@ describe("Header", () => {
     ); //RGB of #990000
   });
 
-  it.only("shows full branding on desktop if config.styleHeaderColor, config.styleHeaderTextColor, and config.styleHeaderLogo are set", () => {
+  it("shows full branding on desktop if config.styleHeaderColor, config.styleHeaderTextColor, and config.styleHeaderLogo are set", () => {
     mockDefaultSetup(cy, {
       config: {
         cmi5Enabled: false,

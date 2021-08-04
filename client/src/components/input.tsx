@@ -13,6 +13,7 @@ import Topics from "components/topics";
 import Questions from "components/questions";
 import { sendQuestion, userInputChanged } from "store/actions";
 import { Config, MentorQuestionSource, QuestionInput, State } from "types";
+import { isMobile } from "react-device-detect";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -97,10 +98,13 @@ function Input(): JSX.Element {
   }
 
   // Input field keyboard was lowered
-  // const onBlur = () => {
-  //   window.scrollTo(0, 0);
-  //   document.body.scrollTop = 0;
-  // };
+  const onBlur = () => {
+    if (isMobile) {
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+    }
+    return;
+  };
 
   return (
     <div data-cy="input-field-wrapper" data-topic={curTopic}>
@@ -117,7 +121,7 @@ function Input(): JSX.Element {
             onQuestionInputChanged(e.target.value);
           }}
           onClick={onQuestionInputSelected}
-          // onBlur={onBlur}
+          onBlur={onBlur}
           onKeyPress={onKeyPress}
         />
         <Divider className={classes.divider} />
