@@ -128,7 +128,6 @@ describe("Chat History (Video Mentors)", () => {
       ],
     });
     cy.visit("/");
-    cy.viewport("macbook-11");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
@@ -325,7 +324,6 @@ describe("Chat History (Video Mentors)", () => {
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback2.json",
     });
-    cy.viewport("macbook-11");
 
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
@@ -375,7 +373,6 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "response_with_feedback.json",
     });
     cy.visit("/");
-    cy.viewport("macbook-11");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
