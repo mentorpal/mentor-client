@@ -169,7 +169,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
           const itemData: ChatItemData = {
             ...m,
             color: colorByMentorId[m.mentorId] || "",
-            name: mentorNameForChatMsg[m.mentorId] || "",
+            name: mentorNameForChatMsg(m) || "",
           };
           return (
             <div

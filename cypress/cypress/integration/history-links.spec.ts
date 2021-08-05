@@ -177,7 +177,8 @@ describe("Chat History (Video Mentors Links)", () => {
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        // cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
+        cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
+        cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
         cy.get("[data-cy=aks-icon-1]").should("be.visible");
         cy.get("[data-cy=question-link-1]").trigger("mouseover").click();
         cy.get("[data-cy=chat-msg-3]", { timeout: 2000 }).contains(

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { State } from "types";
+import { ChatMsg, State } from "types";
 
 export interface UseWithChatData {
   lastQuestionId: string;
@@ -8,7 +8,8 @@ export interface UseWithChatData {
   getQuestionVisibilityPref: (questionId: string) => ItemVisibilityPrefs;
   setQuestionVisibilityPref: (questionId: string, show: boolean) => void;
   setVisibilityShowAllPref: (show: boolean) => void;
-  mentorNameForChatMsg: Record<string, string>;
+  mentorNameById: Record<string, string>;
+  mentorNameForChatMsg: (chatMsg: ChatMsg) => string;
 }
 
 export enum ItemVisibilityPrefs {
@@ -54,16 +55,22 @@ export function useWithChatData(): UseWithChatData {
       : ItemVisibilityPrefs.NONE;
   }
 
-  const mentorNameForChatMsg = useSelector<State, Record<string, string>>(
-    (s) => {
-      const mentorIds = Object.getOwnPropertyNames(s.mentorsById);
-      mentorIds.sort();
-      return mentorIds.reduce<Record<string, string>>((acc, cur) => {
-        acc[cur] = s.mentorsById[cur].mentor.name;
-        return acc;
-      }, {});
+  const mentorNameById = useSelector<State, Record<string, string>>((s) => {
+    const mentorIds = Object.getOwnPropertyNames(s.mentorsById);
+    mentorIds.sort();
+
+    return mentorIds.reduce<Record<string, string>>((acc, cur) => {
+      acc[cur] = s.mentorsById[cur].mentor.name;
+      return acc;
+    }, {});
+  });
+
+  function mentorNameForChatMsg(chatMsg: ChatMsg): string {
+    if (!(chatMsg && chatMsg.mentorId)) {
+      return "";
     }
-  );
+    return mentorNameById[chatMsg.mentorId] || "";
+  }
 
   return {
     lastQuestionId,
@@ -71,6 +78,7 @@ export function useWithChatData(): UseWithChatData {
     getQuestionVisibilityPref,
     setQuestionVisibilityPref,
     setVisibilityShowAllPref,
+    mentorNameById,
     mentorNameForChatMsg,
   };
 }
