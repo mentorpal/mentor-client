@@ -73,38 +73,51 @@ export function ChatItem(props: {
     setAnchorEl(null);
     dispatch(feedbackSend(message.feedbackId, feedback));
   }
+  const messageAskLinkQuestion = message.askLink
+    ? message.askLink.length > 0
+      ? message?.askLink[0].question
+      : ""
+    : "";
 
-  function LinkRenderer(props: { href: string; children: React.ReactNode }) {
+  interface LinkNode {
+    url: string;
+  }
+  function LinkRenderer(props: {
+    href: string;
+    children: React.ReactNode;
+    node: LinkNode;
+  }) {
     const linkAnswer =
       props.href.length > 30 ? props.href.slice(0, 30) : props.href;
-    return message.askLink.question ? (
+    return messageAskLinkQuestion ? (
       <a
         href="#"
         rel="noreferrer"
-        onClick={sentQuestion}
-        data-cy={`question-link-${i}`}
+        onClick={() => sentQuestion(props?.node?.url)}
+        data-cy={`question-link-${props?.node?.url
+          .replace(/ask:\/\//g, "")
+          .replace("?", "")}`}
       >
         {props.children}
       </a>
     ) : (
-      <a
-        href={props.href}
-        target="_blank"
-        rel="noreferrer"
-        onClick={sentQuestion}
-      >
+      <a href={props.href} target="_blank" rel="noreferrer">
         {linkAnswer}
       </a>
     );
   }
 
-  function sentQuestion() {
-    handleAskLinkClicked(
-      message.askLink.question,
-      MentorQuestionSource.CHAT_LINK
-    );
-
-    return;
+  function sentQuestion(href: string) {
+    if (message.askLink) {
+      message.askLink.map((m, i) => {
+        return m.href === href
+          ? handleAskLinkClicked(
+              message.askLink ? message.askLink[i].question : "",
+              MentorQuestionSource.CHAT_LINK
+            )
+          : null;
+      });
+    }
   }
 
   function handleQuestionChanged(
@@ -204,10 +217,10 @@ export function ChatItem(props: {
       >
         {visibilityIcon}
         <ReactMarkdown
-          source={message.text}
+          source={message.text.replace("+", ",")}
           renderers={{ link: LinkRenderer }}
         />
-        {message.askLink.question ? askQuestionIcon : null}
+        {messageAskLinkQuestion ? askQuestionIcon : null}
 
         {message.feedbackId ? (
           <div

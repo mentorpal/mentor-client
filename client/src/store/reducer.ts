@@ -50,6 +50,7 @@ import {
   LoadStatus,
   MentorType,
   Feedback,
+  AskLink,
 } from "../types";
 
 export const initialState: State = {
@@ -283,7 +284,6 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               feedback: Feedback.NONE,
               feedbackId: "",
               isFeedbackSendInProgress: false,
-              askLink: { question: "" },
             },
           ],
         },
@@ -353,6 +353,10 @@ function onQuestionInputChanged(
   });
 }
 
+function parseQuestion(question: string): string {
+  return question.split("-").join(" ");
+}
+
 function onQuestionAnswered(
   state: State,
   action: QuestionAnsweredAction
@@ -385,12 +389,22 @@ function onQuestionAnswered(
   }
 
   const REGEX_ASK_LINK = /ask:\/\/(.*)/;
-  const answerArray = REGEX_ASK_LINK.exec(action.payload.answerText);
-  let questionFromLink = "";
-  if (answerArray) {
-    const questionSplit = answerArray ? answerArray[1].replace(")", "") : "";
-    questionFromLink = questionSplit.split("+").join(" ");
-  }
+
+  const questionLinksFromAnswer = action.payload.answerText.split("+");
+
+  const askLinks: Array<AskLink> | null = REGEX_ASK_LINK.exec(
+    action.payload.answerText
+  )
+    ? questionLinksFromAnswer.map((q) => {
+        const matches = REGEX_ASK_LINK.exec(q);
+        const parseAnswerLink = matches
+          ? parseQuestion(matches[1].replace(")", ""))
+          : "";
+        const href = matches ? matches[0].replace(")", "") : "";
+        return { question: parseAnswerLink, href: href };
+      })
+    : null;
+
   return {
     ...state,
     chat: {
@@ -407,7 +421,7 @@ function onQuestionAnswered(
           feedback: Feedback.NONE,
           feedbackId: action.payload.answerFeedbackId,
           isFeedbackSendInProgress: false,
-          askLink: { question: questionFromLink },
+          askLink: askLinks ? askLinks : [],
         },
       ],
     },

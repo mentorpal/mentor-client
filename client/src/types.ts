@@ -13,6 +13,7 @@ export interface ChatData {
 
 export interface AskLink {
   question: string;
+  href: string;
 }
 
 export interface ChatMsg {
@@ -26,7 +27,7 @@ export interface ChatMsg {
   feedbackId: string;
   isFeedbackSendInProgress: boolean;
   questionId: string;
-  askLink: AskLink;
+  askLink?: AskLink[];
 }
 
 export interface Mentor {

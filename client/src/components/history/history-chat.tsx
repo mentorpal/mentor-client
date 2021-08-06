@@ -178,6 +178,8 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
+                marginRight: "2rem",
+                marginLeft: "1rem",
               }}
             >
               <ChatItem
