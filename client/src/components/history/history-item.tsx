@@ -24,9 +24,17 @@ import RecordVoiceOverIcon from "@material-ui/icons/RecordVoiceOver";
 
 import CloseIcon from "@material-ui/icons/Close";
 
-import { ChatMsg, Config, Feedback, MentorQuestionSource, State } from "types";
+import {
+  ChatMsg,
+  Config,
+  Feedback,
+  LINK_TYPE_ASK,
+  MentorQuestionSource,
+  State,
+} from "types";
 import "styles/history-chat.css";
 import { feedbackSend, sendQuestion, userInputChanged } from "store/actions";
+import { hrefToChatLink } from "./use-chat-data";
 
 type StyleProps = {
   root: string;
@@ -73,27 +81,25 @@ export function ChatItem(props: {
     setAnchorEl(null);
     dispatch(feedbackSend(message.feedbackId, feedback));
   }
-  const messageAskLinkQuestion = message.askLink
-    ? message.askLink.length > 0
-      ? message?.askLink[0].question
-      : ""
-    : "";
 
-  interface LinkNode {
-    url: string;
-  }
   function LinkRenderer(props: {
     href: string;
     children: React.ReactNode;
-    node: LinkNode;
+    node: { url: string };
   }) {
     const linkAnswer =
       props.href.length > 30 ? props.href.slice(0, 30) : props.href;
-    return messageAskLinkQuestion ? (
+    const chatLink = hrefToChatLink(props?.node?.url || "", message);
+    return chatLink.type === LINK_TYPE_ASK ? (
       <a
         href="#"
         rel="noreferrer"
-        onClick={() => sentQuestion(props?.node?.url)}
+        onClick={() =>
+          handleAskLinkClicked(
+            chatLink.question,
+            MentorQuestionSource.CHAT_LINK
+          )
+        }
         data-cy={`question-link-${props?.node?.url
           .replace(/ask:\/\//g, "")
           .replace("?", "")}`}
@@ -105,19 +111,6 @@ export function ChatItem(props: {
         {linkAnswer}
       </a>
     );
-  }
-
-  function sentQuestion(href: string) {
-    if (message.askLink) {
-      message.askLink.map((m, i) => {
-        return m.href === href
-          ? handleAskLinkClicked(
-              message.askLink ? message.askLink[i].question : "",
-              MentorQuestionSource.CHAT_LINK
-            )
-          : null;
-      });
-    }
   }
 
   function handleQuestionChanged(
@@ -220,8 +213,7 @@ export function ChatItem(props: {
           source={message.text.replace("+", ",")}
           renderers={{ link: LinkRenderer }}
         />
-        {messageAskLinkQuestion ? askQuestionIcon : null}
-
+        {message.askLinks?.length || 0 > 0 ? askQuestionIcon : null}
         {message.feedbackId ? (
           <div
             data-cy="feedback-btn"

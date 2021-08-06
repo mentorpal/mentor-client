@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { ChatMsg, State } from "types";
+import { ChatLink, ChatMsg, LINK_TYPE_WEB, State } from "types";
 
 export interface UseWithChatData {
   lastQuestionId: string;
@@ -16,6 +16,26 @@ export enum ItemVisibilityPrefs {
   NONE = "NONE",
   VISIBLE = "VISIBLE",
   INVISIBLE = "INVISIBLE",
+}
+
+/**
+ * Given an href return either an AskLink or a WebLink
+ * depending on the scheme of the href (ask:// vs https://)
+ */
+export function hrefToChatLink(href: string, chatMsg: ChatMsg): ChatLink {
+  console.log(
+    `in hrefToChatLink href="${href}" and chatMsg=${JSON.stringify(
+      chatMsg,
+      null,
+      2
+    )}`
+  );
+  return (
+    chatMsg.askLinks?.find((x) => x.href === href) || {
+      type: LINK_TYPE_WEB,
+      href,
+    }
+  );
 }
 
 export function useWithChatData(): UseWithChatData {

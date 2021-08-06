@@ -11,7 +11,6 @@ import {
   cyMockGQL,
 } from "../support/helpers";
 const clint = require("../fixtures/clint.json");
-const covid = require("../fixtures/covid.json");
 const carlos = require("../fixtures/carlos.json");
 
 describe("Chat History (Video Mentors Links)", () => {

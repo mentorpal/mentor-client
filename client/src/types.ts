@@ -11,10 +11,19 @@ export interface ChatData {
   messages: ChatMsg[];
 }
 
-export interface AskLink {
-  question: string;
+export const LINK_TYPE_ASK = "ask";
+export const LINK_TYPE_WEB = "web";
+export interface WebLink {
+  type: typeof LINK_TYPE_WEB;
   href: string;
 }
+export interface AskLink {
+  type: typeof LINK_TYPE_ASK;
+  question: string;
+  href: string;
+  askLinkIndex: number;
+}
+export type ChatLink = AskLink | WebLink;
 
 export interface ChatMsg {
   // we should change name, color, and isUser to just mentorIds
@@ -27,7 +36,7 @@ export interface ChatMsg {
   feedbackId: string;
   isFeedbackSendInProgress: boolean;
   questionId: string;
-  askLink?: AskLink[];
+  askLinks?: AskLink[];
 }
 
 export interface Mentor {

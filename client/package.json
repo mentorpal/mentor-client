@@ -62,7 +62,7 @@
     "serve": "gatsby serve --prefix-paths",
     "test": "echo 'uses only cypress tests'",
     "test:audit": "npm audit --production --audit-level=moderate",
-    "test:lint": "eslint src --ext ts --ext tsx --ext js --ext jsx",
+    "test:lint": "eslint src --ext ts --ext tsx --ext js --ext jsx --max-warnings=0",
     "test:types": "tsc --noEmit"
   },
   "repository": {
