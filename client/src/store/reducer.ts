@@ -51,6 +51,7 @@ import {
   MentorType,
   Feedback,
   AskLink,
+  LINK_TYPE_ASK,
 } from "../types";
 
 export const initialState: State = {
@@ -353,10 +354,6 @@ function onQuestionInputChanged(
   });
 }
 
-function parseQuestion(question: string): string {
-  return question.split("-").join(" ");
-}
-
 function onQuestionAnswered(
   state: State,
   action: QuestionAnsweredAction
@@ -387,24 +384,20 @@ function onQuestionAnswered(
   ) {
     mentor.topic_questions[history].questions.push(action.payload.question);
   }
-
-  const REGEX_ASK_LINK = /ask:\/\/(.*)/;
-
-  const questionLinksFromAnswer = action.payload.answerText.split("+");
-
-  const askLinks: Array<AskLink> | null = REGEX_ASK_LINK.exec(
-    action.payload.answerText
-  )
-    ? questionLinksFromAnswer.map((q) => {
-        const matches = REGEX_ASK_LINK.exec(q);
-        const parseAnswerLink = matches
-          ? parseQuestion(matches[1].replace(")", ""))
-          : "";
-        const href = matches ? matches[0].replace(")", "") : "";
-        return { question: parseAnswerLink, href: href };
-      })
-    : null;
-
+  const REGEX_ASK_LINKS_ALL = /\(ask:\/\/([^)]*)\)/g;
+  const REGEX_ASK_LINK = /ask:\/\/([^)]*)/;
+  const askLinks: AskLink[] = (
+    (action.payload.answerText || "").match(REGEX_ASK_LINKS_ALL) || []
+  ).map((linkWParens, i) => {
+    const qmatch = linkWParens.match(REGEX_ASK_LINK);
+    const question = qmatch && qmatch.length > 1 ? qmatch[1] : "";
+    return {
+      type: LINK_TYPE_ASK,
+      href: `ask://${question}`,
+      question: decodeURIComponent(question),
+      askLinkIndex: i,
+    };
+  });
   return {
     ...state,
     chat: {
@@ -421,7 +414,7 @@ function onQuestionAnswered(
           feedback: Feedback.NONE,
           feedbackId: action.payload.answerFeedbackId,
           isFeedbackSendInProgress: false,
-          askLink: askLinks ? askLinks : [],
+          askLinks,
         },
       ],
     },
