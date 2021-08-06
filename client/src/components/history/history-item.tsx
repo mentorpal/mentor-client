@@ -95,14 +95,12 @@ export function ChatItem(props: {
         href="#"
         rel="noreferrer"
         onClick={() =>
-          handleAskLinkClicked(
-            chatLink.question,
+          onAskLinkClicked(
+            chatLink.question.replace(/\+/g, " "),
             MentorQuestionSource.CHAT_LINK
           )
         }
-        data-cy={`question-link-${props?.node?.url
-          .replace(/ask:\/\//g, "")
-          .replace("?", "")}`}
+        data-cy={`ask-link-${chatLink.askLinkIndex}`}
       >
         {props.children}
       </a>
@@ -112,38 +110,31 @@ export function ChatItem(props: {
       </a>
     );
   }
-
-  function handleQuestionChanged(
-    question: string,
-    source: MentorQuestionSource
-  ) {
-    dispatch(userInputChanged({ question, source }));
-    return new Promise((res) => {
-      setTimeout(res, 200);
-    });
-  }
   const addDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
-  async function handleQuestionSend(
+  async function askLinkQuestionChanged(
     question: string,
     source: MentorQuestionSource
-  ) {
+  ): Promise<void> {
+    dispatch(userInputChanged({ question, source }));
+    await addDelay(800);
+  }
+
+  function askLinkQuestionSend(
+    question: string,
+    source: MentorQuestionSource
+  ): void {
     if (!question) {
       return;
     }
-    await addDelay(800);
     dispatch(sendQuestion({ question, source, config }));
     window.focus();
   }
 
-  async function handleAskLinkClicked(
-    question: string,
-    source: MentorQuestionSource
-  ) {
-    await Promise.all([
-      handleQuestionChanged(question, source),
-      handleQuestionSend(question, source),
-    ]);
+  function onAskLinkClicked(question: string, source: MentorQuestionSource) {
+    askLinkQuestionChanged(question, source)
+      .then(() => askLinkQuestionSend(question, source))
+      .catch((err) => console.error(err));
   }
 
   function onToggleVisibilityItem() {
@@ -210,7 +201,7 @@ export function ChatItem(props: {
       >
         {visibilityIcon}
         <ReactMarkdown
-          source={message.text.replace("+", ",")}
+          source={message.text}
           renderers={{ link: LinkRenderer }}
         />
         {message.askLinks?.length || 0 > 0 ? askQuestionIcon : null}

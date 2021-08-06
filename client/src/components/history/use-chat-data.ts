@@ -23,13 +23,6 @@ export enum ItemVisibilityPrefs {
  * depending on the scheme of the href (ask:// vs https://)
  */
 export function hrefToChatLink(href: string, chatMsg: ChatMsg): ChatLink {
-  console.log(
-    `in hrefToChatLink href="${href}" and chatMsg=${JSON.stringify(
-      chatMsg,
-      null,
-      2
-    )}`
-  );
   return (
     chatMsg.askLinks?.find((x) => x.href === href) || {
       type: LINK_TYPE_WEB,

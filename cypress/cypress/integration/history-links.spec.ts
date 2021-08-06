@@ -4,7 +4,6 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { should } from "chai";
 import {
   visitAsGuestWithDefaultSetup,
   mockDefaultSetup,
@@ -178,9 +177,7 @@ describe("Chat History (Video Mentors Links)", () => {
         cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
         cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
         cy.get("[data-cy=aks-icon-1]").should("be.visible", { timeout: 2000 });
-        cy.get("[data-cy=question-link-what-does-a-computer-programmer-do]")
-          .trigger("mouseover")
-          .click();
+        cy.get("[data-cy=ask-link-0]").trigger("mouseover").click();
         cy.get("[data-cy=chat-msg-3]", { timeout: 2000 }).contains(
           "what does a computer programmer do?"
         );
