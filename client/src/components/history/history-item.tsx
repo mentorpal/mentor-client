@@ -77,7 +77,7 @@ export function ChatItem(props: {
     setAnchorEl(null);
   }
 
-  function handleSelectFeedback(id: string, feedback: Feedback) {
+  function onFeedbackClicked(feedback: Feedback): void {
     setAnchorEl(null);
     dispatch(feedbackSend(message.feedbackId, feedback));
   }
@@ -117,7 +117,7 @@ export function ChatItem(props: {
     source: MentorQuestionSource
   ): Promise<void> {
     dispatch(userInputChanged({ question, source }));
-    await addDelay(800);
+    await addDelay(300);
   }
 
   function askLinkQuestionSend(
@@ -268,9 +268,7 @@ export function ChatItem(props: {
                 data-cy="click-good"
                 data-test-in-progress={message.isFeedbackSendInProgress}
                 onClick={() => {
-                  if (message.feedbackId) {
-                    handleSelectFeedback(message.feedbackId, Feedback.GOOD);
-                  }
+                  onFeedbackClicked(Feedback.GOOD);
                 }}
               >
                 <ListItemAvatar>
@@ -282,9 +280,7 @@ export function ChatItem(props: {
               <div
                 data-cy="click-neutral"
                 onClick={() => {
-                  if (message.feedbackId) {
-                    handleSelectFeedback(message.feedbackId, Feedback.NEUTRAL);
-                  }
+                  onFeedbackClicked(Feedback.NEUTRAL);
                 }}
               >
                 <ListItemAvatar>
@@ -296,9 +292,7 @@ export function ChatItem(props: {
               <div
                 data-cy="click-bad"
                 onClick={() => {
-                  if (message.feedbackId) {
-                    handleSelectFeedback(message.feedbackId, Feedback.BAD);
-                  }
+                  onFeedbackClicked(Feedback.BAD);
                 }}
               >
                 <ListItemAvatar>

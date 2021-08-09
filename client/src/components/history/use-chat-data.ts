@@ -8,7 +8,6 @@ export interface UseWithChatData {
   getQuestionVisibilityPref: (questionId: string) => ItemVisibilityPrefs;
   setQuestionVisibilityPref: (questionId: string, show: boolean) => void;
   setVisibilityShowAllPref: (show: boolean) => void;
-  mentorNameById: Record<string, string>;
   mentorNameForChatMsg: (chatMsg: ChatMsg) => string;
 }
 
@@ -91,7 +90,6 @@ export function useWithChatData(): UseWithChatData {
     getQuestionVisibilityPref,
     setQuestionVisibilityPref,
     setVisibilityShowAllPref,
-    mentorNameById,
     mentorNameForChatMsg,
   };
 }

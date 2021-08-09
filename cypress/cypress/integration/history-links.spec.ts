@@ -167,7 +167,6 @@ describe("Chat History (Video Mentors Links)", () => {
     });
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
-
     // write msgs
     cy.get("[data-cy=input-field]").type("What do you do for living?");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
