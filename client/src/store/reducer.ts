@@ -52,7 +52,9 @@ import {
   Feedback,
   AskLink,
   LINK_TYPE_ASK,
+  UtteranceName,
 } from "../types";
+import { getUtterance } from "api";
 
 export const initialState: State = {
   chat: {
@@ -398,6 +400,9 @@ function onQuestionAnswered(
       askLinkIndex: i,
     };
   });
+
+  const intro =
+    getUtterance(mentor.mentor, UtteranceName.INTRO)?.transcript || "";
   return {
     ...state,
     chat: {

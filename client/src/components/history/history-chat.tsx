@@ -12,7 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
-import { ChatData, ChatMsg, State } from "types";
+import { ChatData, ChatMsg, MentorType, State } from "types";
 import "styles/history-chat.css";
 import ChatItem, { ChatItemData } from "./history-item";
 import { ItemVisibilityPrefs, useWithChatData } from "./use-chat-data";
@@ -91,6 +91,14 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   });
 
   const chatData = useSelector<State, ChatData>((s) => s.chat);
+  const mentorType = useSelector<State, MentorType>((state) => {
+    if (!state.curMentor) {
+      return MentorType.VIDEO;
+    }
+    return (
+      state.mentorsById[state.curMentor]?.mentor?.mentorType || MentorType.VIDEO
+    );
+  });
 
   useEffect(() => {
     animateScroll.scrollToBottom({
@@ -105,20 +113,23 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
      * it will be visible REGARDLESS of the user's SHOW ALL pref
      * UNLESS the user explicitly seleced to hide the answers
      */
-    if (questionId === lastQuestionId) {
-      return Boolean(userPref !== ItemVisibilityPrefs.INVISIBLE);
+    if (mentorType !== "CHAT") {
+      if (questionId === lastQuestionId) {
+        return Boolean(userPref !== ItemVisibilityPrefs.INVISIBLE);
+      }
+      return visibilityShowAllPref
+        ? /**
+           * RULE #2: if the user set SHOW ALL,
+           * then only hide answers if the user explicitly hid them
+           */
+          Boolean(userPref !== ItemVisibilityPrefs.INVISIBLE)
+        : /**
+           * RULE #3: if the user did NOT set SHOW ALL toggle,
+           * then only SHOW answers if the user explicitly asked to SHOW them
+           */
+          Boolean(userPref === ItemVisibilityPrefs.VISIBLE);
     }
-    return visibilityShowAllPref
-      ? /**
-         * RULE #2: if the user set SHOW ALL,
-         * then only hide answers if the user explicitly hid them
-         */
-        Boolean(userPref !== ItemVisibilityPrefs.INVISIBLE)
-      : /**
-         * RULE #3: if the user did NOT set SHOW ALL toggle,
-         * then only SHOW answers if the user explicitly asked to SHOW them
-         */
-        Boolean(userPref === ItemVisibilityPrefs.VISIBLE);
+    return true;
   }
 
   const toggleAnswers = (
@@ -164,11 +175,14 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
         disablePadding={true}
         id="chat-thread"
       >
-        {toggleAnswers}
+        {mentorType !== "CHAT" ? toggleAnswers : null}
         {chatData.messages.map((m: ChatMsg, i: number) => {
           const itemData: ChatItemData = {
             ...m,
-            color: colorByMentorId[m.mentorId] || "",
+            color:
+              mentorType === "CHAT" && !m.isUser
+                ? "#eaeaea"
+                : colorByMentorId[m.mentorId] || "",
             name: mentorNameForChatMsg(m) || "",
           };
           return (
@@ -191,6 +205,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
                   setQuestionVisibilityPref(m.questionId, show);
                 }}
                 visibility={isQuestionsAnswersVisible(m.questionId)}
+                mentorType={mentorType}
               />
             </div>
           );

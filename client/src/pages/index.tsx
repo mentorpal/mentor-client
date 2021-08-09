@@ -285,7 +285,9 @@ function IndexPage(props: {
             {!hasSessionUser() ? <GuestPrompt /> : undefined}
           </div>
         </div>
-        {!shouldDisplayPortrait() ? historyChatLandscape : null}
+        {!shouldDisplayPortrait() && mentorType !== "CHAT"
+          ? historyChatLandscape
+          : null}
       </div>
     </MuiThemeProvider>
   );

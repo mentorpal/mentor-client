@@ -59,8 +59,10 @@ export function ChatItem(props: {
   styles: StyleProps;
   setAnswerVisibility: (show: boolean) => void;
   visibility: boolean;
+  mentorType: string;
 }): JSX.Element {
-  const { message, i, styles, setAnswerVisibility, visibility } = props;
+  const { message, i, styles, setAnswerVisibility, visibility, mentorType } =
+    props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
   const config = useSelector<State, Config>((s) => s.config);
@@ -81,7 +83,6 @@ export function ChatItem(props: {
     setAnchorEl(null);
     dispatch(feedbackSend(message.feedbackId, feedback));
   }
-
   function LinkRenderer(props: {
     href: string;
     children: React.ReactNode;
@@ -181,7 +182,7 @@ export function ChatItem(props: {
           fontSize: 15,
         }}
       >
-        {!isUser && isVisible ? message.name : null}
+        {!isUser && isVisible && mentorType !== "CHAT" ? message.name : null}
       </p>
       <ListItem
         data-cy={`chat-msg-${i}`}
@@ -195,11 +196,11 @@ export function ChatItem(props: {
         style={{
           paddingRight: 16,
           maxWidth: 750,
-          marginLeft: isUser ? 0 : 50,
+          marginLeft: isUser || mentorType === "CHAT" ? 0 : 50,
           backgroundColor: mentorColor,
         }}
       >
-        {visibilityIcon}
+        {mentorType !== "CHAT" ? visibilityIcon : null}
         <ReactMarkdown
           source={message.text}
           renderers={{ link: LinkRenderer }}
