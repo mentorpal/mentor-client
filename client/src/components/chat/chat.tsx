@@ -20,7 +20,7 @@ import {
   ChatProps,
 } from "types";
 import "styles/history-chat.css";
-import ChatItem, { ChatItemData } from "./history-item";
+import ChatItem, { ChatItemData } from "./chat-item";
 import { ItemVisibilityPrefs, useWithChatData } from "./use-chat-data";
 import { shouldDisplayPortrait } from "pages";
 
@@ -75,7 +75,7 @@ interface ScrollingQuestionsParams {
 
 const MENTOR_COLORS = ["#eaeaea", "#d4e8d9", "#ffebcf", "#f5cccd"];
 
-export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
+export function Chat(args: ScrollingQuestionsParams): JSX.Element {
   const { height, chatProps } = args;
   const styles = useStyles();
   const {
@@ -225,4 +225,4 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   );
 }
 
-export default HistoryChat;
+export default Chat;

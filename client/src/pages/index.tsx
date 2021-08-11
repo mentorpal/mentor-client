@@ -22,7 +22,7 @@ import "styles/layout.css";
 import { fetchMentorByAccessToken } from "api";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
-import HistoryChat from "components/history";
+import Chat from "components/chat";
 
 import "../styles/history-chat-responsive.css";
 
@@ -267,7 +267,7 @@ function IndexPage(props: {
         height: shouldDisplayPortrait() ? "250px" : windowHeight - 100,
       }}
     >
-      <HistoryChat height={windowHeight - 100} chatProps={videoChatProps} />
+      <Chat height={windowHeight - 100} chatProps={videoChatProps} />
     </div>
   );
 
@@ -285,7 +285,7 @@ function IndexPage(props: {
             </div>
             <div className={styles.flexExpandChild}>
               {mentorType === MentorType.CHAT ? (
-                <HistoryChat height={chatHeight} chatProps={chatProps} />
+                <Chat height={chatHeight} chatProps={chatProps} />
               ) : (
                 <Video playing={hasSessionUser()} />
               )}

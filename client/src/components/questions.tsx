@@ -10,7 +10,7 @@ import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import ScrollingQuestions from "components/scrolling-questions";
 import { ChatProps, State } from "types";
 import withLocation from "wrap-with-location";
-import HistoryChat from "./history";
+import Chat from "./chat";
 import { shouldDisplayPortrait } from "pages";
 
 const theme = createMuiTheme({
@@ -71,7 +71,7 @@ function Questions(props: {
     bubbleColor: "",
   };
   const historyComponent = shouldDisplayPortrait() ? (
-    <HistoryChat height={500} chatProps={videoChatProps} />
+    <Chat height={500} chatProps={videoChatProps} />
   ) : null;
   const content =
     curTopic === "History" ? (
