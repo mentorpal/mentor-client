@@ -4,7 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Divider, Paper, InputBase, Collapse } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -49,6 +49,15 @@ function Input(): JSX.Element {
   const questionInput = useSelector<State, QuestionInput>(
     (s) => s.questionInput
   );
+
+  const [animatingInputField, setAnimatingInputField] =
+    useState<boolean>(false);
+
+  useEffect(() => {
+    questionInput.source !== "CHAT_LINK"
+      ? setAnimatingInputField(false)
+      : setAnimatingInputField(true);
+  }, [questionInput]);
 
   function handleQuestionChanged(
     question: string,
@@ -109,8 +118,12 @@ function Input(): JSX.Element {
     <div data-cy="input-field-wrapper" data-topic={curTopic}>
       <Paper className={classes.root} square style={{ height: 60 }}>
         <InputBase
+          id="input-field"
           data-cy="input-field"
-          className={classes.inputField}
+          className={[
+            classes.inputField,
+            animatingInputField ? "input-field-animation" : "",
+          ].join(" ")}
           value={questionInput.question}
           multiline
           rows={2}

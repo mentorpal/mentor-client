@@ -5,99 +5,103 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    overflow-y: auto;
-    height: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  overflow-y: auto;
+  height: 100%;
 }
 
 ul li {
-    display: inline-block;
-    clear: both;
-    padding: 10px;
-    padding-left: 15px;
-    padding-right: 15px;
-    border-radius: 30px;
-    margin-bottom: 2px;
-    font-family: Helvetica, Arial, sans-serif;
-    max-width: 90%;
-    word-wrap: break-word;
-    text-align: left;
+  display: inline-block;
+  clear: both;
+  padding: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-radius: 30px;
+  margin-bottom: 2px;
+  font-family: Helvetica, Arial, sans-serif;
+  max-width: 90%;
+  word-wrap: break-word;
+  text-align: left;
 }
 
 ul li p {
-    margin-top: 5px;
-    margin-bottom: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .hidden {
-    display: none !important;
+  display: none !important;
 }
 
 .visible {
-    display: block;
+  display: block;
 }
 
 .system {
-    background: #e8e9ea;
-    float: left;
-    border-bottom-left-radius: 5px;
+  background: #e8e9ea;
+  float: left;
+  border-bottom-left-radius: 5px;
 }
 
 .user {
-    float: left;
-    background: #88929e;
-    color: #fff;
-    border-bottom-right-radius: 5px;
-    display: flex !important;
+  float: left;
+  background: #88929e;
+  color: #fff;
+  border-bottom-right-radius: 5px;
+  display: flex !important;
 }
 
-
-.system+.user {
-    border-bottom-right-radius: 5px;
-    margin-top: 10px;    
+.system + .user {
+  border-bottom-right-radius: 5px;
+  margin-top: 10px;
 }
 
-.user+.system {
-    border-bottom-left-radius: 5px;
-    margin-top: 10px;
+.user + .system {
+  border-bottom-left-radius: 5px;
+  margin-top: 10px;
 }
 
-.user+.user {
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+.user + .user {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
-.system+.system {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
+.system + .system {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 #feedback-popup .MuiPaper-rounded {
-    border-radius: 30px;
+  border-radius: 30px;
 }
 
 .visibilityBtn {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 
 .togglePos {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: flex-end;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-end;
 }
 
-/* Round Last Bubble */
+.input-field-animation {
+  animation: zoomIn 0.3s alternate ease-in;
 
+  font-size: 20px !important;
+}
 
-/* .user:last-of-type {
-    border-bottom-right-radius: 30px;
+@keyframes zoomIn {
+  0% {
+    transform: scale(1);
   }
-
-  .system:last-of-type {
-    border-bottom-left-radius: 30px;
-  } */
+  100% {
+    transform: scale(1.2);
+  }
+}
+/* Round Last Bubble */

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { State } from "types";
+import { ChatLink, ChatMsg, LINK_TYPE_WEB, State } from "types";
 
 export interface UseWithChatData {
   lastQuestionId: string;
@@ -8,12 +8,26 @@ export interface UseWithChatData {
   getQuestionVisibilityPref: (questionId: string) => ItemVisibilityPrefs;
   setQuestionVisibilityPref: (questionId: string, show: boolean) => void;
   setVisibilityShowAllPref: (show: boolean) => void;
+  mentorNameForChatMsg: (chatMsg: ChatMsg) => string;
 }
 
 export enum ItemVisibilityPrefs {
   NONE = "NONE",
   VISIBLE = "VISIBLE",
   INVISIBLE = "INVISIBLE",
+}
+
+/**
+ * Given an href return either an AskLink or a WebLink
+ * depending on the scheme of the href (ask:// vs https://)
+ */
+export function hrefToChatLink(href: string, chatMsg: ChatMsg): ChatLink {
+  return (
+    chatMsg.askLinks?.find((x) => x.href === href) || {
+      type: LINK_TYPE_WEB,
+      href,
+    }
+  );
 }
 
 export function useWithChatData(): UseWithChatData {
@@ -53,11 +67,29 @@ export function useWithChatData(): UseWithChatData {
       : ItemVisibilityPrefs.NONE;
   }
 
+  const mentorNameById = useSelector<State, Record<string, string>>((s) => {
+    const mentorIds = Object.getOwnPropertyNames(s.mentorsById);
+    mentorIds.sort();
+
+    return mentorIds.reduce<Record<string, string>>((acc, cur) => {
+      acc[cur] = s.mentorsById[cur].mentor.name;
+      return acc;
+    }, {});
+  });
+
+  function mentorNameForChatMsg(chatMsg: ChatMsg): string {
+    if (!(chatMsg && chatMsg.mentorId)) {
+      return "";
+    }
+    return mentorNameById[chatMsg.mentorId] || "";
+  }
+
   return {
     lastQuestionId,
     visibilityShowAllPref,
     getQuestionVisibilityPref,
     setQuestionVisibilityPref,
     setVisibilityShowAllPref,
+    mentorNameForChatMsg,
   };
 }

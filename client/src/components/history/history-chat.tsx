@@ -78,6 +78,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
     getQuestionVisibilityPref,
     setQuestionVisibilityPref,
     setVisibilityShowAllPref,
+    mentorNameForChatMsg,
   } = useWithChatData();
 
   const colorByMentorId = useSelector<State, Record<string, string>>((s) => {
@@ -85,14 +86,6 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
     mentorIds.sort();
     return mentorIds.reduce<Record<string, string>>((acc, cur, i) => {
       acc[cur] = MENTOR_COLORS[i % MENTOR_COLORS.length];
-      return acc;
-    }, {});
-  });
-  const namesByMentorId = useSelector<State, Record<string, string>>((s) => {
-    const mentorIds = Object.getOwnPropertyNames(s.mentorsById);
-    mentorIds.sort();
-    return mentorIds.reduce<Record<string, string>>((acc, cur) => {
-      acc[cur] = s.mentorsById[cur].mentor.name;
       return acc;
     }, {});
   });
@@ -142,7 +135,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
               data-cy="visibility-switch"
             />
           }
-          label="show/hide answers"
+          label="hide/show answers"
         />
       </FormGroup>
     </div>
@@ -176,7 +169,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
           const itemData: ChatItemData = {
             ...m,
             color: colorByMentorId[m.mentorId] || "",
-            name: namesByMentorId[m.mentorId] || "",
+            name: mentorNameForChatMsg(m) || "",
           };
           return (
             <div
@@ -185,6 +178,8 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
+                marginRight: "2rem",
+                marginLeft: "1rem",
               }}
             >
               <ChatItem

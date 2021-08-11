@@ -50,6 +50,8 @@ import {
   LoadStatus,
   MentorType,
   Feedback,
+  AskLink,
+  LINK_TYPE_ASK,
 } from "../types";
 
 export const initialState: State = {
@@ -382,6 +384,21 @@ function onQuestionAnswered(
   ) {
     mentor.topic_questions[history].questions.push(action.payload.question);
   }
+  const REGEX_ASK_LINKS_ALL = /\(ask:\/\/([^)]*)\)/g;
+  const REGEX_ASK_LINK = /ask:\/\/([^)]*)/;
+  const askLinks: AskLink[] = (
+    (action.payload.answerText || "").match(REGEX_ASK_LINKS_ALL) || []
+  ).map((linkWParens, i) => {
+    const qmatch = linkWParens.match(REGEX_ASK_LINK);
+    const question = qmatch && qmatch.length > 1 ? qmatch[1] : "";
+    return {
+      type: LINK_TYPE_ASK,
+      href: `ask://${question}`,
+      question: decodeURIComponent(question).replace(/\+/g, " "),
+      askLinkIndex: i,
+    };
+  });
+  console.log(askLinks);
   return {
     ...state,
     chat: {
@@ -398,6 +415,7 @@ function onQuestionAnswered(
           feedback: Feedback.NONE,
           feedbackId: action.payload.answerFeedbackId,
           isFeedbackSendInProgress: false,
+          askLinks,
         },
       ],
     },
