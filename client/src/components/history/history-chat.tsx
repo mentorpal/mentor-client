@@ -12,7 +12,13 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
-import { ChatData, ChatMsg, State, MentorQuestionSource } from "types";
+import {
+  ChatData,
+  ChatMsg,
+  State,
+  MentorQuestionSource,
+  ChatProps,
+} from "types";
 import "styles/history-chat.css";
 import ChatItem, { ChatItemData } from "./history-item";
 import { ItemVisibilityPrefs, useWithChatData } from "./use-chat-data";
@@ -64,15 +70,15 @@ const useStyles = makeStyles((theme) => ({
 
 interface ScrollingQuestionsParams {
   height: number;
+  chatProps: ChatProps;
 }
 
 const MENTOR_COLORS = ["#eaeaea", "#d4e8d9", "#ffebcf", "#f5cccd"];
 
 export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
-  const { height } = args;
+  const { height, chatProps } = args;
   const styles = useStyles();
   const {
-    mentorType,
     lastQuestionId,
     visibilityShowAllPref,
     getQuestionVisibilityPref,
@@ -170,11 +176,11 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
         style={{
           width: shouldDisplayPortrait()
             ? "100%"
-            : mentorType === "CHAT"
-            ? "50vw"
+            : chatProps.width
+            ? chatProps.width
             : "40vw",
           height:
-            shouldDisplayPortrait() && mentorType !== "CHAT" ? "300px" : height,
+            shouldDisplayPortrait() || chatProps.height ? height : "300px",
         }}
         disablePadding={true}
         id="chat-thread"
@@ -184,31 +190,21 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
           const itemData: ChatItemData = {
             ...m,
             color:
-              mentorType === "CHAT" && !m.isUser
-                ? "#eaeaea"
+              chatProps.bubbleColor && !m.isUser
+                ? chatProps.bubbleColor
                 : colorByMentorId[m.mentorId] || "",
             name: mentorNameForChatMsg(m) || "",
           };
           return (
             <div
               key={i}
-              style={
-                mentorType === "CHAT"
-                  ? {
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginLeft: "1rem",
-                      marginRight: "1rem",
-                    }
-                  : {
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginRight: "2rem",
-                      marginLeft: "1rem",
-                    }
-              }
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                marginRight: "2rem",
+                marginLeft: "1rem",
+              }}
             >
               <ChatItem
                 key={`chat-msg-${i}`}
@@ -219,7 +215,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
                   setQuestionVisibilityPref(m.questionId, show);
                 }}
                 visibility={isQuestionsAnswersVisible(m.questionId)}
-                mentorType={mentorType}
+                chatProps={chatProps}
               />
             </div>
           );

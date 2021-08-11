@@ -25,6 +25,13 @@ export interface AskLink {
 }
 export type ChatLink = AskLink | WebLink;
 
+export interface ChatProps {
+  displayMentorNames?: boolean;
+  height?: number;
+  width?: string;
+  bubbleColor?: string;
+}
+
 export interface ChatMsg {
   // we should change name, color, and isUser to just mentorIds
   name: string;

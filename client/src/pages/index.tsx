@@ -16,7 +16,7 @@ import Input from "components/input";
 import Video from "components/video";
 import VideoPanel from "components/video-panel";
 import { loadConfig, loadMentors, setGuestName } from "store/actions";
-import { Config, LoadStatus, MentorType, State } from "types";
+import { ChatProps, Config, LoadStatus, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
 import { fetchMentorByAccessToken } from "api";
@@ -249,13 +249,25 @@ function IndexPage(props: {
     );
   }
 
+  const chatProps: ChatProps = {
+    displayMentorNames: true,
+    height: windowHeight,
+    width: "50vw",
+    bubbleColor: "#eaeaea",
+  };
+
+  const videoChatProps: ChatProps = {
+    displayMentorNames: true,
+    height: windowHeight,
+  };
+
   const historyChatLandscape = (
     <div
       style={{
         height: shouldDisplayPortrait() ? "250px" : windowHeight - 100,
       }}
     >
-      <HistoryChat height={windowHeight - 100} />
+      <HistoryChat height={windowHeight - 100} chatProps={videoChatProps} />
     </div>
   );
 
@@ -273,7 +285,7 @@ function IndexPage(props: {
             </div>
             <div className={styles.flexExpandChild}>
               {mentorType === MentorType.CHAT ? (
-                <HistoryChat height={chatHeight} />
+                <HistoryChat height={chatHeight} chatProps={chatProps} />
               ) : (
                 <Video playing={hasSessionUser()} />
               )}

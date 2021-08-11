@@ -53,22 +53,28 @@ export interface ChatItemData extends ChatMsg {
   name: string;
   color: string;
 }
+
+interface ChatProps {
+  displayMentorNames?: boolean;
+  heightSomething?: number;
+  widthOtherThing?: number;
+}
 export function ChatItem(props: {
   message: ChatItemData;
   i: number;
   styles: StyleProps;
   setAnswerVisibility: (show: boolean) => void;
   visibility: boolean;
-  mentorType: string;
+  chatProps: ChatProps;
 }): JSX.Element {
-  const { message, i, styles, setAnswerVisibility, visibility, mentorType } =
+  const { message, i, styles, setAnswerVisibility, visibility, chatProps } =
     props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
   const config = useSelector<State, Config>((s) => s.config);
 
   const isUser = !message.mentorId;
-  const mentorColor = message.color || "#990100";
+  const mentorColor = message.color || "#88929e";
   const isVisible = visibility;
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
@@ -182,7 +188,9 @@ export function ChatItem(props: {
           fontSize: 15,
         }}
       >
-        {!isUser && isVisible && mentorType !== "CHAT" ? message.name : null}
+        {!isUser && isVisible && chatProps.displayMentorNames
+          ? message.name
+          : null}
       </p>
       <ListItem
         data-cy={`chat-msg-${i}`}

@@ -30,7 +30,6 @@ describe("Chat History (Video Mentors)", () => {
 
   it("displays questions that have been asked via input", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=topic-2]").trigger("mouseover").click();
     cy.get("[data-cy=input-field]").type("Hello");
@@ -63,7 +62,7 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "response_with_feedback.json",
     });
     cy.visit("/");
-    //
+
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
