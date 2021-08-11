@@ -181,7 +181,7 @@ describe("Header", () => {
     ); //RGB of #990000
   });
 
-  it("shows full branding on desktop if config.styleHeaderColor, config.styleHeaderTextColor, and config.styleHeaderLogo are set", () => {
+  it.only("shows full branding on desktop if config.styleHeaderColor, config.styleHeaderTextColor, and config.styleHeaderLogo are set", () => {
     mockDefaultSetup(cy, {
       config: {
         cmi5Enabled: false,
@@ -192,7 +192,8 @@ describe("Header", () => {
           "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
       },
     });
-    cy.viewport(750, 550);
+    // cy.viewport(750, 550);
+    cy.viewport("macbook-11");
     cy.intercept(
       "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
       { fixture: "uscheader2.png" }

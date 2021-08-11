@@ -96,6 +96,14 @@ ul li p {
   font-size: 20px !important;
 }
 
+.MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track {
+  background-color: rgb(153 1 0) !important;
+}
+
+.MuiSwitch-colorSecondary.Mui-checked {
+  color: rgb(153 1 0) !important;
+}
+
 @keyframes zoomIn {
   0% {
     transform: scale(1);

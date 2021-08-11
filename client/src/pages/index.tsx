@@ -10,7 +10,6 @@ import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Cmi5 from "@xapi/cmi5";
 import { hasCmi } from "cmiutils";
-import Chat from "components/chat";
 import GuestPrompt from "components/guest-prompt";
 import Header from "components/header";
 import Input from "components/input";
@@ -274,7 +273,7 @@ function IndexPage(props: {
             </div>
             <div className={styles.flexExpandChild}>
               {mentorType === MentorType.CHAT ? (
-                <Chat height={chatHeight} />
+                <HistoryChat height={chatHeight} />
               ) : (
                 <Video playing={hasSessionUser()} />
               )}

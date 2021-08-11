@@ -107,8 +107,7 @@ describe("Chat History (Video Mentors Links)", () => {
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-1]").contains("Click https://www.google.com");
+    cy.get("[data-cy=chat-msg-4]").contains("Click https://www.google.com");
     // Compare last answer link with video label
     cy.get("[data-cy=input-field]")
       .invoke("val")
@@ -145,7 +144,7 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.get("[data-cy=input-field]")
       .invoke("val")
       .then((linkAnswerLabel) => {
-        cy.get("[data-cy=chat-msg-1]")
+        cy.get("[data-cy=chat-msg-4]")
           .find("p")
           .should("have.value", linkAnswerLabel);
       });
@@ -173,11 +172,9 @@ describe("Chat History (Video Mentors Links)", () => {
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
-        cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
-        cy.get("[data-cy=aks-icon-1]").should("be.visible", { timeout: 2000 });
+        cy.get("[data-cy=aks-icon-4]").should("be.visible");
         cy.get("[data-cy=ask-link-0]").trigger("mouseover").click();
-        cy.get("[data-cy=chat-msg-3]", { timeout: 2000 }).contains(
+        cy.get("[data-cy=chat-msg-6]", { timeout: 2000 }).contains(
           "what does a computer programmer do?"
         );
       });
@@ -211,7 +208,7 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.get("[data-cy=answer-link-card]").should("not.exist");
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=aks-icon-1]").should("be.visible");
+        cy.get("[data-cy=aks-icon-4]").should("be.visible");
       });
     });
     // not mistake it for a link

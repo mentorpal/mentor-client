@@ -68,7 +68,7 @@ export function ChatItem(props: {
   const config = useSelector<State, Config>((s) => s.config);
 
   const isUser = !message.mentorId;
-  const mentorColor = message.color || "#88929e";
+  const mentorColor = message.color || "#990100";
   const isVisible = visibility;
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
@@ -196,11 +196,11 @@ export function ChatItem(props: {
         style={{
           paddingRight: 16,
           maxWidth: 750,
-          marginLeft: isUser || mentorType === "CHAT" ? 0 : 50,
+          marginLeft: isUser ? 0 : 50,
           backgroundColor: mentorColor,
         }}
       >
-        {mentorType !== "CHAT" ? visibilityIcon : null}
+        {visibilityIcon}
         <ReactMarkdown
           source={message.text}
           renderers={{ link: LinkRenderer }}

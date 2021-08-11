@@ -265,6 +265,7 @@ function onMentorLoadResults(
       topic: action.payload.topic,
     });
   }
+
   return s;
 }
 
@@ -363,6 +364,12 @@ function onQuestionAnswered(
   // NOTE: about answerFeedbackId
   // It seems like the answerFeedbackId should be
   // associated to the chat message
+  const intro =
+    getUtterance(
+      state.mentorsById[state.curMentor]?.mentor,
+      UtteranceName.INTRO
+    )?.transcript || "";
+
   const mentor: MentorState = {
     ...state.mentorsById[action.payload.mentor],
     // we need chat messages to live up here
@@ -401,34 +408,59 @@ function onQuestionAnswered(
     };
   });
 
-  const intro =
-    getUtterance(mentor.mentor, UtteranceName.INTRO)?.transcript || "";
-  return {
-    ...state,
-    chat: {
-      ...state.chat,
-      messages: [
-        ...state.chat.messages,
-        {
-          name: "",
-          color: "",
-          mentorId: action.payload.mentor,
-          isUser: false,
-          questionId: action.payload.questionId,
-          text: action.payload.answerText,
-          feedback: Feedback.NONE,
-          feedbackId: action.payload.answerFeedbackId,
-          isFeedbackSendInProgress: false,
-          askLinks,
+  return state.chat.messages.length === 1
+    ? {
+        ...state,
+        chat: {
+          ...state.chat,
+          messages: [
+            ...state.chat.messages,
+            {
+              name: "",
+              color: "",
+              mentorId: action.payload.mentor,
+              isUser: false,
+              questionId: action.payload.questionId,
+              text: intro,
+              feedback: Feedback.NONE,
+              feedbackId: action.payload.answerFeedbackId,
+              isFeedbackSendInProgress: false,
+              askLinks,
+            },
+          ],
         },
-      ],
-    },
-    isIdle: false,
-    mentorsById: {
-      ...state.mentorsById,
-      [action.payload.mentor]: mentor,
-    },
-  };
+        isIdle: false,
+        mentorsById: {
+          ...state.mentorsById,
+          [action.payload.mentor]: mentor,
+        },
+      }
+    : {
+        ...state,
+        chat: {
+          ...state.chat,
+          messages: [
+            ...state.chat.messages,
+            {
+              name: "",
+              color: "",
+              mentorId: action.payload.mentor,
+              isUser: false,
+              questionId: action.payload.questionId,
+              text: action.payload.answerText,
+              feedback: Feedback.NONE,
+              feedbackId: action.payload.answerFeedbackId,
+              isFeedbackSendInProgress: false,
+              askLinks,
+            },
+          ],
+        },
+        isIdle: false,
+        mentorsById: {
+          ...state.mentorsById,
+          [action.payload.mentor]: mentor,
+        },
+      };
 }
 
 function topicSelected(state: State, action: TopicSelectedAction): State {
