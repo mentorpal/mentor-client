@@ -394,10 +394,11 @@ function onQuestionAnswered(
     return {
       type: LINK_TYPE_ASK,
       href: `ask://${question}`,
-      question: decodeURIComponent(question),
+      question: decodeURIComponent(question).replace(/\+/g, " "),
       askLinkIndex: i,
     };
   });
+  console.log(askLinks);
   return {
     ...state,
     chat: {

@@ -95,10 +95,7 @@ export function ChatItem(props: {
         href="#"
         rel="noreferrer"
         onClick={() =>
-          onAskLinkClicked(
-            chatLink.question.replace(/\+/g, " "),
-            MentorQuestionSource.CHAT_LINK
-          )
+          onAskLinkClicked(chatLink.question, MentorQuestionSource.CHAT_LINK)
         }
         data-cy={`ask-link-${chatLink.askLinkIndex}`}
       >
@@ -158,7 +155,7 @@ export function ChatItem(props: {
 
   const askQuestionIcon = !isUser ? (
     <RecordVoiceOverIcon
-      data-cy={`aks-icon-${i}`}
+      data-cy={`ask-icon-${i}`}
       style={{
         paddingLeft: 10,
         maxWidth: 750,
