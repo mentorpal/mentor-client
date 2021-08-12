@@ -1,7 +1,6 @@
 /*
 This software is Copyright ©️ 2020 The University of Southern California. All Rights Reserved. 
 Permission to use, copy, modify, and distribute this software and its documentation for educational, research and non-profit purposes, without fee, and without a written agreement is hereby granted, provided that the above copyright notice and subject to the full license file found in the root of this software deliverable. Permission to make commercial use of this software may be obtained by contacting:  USC Stevens Center for Innovation University of Southern California 1150 S. Olive Street, Suite 2300, Los Angeles, CA 90115, USA Email: accounting@stevens.usc.edu
-
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import React, { useState } from "react";
@@ -57,15 +56,16 @@ function Video(args: { playing?: boolean }): JSX.Element {
       return !m.isUser ? findLinks(m.text) : "";
     });
     const lastMentorAnswers = chatAnswers.slice(-totalMentors);
-    return getLastAnswerLink(lastMentorAnswers.reverse())!;
+    return getLastAnswerLink(lastMentorAnswers.reverse());
   });
 
-  function getLastAnswerLink(lastMentorAnswers: Array<string>) {
+  function getLastAnswerLink(lastMentorAnswers: Array<string>): string {
     for (let i = 0; i < lastMentorAnswers.length; i++) {
       if (lastMentorAnswers[i] !== "") {
         return lastMentorAnswers[i];
       }
     }
+    return "";
   }
 
   function findLinks(text: string): string {
@@ -180,6 +180,7 @@ function VideoPlayer(args: VideoPlayerParams) {
       />
     </div>
   );
+
   return (
     <div style={{ position: "relative", display: "inline-block" }}>
       {!hideLinkLabel && lastAnswerLink ? answerLinkCard : null}
