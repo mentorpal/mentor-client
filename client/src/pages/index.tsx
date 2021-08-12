@@ -10,20 +10,19 @@ import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Cmi5 from "@xapi/cmi5";
 import { hasCmi } from "cmiutils";
-import Chat from "components/chat";
 import GuestPrompt from "components/guest-prompt";
 import Header from "components/header";
 import Input from "components/input";
 import Video from "components/video";
 import VideoPanel from "components/video-panel";
 import { loadConfig, loadMentors, setGuestName } from "store/actions";
-import { Config, LoadStatus, MentorType, State } from "types";
+import { ChatProps, Config, LoadStatus, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
 import { fetchMentorByAccessToken } from "api";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
-import HistoryChat from "components/history";
+import Chat from "components/chat";
 
 import "../styles/history-chat-responsive.css";
 
@@ -250,13 +249,25 @@ function IndexPage(props: {
     );
   }
 
+  const chatProps: ChatProps = {
+    displayMentorNames: true,
+    height: windowHeight,
+    width: "50vw",
+    bubbleColor: "#eaeaea",
+  };
+
+  const videoChatProps: ChatProps = {
+    displayMentorNames: true,
+    height: windowHeight,
+  };
+
   const historyChatLandscape = (
     <div
       style={{
         height: shouldDisplayPortrait() ? "250px" : windowHeight - 100,
       }}
     >
-      <HistoryChat height={windowHeight - 100} />
+      <Chat height={windowHeight - 100} chatProps={videoChatProps} />
     </div>
   );
 
@@ -274,7 +285,7 @@ function IndexPage(props: {
             </div>
             <div className={styles.flexExpandChild}>
               {mentorType === MentorType.CHAT ? (
-                <Chat height={chatHeight} />
+                <Chat height={chatHeight} chatProps={chatProps} />
               ) : (
                 <Video playing={hasSessionUser()} />
               )}
@@ -285,7 +296,9 @@ function IndexPage(props: {
             {!hasSessionUser() ? <GuestPrompt /> : undefined}
           </div>
         </div>
-        {!shouldDisplayPortrait() ? historyChatLandscape : null}
+        {!shouldDisplayPortrait() && mentorType !== "CHAT"
+          ? historyChatLandscape
+          : null}
       </div>
     </MuiThemeProvider>
   );

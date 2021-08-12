@@ -53,14 +53,22 @@ export interface ChatItemData extends ChatMsg {
   name: string;
   color: string;
 }
+
+interface ChatProps {
+  displayMentorNames?: boolean;
+  heightSomething?: number;
+  widthOtherThing?: number;
+}
 export function ChatItem(props: {
   message: ChatItemData;
   i: number;
   styles: StyleProps;
   setAnswerVisibility: (show: boolean) => void;
   visibility: boolean;
+  chatProps: ChatProps;
 }): JSX.Element {
-  const { message, i, styles, setAnswerVisibility, visibility } = props;
+  const { message, i, styles, setAnswerVisibility, visibility, chatProps } =
+    props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
   const config = useSelector<State, Config>((s) => s.config);
@@ -81,7 +89,6 @@ export function ChatItem(props: {
     setAnchorEl(null);
     dispatch(feedbackSend(message.feedbackId, feedback));
   }
-
   function LinkRenderer(props: {
     href: string;
     children: React.ReactNode;
@@ -155,7 +162,7 @@ export function ChatItem(props: {
 
   const askQuestionIcon = !isUser ? (
     <RecordVoiceOverIcon
-      data-cy={`ask-icon-${i}`}
+      data-cy={`aks-icon-${i}`}
       style={{
         paddingLeft: 10,
         maxWidth: 750,
@@ -178,7 +185,9 @@ export function ChatItem(props: {
           fontSize: 15,
         }}
       >
-        {!isUser && isVisible ? message.name : null}
+        {!isUser && isVisible && chatProps.displayMentorNames
+          ? message.name
+          : null}
       </p>
       <ListItem
         data-cy={`chat-msg-${i}`}
