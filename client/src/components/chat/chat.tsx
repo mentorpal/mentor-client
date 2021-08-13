@@ -66,12 +66,11 @@ const MENTOR_COLORS = ["#eaeaea", "#d4e8d9", "#ffebcf", "#f5cccd"];
 
 export function Chat(args: {
   height: number;
-  displayMentorNames?: boolean;
   windowHeight?: number;
   width?: string;
   bubbleColor?: string;
 }): JSX.Element {
-  const { height, displayMentorNames, windowHeight, width, bubbleColor } = args;
+  const { height, windowHeight, width, bubbleColor } = args;
   const styles = useStyles();
   const {
     lastQuestionId,
@@ -195,7 +194,6 @@ export function Chat(args: {
                   setQuestionVisibilityPref(m.questionId, show);
                 }}
                 visibility={isQuestionsAnswersVisible(m.questionId)}
-                displayMentorNames={displayMentorNames || true}
               />
             </div>
           );

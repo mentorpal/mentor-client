@@ -255,11 +255,7 @@ function IndexPage(props: {
         height: shouldDisplayPortrait() ? "250px" : windowHeight - 100,
       }}
     >
-      <Chat
-        height={windowHeight - 100}
-        displayMentorNames={true}
-        windowHeight={windowHeight}
-      />
+      <Chat height={windowHeight - 100} windowHeight={windowHeight} />
     </div>
   );
 
@@ -279,7 +275,6 @@ function IndexPage(props: {
               {mentorType === MentorType.CHAT ? (
                 <Chat
                   height={chatHeight}
-                  displayMentorNames={true}
                   windowHeight={windowHeight}
                   width={"50vw"}
                   bubbleColor={"#88929e"}
