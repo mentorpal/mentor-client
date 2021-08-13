@@ -1,15 +1,6 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { sendQuestion } from "store/actions";
-import {
-  ChatLink,
-  ChatMsg,
-  Config,
-  LINK_TYPE_WEB,
-  MentorQuestionSource,
-  MentorType,
-  State,
-} from "types";
+import { useSelector } from "react-redux";
+import { ChatLink, ChatMsg, LINK_TYPE_WEB, MentorType, State } from "types";
 
 export interface UseWithChatData {
   mentorType: string;
@@ -19,7 +10,6 @@ export interface UseWithChatData {
   setQuestionVisibilityPref: (questionId: string, show: boolean) => void;
   setVisibilityShowAllPref: (show: boolean) => void;
   mentorNameForChatMsg: (chatMsg: ChatMsg) => string;
-  askLinkQuestionSend: (question: string, source: MentorQuestionSource) => void;
 }
 
 export enum ItemVisibilityPrefs {
@@ -104,16 +94,6 @@ export function useWithChatData(): UseWithChatData {
     return mentorNameById[chatMsg.mentorId] || "";
   }
 
-  const config = useSelector<State, Config>((s) => s.config);
-  const dispatch = useDispatch();
-
-  function askLinkQuestionSend(
-    question: string,
-    source: MentorQuestionSource
-  ): void {
-    dispatch(sendQuestion({ question, source, config }));
-  }
-
   return {
     mentorType,
     lastQuestionId,
@@ -122,6 +102,5 @@ export function useWithChatData(): UseWithChatData {
     setQuestionVisibilityPref,
     setVisibilityShowAllPref,
     mentorNameForChatMsg,
-    askLinkQuestionSend,
   };
 }

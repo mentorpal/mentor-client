@@ -257,10 +257,8 @@ function IndexPage(props: {
     >
       <Chat
         height={windowHeight - 100}
-        chatProps={{
-          displayMentorNames: true,
-          height: windowHeight,
-        }}
+        displayMentorNames={true}
+        windowHeight={windowHeight}
       />
     </div>
   );
@@ -281,12 +279,10 @@ function IndexPage(props: {
               {mentorType === MentorType.CHAT ? (
                 <Chat
                   height={chatHeight}
-                  chatProps={{
-                    displayMentorNames: true,
-                    height: windowHeight,
-                    width: "50vw",
-                    bubbleColor: "#eaeaea",
-                  }}
+                  displayMentorNames={true}
+                  windowHeight={windowHeight}
+                  width={"50vw"}
+                  bubbleColor={"#eaeaea"}
                 />
               ) : (
                 <Video playing={hasSessionUser()} />

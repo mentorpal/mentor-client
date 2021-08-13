@@ -14,7 +14,7 @@ import { State, TopicQuestions } from "types";
 import withLocation from "wrap-with-location";
 import { shouldDisplayPortrait } from "pages";
 
-export interface TopicsSytle {
+export interface TopicSytle {
   displayHistoryButton?: boolean;
 }
 
@@ -23,7 +23,7 @@ function Topics(args: {
   search: {
     subject?: string;
   };
-  styleProps: TopicsSytle;
+  styleProps: TopicSytle;
 }) {
   const { onSelected, styleProps } = args;
   const dispatch = useDispatch();

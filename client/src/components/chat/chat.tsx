@@ -12,7 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
-import { ChatData, ChatMsg, State, MentorQuestionSource } from "types";
+import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
 import ChatItem, { ChatItemData } from "./chat-item";
 import { ItemVisibilityPrefs, useWithChatData } from "./use-chat-data";
@@ -64,20 +64,16 @@ const useStyles = makeStyles((theme) => ({
 
 interface ScrollingQuestionsParams {
   height: number;
-  chatProps: ChatProps;
-}
-
-const MENTOR_COLORS = ["#eaeaea", "#d4e8d9", "#ffebcf", "#f5cccd"];
-
-export interface ChatProps {
   displayMentorNames?: boolean;
-  height?: number;
+  windowHeight?: number;
   width?: string;
   bubbleColor?: string;
 }
 
+const MENTOR_COLORS = ["#eaeaea", "#d4e8d9", "#ffebcf", "#f5cccd"];
+
 export function Chat(args: ScrollingQuestionsParams): JSX.Element {
-  const { height, chatProps } = args;
+  const { height, displayMentorNames, windowHeight, width, bubbleColor } = args;
   const styles = useStyles();
   const {
     lastQuestionId,
@@ -86,7 +82,6 @@ export function Chat(args: ScrollingQuestionsParams): JSX.Element {
     setQuestionVisibilityPref,
     setVisibilityShowAllPref,
     mentorNameForChatMsg,
-    askLinkQuestionSend,
   } = useWithChatData();
 
   const colorByMentorId = useSelector<State, Record<string, string>>((s) => {
@@ -97,12 +92,6 @@ export function Chat(args: ScrollingQuestionsParams): JSX.Element {
       return acc;
     }, {});
   });
-
-  useEffect(() => {
-    chatData.messages.length === 0
-      ? askLinkQuestionSend("Introduction", MentorQuestionSource.USER)
-      : null;
-  }, []);
 
   const chatData = useSelector<State, ChatData>((s) => s.chat);
   useEffect(() => {
@@ -175,13 +164,8 @@ export function Chat(args: ScrollingQuestionsParams): JSX.Element {
         data-cy="chat-thread"
         className={styles.list}
         style={{
-          width: shouldDisplayPortrait()
-            ? "100%"
-            : chatProps.width
-            ? chatProps.width
-            : "40vw",
-          height:
-            shouldDisplayPortrait() || chatProps.height ? height : "300px",
+          width: shouldDisplayPortrait() ? "100%" : width ? width : "40vw",
+          height: shouldDisplayPortrait() || windowHeight ? height : "300px",
         }}
         disablePadding={true}
         id="chat-thread"
@@ -191,8 +175,8 @@ export function Chat(args: ScrollingQuestionsParams): JSX.Element {
           const itemData: ChatItemData = {
             ...m,
             color:
-              chatProps.bubbleColor && !m.isUser
-                ? chatProps.bubbleColor
+              bubbleColor && !m.isUser
+                ? bubbleColor
                 : colorByMentorId[m.mentorId] || "",
             name: mentorNameForChatMsg(m) || "",
           };
@@ -216,7 +200,9 @@ export function Chat(args: ScrollingQuestionsParams): JSX.Element {
                   setQuestionVisibilityPref(m.questionId, show);
                 }}
                 visibility={isQuestionsAnswersVisible(m.questionId)}
-                chatProps={chatProps}
+                chatProps={{
+                  displayMentorNames: displayMentorNames || true,
+                }}
               />
             </div>
           );

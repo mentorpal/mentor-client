@@ -35,7 +35,6 @@ import {
 import "styles/history-chat.css";
 import { feedbackSend, sendQuestion, userInputChanged } from "store/actions";
 import { hrefToChatLink } from "./use-chat-data";
-import { ChatProps } from "./chat";
 
 type StyleProps = {
   root: string;
@@ -61,7 +60,7 @@ export function ChatItem(props: {
   styles: StyleProps;
   setAnswerVisibility: (show: boolean) => void;
   visibility: boolean;
-  chatProps: ChatProps;
+  chatProps: { displayMentorNames: boolean };
 }): JSX.Element {
   const { message, i, styles, setAnswerVisibility, visibility, chatProps } =
     props;

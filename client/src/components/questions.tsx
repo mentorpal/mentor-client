@@ -65,15 +65,7 @@ function Questions(props: {
   });
 
   const historyComponent = shouldDisplayPortrait() ? (
-    <Chat
-      height={500}
-      chatProps={{
-        displayMentorNames: true,
-        height: 500,
-        width: "",
-        bubbleColor: "",
-      }}
-    />
+    <Chat height={500} displayMentorNames={true} windowHeight={500} />
   ) : null;
   const content =
     curTopic === "History" ? (
