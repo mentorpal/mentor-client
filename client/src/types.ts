@@ -30,6 +30,7 @@ export interface ChatMsg {
   name: string;
   color: string;
   mentorId: string;
+  isIntro: boolean;
   isUser: boolean;
   text: string;
   feedback: Feedback;

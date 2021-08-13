@@ -19,8 +19,9 @@ function Topics(args: {
   search: {
     subject?: string;
   };
+  displayHistoryButton?: boolean;
 }) {
-  const { onSelected } = args;
+  const { onSelected, displayHistoryButton } = args;
   const dispatch = useDispatch();
   const topicQuestions = useSelector<State, TopicQuestions[]>((state) => {
     if (!state.curMentor) {
@@ -50,7 +51,7 @@ function Topics(args: {
   // if not mobile -> hide history button
 
   const topicButtons = topicQuestions.map((tq, i) => {
-    return shouldDisplayPortrait() ? (
+    return shouldDisplayPortrait() && displayHistoryButton ? (
       <div data-cy={`topic-${i}`} className="slide topic-slide" key={i}>
         <Button
           className={curTopic === tq.topic ? "topic-selected" : ""}

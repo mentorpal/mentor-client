@@ -52,7 +52,9 @@ import {
   Feedback,
   AskLink,
   LINK_TYPE_ASK,
-} from "../types";
+  UtteranceName,
+} from "types";
+import { getUtterance } from "api";
 
 export const initialState: State = {
   chat: {
@@ -95,10 +97,12 @@ export const initialState: State = {
 
 function mentorSelected(state: State, action: MentorSelectedAction): State {
   const mentorId = action.payload.id;
+
   return onMentorNext({
     ...(action.payload.setFav
       ? mentorFaved(state, { type: MENTOR_FAVED, id: action.payload.id })
       : state),
+
     curMentor: action.payload.id,
     curMentorReason: action.payload.reason,
     isIdle: false,
@@ -234,8 +238,34 @@ function onMentorLoadResults(
   state: State,
   action: MentorsLoadResultAction
 ): State {
+  const mentor = action?.payload?.mentor;
+  const curMentorIntro =
+    action?.payload?.mentorsById[mentor || ""]?.data?.mentor;
+
+  const curMentorIntroTranscript = curMentorIntro
+    ? getUtterance(curMentorIntro, UtteranceName.INTRO)?.transcript
+    : "";
+
   let s = {
     ...state,
+    chat: {
+      ...state.chat,
+      messages: [
+        ...state.chat.messages,
+        {
+          name: "",
+          color: "",
+          mentorId: "",
+          isIntro: true,
+          isUser: false,
+          text: curMentorIntroTranscript || "",
+          questionId: "",
+          feedback: Feedback.NONE,
+          feedbackId: "",
+          isFeedbackSendInProgress: false,
+        },
+      ],
+    },
     mentorsById: Object.getOwnPropertyNames(action.payload.mentorsById).reduce(
       (acc: Record<string, MentorState>, mid: string) => {
         acc[mid] = {
@@ -248,6 +278,7 @@ function onMentorLoadResults(
       {} as Record<string, MentorState>
     ),
   };
+
   if (action.payload.mentor) {
     s = mentorSelected(s, {
       type: MENTOR_SELECTED,
@@ -263,6 +294,7 @@ function onMentorLoadResults(
       topic: action.payload.topic,
     });
   }
+
   return s;
 }
 
@@ -279,6 +311,7 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               name: "",
               color: "",
               mentorId: "",
+              isIntro: false,
               isUser: true,
               text: action.payload.question,
               questionId: action.payload.questionId,
@@ -361,6 +394,7 @@ function onQuestionAnswered(
   // NOTE: about answerFeedbackId
   // It seems like the answerFeedbackId should be
   // associated to the chat message
+
   const mentor: MentorState = {
     ...state.mentorsById[action.payload.mentor],
     // we need chat messages to live up here
@@ -398,7 +432,7 @@ function onQuestionAnswered(
       askLinkIndex: i,
     };
   });
-  console.log(askLinks);
+
   return {
     ...state,
     chat: {
@@ -409,6 +443,7 @@ function onQuestionAnswered(
           name: "",
           color: "",
           mentorId: action.payload.mentor,
+          isIntro: false,
           isUser: false,
           questionId: action.payload.questionId,
           text: action.payload.answerText,

@@ -10,7 +10,6 @@ import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Cmi5 from "@xapi/cmi5";
 import { hasCmi } from "cmiutils";
-import Chat from "components/chat";
 import GuestPrompt from "components/guest-prompt";
 import Header from "components/header";
 import Input from "components/input";
@@ -23,9 +22,9 @@ import "styles/layout.css";
 import { fetchMentorByAccessToken } from "api";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
-import HistoryChat from "components/history";
+import Chat from "components/chat";
 
-import "../styles/history-chat-responsive.css";
+import "styles/history-chat-responsive.css";
 
 const useStyles = makeStyles((theme) => ({
   flexRoot: {
@@ -256,7 +255,7 @@ function IndexPage(props: {
         height: shouldDisplayPortrait() ? "250px" : windowHeight - 100,
       }}
     >
-      <HistoryChat height={windowHeight - 100} />
+      <Chat height={windowHeight - 100} windowHeight={windowHeight} />
     </div>
   );
 
@@ -274,18 +273,25 @@ function IndexPage(props: {
             </div>
             <div className={styles.flexExpandChild}>
               {mentorType === MentorType.CHAT ? (
-                <Chat height={chatHeight} />
+                <Chat
+                  height={chatHeight}
+                  windowHeight={windowHeight}
+                  width={"50vw"}
+                  bubbleColor={"#88929e"}
+                />
               ) : (
                 <Video playing={hasSessionUser()} />
               )}
             </div>
             <div className={styles.flexFixedChild}>
-              <Input />
+              <Input displayHistoryButton={mentorType !== "CHAT"} />
             </div>
             {!hasSessionUser() ? <GuestPrompt /> : undefined}
           </div>
         </div>
-        {!shouldDisplayPortrait() ? historyChatLandscape : null}
+        {!shouldDisplayPortrait() && mentorType !== "CHAT"
+          ? historyChatLandscape
+          : null}
       </div>
     </MuiThemeProvider>
   );

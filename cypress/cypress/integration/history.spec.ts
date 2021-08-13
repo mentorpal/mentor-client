@@ -30,7 +30,6 @@ describe("Chat History (Video Mentors)", () => {
 
   it("displays questions that have been asked via input", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=topic-2]").trigger("mouseover").click();
     cy.get("[data-cy=input-field]").type("Hello");
@@ -46,7 +45,7 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=topic-2]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-msg-0]").contains("Where were you born?");
+      cy.get("[data-cy=chat-msg-1]").contains("Where were you born?");
     });
   });
 
@@ -63,7 +62,7 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "response_with_feedback.json",
     });
     cy.visit("/");
-    //
+
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
@@ -74,8 +73,8 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-msg-0]").contains("user msg 1");
-      cy.get("[data-cy=chat-msg-2]").contains("user msg 2");
+      cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
+      cy.get("[data-cy=chat-msg-3]").contains("user msg 2");
     });
   });
 
@@ -102,8 +101,8 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=visibility-switch]").find("input").check();
     // provide feedback
     cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-msg-0]").contains("Good feedback test");
-      cy.get("[data-cy=chat-msg-1]").within(($cm) => {
+      cy.get("[data-cy=chat-msg-1]").contains("Good feedback test");
+      cy.get("[data-cy=chat-msg-2]").within(($cm) => {
         cy.get("[data-cy=feedback-btn]").should("exist");
         cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
       });
@@ -176,8 +175,10 @@ describe("Chat History (Video Mentors)", () => {
 
     // provide feedback
     cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-msg-0]").contains("Good feedback test");
-      cy.get("[data-cy=chat-msg-1]").within(($cm) => {
+      cy.get("[data-cy=chat-msg-1]")
+        .scrollIntoView()
+        .contains("Good feedback test");
+      cy.get("[data-cy=chat-msg-5]").within(($cm) => {
         cy.get("[data-cy=feedback-btn]").should("exist");
         cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
       });
@@ -202,7 +203,7 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=click-bad]").trigger("mouseover").click();
 
     // cancel feedback
-    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn]")
+    cy.get("[data-cy=chat-msg-3] [data-cy=feedback-btn]")
       .trigger("mouseover")
       .click();
     cy.get("[data-cy=click-good]");
@@ -240,10 +241,10 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=visibility-switch]").find("input").uncheck();
 
     cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-msg-1]")
+      cy.get("[data-cy=chat-msg-2]")
         .invoke("css", "background-color")
         .then(($backgroundMentor1) => {
-          cy.get("[data-cy=chat-msg-2]").should(
+          cy.get("[data-cy=chat-msg-3]").should(
             "not.have.css",
             "background",
             $backgroundMentor1
@@ -290,27 +291,24 @@ describe("Chat History (Video Mentors)", () => {
           .should("not.be.checked");
 
         // show answers
-        cy.get("[data-cy=chat-msg-1]").should("not.be.visible");
         cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
+        cy.get("[data-cy=chat-msg-3]").should("not.be.visible");
         // the answers for the last question are visible by default
         // even if the show-all toggle is left unchecked
-        cy.get("[data-cy=chat-msg-4]").scrollIntoView().should("be.visible");
         cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
 
         // show answers toggle
         cy.get("[data-cy=visibility-switch]").find("input").check();
-        cy.get("[data-cy=chat-msg-1]").should("be.visible");
-        cy.get("[data-cy=chat-msg-2]").scrollIntoView().should("be.visible");
-        cy.get("[data-cy=chat-msg-4]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=chat-msg-2]").should("be.visible");
+        cy.get("[data-cy=chat-msg-3]").scrollIntoView().should("be.visible");
         cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
 
-        // show answers toggle
-        cy.get("[data-cy=chat-msg-1]").should("not.be.visible");
-        cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
         // the answers for the last question are visible by default
         // even if the show-all toggle is left unchecked
-        cy.get("[data-cy=chat-msg-4]").scrollIntoView().should("be.visible");
         cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
       });
     });
   });
@@ -348,24 +346,24 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         // Hide answers
-        cy.get("[data-cy=vsbyIcon-0]").should("exist");
-        cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
-        cy.get("[data-cy=chat-msg-0]").scrollIntoView();
-        cy.get("[data-cy=chat-msg-1]").should("not.be.visible");
+        cy.get("[data-cy=vsbyIcon-1]").should("exist");
+        cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
+        cy.get("[data-cy=chat-msg-1]").scrollIntoView();
         cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
+        cy.get("[data-cy=chat-msg-3]").should("not.be.visible");
 
         // Hide answers
-        cy.get("[data-cy=chat-msg-3]").scrollIntoView();
-        cy.get("[data-cy=vsbyIcon-3]").should("exist");
-        cy.get("[data-cy=vsbyIcon-3]").trigger("mouseover").click();
-        cy.get("[data-cy=chat-msg-1]").should("not.be.visible");
+        cy.get("[data-cy=chat-msg-4]").scrollIntoView();
+        cy.get("[data-cy=vsbyIcon-4]").should("exist");
+        cy.get("[data-cy=vsbyIcon-4]").trigger("mouseover").click();
         cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
+        cy.get("[data-cy=chat-msg-3]").should("not.be.visible");
 
         // show answers
-        cy.get("[data-cy=vsbyIcon-3]").should("exist");
-        cy.get("[data-cy=vsbyIcon-3]").trigger("mouseover").click();
-        cy.get("[data-cy=chat-msg-4]").should("be.visible");
-        cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=vsbyIcon-4]").should("exist");
+        cy.get("[data-cy=vsbyIcon-4]").trigger("mouseover").click();
+        cy.get("[data-cy=chat-msg-5]").should("be.visible");
+        cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
       });
     });
   });
@@ -401,12 +399,12 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         // hidden answers
-        cy.get("[data-cy=chat-msg-1]").should("not.be.visible");
         cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
+        cy.get("[data-cy=chat-msg-3]").should("not.be.visible");
 
         // hidden answers
-        cy.get("[data-cy=chat-msg-3]").should("be.visible");
-        cy.get("[data-cy=chat-msg-4]").should("be.visible");
+        cy.get("[data-cy=chat-msg-5]").should("be.visible");
+        cy.get("[data-cy=chat-msg-6]").should("be.visible");
       });
     });
 
@@ -417,19 +415,19 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         // hidden answers
-        cy.get("[data-cy=chat-msg-0]").should("be.visible");
-        cy.get("[data-cy=chat-msg-1]").should("not.be.visible");
+        cy.get("[data-cy=chat-msg-1]").should("be.visible");
         cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
+        cy.get("[data-cy=chat-msg-3]").should("not.be.visible");
 
         // hidden answers
-        cy.get("[data-cy=chat-msg-3]").should("be.visible");
-        cy.get("[data-cy=chat-msg-4]").should("not.be.visible");
+        cy.get("[data-cy=chat-msg-4]").should("be.visible");
         cy.get("[data-cy=chat-msg-5]").should("not.be.visible");
+        cy.get("[data-cy=chat-msg-6]").should("not.be.visible");
 
         // visible answers
-        cy.get("[data-cy=chat-msg-6]").should("be.visible");
         cy.get("[data-cy=chat-msg-7]").should("be.visible");
         cy.get("[data-cy=chat-msg-8]").should("be.visible");
+        cy.get("[data-cy=chat-msg-9]").should("be.visible");
       });
     });
   });
@@ -471,11 +469,11 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         // show first question's answers
-        cy.get("[data-cy=vsbyIcon-0]").should("exist");
-        cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
-        cy.get("[data-cy=chat-msg-0]").scrollIntoView();
-        cy.get("[data-cy=chat-msg-1]").should("be.visible");
+        cy.get("[data-cy=vsbyIcon-1]").should("exist");
+        cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
+        cy.get("[data-cy=chat-msg-1]").scrollIntoView();
         cy.get("[data-cy=chat-msg-2]").should("be.visible");
+        cy.get("[data-cy=chat-msg-3]").scrollIntoView().should("be.visible");
       });
     });
   });
@@ -517,11 +515,11 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         // show first question's answers
-        cy.get("[data-cy=vsbyIcon-0]").should("exist");
-        cy.get("[data-cy=vsbyIcon-0]").trigger("mouseover").click();
-        cy.get("[data-cy=chat-msg-0]").scrollIntoView();
-        cy.get("[data-cy=chat-msg-1]").should("be.visible");
+        cy.get("[data-cy=vsbyIcon-1]").should("exist");
+        cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
+        cy.get("[data-cy=chat-msg-1]").scrollIntoView();
         cy.get("[data-cy=chat-msg-2]").should("be.visible");
+        cy.get("[data-cy=chat-msg-3]").scrollIntoView().should("be.visible");
       });
     });
 
@@ -529,8 +527,8 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         // visible answers
-        cy.get("[data-cy=chat-msg-1]").should("be.visible");
-        cy.get("[data-cy=chat-msg-2]").should("be.visible");
+        cy.get("[data-cy=chat-msg-2]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=chat-msg-3]").scrollIntoView().should("be.visible");
       });
     });
 
@@ -541,19 +539,19 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         // show first question's answers
-        cy.get("[data-cy=chat-msg-1]").should("be.visible");
-        cy.get("[data-cy=chat-msg-2]").should("be.visible");
+        cy.get("[data-cy=chat-msg-2]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=chat-msg-3]").scrollIntoView().should("be.visible");
       });
     });
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         // show first question's answers
-        cy.get("[data-cy=chat-msg-2]").should("be.visible");
-        cy.get("[data-cy=chat-msg-1]").should("be.visible");
+        cy.get("[data-cy=chat-msg-3]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=chat-msg-2]").scrollIntoView().should("be.visible");
         // show last question's answers
-        cy.get("[data-cy=chat-msg-13]").should("be.visible");
-        cy.get("[data-cy=chat-msg-14]").should("be.visible");
+        cy.get("[data-cy=chat-msg-14]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=chat-msg-15]").scrollIntoView().should("be.visible");
       });
     });
   });

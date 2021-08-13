@@ -76,7 +76,7 @@ describe("Chat", () => {
     cy.get("[data-cy=chat-thread]").should("exist");
     cy.get("[data-cy=input-field]").type("test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-2]").contains("Click here");
+    cy.get("[data-cy=chat-msg-2]").contains("Click https://www.google.com");
     cy.get("[data-cy=chat-msg-2] a").should(
       "have.attr",
       "href",
@@ -102,21 +102,25 @@ describe("Chat", () => {
     cy.get("[data-cy=chat-thread]").should("exist");
     cy.get("[data-cy=input-field]").type("test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-2]").contains("Give me feedback");
-    cy.get(
-      "[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]"
-    ).should("exist");
-    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn]")
-      .trigger("mouseover")
-      .click();
-    cy.get("[data-cy=click-good]");
-    cy.get("[data-cy=click-neutral]");
-    cy.get("[data-cy=click-bad]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=bad]").should(
-      "exist"
+
+    // provide feedback
+    cy.get("[data-cy=history-chat").within(($hc) => {
+      cy.get("[data-cy=chat-msg-2]").contains("Give me feedback");
+      cy.get("[data-cy=chat-msg-2]").within(($cm) => {
+        cy.get("[data-cy=feedback-btn]").should("exist");
+        cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
+      });
+    });
+
+    cy.get("[data-cy=click-good]").should("exist");
+    cy.get("[data-cy=click-neutral]").should("exist");
+
+    cy.get("[data-cy=click-good]").should(
+      "have.attr",
+      "data-test-in-progress",
+      "false"
     );
-    cy.get(
-      "[data-cy=chat-msg-2] [data-cy=feedback-btn] [data-cy=neutral]"
-    ).should("not.exist");
+    cy.get("[data-cy=click-good]").trigger("mouseover").click();
+    cy.get("[data-cy=selected-good]").should("be.visible");
   });
 });

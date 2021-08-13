@@ -40,7 +40,9 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function Input(): JSX.Element {
+function Input(args: { displayHistoryButton?: boolean }): JSX.Element {
+  const { displayHistoryButton } = args;
+
   const dispatch = useDispatch();
   const classes = useStyles();
   const config = useSelector<State, Config>((s) => s.config);
@@ -148,7 +150,10 @@ function Input(): JSX.Element {
           Send
         </Button>
       </Paper>
-      <Topics onSelected={onTopicSelected} />
+      <Topics
+        onSelected={onTopicSelected}
+        displayHistoryButton={displayHistoryButton}
+      />
       <Collapse in={Boolean(curTopic)} timeout="auto" unmountOnExit>
         <Questions onSelected={onQuestionSelected} />
       </Collapse>

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { ChatLink, ChatMsg, LINK_TYPE_WEB, State } from "types";
+import { ChatLink, ChatMsg, LINK_TYPE_WEB, MentorType, State } from "types";
 
 export interface UseWithChatData {
+  mentorType: string;
   lastQuestionId: string;
   visibilityShowAllPref: boolean;
   getQuestionVisibilityPref: (questionId: string) => ItemVisibilityPrefs;
@@ -31,10 +32,19 @@ export function hrefToChatLink(href: string, chatMsg: ChatMsg): ChatLink {
 }
 
 export function useWithChatData(): UseWithChatData {
+  const mentorType = useSelector<State, MentorType>((state) => {
+    if (!state.curMentor) {
+      return MentorType.VIDEO;
+    }
+    return (
+      state.mentorsById[state.curMentor]?.mentor?.mentorType || MentorType.VIDEO
+    );
+  });
   const [visibiltityPrefByQuestionId, setVisibiltityPrefByQuestionId] =
     useState<Record<string, ItemVisibilityPrefs>>({});
-  const [visibilityShowAllPref, setVisibilityShowAllPref] =
-    useState<boolean>(false);
+  const [visibilityShowAllPref, setVisibilityShowAllPref] = useState<boolean>(
+    mentorType === "CHAT" ? true : false
+  );
   const lastQuestionId = useSelector<State, string>((s) => {
     return s.chat.messages.length > 0
       ? s.chat.messages[s.chat.messages.length - 1].questionId
@@ -85,6 +95,7 @@ export function useWithChatData(): UseWithChatData {
   }
 
   return {
+    mentorType,
     lastQuestionId,
     visibilityShowAllPref,
     getQuestionVisibilityPref,

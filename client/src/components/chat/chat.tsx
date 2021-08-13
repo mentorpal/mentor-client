@@ -14,7 +14,7 @@ import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
 import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
-import ChatItem, { ChatItemData } from "./history-item";
+import ChatItem, { ChatItemData } from "./chat-item";
 import { ItemVisibilityPrefs, useWithChatData } from "./use-chat-data";
 import { shouldDisplayPortrait } from "pages";
 
@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
   list: {
     marginTop: 1,
     padding: shouldDisplayPortrait() ? 0 : 10,
-    width: shouldDisplayPortrait() ? "100%" : "40vw",
     backgroundColor: "#fff",
     borderRadius: 10,
   },
@@ -63,14 +62,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface ScrollingQuestionsParams {
+const MENTOR_COLORS = ["#eaeaea", "#d4e8d9", "#ffebcf", "#f5cccd"];
+
+export function Chat(args: {
   height: number;
-}
-
-const MENTOR_COLORS = ["#d8e7f8", "#d4e8d9", "#ffebcf", "#f5cccd"];
-
-export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
-  const { height } = args;
+  windowHeight?: number;
+  width?: string;
+  bubbleColor?: string;
+}): JSX.Element {
+  const { height, windowHeight, width, bubbleColor } = args;
   const styles = useStyles();
   const {
     lastQuestionId,
@@ -91,7 +91,6 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   });
 
   const chatData = useSelector<State, ChatData>((s) => s.chat);
-
   useEffect(() => {
     animateScroll.scrollToBottom({
       containerId: "chat-thread",
@@ -105,6 +104,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
      * it will be visible REGARDLESS of the user's SHOW ALL pref
      * UNLESS the user explicitly seleced to hide the answers
      */
+
     if (questionId === lastQuestionId) {
       return Boolean(userPref !== ItemVisibilityPrefs.INVISIBLE);
     }
@@ -113,11 +113,13 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
          * RULE #2: if the user set SHOW ALL,
          * then only hide answers if the user explicitly hid them
          */
+
         Boolean(userPref !== ItemVisibilityPrefs.INVISIBLE)
       : /**
          * RULE #3: if the user did NOT set SHOW ALL toggle,
          * then only SHOW answers if the user explicitly asked to SHOW them
          */
+
         Boolean(userPref === ItemVisibilityPrefs.VISIBLE);
   }
 
@@ -159,7 +161,8 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
         data-cy="chat-thread"
         className={styles.list}
         style={{
-          height: shouldDisplayPortrait() ? "200px" : height,
+          width: shouldDisplayPortrait() ? "100%" : width ? width : "40vw",
+          height: shouldDisplayPortrait() || windowHeight ? height : "300px",
         }}
         disablePadding={true}
         id="chat-thread"
@@ -168,7 +171,7 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
         {chatData.messages.map((m: ChatMsg, i: number) => {
           const itemData: ChatItemData = {
             ...m,
-            color: colorByMentorId[m.mentorId] || "",
+            color: m.mentorId ? colorByMentorId[m.mentorId] : bubbleColor || "",
             name: mentorNameForChatMsg(m) || "",
           };
           return (
@@ -200,4 +203,4 @@ export function HistoryChat(args: ScrollingQuestionsParams): JSX.Element {
   );
 }
 
-export default HistoryChat;
+export default Chat;
