@@ -53,7 +53,7 @@ import {
   AskLink,
   LINK_TYPE_ASK,
   UtteranceName,
-} from "../types";
+} from "types";
 import { getUtterance } from "api";
 
 export const initialState: State = {
@@ -97,10 +97,12 @@ export const initialState: State = {
 
 function mentorSelected(state: State, action: MentorSelectedAction): State {
   const mentorId = action.payload.id;
+
   return onMentorNext({
     ...(action.payload.setFav
       ? mentorFaved(state, { type: MENTOR_FAVED, id: action.payload.id })
       : state),
+
     curMentor: action.payload.id,
     curMentorReason: action.payload.reason,
     isIdle: false,
@@ -236,8 +238,34 @@ function onMentorLoadResults(
   state: State,
   action: MentorsLoadResultAction
 ): State {
+  const mentor = action?.payload?.mentor;
+  const curMentorIntro =
+    action?.payload?.mentorsById[mentor || ""]?.data?.mentor;
+
+  const curMentorIntroTranscript = curMentorIntro
+    ? getUtterance(curMentorIntro, UtteranceName.INTRO)?.transcript
+    : "";
+
   let s = {
     ...state,
+    chat: {
+      ...state.chat,
+      messages: [
+        ...state.chat.messages,
+        {
+          name: "",
+          color: "",
+          mentorId: "",
+          isIntro: true,
+          isUser: false,
+          text: curMentorIntroTranscript || "",
+          questionId: "",
+          feedback: Feedback.NONE,
+          feedbackId: "",
+          isFeedbackSendInProgress: false,
+        },
+      ],
+    },
     mentorsById: Object.getOwnPropertyNames(action.payload.mentorsById).reduce(
       (acc: Record<string, MentorState>, mid: string) => {
         acc[mid] = {
@@ -250,6 +278,7 @@ function onMentorLoadResults(
       {} as Record<string, MentorState>
     ),
   };
+
   if (action.payload.mentor) {
     s = mentorSelected(s, {
       type: MENTOR_SELECTED,
@@ -282,6 +311,7 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               name: "",
               color: "",
               mentorId: "",
+              isIntro: false,
               isUser: true,
               text: action.payload.question,
               questionId: action.payload.questionId,
@@ -364,11 +394,6 @@ function onQuestionAnswered(
   // NOTE: about answerFeedbackId
   // It seems like the answerFeedbackId should be
   // associated to the chat message
-  const intro =
-    getUtterance(
-      state.mentorsById[state.curMentor]?.mentor,
-      UtteranceName.INTRO
-    )?.transcript || "";
 
   const mentor: MentorState = {
     ...state.mentorsById[action.payload.mentor],
@@ -408,59 +433,33 @@ function onQuestionAnswered(
     };
   });
 
-  return state.chat.messages.length === 1
-    ? {
-        ...state,
-        chat: {
-          ...state.chat,
-          messages: [
-            ...state.chat.messages,
-            {
-              name: "",
-              color: "",
-              mentorId: action.payload.mentor,
-              isUser: false,
-              questionId: action.payload.questionId,
-              text: intro,
-              feedback: Feedback.NONE,
-              feedbackId: action.payload.answerFeedbackId,
-              isFeedbackSendInProgress: false,
-              askLinks,
-            },
-          ],
+  return {
+    ...state,
+    chat: {
+      ...state.chat,
+      messages: [
+        ...state.chat.messages,
+        {
+          name: "",
+          color: "",
+          mentorId: action.payload.mentor,
+          isIntro: false,
+          isUser: false,
+          questionId: action.payload.questionId,
+          text: action.payload.answerText,
+          feedback: Feedback.NONE,
+          feedbackId: action.payload.answerFeedbackId,
+          isFeedbackSendInProgress: false,
+          askLinks,
         },
-        isIdle: false,
-        mentorsById: {
-          ...state.mentorsById,
-          [action.payload.mentor]: mentor,
-        },
-      }
-    : {
-        ...state,
-        chat: {
-          ...state.chat,
-          messages: [
-            ...state.chat.messages,
-            {
-              name: "",
-              color: "",
-              mentorId: action.payload.mentor,
-              isUser: false,
-              questionId: action.payload.questionId,
-              text: action.payload.answerText,
-              feedback: Feedback.NONE,
-              feedbackId: action.payload.answerFeedbackId,
-              isFeedbackSendInProgress: false,
-              askLinks,
-            },
-          ],
-        },
-        isIdle: false,
-        mentorsById: {
-          ...state.mentorsById,
-          [action.payload.mentor]: mentor,
-        },
-      };
+      ],
+    },
+    isIdle: false,
+    mentorsById: {
+      ...state.mentorsById,
+      [action.payload.mentor]: mentor,
+    },
+  };
 }
 
 function topicSelected(state: State, action: TopicSelectedAction): State {

@@ -16,7 +16,7 @@ import Input from "components/input";
 import Video from "components/video";
 import VideoPanel from "components/video-panel";
 import { loadConfig, loadMentors, setGuestName } from "store/actions";
-import { ChatProps, Config, LoadStatus, MentorType, State } from "types";
+import { Config, LoadStatus, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
 import { fetchMentorByAccessToken } from "api";
@@ -249,25 +249,19 @@ function IndexPage(props: {
     );
   }
 
-  const chatProps: ChatProps = {
-    displayMentorNames: true,
-    height: windowHeight,
-    width: "50vw",
-    bubbleColor: "#eaeaea",
-  };
-
-  const videoChatProps: ChatProps = {
-    displayMentorNames: true,
-    height: windowHeight,
-  };
-
   const historyChatLandscape = (
     <div
       style={{
         height: shouldDisplayPortrait() ? "250px" : windowHeight - 100,
       }}
     >
-      <Chat height={windowHeight - 100} chatProps={videoChatProps} />
+      <Chat
+        height={windowHeight - 100}
+        chatProps={{
+          displayMentorNames: true,
+          height: windowHeight,
+        }}
+      />
     </div>
   );
 
@@ -285,13 +279,23 @@ function IndexPage(props: {
             </div>
             <div className={styles.flexExpandChild}>
               {mentorType === MentorType.CHAT ? (
-                <Chat height={chatHeight} chatProps={chatProps} />
+                <Chat
+                  height={chatHeight}
+                  chatProps={{
+                    displayMentorNames: true,
+                    height: windowHeight,
+                    width: "50vw",
+                    bubbleColor: "#eaeaea",
+                  }}
+                />
               ) : (
                 <Video playing={hasSessionUser()} />
               )}
             </div>
             <div className={styles.flexFixedChild}>
-              <Input />
+              <Input
+                styleProps={{ displayHistoryButton: mentorType !== "CHAT" }}
+              />
             </div>
             {!hasSessionUser() ? <GuestPrompt /> : undefined}
           </div>

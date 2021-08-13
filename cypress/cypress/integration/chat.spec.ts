@@ -35,13 +35,13 @@ describe("Chat", () => {
     );
     cy.get("[data-cy=chat-thread]").should("exist");
     cy.get("[data-cy=video-container]").should("not.exist");
-    cy.get("[data-cy=chat-msg-1]").contains(
+    cy.get("[data-cy=chat-msg-0]").contains(
       "I am a COVID-19 chat bot, you can ask me about COVID-19."
     );
     cy.get("[data-cy=input-field]").type("how old are you");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-2]").contains("how old are you");
-    cy.get("[data-cy=chat-msg-3]").contains("I'm thirty seven years old.");
+    cy.get("[data-cy=chat-msg-1]").contains("how old are you");
+    cy.get("[data-cy=chat-msg-2]").contains("I'm thirty seven years old.");
   });
 
   it("shows users mentor if user is logged in admin", () => {
@@ -76,13 +76,13 @@ describe("Chat", () => {
     cy.get("[data-cy=chat-thread]").should("exist");
     cy.get("[data-cy=input-field]").type("test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-3]").contains("Click https://www.google.com");
-    cy.get("[data-cy=chat-msg-3] a").should(
+    cy.get("[data-cy=chat-msg-2]").contains("Click https://www.google.com");
+    cy.get("[data-cy=chat-msg-2] a").should(
       "have.attr",
       "href",
       "https://www.google.com"
     );
-    cy.get("[data-cy=chat-msg-3] a").should("have.attr", "target", "_blank");
+    cy.get("[data-cy=chat-msg-2] a").should("have.attr", "target", "_blank");
   });
 
   it("can give feedback on classifier answer", () => {
@@ -105,8 +105,8 @@ describe("Chat", () => {
 
     // provide feedback
     cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-msg-3]").contains("Give me feedback");
-      cy.get("[data-cy=chat-msg-3]").within(($cm) => {
+      cy.get("[data-cy=chat-msg-2]").contains("Give me feedback");
+      cy.get("[data-cy=chat-msg-2]").within(($cm) => {
         cy.get("[data-cy=feedback-btn]").should("exist");
         cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
       });

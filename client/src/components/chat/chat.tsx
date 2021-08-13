@@ -12,13 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
-import {
-  ChatData,
-  ChatMsg,
-  State,
-  MentorQuestionSource,
-  ChatProps,
-} from "types";
+import { ChatData, ChatMsg, State, MentorQuestionSource } from "types";
 import "styles/history-chat.css";
 import ChatItem, { ChatItemData } from "./chat-item";
 import { ItemVisibilityPrefs, useWithChatData } from "./use-chat-data";
@@ -74,6 +68,13 @@ interface ScrollingQuestionsParams {
 }
 
 const MENTOR_COLORS = ["#eaeaea", "#d4e8d9", "#ffebcf", "#f5cccd"];
+
+export interface ChatProps {
+  displayMentorNames?: boolean;
+  height?: number;
+  width?: string;
+  bubbleColor?: string;
+}
 
 export function Chat(args: ScrollingQuestionsParams): JSX.Element {
   const { height, chatProps } = args;

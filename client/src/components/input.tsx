@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Button, Divider, Paper, InputBase, Collapse } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Topics from "components/topics";
+import Topics, { TopicsSytle } from "components/topics";
 import Questions from "components/questions";
 import { sendQuestion, userInputChanged } from "store/actions";
 import { Config, MentorQuestionSource, QuestionInput, State } from "types";
@@ -40,7 +40,9 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function Input(): JSX.Element {
+function Input(args: { styleProps: TopicsSytle }): JSX.Element {
+  const { styleProps } = args;
+
   const dispatch = useDispatch();
   const classes = useStyles();
   const config = useSelector<State, Config>((s) => s.config);
@@ -148,7 +150,7 @@ function Input(): JSX.Element {
           Send
         </Button>
       </Paper>
-      <Topics onSelected={onTopicSelected} />
+      <Topics onSelected={onTopicSelected} styleProps={styleProps} />
       <Collapse in={Boolean(curTopic)} timeout="auto" unmountOnExit>
         <Questions onSelected={onQuestionSelected} />
       </Collapse>

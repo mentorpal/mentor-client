@@ -8,7 +8,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import ScrollingQuestions from "components/scrolling-questions";
-import { ChatProps, State } from "types";
+import { State } from "types";
 import withLocation from "wrap-with-location";
 import Chat from "./chat";
 import { shouldDisplayPortrait } from "pages";
@@ -64,14 +64,16 @@ function Questions(props: {
     return orderedQuestions;
   });
 
-  const videoChatProps: ChatProps = {
-    displayMentorNames: true,
-    height: 500,
-    width: "",
-    bubbleColor: "",
-  };
   const historyComponent = shouldDisplayPortrait() ? (
-    <Chat height={500} chatProps={videoChatProps} />
+    <Chat
+      height={500}
+      chatProps={{
+        displayMentorNames: true,
+        height: 500,
+        width: "",
+        bubbleColor: "",
+      }}
+    />
   ) : null;
   const content =
     curTopic === "History" ? (

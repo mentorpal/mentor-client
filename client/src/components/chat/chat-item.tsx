@@ -35,6 +35,7 @@ import {
 import "styles/history-chat.css";
 import { feedbackSend, sendQuestion, userInputChanged } from "store/actions";
 import { hrefToChatLink } from "./use-chat-data";
+import { ChatProps } from "./chat";
 
 type StyleProps = {
   root: string;
@@ -54,11 +55,6 @@ export interface ChatItemData extends ChatMsg {
   color: string;
 }
 
-interface ChatProps {
-  displayMentorNames?: boolean;
-  heightSomething?: number;
-  widthOtherThing?: number;
-}
 export function ChatItem(props: {
   message: ChatItemData;
   i: number;
@@ -162,7 +158,7 @@ export function ChatItem(props: {
 
   const askQuestionIcon = !isUser ? (
     <RecordVoiceOverIcon
-      data-cy={`aks-icon-${i}`}
+      data-cy={`ask-icon-${i}`}
       style={{
         paddingLeft: 10,
         maxWidth: 750,
@@ -201,11 +197,12 @@ export function ChatItem(props: {
         style={{
           paddingRight: 16,
           maxWidth: 750,
-          marginLeft: isUser ? 0 : 50,
-          backgroundColor: mentorColor,
+          marginLeft: isUser || message.isIntro ? 0 : 50,
+          backgroundColor: message.isIntro ? "#eaeaea" : mentorColor,
+          color: message.isIntro ? "#000" : message.isUser ? "#fff" : "#000",
         }}
       >
-        {visibilityIcon}
+        {!message.isIntro ? visibilityIcon : null}
         <ReactMarkdown
           source={message.text}
           renderers={{ link: LinkRenderer }}

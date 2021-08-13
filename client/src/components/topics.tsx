@@ -10,17 +10,22 @@ import { Button, Paper } from "@material-ui/core";
 import { History, Whatshot } from "@material-ui/icons";
 import { normalizeString } from "utils";
 import { selectTopic } from "store/actions";
-import { MentorType, State, TopicQuestions } from "types";
+import { State, TopicQuestions } from "types";
 import withLocation from "wrap-with-location";
 import { shouldDisplayPortrait } from "pages";
+
+export interface TopicsSytle {
+  displayHistoryButton?: boolean;
+}
 
 function Topics(args: {
   onSelected: (question: string) => void;
   search: {
     subject?: string;
   };
+  styleProps: TopicsSytle;
 }) {
-  const { onSelected } = args;
+  const { onSelected, styleProps } = args;
   const dispatch = useDispatch();
   const topicQuestions = useSelector<State, TopicQuestions[]>((state) => {
     if (!state.curMentor) {
@@ -32,14 +37,6 @@ function Topics(args: {
   const questionsAsked = useSelector<State, string[]>(
     (state) => state.questionsAsked || []
   );
-  const mentorType = useSelector<State, MentorType>((state) => {
-    if (!state.curMentor) {
-      return MentorType.VIDEO;
-    }
-    return (
-      state.mentorsById[state.curMentor]?.mentor?.mentorType || MentorType.VIDEO
-    );
-  });
 
   async function onTopicSelected(topic: string) {
     if (curTopic === topic) {
@@ -58,7 +55,7 @@ function Topics(args: {
   // if not mobile -> hide history button
 
   const topicButtons = topicQuestions.map((tq, i) => {
-    return shouldDisplayPortrait() && mentorType !== "CHAT" ? (
+    return shouldDisplayPortrait() && styleProps.displayHistoryButton ? (
       <div data-cy={`topic-${i}`} className="slide topic-slide" key={i}>
         <Button
           className={curTopic === tq.topic ? "topic-selected" : ""}
