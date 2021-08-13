@@ -24,7 +24,7 @@ import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
 import Chat from "components/chat";
 
-import "../styles/history-chat-responsive.css";
+import "styles/history-chat-responsive.css";
 
 const useStyles = makeStyles((theme) => ({
   flexRoot: {
@@ -282,16 +282,14 @@ function IndexPage(props: {
                   displayMentorNames={true}
                   windowHeight={windowHeight}
                   width={"50vw"}
-                  bubbleColor={"#eaeaea"}
+                  bubbleColor={"#88929e"}
                 />
               ) : (
                 <Video playing={hasSessionUser()} />
               )}
             </div>
             <div className={styles.flexFixedChild}>
-              <Input
-                styleProps={{ displayHistoryButton: mentorType !== "CHAT" }}
-              />
+              <Input displayHistoryButton={mentorType !== "CHAT"} />
             </div>
             {!hasSessionUser() ? <GuestPrompt /> : undefined}
           </div>

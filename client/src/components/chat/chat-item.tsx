@@ -60,10 +60,16 @@ export function ChatItem(props: {
   styles: StyleProps;
   setAnswerVisibility: (show: boolean) => void;
   visibility: boolean;
-  chatProps: { displayMentorNames: boolean };
+  displayMentorNames: boolean;
 }): JSX.Element {
-  const { message, i, styles, setAnswerVisibility, visibility, chatProps } =
-    props;
+  const {
+    message,
+    i,
+    styles,
+    setAnswerVisibility,
+    visibility,
+    displayMentorNames,
+  } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
   const config = useSelector<State, Config>((s) => s.config);
@@ -180,9 +186,7 @@ export function ChatItem(props: {
           fontSize: 15,
         }}
       >
-        {!isUser && isVisible && chatProps.displayMentorNames
-          ? message.name
-          : null}
+        {!isUser && isVisible && displayMentorNames ? message.name : null}
       </p>
       <ListItem
         data-cy={`chat-msg-${i}`}

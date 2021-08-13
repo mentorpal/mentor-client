@@ -14,18 +14,14 @@ import { State, TopicQuestions } from "types";
 import withLocation from "wrap-with-location";
 import { shouldDisplayPortrait } from "pages";
 
-export interface TopicSytle {
-  displayHistoryButton?: boolean;
-}
-
 function Topics(args: {
   onSelected: (question: string) => void;
   search: {
     subject?: string;
   };
-  styleProps: TopicSytle;
+  displayHistoryButton?: boolean;
 }) {
-  const { onSelected, styleProps } = args;
+  const { onSelected, displayHistoryButton } = args;
   const dispatch = useDispatch();
   const topicQuestions = useSelector<State, TopicQuestions[]>((state) => {
     if (!state.curMentor) {
@@ -55,7 +51,7 @@ function Topics(args: {
   // if not mobile -> hide history button
 
   const topicButtons = topicQuestions.map((tq, i) => {
-    return shouldDisplayPortrait() && styleProps.displayHistoryButton ? (
+    return shouldDisplayPortrait() && displayHistoryButton ? (
       <div data-cy={`topic-${i}`} className="slide topic-slide" key={i}>
         <Button
           className={curTopic === tq.topic ? "topic-selected" : ""}

@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Button, Divider, Paper, InputBase, Collapse } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Topics, { TopicSytle } from "components/topics";
+import Topics from "components/topics";
 import Questions from "components/questions";
 import { sendQuestion, userInputChanged } from "store/actions";
 import { Config, MentorQuestionSource, QuestionInput, State } from "types";
@@ -40,8 +40,8 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function Input(args: { styleProps: TopicSytle }): JSX.Element {
-  const { styleProps } = args;
+function Input(args: { displayHistoryButton?: boolean }): JSX.Element {
+  const { displayHistoryButton } = args;
 
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -150,7 +150,10 @@ function Input(args: { styleProps: TopicSytle }): JSX.Element {
           Send
         </Button>
       </Paper>
-      <Topics onSelected={onTopicSelected} styleProps={styleProps} />
+      <Topics
+        onSelected={onTopicSelected}
+        displayHistoryButton={displayHistoryButton}
+      />
       <Collapse in={Boolean(curTopic)} timeout="auto" unmountOnExit>
         <Questions onSelected={onQuestionSelected} />
       </Collapse>

@@ -62,17 +62,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface ScrollingQuestionsParams {
+const MENTOR_COLORS = ["#eaeaea", "#d4e8d9", "#ffebcf", "#f5cccd"];
+
+export function Chat(args: {
   height: number;
   displayMentorNames?: boolean;
   windowHeight?: number;
   width?: string;
   bubbleColor?: string;
-}
-
-const MENTOR_COLORS = ["#eaeaea", "#d4e8d9", "#ffebcf", "#f5cccd"];
-
-export function Chat(args: ScrollingQuestionsParams): JSX.Element {
+}): JSX.Element {
   const { height, displayMentorNames, windowHeight, width, bubbleColor } = args;
   const styles = useStyles();
   const {
@@ -174,10 +172,7 @@ export function Chat(args: ScrollingQuestionsParams): JSX.Element {
         {chatData.messages.map((m: ChatMsg, i: number) => {
           const itemData: ChatItemData = {
             ...m,
-            color:
-              bubbleColor && !m.isUser
-                ? bubbleColor
-                : colorByMentorId[m.mentorId] || "",
+            color: m.mentorId ? colorByMentorId[m.mentorId] : bubbleColor || "",
             name: mentorNameForChatMsg(m) || "",
           };
           return (
@@ -200,9 +195,7 @@ export function Chat(args: ScrollingQuestionsParams): JSX.Element {
                   setQuestionVisibilityPref(m.questionId, show);
                 }}
                 visibility={isQuestionsAnswersVisible(m.questionId)}
-                chatProps={{
-                  displayMentorNames: displayMentorNames || true,
-                }}
+                displayMentorNames={displayMentorNames || true}
               />
             </div>
           );
