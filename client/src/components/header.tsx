@@ -41,6 +41,11 @@ function Header(): JSX.Element {
     };
   });
 
+  const numberMentors = useSelector<State, number>(
+    (state) => Object.keys(state.mentorsById).length
+  );
+  const subject = "";
+
   const styleHeaderLogo = useSelector<State, string>(
     (state) => state.config.styleHeaderLogo?.trim() || ""
   );
@@ -85,6 +90,10 @@ function Header(): JSX.Element {
     setOpen(false);
   };
 
+  const MentorNameTitle = mentor.name + ": " + mentor.title;
+
+  const subjectTitle = subject ? "Mentor Panel: " + subject : "Mentor Panel";
+
   if (styleHeaderLogo) {
     return (
       <div
@@ -128,7 +137,7 @@ function Header(): JSX.Element {
         )}
         <Hidden only="xs">
           <Typography>
-            {mentor.name}: {mentor.title}
+            {numberMentors === 1 ? MentorNameTitle : subjectTitle}
           </Typography>
         </Hidden>
         {/* Show disclaimer */}

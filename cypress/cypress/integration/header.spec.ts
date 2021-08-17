@@ -185,18 +185,59 @@ describe("Header", () => {
     mockDefaultSetup(cy, {
       config: {
         cmi5Enabled: false,
-        mentorsDefault: ["clint"],
+        mentorsDefault: ["clint", "carlos"],
         styleHeaderColor: "#990000",
         styleHeaderTextColor: "#FFFFFF",
         styleHeaderLogo:
           "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
       },
     });
-    cy.viewport(750, 550);
+    cy.viewport(700, 500);
     cy.intercept(
       "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
       { fixture: "uscheader2.png" }
     );
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
+      fixture: "response_with_feedback.json",
+    });
+    cy.visit("/");
+    cy.get("[data-cy=header] img")
+      .should("have.attr", "src")
+      .and(
+        "eq",
+        "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png"
+      );
+    cy.get("[data-cy=header]").should(
+      "have.css",
+      "background-color",
+      "rgb(153, 0, 0)"
+    ); //RGB of #990000
+    cy.get("[data-cy=header] p").should(
+      "have.css",
+      "color",
+      "rgb(255, 255, 255)"
+    ); //RGB of #FFFFFF
+  });
+
+  it("Subject selected", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        cmi5Enabled: false,
+        mentorsDefault: ["clint", "carlos"],
+        styleHeaderColor: "#990000",
+        styleHeaderTextColor: "#FFFFFF",
+        styleHeaderLogo:
+          "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
+      },
+    });
+    cy.viewport(700, 500);
+    cy.intercept(
+      "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
+      { fixture: "uscheader2.png" }
+    );
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_with_feedback.json",
+    });
     cy.visit("/");
     cy.get("[data-cy=header] img")
       .should("have.attr", "src")

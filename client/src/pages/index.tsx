@@ -46,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
     marginRight: "auto",
   },
   flexExpandChild: {
-    flexGrow: 0.2,
     width: "100%",
     maxWidth: 1366,
     marginLeft: "auto",
@@ -79,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const shouldDisplayPortrait = (): boolean =>
-  window.matchMedia && window.matchMedia("(max-width: 700px)").matches;
+  window.matchMedia && window.matchMedia("(max-width: 800px)").matches;
 
 function IndexPage(props: {
   search: {

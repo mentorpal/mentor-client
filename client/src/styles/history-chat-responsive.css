@@ -16,6 +16,7 @@
   background-color: #fff;
   padding: 1rem;
   border-radius: 10px;
+  width: 50vw;
 }
 .history-chat-title {
   color: #444c54;
@@ -23,7 +24,21 @@
   margin-bottom: 0;
 }
 
-@media only screen and (max-width: 700px) {
+body::-webkit-scrollbar {
+  width: 15px;
+  height: 15px;
+}
+
+body::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(134, 134, 134, 0.3);
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: rgb(204, 204, 204);
+  border-radius: 1rem;
+}
+
+@media only screen and (max-width: 800px) {
   .history-template {
     display: contents;
     flex-direction: column;
@@ -31,5 +46,6 @@
   }
   .video-mentor-wrapper {
     padding: 0;
+    width: 100%;
   }
 }

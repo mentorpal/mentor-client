@@ -18,9 +18,9 @@ import {
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import RecordVoiceOverIcon from "@material-ui/icons/RecordVoiceOver";
+import ChevronRightRoundedIcon from "@material-ui/icons/ChevronRightRounded";
+import ExpandMoreRoundedIcon from "@material-ui/icons/ExpandMoreRounded";
 
 import CloseIcon from "@material-ui/icons/Close";
 
@@ -140,16 +140,16 @@ export function ChatItem(props: {
 
   const visibilityIcon =
     isUser && isVisible === false ? (
-      <VisibilityOff
+      <ChevronRightRoundedIcon
         data-cy={`vsbyIcon-${i}`}
         onClick={onToggleVisibilityItem}
-        style={{ marginRight: 7 }}
+        style={{ marginRight: 7, fontSize: 28 }}
       />
     ) : isUser && isVisible ? (
-      <Visibility
+      <ExpandMoreRoundedIcon
         onClick={onToggleVisibilityItem}
         data-cy={`vsbyIcon-${i}`}
-        style={{ marginRight: 7 }}
+        style={{ marginRight: 7, fontSize: 28 }}
       />
     ) : null;
 
@@ -165,21 +165,34 @@ export function ChatItem(props: {
     />
   ) : null;
 
+  const mentorBubbleName = (
+    <p
+      style={{
+        margin: "0px 12px 0px 62px",
+        display: "inline-block",
+        float: "left",
+        marginTop: isUser ? 6 : 3,
+        marginLeft: "62px",
+        color: "#656c73",
+        fontSize: 15,
+        position: "absolute",
+        left: "0",
+        zIndex: 1,
+        top: "-6px",
+        backgroundColor: "#fff",
+        borderRadius: "10px",
+        padding: "2px 10px 2px 10px",
+        textAlign: "center",
+        // boxShadow: "0px 0px 20px 1px rgba(136,146,158,0.2)",
+      }}
+    >
+      {message.name}
+    </p>
+  );
+
   return (
     <div>
-      <p
-        style={{
-          margin: "0px",
-          display: "inline-block",
-          float: "left",
-          marginTop: isUser ? 6 : 3,
-          marginLeft: 62,
-          color: "#000",
-          fontSize: 15,
-        }}
-      >
-        {!isUser && isVisible ? message.name : null}
-      </p>
+      {!isUser && isVisible ? mentorBubbleName : null}
       <ListItem
         data-cy={`chat-msg-${i}`}
         id={`chat-msg-${i}`}
@@ -195,6 +208,8 @@ export function ChatItem(props: {
           marginLeft: isUser || message.isIntro ? 0 : 50,
           backgroundColor: message.isIntro ? "#eaeaea" : mentorColor,
           color: message.isIntro ? "#000" : message.isUser ? "#fff" : "#000",
+          marginTop: !message.isUser ? "0.6rem" : "",
+          marginBottom: "0.6rem",
         }}
       >
         {!message.isIntro ? visibilityIcon : null}
