@@ -6,7 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import { mockDefaultSetup } from "../support/helpers";
 
-describe.only("Plays a video in response to a user question", () => {
+describe("Plays a video in response to a user question", () => {
   it("plays a mentor response and displays subtitles", () => {
     mockDefaultSetup(cy);
     cy.visit("/?mentor=clint");
