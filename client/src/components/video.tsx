@@ -19,6 +19,7 @@ import {
   mentorAnswerPlaybackStarted,
 } from "store/actions";
 import { State } from "types";
+import "styles/layout.css";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
@@ -243,6 +244,7 @@ function VideoPlayer(args: VideoPlayerParams) {
           margin: "0 auto",
           zIndex: 0,
         }}
+        className="player-wrapper"
         url={videoUrl}
         muted={Boolean(isIdle)}
         onDuration={setDuration}

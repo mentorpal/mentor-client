@@ -94,6 +94,28 @@ body {
   -webkit-animation: blink-animation 0.5s steps(5, start) infinite;
 }
 
+.player-wrapper > video {
+  width: 50vw !important;
+  height: auto;
+}
+
+.player-wrapper {
+  width: 50vw !important;
+  height: auto;
+}
+
+.MuiButton-contained {
+  color: rgba(0, 0, 0, 0.87);
+  box-shadow: none !important;
+  background-color: #e0e0e0;
+}
+
+.MuiButton-containedPrimary {
+  color: rgba(0, 0, 0, 0.87);
+  box-shadow: none !important;
+  background-color: #e0e0e0 !important;
+}
+
 @keyframes blink-animation {
   to {
     visibility: hidden;
@@ -103,5 +125,17 @@ body {
 @-webkit-keyframes blink-animation {
   to {
     visibility: hidden;
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  .player-wrapper > video {
+    width: 95vw !important;
+    height: auto;
+  }
+
+  .player-wrapper {
+    width: 95vw !important;
+    height: auto;
   }
 }

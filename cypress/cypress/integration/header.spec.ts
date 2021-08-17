@@ -219,7 +219,7 @@ describe("Header", () => {
     ); //RGB of #FFFFFF
   });
 
-  it.only("Subject selected", () => {
+  it("Subject selected", () => {
     mockDefaultSetup(cy, {
       config: {
         cmi5Enabled: false,
