@@ -30,6 +30,7 @@ describe("Chat History (Video Mentors)", () => {
 
   it("displays questions that have been asked via input", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
+    // cy.viewport("macbook-11");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=topic-2]").trigger("mouseover").click();
     cy.get("[data-cy=input-field]").type("Hello");

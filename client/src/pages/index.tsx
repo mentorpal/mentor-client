@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const shouldDisplayPortrait = (): boolean =>
-  window.matchMedia && window.matchMedia("(max-width: 800px)").matches;
+  window.matchMedia && window.matchMedia("(max-width: 1200px)").matches;
 
 function IndexPage(props: {
   search: {

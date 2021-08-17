@@ -38,6 +38,8 @@ ul li p {
 
 .visible {
   display: block;
+  animation: fadeInAnimation ease 0.3s;
+  animation-fill-mode: forwards;
 }
 
 .system {
@@ -102,6 +104,24 @@ ul li p {
 
 .MuiSwitch-colorSecondary.Mui-checked {
   color: rgb(153 1 0) !important;
+}
+
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutAnimation {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes zoomIn {

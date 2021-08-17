@@ -58,7 +58,11 @@ function VideoPanel(): JSX.Element {
   }
 
   return (
-    <div data-cy="video-panel" className="carousel" style={{ height: 50 }}>
+    <div
+      data-cy="video-panel"
+      className="carousel"
+      style={{ height: 80, marginBottom: "0.5rem" }}
+    >
       {Object.keys(mentorsById)
         .filter((mId) => mentorsById[mId]?.mentorType === MentorType.VIDEO)
         .map((id, i) => {
@@ -77,11 +81,18 @@ function VideoPanel(): JSX.Element {
               <LoadingSpinner mentor={id} />
               <MessageStatus mentor={id} />
               {mentorFaved === id ? (
-                <Star
-                  className="star-icon"
-                  fontSize="small"
-                  style={{ color: "yellow" }}
-                />
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Star
+                    className="star-icon"
+                    fontSize="small"
+                    style={{ color: "yellow", padding: 0 }}
+                  />
+                </div>
               ) : (
                 <div />
               )}

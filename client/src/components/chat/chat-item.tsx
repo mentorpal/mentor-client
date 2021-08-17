@@ -144,12 +144,14 @@ export function ChatItem(props: {
         data-cy={`vsbyIcon-${i}`}
         onClick={onToggleVisibilityItem}
         style={{ marginRight: 7, fontSize: 28 }}
+        className="visibility-icon"
       />
     ) : isUser && isVisible ? (
       <ExpandMoreRoundedIcon
         onClick={onToggleVisibilityItem}
         data-cy={`vsbyIcon-${i}`}
         style={{ marginRight: 7, fontSize: 28 }}
+        className="visibility-icon"
       />
     ) : null;
 
@@ -173,12 +175,12 @@ export function ChatItem(props: {
         float: "left",
         marginTop: isUser ? 6 : 3,
         marginLeft: "62px",
-        color: "#656c73",
+        color: "#000000ab",
         fontSize: 15,
         position: "absolute",
         left: "0",
         zIndex: 1,
-        top: "-6px",
+        top: "-7px",
         backgroundColor: "#fff",
         borderRadius: "10px",
         padding: "2px 10px 2px 10px",
@@ -199,7 +201,7 @@ export function ChatItem(props: {
         disableGutters={false}
         className={[
           isUser ? "user" : "system",
-          isVisible ? "visible" : "hidden",
+          isVisible && !isUser ? "visible" : "hidden",
         ].join(" ")}
         classes={{ root: styles.root }}
         style={{

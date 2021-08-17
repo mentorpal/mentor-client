@@ -84,9 +84,9 @@ body {
 }
 
 .star-icon {
-  position: absolute;
+  position: relative;
   top: 15%;
-  left: 5%;
+  padding-right: 10px;
 }
 
 .blink {
