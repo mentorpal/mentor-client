@@ -7,6 +7,8 @@ The full terms of this copyright and license should always be found in the root 
 import { mockDefaultSetup, cyMockGQL } from "../support/helpers";
 const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
+const FAKE_STYLE_HEADER_LOGO =
+  "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png";
 
 describe("Video Mentor", () => {
   it("Display mentor-name card over the left-corner of the video", () => {
@@ -90,40 +92,26 @@ describe("Video Mentor", () => {
         mentorsDefault: ["clint"],
         styleHeaderColor: "#990000",
         styleHeaderTextColor: "#FFFFFF",
-        styleHeaderLogo:
-          "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
+        styleHeaderLogo: FAKE_STYLE_HEADER_LOGO,
       },
       mentorData: [clint],
     });
     cy.viewport(1200, 700);
-    cy.intercept(
-      "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
-      { fixture: "uscheader2.png" }
-    );
+    cy.intercept(FAKE_STYLE_HEADER_LOGO, { fixture: "uscheader2.png" });
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
     cy.visit("/");
-    cy.get("[data-cy=header] img")
-      .should("have.attr", "src")
-      .and(
-        "eq",
-        "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png"
-      );
-    cy.get("[data-cy=header]").should(
-      "have.css",
-      "background-color",
-      "rgb(153, 0, 0)"
-    ); //RGB of #990000
-    cy.get("[data-cy=header] p").should(
-      "have.css",
-      "color",
-      "rgb(255, 255, 255)"
-    ); //RGB of #FFFFFF
 
-    cy.get("[data-cy=header]").contains(
-      "Clinton Anderson: Nuclear Electrician's Mate"
-    );
+    cy.get("[data-cy=header]")
+      .within(($h) => {
+        cy.get("img")
+          .should("have.attr", "src")
+          .and("eq", FAKE_STYLE_HEADER_LOGO);
+        cy.get("p").should("have.css", "color", "rgb(255, 255, 255)");
+      })
+      .and("have.css", "background-color", "rgb(153, 0, 0)")
+      .contains("Clinton Anderson: Nuclear Electrician's Mate");
   });
 
   it("Title Header for two or more mentors", () => {
@@ -133,36 +121,25 @@ describe("Video Mentor", () => {
         mentorsDefault: ["clint", "carlos"],
         styleHeaderColor: "#990000",
         styleHeaderTextColor: "#FFFFFF",
-        styleHeaderLogo:
-          "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
+        styleHeaderLogo: FAKE_STYLE_HEADER_LOGO,
       },
       mentorData: [clint, carlos],
     });
     cy.viewport(1200, 700);
-    cy.intercept(
-      "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png",
-      { fixture: "uscheader2.png" }
-    );
+    cy.intercept(FAKE_STYLE_HEADER_LOGO, { fixture: "uscheader2.png" });
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
     cy.visit("/");
-    cy.get("[data-cy=header] img")
-      .should("have.attr", "src")
-      .and(
-        "eq",
-        "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png"
-      );
-    cy.get("[data-cy=header]").should(
-      "have.css",
-      "background-color",
-      "rgb(153, 0, 0)"
-    ); //RGB of #990000
-    cy.get("[data-cy=header] p").should(
-      "have.css",
-      "color",
-      "rgb(255, 255, 255)"
-    ); //RGB of #FFFFFF
-    cy.get("[data-cy=header]").contains("Mentor Panel");
+
+    cy.get("[data-cy=header]")
+      .within(($h) => {
+        cy.get("img")
+          .should("have.attr", "src")
+          .and("eq", FAKE_STYLE_HEADER_LOGO);
+        cy.get("p").should("have.css", "color", "rgb(255, 255, 255)");
+      })
+      .and("have.css", "background-color", "rgb(153, 0, 0)")
+      .contains("Mentor Panel");
   });
 });

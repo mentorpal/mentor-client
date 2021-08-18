@@ -58,7 +58,7 @@ function Topics(args: {
         data-cy={`topic-${i}`}
         className={
           tq.topic === "History"
-            ? `slide topic-slide History`
+            ? `slide topic-slide history-btn`
             : `slide topic-slide`
         }
         key={i}

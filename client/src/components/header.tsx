@@ -90,9 +90,9 @@ function Header(): JSX.Element {
     setOpen(false);
   };
 
-  const MentorNameTitle = mentor.name + ": " + mentor.title;
+  const MentorNameTitle = `${mentor.name}: ${mentor.title}`;
 
-  const subjectTitle = subject ? "Mentor Panel: " + subject : "Mentor Panel";
+  const subjectTitle = subject ? `Mentor Panel: ${subject}` : "Mentor Panel";
 
   if (styleHeaderLogo) {
     return (
