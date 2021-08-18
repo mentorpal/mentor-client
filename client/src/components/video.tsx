@@ -184,7 +184,7 @@ function VideoPlayer(args: VideoPlayerParams) {
       style={{
         backgroundColor: "#8f8f8f99",
         position: "absolute",
-        left: 5,
+        right: 5,
         top: 5,
         display: "inline-block",
         zIndex: 1,
@@ -224,8 +224,14 @@ function VideoPlayer(args: VideoPlayerParams) {
         borderRadius: 10,
       }}
     >
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <p style={{ padding: "0px 10px 0px 10px", height: "1rem" }}>
+      <div
+        style={{ display: "flex", alignItems: "center" }}
+        data-cy="mentorname-faveicon-wrapper"
+      >
+        <p
+          style={{ padding: "0px 10px 0px 10px", height: "1rem" }}
+          data-cy="mentor-name"
+        >
           {mentorName}
         </p>
         <FaveButton />

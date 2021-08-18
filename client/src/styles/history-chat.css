@@ -38,7 +38,7 @@ ul li p {
 
 .visible {
   display: block;
-  animation: fadeInAnimation ease 0.3s;
+  animation: fadeInAnimation 0.3s;
   animation-fill-mode: forwards;
 }
 

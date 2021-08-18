@@ -95,12 +95,6 @@ body {
 }
 
 .player-wrapper > video {
-  width: 50vw !important;
-  height: auto;
-}
-
-.player-wrapper {
-  width: 50vw !important;
   height: auto;
 }
 
@@ -111,7 +105,7 @@ body {
 }
 
 .MuiButton-containedPrimary {
-  color: rgba(0, 0, 0, 0.87);
+  color: rgba(0, 0, 0, 0.87) !important;
   box-shadow: none !important;
   background-color: #e0e0e0 !important;
 }
@@ -129,13 +123,7 @@ body {
 }
 
 @media only screen and (max-width: 1200px) {
-  .player-wrapper > video {
-    width: 95vw !important;
-    height: auto;
-  }
-
   .player-wrapper {
-    width: 95vw !important;
     height: auto;
   }
 }
