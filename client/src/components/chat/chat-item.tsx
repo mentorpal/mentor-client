@@ -185,7 +185,6 @@ export function ChatItem(props: {
         borderRadius: "10px",
         padding: "2px 10px 2px 10px",
         textAlign: "center",
-        // boxShadow: "0px 0px 20px 1px rgba(136,146,158,0.2)",
       }}
     >
       {message.name}

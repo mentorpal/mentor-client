@@ -110,7 +110,7 @@ describe("Video Mentor", () => {
           .and("eq", FAKE_STYLE_HEADER_LOGO);
         cy.get("p").should("have.css", "color", "rgb(255, 255, 255)");
       })
-      .and("have.css", "background-color", "rgb(153, 0, 0)")
+      .should("have.css", "background-color", "rgb(153, 0, 0)")
       .contains("Clinton Anderson: Nuclear Electrician's Mate");
   });
 
@@ -139,7 +139,7 @@ describe("Video Mentor", () => {
           .and("eq", FAKE_STYLE_HEADER_LOGO);
         cy.get("p").should("have.css", "color", "rgb(255, 255, 255)");
       })
-      .and("have.css", "background-color", "rgb(153, 0, 0)")
+      .should("have.css", "background-color", "rgb(153, 0, 0)")
       .contains("Mentor Panel");
   });
 });
