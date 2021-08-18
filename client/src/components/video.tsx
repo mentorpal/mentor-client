@@ -19,6 +19,7 @@ import {
   mentorAnswerPlaybackStarted,
 } from "store/actions";
 import { State } from "types";
+import "styles/layout.css";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
@@ -45,6 +46,27 @@ function Video(args: { playing?: boolean }): JSX.Element {
         subtitlesSupported && !state.isIdle
           ? subtitleUrl(m.answer_media || [])
           : "",
+    };
+  });
+
+  interface HeaderMentorData {
+    _id: string;
+    name: string;
+    title: string;
+  }
+
+  const mentorName = useSelector<State, HeaderMentorData | null>((state) => {
+    if (!state.curMentor) {
+      return null;
+    }
+    const m = state.mentorsById[state.curMentor];
+    if (!(m && m.mentor)) {
+      return null;
+    }
+    return {
+      _id: m.mentor._id,
+      name: m.mentor.name,
+      title: m.mentor.title,
     };
   });
 
@@ -120,8 +142,8 @@ function Video(args: { playing?: boolean }): JSX.Element {
         videoUrl={video.src}
         lastAnswerLink={lastAnswerLink}
         hideLinkLabel={hideLinkLabel}
+        mentorName={mentorName ? mentorName?.name : ""}
       />
-      <FaveButton />
       <LoadingSpinner mentor={curMentor} />
       <MessageStatus mentor={curMentor} />
     </div>
@@ -139,6 +161,7 @@ interface VideoPlayerParams {
   videoUrl: string;
   lastAnswerLink: string;
   hideLinkLabel: boolean;
+  mentorName: string;
 }
 
 function VideoPlayer(args: VideoPlayerParams) {
@@ -153,17 +176,21 @@ function VideoPlayer(args: VideoPlayerParams) {
     videoUrl,
     lastAnswerLink,
     hideLinkLabel,
+    mentorName,
   } = args;
   const answerLinkCard = (
     <div
       data-cy="answer-link-card"
       style={{
-        backgroundColor: "#ddd",
+        backgroundColor: "#8f8f8f99",
         position: "absolute",
         right: 5,
         top: 5,
         display: "inline-block",
         zIndex: 1,
+        color: "#fff",
+        verticalAlign: "middle",
+        borderRadius: 10,
       }}
     >
       <a
@@ -182,9 +209,40 @@ function VideoPlayer(args: VideoPlayerParams) {
     </div>
   );
 
+  const mentorNameCard = (
+    <div
+      data-cy="mentor-name-card"
+      style={{
+        backgroundColor: "#8f8f8f99",
+        position: "absolute",
+        left: 5,
+        top: 5,
+        display: "inline-block",
+        zIndex: 1,
+        color: "#fff",
+        verticalAlign: "middle",
+        borderRadius: 10,
+      }}
+    >
+      <div
+        style={{ display: "flex", alignItems: "center" }}
+        data-cy="mentorname-faveicon-wrapper"
+      >
+        <p
+          style={{ padding: "0px 10px 0px 10px", height: "1rem" }}
+          data-cy="mentor-name"
+        >
+          {mentorName}
+        </p>
+        <FaveButton />
+      </div>
+    </div>
+  );
+
   return (
     <div style={{ position: "relative", display: "inline-block" }}>
       {!hideLinkLabel && lastAnswerLink ? answerLinkCard : null}
+      {mentorName ? mentorNameCard : null}
       <ReactPlayer
         style={{
           backgroundColor: "black",
@@ -192,6 +250,7 @@ function VideoPlayer(args: VideoPlayerParams) {
           margin: "0 auto",
           zIndex: 0,
         }}
+        className="player-wrapper"
         url={videoUrl}
         muted={Boolean(isIdle)}
         onDuration={setDuration}

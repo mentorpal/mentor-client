@@ -14,6 +14,8 @@ import { State, TopicQuestions } from "types";
 import withLocation from "wrap-with-location";
 import { shouldDisplayPortrait } from "pages";
 
+import "styles/layout.css";
+
 function Topics(args: {
   onSelected: (question: string) => void;
   search: {
@@ -52,9 +54,17 @@ function Topics(args: {
 
   const topicButtons = topicQuestions.map((tq, i) => {
     return shouldDisplayPortrait() && displayHistoryButton ? (
-      <div data-cy={`topic-${i}`} className="slide topic-slide" key={i}>
+      <div
+        data-cy={`topic-${i}`}
+        className={
+          tq.topic === "History"
+            ? `slide topic-slide history-btn`
+            : `slide topic-slide`
+        }
+        key={i}
+      >
         <Button
-          className={curTopic === tq.topic ? "topic-selected" : ""}
+          className={curTopic === tq.topic ? `topic-selected` : ""}
           variant="contained"
           color={curTopic === tq.topic ? "primary" : "default"}
           onClick={() => onTopicSelected(tq.topic)}

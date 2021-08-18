@@ -4,103 +4,126 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-html, body {
-    height: 100%;
-    width: 100%;
-    text-align: center;
-    margin: 0;
+html,
+body {
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  margin: 0;
 }
 
 #video-container {
-    position: relative;
-    margin: 0 auto;
+  position: relative;
+  margin: 0 auto;
 }
 
 #header {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    padding: 5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 5px;
 }
 
 .flex {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .content {
-    flex: 0 1;
+  flex: 0 1;
 }
 
 .expand {
-    flex: 1 1;
+  flex: 1 1;
 }
 
 .scroll {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .carousel {
-    width: 100%;
-    overflow-x: visible;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    white-space: nowrap;
+  width: 100%;
+  overflow-x: visible;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
 }
 
 .carousel .slide {
-    position: relative;
-    display: inline-block;
+  position: relative;
+  display: inline-block;
 }
 
 .carousel .video-slide {
-    margin: 5px;
+  margin: 5px;
 }
 
 .carousel .topic-slide {
-    margin: 10px;
+  margin: 10px;
 }
 
 .carousel .selected {
-    background-color: orange;
+  background-color: orange;
 }
 
 .question-button {
-    text-transform: none;
-    text-align: left;
+  text-transform: none;
+  text-align: left;
 }
 
 .spinner {
-    position: absolute;
+  position: absolute;
 }
 
 .message-notice {
-    position: absolute;
-    bottom: 10%;
-    right: 10%;
+  position: absolute;
+  bottom: 10%;
+  right: 10%;
 }
 
 .star-icon {
-    position: absolute;
-    top: 15%;
-    left: 5%;
+  position: relative;
+  top: 15%;
+  padding-right: 10px;
 }
 
 .blink {
-    animation: blink-animation 0.5s steps(5, start) infinite;
-    -webkit-animation: blink-animation 0.5s steps(5, start) infinite;
+  animation: blink-animation 0.5s steps(5, start) infinite;
+  -webkit-animation: blink-animation 0.5s steps(5, start) infinite;
+}
+
+.player-wrapper > video {
+  height: auto;
+}
+
+.MuiButton-contained {
+  color: rgba(0, 0, 0, 0.87);
+  box-shadow: none !important;
+  background-color: #e0e0e0;
+}
+
+.MuiButton-containedPrimary {
+  color: rgba(0, 0, 0, 0.87) !important;
+  box-shadow: none !important;
+  background-color: #e0e0e0 !important;
 }
 
 @keyframes blink-animation {
-    to {
-        visibility: hidden;
-    }
+  to {
+    visibility: hidden;
+  }
 }
 
 @-webkit-keyframes blink-animation {
-    to {
-        visibility: hidden;
-    }
+  to {
+    visibility: hidden;
+  }
+}
+
+@media only screen and (max-width: 1200px) {
+  .player-wrapper {
+    height: auto;
+  }
 }

@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
   list: {
     marginTop: 1,
     padding: shouldDisplayPortrait() ? 0 : 10,
-    backgroundColor: "#fff",
     borderRadius: 10,
   },
   avatar: {
@@ -137,7 +136,7 @@ export function Chat(args: {
               data-cy="visibility-switch"
             />
           }
-          label="hide/show answers"
+          label="Hide/Show answers"
         />
       </FormGroup>
     </div>
@@ -183,6 +182,7 @@ export function Chat(args: {
                 alignItems: "center",
                 marginRight: "2rem",
                 marginLeft: "1rem",
+                position: "relative",
               }}
             >
               <ChatItem

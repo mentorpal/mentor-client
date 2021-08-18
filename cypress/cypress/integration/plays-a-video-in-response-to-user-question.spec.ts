@@ -12,14 +12,11 @@ describe("Plays a video in response to a user question", () => {
     cy.visit("/?mentor=clint");
     cy.get("[data-cy=input-field]").type("is the food good");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=video-container]").should(
-      "have.attr",
-      "data-video-type",
-      "answer"
-    );
-    cy.get("[data-cy=video-container] video").should("exist");
-    cy.get("[data-cy=video-container] video")
-      .should("have.attr", "src")
-      .and("match", /.*answer_id.mp4$/);
+    cy.get("[data-video-type=answer]").within(($vc) => {
+      cy.get("video").should("exist");
+      cy.get("video")
+        .should("have.attr", "src")
+        .and("match", /.*answer_id.mp4$/);
+    });
   });
 });
