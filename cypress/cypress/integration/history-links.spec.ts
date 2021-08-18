@@ -51,14 +51,16 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.intercept("**/questions/?mentor=carlos&query=*", {
       fixture: "response_with_markdown2.json",
     });
-    cy.get("[data-cy=answer-link-card]").should("not.exist");
+
+    cy.get("[data-cy=video-container]").within(($hc) => {
+      cy.get("[data-cy=answer-link-card]").should("not.exist");
+    });
+
     cy.get("[data-cy=topic-2] button").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    // display label over a corner of the video
-    cy.get("[data-cy=answer-link-card]").should("exist");
   });
 
   it("It doesn't display link-label over a corner of the video", () => {
