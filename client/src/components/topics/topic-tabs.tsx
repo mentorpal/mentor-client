@@ -68,7 +68,7 @@ function TopicTabs(props: {
         key={index}
         value={index}
         onClick={() => onTopicClick(topic)}
-        className={curTopic === topic ? "topic-selected" : ""}
+        data-test={curTopic === topic ? topic : null}
         data-cy="topic-opt-item"
       >
         {topic}
@@ -93,9 +93,8 @@ function TopicTabs(props: {
             label={curTopic && curTopic !== "History" ? curTopic : "Topics"}
             data-cy="topic-tab"
             onClick={onClickOpen}
-            className={
-              curTopic !== "History" ? "topic-tab topic-selected" : "topic-tab"
-            }
+            className="topic-tab"
+            data-test={curTopic !== "History" ? curTopic : null}
             icon={<ArrowDropDown />}
           />
           {showHistoryTab ? null : (
@@ -152,6 +151,7 @@ function TopicTabs(props: {
                 className={
                   curTopic === topic ? "topic-tab topic-selected " : "topic-tab"
                 }
+                data-test={curTopic === topic ? topic : null}
                 data-cy={`desktop-tab-${i}`}
               />
             ) : null

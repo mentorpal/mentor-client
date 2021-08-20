@@ -23,16 +23,14 @@ describe("Topics list", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     // test that the TOPIC tab is selected (not the history tab)
     cy.get("[data-cy=topics]").within(() => {
-      cy.get("button").eq(0).should("have.class", "topic-selected");
+      cy.get("button").eq(0).should("have.attr", "data-test", "About Me");
     });
 
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("[data-cy=topics-questions-list]")
-      .find(".topic-selected")
-      .should("have.length", 1);
-    cy.get("[data-cy=close-topics]").trigger("mouseover").click();
+    cy.get("[data-cy=scrolling-questions-list]").should(
+      "have.attr",
+      "data-topic",
+      "About Me"
+    );
 
     // test that within the TOPIC dropdown that the first item is already selected
     cy.get("[data-cy=topic-tab]")
@@ -40,7 +38,7 @@ describe("Topics list", () => {
       .click()
       .get("div>li")
       .eq(0)
-      .should("have.class", "topic-selected");
+      .should("have.attr", "data-test", "About Me");
     cy.get("[data-cy=close-topics]").trigger("mouseover").click();
 
     // test that the content displayed in the questions-list panel is the list of questions for the default/selected topic
@@ -55,7 +53,11 @@ describe("Topics list", () => {
     cy.viewport(1300, 1000);
     // test that the first topic tab is selected
     cy.get("[data-cy=topic-tabs]").within(() => {
-      cy.get("[data-cy=desktop-tab-0]").should("have.class", "topic-selected");
+      cy.get("[data-cy=desktop-tab-0]").should(
+        "have.attr",
+        "data-test",
+        "About Me"
+      );
     });
     // test that the content displayed in the questions-list panel is the list of questions for the default/selected topic
     cy.get("[data-cy=scrolling-questions-list]").within(() => {
@@ -74,16 +76,12 @@ describe("Topics list", () => {
       .trigger("mouseover")
       .click();
 
-    cy.get("[data-cy=topics-questions-list]")
-      .find(".topic-selected")
-      .should("have.length", 1);
-
     cy.get("[data-cy=topic-tab]")
       .trigger("mouseover")
       .click()
       .get("div>li")
       .eq(1)
-      .should("have.class", "topic-selected");
+      .should("have.attr", "data-test", "About the Job");
   });
 
   it("can collapse questions list by clicking selected topic", () => {
@@ -104,7 +102,7 @@ describe("Topics list", () => {
       .click()
       .get("div>li")
       .eq(0)
-      .should("not.have.class", "topic-selected");
+      .should("not.have.attr", "data-test", "About Me");
   });
 
   it("changes topics when selecting a mentor", () => {
@@ -159,7 +157,7 @@ describe("Topics list", () => {
       .click()
       .get("div>li")
       .eq(1)
-      .should("have.class", "topic-selected");
+      .should("have.attr", "data-test", "About the Job");
     cy.get("[data-cy=close-topics]").trigger("mouseover").click();
 
     cy.get("[data-cy=video-thumbnail-carlos]").should(
@@ -174,7 +172,7 @@ describe("Topics list", () => {
       .click()
       .get("div>li")
       .eq(1)
-      .should("have.class", "topic-selected");
+      .should("have.attr", "data-test", "About the Job");
   });
 
   it("does not keep selected topic when switching mentors if new mentor does not have it", () => {
@@ -192,7 +190,7 @@ describe("Topics list", () => {
       .click()
       .get("div>li")
       .eq(1)
-      .should("have.class", "topic-selected");
+      .should("have.attr", "data-test", "About the Job");
     cy.get("[data-cy=close-topics]").trigger("mouseover").click();
 
     cy.get("[data-cy=video-thumbnail-julianne]").should(
@@ -207,7 +205,7 @@ describe("Topics list", () => {
       .click()
       .get("div>li")
       .eq(1)
-      .should("not.have.class", "topic-selected");
+      .should("not.have.attr", "data-test", "About the Job");
     cy.get("[data-cy=close-topics]").trigger("mouseover").click();
   });
 

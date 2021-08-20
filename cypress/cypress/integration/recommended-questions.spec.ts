@@ -73,7 +73,7 @@ describe("Recommended questions", () => {
       .click()
       .get("div>li")
       .eq(0)
-      .should("have.class", "topic-selected");
+      .should("not.have.attr", "data-test", "About Me");
     cy.get("[data-cy=close-topics]").trigger("mouseover").click();
 
     cy.get("[data-cy=topics]")
@@ -89,7 +89,7 @@ describe("Recommended questions", () => {
       .click()
       .get("div>li")
       .eq(2)
-      .should("have.class", "topic-selected");
+      .should("have.attr", "data-test", "About the Job");
     cy.get("[data-cy=close-topics]").trigger("mouseover").click();
 
     cy.get("[data-cy=scrolling-questions-list]")

@@ -53,7 +53,6 @@ describe("Questions list", () => {
 
   it("changes questions when switching mentors", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-
     cy.get("[data-cy=scrolling-questions-list]").should(
       "have.attr",
       "data-topic",
@@ -129,7 +128,7 @@ describe("Questions list", () => {
       .click()
       .get("div>li")
       .eq(0)
-      .should("have.class", "topic-selected");
+      .should("have.attr", "data-test", "About Me");
   });
 
   it("greys out questions that have been asked (via input field)", () => {
