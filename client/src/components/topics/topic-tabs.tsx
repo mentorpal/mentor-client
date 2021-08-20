@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function TabItem(props: {
+function TopicTabs(props: {
   topicQuestions: TopicQuestions[];
   onTopicSelected: (topic: string) => void;
   showHistoryTab: boolean;
@@ -43,14 +43,14 @@ function TabItem(props: {
   const [value, setValue] = React.useState<number>(0);
   const curTopic = useSelector<State, string>((s) => s.curTopic);
 
-  const handleChange = (
+  const onChange = (
     e: ChangeEvent<Record<string, unknown>>,
     newValue: number
   ) => {
     setValue(newValue);
   };
 
-  const handleClickOpen = () => {
+  const onClickOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
@@ -85,14 +85,14 @@ function TabItem(props: {
             style: { background: "#ddd", height: "10px" },
           }}
           textColor="primary"
-          onChange={handleChange}
+          onChange={onChange}
           aria-label="disabled tabs example"
           data-cy="topics"
         >
           <Tab
             label={curTopic && curTopic !== "History" ? curTopic : "Topics"}
             data-cy="topic-tab"
-            onClick={handleClickOpen}
+            onClick={onClickOpen}
             className="topic-tab"
             icon={<ArrowDropDown />}
           />
@@ -137,7 +137,7 @@ function TabItem(props: {
             style: { background: "#ddd", height: "10px" },
           }}
           textColor="primary"
-          onChange={handleChange}
+          onChange={onChange}
           aria-label="disabled tabs example"
         >
           {topicQuestions.map(({ topic }, i) =>
@@ -163,4 +163,4 @@ function TabItem(props: {
   );
 }
 
-export default TabItem;
+export default TopicTabs;

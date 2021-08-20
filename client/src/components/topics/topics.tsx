@@ -13,7 +13,7 @@ import { State, TopicQuestions } from "types";
 import withLocation from "wrap-with-location";
 
 import "styles/layout.css";
-import TabItem from "./topics-tabs";
+import TopicTabs from "./topic-tabs";
 
 function Topics(args: {
   onSelected: (question: string) => void;
@@ -50,7 +50,7 @@ function Topics(args: {
   }
 
   const tabsContainer = (
-    <TabItem
+    <TopicTabs
       topicQuestions={topicQuestions}
       onTopicSelected={onTopicSelected}
       showHistoryTab={showHistoryTab}
