@@ -68,7 +68,6 @@ describe("Recommended questions", () => {
         recommendedQuestions: "Are you fun at parties?",
       }),
     });
-    // cy.get("[data-cy=topic-0]").find(".topic-selected");
     cy.get("[data-cy=topics]")
       .trigger("mouseover")
       .click()
@@ -77,7 +76,6 @@ describe("Recommended questions", () => {
       .should("have.class", "topic-selected");
     cy.get("[data-cy=close-topics]").trigger("mouseover").click();
 
-    // cy.get("[data-cy=topic-2]").trigger("mouseover").click();
     cy.get("[data-cy=topics]")
       .trigger("mouseover")
       .click()
@@ -86,7 +84,6 @@ describe("Recommended questions", () => {
       .trigger("mouseover")
       .click();
 
-    // cy.get("[data-cy=topic-2]").find(".topic-selected");
     cy.get("[data-cy=topics]")
       .trigger("mouseover")
       .click()

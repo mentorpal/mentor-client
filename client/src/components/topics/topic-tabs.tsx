@@ -93,7 +93,9 @@ function TopicTabs(props: {
             label={curTopic && curTopic !== "History" ? curTopic : "Topics"}
             data-cy="topic-tab"
             onClick={onClickOpen}
-            className="topic-tab"
+            className={
+              curTopic !== "History" ? "topic-tab topic-selected" : "topic-tab"
+            }
             icon={<ArrowDropDown />}
           />
           {showHistoryTab ? null : (
@@ -139,6 +141,7 @@ function TopicTabs(props: {
           textColor="primary"
           onChange={onChange}
           aria-label="disabled tabs example"
+          data-cy="topic-tabs"
         >
           {topicQuestions.map(({ topic }, i) =>
             topic !== "History" ? (
@@ -146,7 +149,10 @@ function TopicTabs(props: {
                 key={i}
                 label={topic}
                 onClick={() => onTopicClick(topic)}
-                className="topic-tab"
+                className={
+                  curTopic === topic ? "topic-tab topic-selected " : "topic-tab"
+                }
+                data-cy={`desktop-tab-${i}`}
               />
             ) : null
           )}
