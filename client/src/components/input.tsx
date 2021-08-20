@@ -9,11 +9,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { Button, Divider, Paper, InputBase, Collapse } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Topics from "components/topics";
+import Topics from "components/topics/topics";
 import Questions from "components/questions";
 import { sendQuestion, userInputChanged } from "store/actions";
 import { Config, MentorQuestionSource, QuestionInput, State } from "types";
 import { isMobile } from "react-device-detect";
+import SendRoundedIcon from "@material-ui/icons/SendRounded";
+
+import "styles/layout.css";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -31,7 +34,11 @@ const useStyles = makeStyles(() => ({
     borderColor: "rgba(0, 0, 0, 0.20)",
   },
   button: {
-    margin: 10,
+    color: "#7d7d7d !important",
+    margin: "10px",
+    height: "50px",
+    width: "20px",
+    borderRadius: "50%",
   },
   divider: {
     width: 1,
@@ -40,9 +47,8 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function Input(args: { displayHistoryButton?: boolean }): JSX.Element {
-  const { displayHistoryButton } = args;
-
+function Input(props: { showHistoryTab: boolean }): JSX.Element {
+  const { showHistoryTab } = props;
   const dispatch = useDispatch();
   const classes = useStyles();
   const config = useSelector<State, Config>((s) => s.config);
@@ -118,7 +124,11 @@ function Input(args: { displayHistoryButton?: boolean }): JSX.Element {
 
   return (
     <div data-cy="input-field-wrapper" data-topic={curTopic}>
-      <Paper className={classes.root} square style={{ height: 60 }}>
+      <Paper
+        className={[classes.root, "input-wrapper"].join(" ")}
+        square
+        style={{ height: 60, padding: 10 }}
+      >
         <InputBase
           id="input-field"
           data-cy="input-field"
@@ -147,13 +157,10 @@ function Input(args: { displayHistoryButton?: boolean }): JSX.Element {
           variant="contained"
           color="primary"
         >
-          Send
+          <SendRoundedIcon style={{ fontSize: 25, marginLeft: 5 }} />
         </Button>
       </Paper>
-      <Topics
-        onSelected={onTopicSelected}
-        displayHistoryButton={displayHistoryButton}
-      />
+      <Topics onSelected={onTopicSelected} showHistoryTab={showHistoryTab} />
       <Collapse in={Boolean(curTopic)} timeout="auto" unmountOnExit>
         <Questions onSelected={onQuestionSelected} />
       </Collapse>

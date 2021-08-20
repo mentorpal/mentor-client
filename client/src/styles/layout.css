@@ -10,6 +10,7 @@ body {
   width: 100%;
   text-align: center;
   margin: 0;
+  font-family: Helvetica, Arial, sans-serif;
 }
 
 #video-container {
@@ -44,11 +45,14 @@ body {
 }
 
 .carousel {
-  width: 100%;
+  max-width: 80%;
   overflow-x: visible;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   white-space: nowrap;
+  margin-top: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 .carousel .slide {
@@ -110,6 +114,101 @@ body {
   background-color: #e0e0e0 !important;
 }
 
+.MuiButton-textPrimary {
+  color: #000000 !important;
+}
+
+.topic-btns {
+  display: flex;
+  justify-content: space-between;
+}
+
+.history-btn {
+  min-width: 72px !important;
+  max-height: 35px !important;
+  margin: 10px !important;
+  /* font-size: 12px !important; */
+}
+
+.history-btn-wrapper {
+  display: flex;
+  margin-right: 10px;
+}
+
+.divider {
+  width: 1px;
+  height: 28px !important;
+  margin-left: 10px !important;
+  margin-top: 10px !important;
+}
+
+.topic-tab {
+  width: auto;
+}
+
+.MuiTab-wrapper {
+  display: flex !important;
+  flex-direction: row-reverse !important;
+  justify-content: space-evenly !important;
+}
+
+.MuiTab-textColorPrimary.Mui-selected {
+  color: #2c2c2c !important;
+}
+
+.MuiTabs-scroller,
+.MuiTabs-fixed:hover {
+  overflow-x: visible !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.MuiTabs-scroller,
+.MuiTabs-fixed {
+  overflow-x: hidden !important;
+  width: 100% !important;
+}
+
+.MuiTabs-flexContainer {
+  width: 100% !important;
+  display: flex;
+}
+
+.active {
+  background-color: #ddd;
+  border: 1px solid rgb(185, 185, 185) !important;
+}
+
+.not-active {
+  background-color: #e0e0e0 !important;
+}
+
+.topics-wrapper {
+  margin-bottom: 10px;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 15px;
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(134, 134, 134, 0.3);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background-color: rgb(204, 204, 204);
+  border-radius: 1rem;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(139, 139, 139);
+}
+
 @keyframes blink-animation {
   to {
     visibility: hidden;
@@ -125,5 +224,23 @@ body {
 @media only screen and (max-width: 1200px) {
   .player-wrapper {
     height: auto;
+  }
+
+  .history-btn {
+    margin-top: 20px !important;
+    /* font-size: 12px !important; */
+  }
+
+  .divider {
+    margin-top: 20px !important;
+  }
+  .MuiTabs-flexContainer {
+    justify-content: center;
+  }
+}
+
+@media (min-width: 600px) {
+  .MuiTab-root {
+    max-width: 130px !important;
   }
 }

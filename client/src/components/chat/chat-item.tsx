@@ -170,22 +170,9 @@ export function ChatItem(props: {
   const mentorBubbleName = (
     <p
       style={{
-        margin: "0px 12px 0px 62px",
-        display: "inline-block",
-        float: "left",
         marginTop: isUser ? 6 : 3,
-        marginLeft: "62px",
-        color: "#000000ab",
-        fontSize: 15,
-        position: "absolute",
-        left: "0",
-        zIndex: 1,
-        top: "-7px",
-        backgroundColor: "#fff",
-        borderRadius: "10px",
-        padding: "2px 10px 2px 10px",
-        textAlign: "center",
       }}
+      className="bubble-mentor-name"
     >
       {message.name}
     </p>

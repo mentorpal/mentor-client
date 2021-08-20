@@ -251,10 +251,10 @@ function IndexPage(props: {
   const historyChatLandscape = (
     <div
       style={{
-        height: shouldDisplayPortrait() ? "250px" : windowHeight - 100,
+        height: shouldDisplayPortrait() ? "250px" : windowHeight,
       }}
     >
-      <Chat height={windowHeight - 100} windowHeight={windowHeight} />
+      <Chat height={windowHeight} windowHeight={windowHeight} />
     </div>
   );
 
@@ -262,10 +262,7 @@ function IndexPage(props: {
     <MuiThemeProvider theme={brandedTheme}>
       <Header />
       <div className="history-template">
-        <div
-          className="video-mentor-wrapper"
-          style={{ height: windowHeight - 100 }}
-        >
+        <div className="video-mentor-wrapper" style={{ height: windowHeight }}>
           <div className={styles.flexRoot} style={{ height: windowHeight }}>
             <div className={styles.flexFixedChildHeader}>
               <VideoPanel />
@@ -283,7 +280,7 @@ function IndexPage(props: {
               )}
             </div>
             <div className={styles.flexFixedChild}>
-              <Input displayHistoryButton={mentorType !== "CHAT"} />
+              <Input showHistoryTab={mentorType === MentorType.CHAT} />
             </div>
             {!hasSessionUser() ? <GuestPrompt /> : undefined}
           </div>

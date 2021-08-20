@@ -30,7 +30,12 @@ describe("Recommended questions", () => {
         recommendedQuestions: "Howdy",
       }),
     });
-    cy.get("[data-cy=topics]").find(".topic-selected").contains("Recommended");
+    cy.get("[data-cy=topics]")
+      .trigger("mouseover")
+      .click()
+      .get("div>li")
+      .eq(0)
+      .contains("Recommended");
   });
 
   it("list recommended questions in question list", () => {
@@ -63,9 +68,33 @@ describe("Recommended questions", () => {
         recommendedQuestions: "Are you fun at parties?",
       }),
     });
-    cy.get("[data-cy=topic-0]").find(".topic-selected");
-    cy.get("[data-cy=topic-2]").trigger("mouseover").click();
-    cy.get("[data-cy=topic-2]").find(".topic-selected");
+    // cy.get("[data-cy=topic-0]").find(".topic-selected");
+    cy.get("[data-cy=topics]")
+      .trigger("mouseover")
+      .click()
+      .get("div>li")
+      .eq(0)
+      .should("have.class", "topic-selected");
+    cy.get("[data-cy=close-topics]").trigger("mouseover").click();
+
+    // cy.get("[data-cy=topic-2]").trigger("mouseover").click();
+    cy.get("[data-cy=topics]")
+      .trigger("mouseover")
+      .click()
+      .get("div>li")
+      .eq(2)
+      .trigger("mouseover")
+      .click();
+
+    // cy.get("[data-cy=topic-2]").find(".topic-selected");
+    cy.get("[data-cy=topics]")
+      .trigger("mouseover")
+      .click()
+      .get("div>li")
+      .eq(2)
+      .should("have.class", "topic-selected");
+    cy.get("[data-cy=close-topics]").trigger("mouseover").click();
+
     cy.get("[data-cy=scrolling-questions-list]")
       .get("li")
       .first()

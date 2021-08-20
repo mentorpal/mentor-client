@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
   chat_container: {
     backgroundColor: "#fff",
     margin: "1rem",
+    marginTop: 0,
     borderRadius: 10,
   },
   chat_container_mobile: {
