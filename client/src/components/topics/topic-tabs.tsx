@@ -42,6 +42,11 @@ function TopicTabs(props: {
   const [open, setOpen] = useState<boolean>(false);
   const [value, setValue] = React.useState<number>(0);
   const curTopic = useSelector<State, string>((s) => s.curTopic);
+  const curMentor = useSelector<State, string>((state) => state.curMentor);
+
+  const firstTopic = useSelector<State, string>((state) => {
+    return state.mentorsById[curMentor]?.mentor?.topics[0]?.name || "";
+  });
 
   const onChange = (
     e: ChangeEvent<Record<string, unknown>>,
@@ -90,7 +95,7 @@ function TopicTabs(props: {
           data-cy="topics"
         >
           <Tab
-            label={curTopic && curTopic !== "History" ? curTopic : "Topics"}
+            label={curTopic && curTopic !== "History" ? curTopic : firstTopic}
             data-cy="topic-tab"
             onClick={onClickOpen}
             className="topic-tab"
