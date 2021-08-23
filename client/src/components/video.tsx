@@ -213,15 +213,16 @@ function VideoPlayer(args: VideoPlayerParams) {
     <div
       data-cy="mentor-name-card"
       style={{
-        backgroundColor: "#8f8f8f99",
+        background: "#ffffff47",
         position: "absolute",
-        left: 5,
-        top: 5,
+        left: 0,
+        top: 0,
         display: "inline-block",
         zIndex: 1,
         color: "#fff",
         verticalAlign: "middle",
-        borderRadius: 10,
+        border: "0px transparent",
+        borderRadius: "0px 0px 10px 0px",
       }}
     >
       <div
@@ -229,7 +230,11 @@ function VideoPlayer(args: VideoPlayerParams) {
         data-cy="mentorname-faveicon-wrapper"
       >
         <p
-          style={{ padding: "0px 10px 0px 10px", height: "1rem" }}
+          style={{
+            padding: "0px 10px 0px 10px",
+            height: "1rem",
+            color: "#fbfbfb",
+          }}
           data-cy="mentor-name"
         >
           {mentorName}
