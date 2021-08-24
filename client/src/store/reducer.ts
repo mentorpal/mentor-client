@@ -433,9 +433,6 @@ function onQuestionAnswered(
   // It seems like the answerFeedbackId should be
   // associated to the chat message
 
-  const webLinks: WebLink[] = findWebLinks(action.payload.answerText);
-  const askLinks: AskLink[] = findAskLinks(action.payload.answerText);
-
   const mentor: MentorState = {
     ...state.mentorsById[action.payload.mentor],
     // we need chat messages to live up here
@@ -477,8 +474,8 @@ function onQuestionAnswered(
           feedback: Feedback.NONE,
           feedbackId: action.payload.answerFeedbackId,
           isFeedbackSendInProgress: false,
-          askLinks,
-          webLinks,
+          askLinks: findAskLinks(action.payload.answerText),
+          webLinks: findWebLinks(action.payload.answerText),
         },
       ],
     },
