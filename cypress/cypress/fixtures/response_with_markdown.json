@@ -1,7 +1,7 @@
 {
   "query": "how old are you",
   "answer_id": "answer_id",
-  "answer_text": "Click [here](https://www.google.com) more info [more](https://ict.usc.edu/)",
+  "answer_text": "Click [here](https://www.google.com)",
   "answer_media": [],
   "confidence": -0.5140574318328217,
   "feedback_id": "",

@@ -172,7 +172,7 @@ function VideoPlayer(args: VideoPlayerParams) {
     return (
       <a
         href={wl.href}
-        style={{ position: "relative", color: "#000", bottom: 3, left: 5 }}
+        style={{ position: "relative", color: "#ffffffd6", bottom: 3, left: 5 }}
         target="_blank"
         rel="noreferrer"
         key={i}
@@ -186,16 +186,16 @@ function VideoPlayer(args: VideoPlayerParams) {
     <div
       data-cy="answer-link-card"
       style={{
-        backgroundColor: "#8f8f8f99",
+        backgroundColor: "#ffffff47",
         position: "absolute",
-        right: 5,
-        top: 5,
+        right: 0,
+        top: 0,
         display: "flex",
         alignItems: "center",
         zIndex: 1,
         color: "#fff",
         verticalAlign: "middle",
-        borderRadius: 10,
+        borderRadius: "0px 0px 0px 10px",
       }}
     >
       <div
@@ -209,7 +209,11 @@ function VideoPlayer(args: VideoPlayerParams) {
         {webLinkJSX}
       </div>
       <InfoOutlinedIcon
-        style={{ marginLeft: 10, position: "relative", top: 2 }}
+        style={{
+          marginLeft: 10,
+          marginRight: 10,
+          position: "relative",
+        }}
       />
     </div>
   );
@@ -224,7 +228,7 @@ function VideoPlayer(args: VideoPlayerParams) {
         top: 0,
         display: "inline-block",
         zIndex: 1,
-        color: "#fff",
+        color: "#fbfbfb94",
         verticalAlign: "middle",
         border: "0px transparent",
         borderRadius: "0px 0px 10px 0px",
@@ -238,7 +242,7 @@ function VideoPlayer(args: VideoPlayerParams) {
           style={{
             padding: "0px 10px 0px 10px",
             height: "1rem",
-            color: "#fbfbfb",
+            color: "#ffffffd6",
           }}
           data-cy="mentor-name"
         >
