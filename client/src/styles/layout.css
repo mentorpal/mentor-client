@@ -87,19 +87,9 @@ body {
   right: 10%;
 }
 
-.star-icon {
-  position: relative;
-  top: 15%;
-  padding-right: 10px;
-}
-
 .blink {
   animation: blink-animation 0.5s steps(5, start) infinite;
   -webkit-animation: blink-animation 0.5s steps(5, start) infinite;
-}
-
-.player-wrapper > video {
-  height: auto;
 }
 
 .MuiButton-contained {

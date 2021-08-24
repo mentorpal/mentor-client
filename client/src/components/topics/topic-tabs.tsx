@@ -14,6 +14,7 @@ import { Button, DialogActions, Paper, Tab, Tabs } from "@material-ui/core";
 import { shouldDisplayPortrait } from "pages";
 import { isMobile } from "react-device-detect";
 import { ChangeEvent } from "react";
+import "styles/topic-tabs.css";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     root: {
       flexGrow: 1,
+      width: "100%",
     },
   })
 );
@@ -40,7 +42,7 @@ function TopicTabs(props: {
 
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
-  const [value, setValue] = React.useState<number>(0);
+  const [selectedTabIx, setSelectedTabIx] = React.useState<number>(0);
   const curTopic = useSelector<State, string>((s) => s.curTopic);
   const curMentor = useSelector<State, string>((state) => state.curMentor);
 
@@ -52,7 +54,7 @@ function TopicTabs(props: {
     e: ChangeEvent<Record<string, unknown>>,
     newValue: number
   ) => {
-    setValue(newValue);
+    setSelectedTabIx(newValue);
   };
 
   const onClickOpen = () => {
@@ -82,10 +84,10 @@ function TopicTabs(props: {
   );
 
   const mobileView = (
-    <div style={{ width: "100%" }}>
-      <Paper className={classes.root} style={{ width: "100%" }}>
+    <div className="tab-container-mobile">
+      <Paper className={classes.root}>
         <Tabs
-          value={value}
+          value={selectedTabIx}
           TabIndicatorProps={{
             style: { background: "#ddd", height: "10px" },
           }}
@@ -120,13 +122,8 @@ function TopicTabs(props: {
             <FormControl className={classes.formControl}>{topics}</FormControl>
           </form>
         </DialogContent>
-        <DialogActions style={{ display: "flex", justifyContent: "center" }}>
-          <Button
-            onClick={handleClose}
-            color="primary"
-            data-cy="close-topics"
-            style={{ backgroundColor: "#ddd" }}
-          >
+        <DialogActions className="dialog-container-mobile">
+          <Button onClick={handleClose} color="primary" data-cy="close-topics">
             Close
           </Button>
         </DialogActions>
@@ -135,10 +132,10 @@ function TopicTabs(props: {
   );
 
   const desktopView = (
-    <div style={{ width: "100%", overflowX: "auto" }}>
-      <Paper className={classes.root} style={{ width: "100%" }}>
+    <div className="tab-container-desktop">
+      <Paper className={classes.root}>
         <Tabs
-          value={value}
+          value={selectedTabIx}
           TabIndicatorProps={{
             style: { background: "#ddd", height: "10px" },
           }}
@@ -168,7 +165,7 @@ function TopicTabs(props: {
   // if mobile -> show history button
   // if not mobile -> hide history button
   return (
-    <div style={{ display: "flex", justifyContent: "space-around" }}>
+    <div className="tab-wrapper">
       {shouldDisplayPortrait() || isMobile ? mobileView : desktopView}
     </div>
   );

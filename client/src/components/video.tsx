@@ -19,7 +19,7 @@ import {
   mentorAnswerPlaybackStarted,
 } from "store/actions";
 import { State, WebLink } from "types";
-import "styles/layout.css";
+import "styles/video.css";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
@@ -172,7 +172,7 @@ function VideoPlayer(args: VideoPlayerParams) {
     return (
       <a
         href={wl.href}
-        style={{ position: "relative", color: "#ffffffd6", bottom: 3, left: 5 }}
+        className="web-link-a"
         target="_blank"
         rel="noreferrer"
         key={i}
@@ -183,69 +183,19 @@ function VideoPlayer(args: VideoPlayerParams) {
   });
 
   const answerLinkCard = (
-    <div
-      data-cy="answer-link-card"
-      style={{
-        backgroundColor: "#ffffff47",
-        position: "absolute",
-        right: 0,
-        top: 0,
-        display: "flex",
-        alignItems: "center",
-        zIndex: 1,
-        color: "#fff",
-        verticalAlign: "middle",
-        borderRadius: "0px 0px 0px 10px",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          padding: 10,
-          alignItems: "center",
-        }}
-      >
-        {webLinkJSX}
-      </div>
-      <InfoOutlinedIcon
-        style={{
-          marginLeft: 10,
-          marginRight: 10,
-          position: "relative",
-        }}
-      />
+    <div data-cy="answer-link-card" className="answer-link-card-container">
+      <div className="web-links-wrapper">{webLinkJSX}</div>
+      <InfoOutlinedIcon className="web-link-card-icon" />
     </div>
   );
 
   const mentorNameCard = (
-    <div
-      data-cy="mentor-name-card"
-      style={{
-        background: "#ffffff47",
-        position: "absolute",
-        left: 0,
-        top: 0,
-        display: "inline-block",
-        zIndex: 1,
-        color: "#fbfbfb94",
-        verticalAlign: "middle",
-        border: "0px transparent",
-        borderRadius: "0px 0px 10px 0px",
-      }}
-    >
+    <div data-cy="mentor-name-card" className="mentor-name-card">
       <div
-        style={{ display: "flex", alignItems: "center" }}
+        className="mentor-fav-icon-wrapper"
         data-cy="mentorname-faveicon-wrapper"
       >
-        <p
-          style={{
-            padding: "0px 10px 0px 10px",
-            height: "1rem",
-            color: "#ffffffd6",
-          }}
-          data-cy="mentor-name"
-        >
+        <p className="mentor-name-text" data-cy="mentor-name">
           {mentorName}
         </p>
         <FaveButton />
@@ -259,7 +209,7 @@ function VideoPlayer(args: VideoPlayerParams) {
     : false;
 
   return (
-    <div style={{ position: "relative", display: "inline-block" }}>
+    <div className="video-player-wrapper">
       {!hideLinkLabel && shouldDiplayWebLinks ? answerLinkCard : null}
       {mentorName ? mentorNameCard : null}
       <ReactPlayer
@@ -269,7 +219,7 @@ function VideoPlayer(args: VideoPlayerParams) {
           margin: "0 auto",
           zIndex: 0,
         }}
-        className="player-wrapper"
+        className="player-wrapper react-player-wrapper"
         url={videoUrl}
         muted={Boolean(isIdle)}
         onDuration={setDuration}

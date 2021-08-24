@@ -1,0 +1,70 @@
+.player-wrapper > video {
+  height: auto;
+}
+.star-icon {
+  position: relative;
+  top: 15%;
+  padding-right: 10px;
+}
+
+.web-link-a {
+  position: relative;
+  color: #ffffffd6;
+  bottom: 3;
+  left: 5;
+}
+
+.answer-link-card-container {
+  background-color: #ffffff47;
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  color: #fff;
+  vertical-align: middle;
+  border-radius: 0px 0px 0px 10px;
+}
+
+.web-links-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  align-items: center;
+}
+
+.web-link-card-icon {
+  margin-left: 10px;
+  margin-right: 10px;
+  position: relative;
+}
+
+.mentor-name-card {
+  background-color: #ffffff47;
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-block;
+  align-items: center;
+  z-index: 1;
+  color: #fbfbfb94;
+  vertical-align: middle;
+  border: 0px transparent;
+  border-radius: 0px 0px 10px 0px;
+}
+
+.mentor-fav-icon-wrapper {
+  display: flex;
+  align-items: center;
+}
+.mentor-name-text {
+  padding: 0px 10px 0px 10px;
+  height: 1rem;
+  color: #ffffffd6;
+}
+
+.video-player-wrapper {
+  position: relative;
+  display: inline-block;
+}

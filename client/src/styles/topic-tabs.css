@@ -1,0 +1,17 @@
+.tab-container-desktop {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tab-container-mobile {
+  width: 100%;
+}
+
+.dialog-container-mobile {
+  display: flex;
+}
+
+.tab-wrapper {
+  display: flex;
+  justify-content: space-around;
+}
