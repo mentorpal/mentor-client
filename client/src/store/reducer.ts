@@ -53,6 +53,8 @@ import {
   AskLink,
   LINK_TYPE_ASK,
   UtteranceName,
+  WebLink,
+  LINK_TYPE_WEB,
 } from "types";
 import { getUtterance } from "api";
 
@@ -387,6 +389,42 @@ function onQuestionInputChanged(
   });
 }
 
+function findWebLinks(text: string): WebLink[] {
+  const REGEX_WEB_LINKS_ALL =
+    /(https?:\/\/(?:www.|(?!www))[^\s.]+\.[^\s]{2,}|www.[^\s]+.[^\s]{2,})/gi;
+
+  const webLinks: WebLink[] = (
+    (text || "").match(REGEX_WEB_LINKS_ALL) || []
+  ).map((wl) => {
+    const link = wl.replace(")", "");
+    return {
+      type: LINK_TYPE_WEB,
+      href: link,
+    };
+  });
+
+  return webLinks;
+}
+
+function findAskLinks(text: string): AskLink[] {
+  const REGEX_ASK_LINKS_ALL = /\(ask:\/\/([^)]*)\)/g;
+  const REGEX_ASK_LINK = /ask:\/\/([^)]*)/;
+  const askLinks: AskLink[] = (
+    (text || "").match(REGEX_ASK_LINKS_ALL) || []
+  ).map((linkWParens, i) => {
+    const qmatch = linkWParens.match(REGEX_ASK_LINK);
+    const question = qmatch && qmatch.length > 1 ? qmatch[1] : "";
+    return {
+      type: LINK_TYPE_ASK,
+      href: `ask://${question}`,
+      question: decodeURIComponent(question).replace(/\+/g, " "),
+      askLinkIndex: i,
+    };
+  });
+
+  return askLinks;
+}
+
 function onQuestionAnswered(
   state: State,
   action: QuestionAnsweredAction
@@ -394,6 +432,9 @@ function onQuestionAnswered(
   // NOTE: about answerFeedbackId
   // It seems like the answerFeedbackId should be
   // associated to the chat message
+
+  const webLinks: WebLink[] = findWebLinks(action.payload.answerText);
+  const askLinks: AskLink[] = findAskLinks(action.payload.answerText);
 
   const mentor: MentorState = {
     ...state.mentorsById[action.payload.mentor],
@@ -418,20 +459,6 @@ function onQuestionAnswered(
   ) {
     mentor.topic_questions[history].questions.push(action.payload.question);
   }
-  const REGEX_ASK_LINKS_ALL = /\(ask:\/\/([^)]*)\)/g;
-  const REGEX_ASK_LINK = /ask:\/\/([^)]*)/;
-  const askLinks: AskLink[] = (
-    (action.payload.answerText || "").match(REGEX_ASK_LINKS_ALL) || []
-  ).map((linkWParens, i) => {
-    const qmatch = linkWParens.match(REGEX_ASK_LINK);
-    const question = qmatch && qmatch.length > 1 ? qmatch[1] : "";
-    return {
-      type: LINK_TYPE_ASK,
-      href: `ask://${question}`,
-      question: decodeURIComponent(question).replace(/\+/g, " "),
-      askLinkIndex: i,
-    };
-  });
 
   return {
     ...state,
@@ -451,6 +478,7 @@ function onQuestionAnswered(
           feedbackId: action.payload.answerFeedbackId,
           isFeedbackSendInProgress: false,
           askLinks,
+          webLinks,
         },
       ],
     },

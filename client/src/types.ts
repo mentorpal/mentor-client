@@ -38,6 +38,7 @@ export interface ChatMsg {
   isFeedbackSendInProgress: boolean;
   questionId: string;
   askLinks?: AskLink[];
+  webLinks?: WebLink[];
 }
 
 export interface Mentor {

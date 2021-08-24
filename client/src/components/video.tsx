@@ -18,7 +18,7 @@ import {
   faveMentor,
   mentorAnswerPlaybackStarted,
 } from "store/actions";
-import { State } from "types";
+import { State, WebLink } from "types";
 import "styles/layout.css";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
@@ -49,6 +49,22 @@ function Video(args: { playing?: boolean }): JSX.Element {
     };
   });
 
+  // returns an array of WebLinks
+  const webLinks = useSelector<State, WebLink[] | undefined>((state) => {
+    const chatData = state.chat.messages;
+    const lastQuestionId = chatData[chatData.length - 1].questionId;
+    const lastWebLink = chatData.filter((m) => {
+      if (m.mentorId === curMentor && m.questionId === lastQuestionId) {
+        return m.webLinks;
+      }
+    });
+    const mentorWebLink =
+      lastWebLink && lastWebLink.length > 0
+        ? lastWebLink[0].webLinks
+        : undefined;
+    return mentorWebLink;
+  });
+
   interface HeaderMentorData {
     _id: string;
     name: string;
@@ -72,33 +88,6 @@ function Video(args: { playing?: boolean }): JSX.Element {
 
   const [hideLinkLabel, setHideLinkLabel] = useState<boolean>(false);
   const isIdle = useSelector<State, boolean>((state) => state.isIdle);
-
-  const lastAnswerLink = useSelector<State, string>((state) => {
-    const totalMentors = Object.keys(state.mentorsById).length;
-    const chatAnswers = state.chat.messages.map((m) => {
-      return !m.isUser ? findLinks(m.text) : "";
-    });
-    const lastMentorAnswers = chatAnswers.slice(-totalMentors);
-    return getLastAnswerLink(lastMentorAnswers.reverse());
-  });
-
-  function getLastAnswerLink(lastMentorAnswers: Array<string>): string {
-    for (let i = 0; i < lastMentorAnswers.length; i++) {
-      if (lastMentorAnswers[i] !== "") {
-        return lastMentorAnswers[i];
-      }
-    }
-    return "";
-  }
-
-  function findLinks(text: string): string {
-    const matchs =
-      /\[(.+)\]\((https?:\/\/[^\s]+)(?: "(.+)")?\)|(https?:\/\/[^\s]+)/gi.exec(
-        text
-      );
-    const url = matchs ? matchs[2] : "";
-    return url;
-  }
 
   const [duration, setDuration] = useState(Number.NaN);
 
@@ -140,7 +129,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
         subtitlesOn={Boolean(subtitlesSupported)}
         subtitlesUrl={video.subtitles}
         videoUrl={video.src}
-        lastAnswerLink={lastAnswerLink}
+        webLinks={webLinks}
         hideLinkLabel={hideLinkLabel}
         mentorName={mentorName ? mentorName?.name : ""}
       />
@@ -159,7 +148,7 @@ interface VideoPlayerParams {
   subtitlesOn: boolean;
   subtitlesUrl: string;
   videoUrl: string;
-  lastAnswerLink: string;
+  webLinks: WebLink[] | undefined;
   hideLinkLabel: boolean;
   mentorName: string;
 }
@@ -174,10 +163,25 @@ function VideoPlayer(args: VideoPlayerParams) {
     subtitlesOn,
     subtitlesUrl,
     videoUrl,
-    lastAnswerLink,
+    webLinks,
     hideLinkLabel,
     mentorName,
   } = args;
+
+  const webLinkJSX = webLinks?.map((wl, i) => {
+    return (
+      <a
+        href={wl.href}
+        style={{ position: "relative", color: "#000", bottom: 3, left: 5 }}
+        target="_blank"
+        rel="noreferrer"
+        key={i}
+      >
+        {wl.href?.length > 30 ? wl.href.slice(0, 30) : wl.href}
+      </a>
+    );
+  });
+
   const answerLinkCard = (
     <div
       data-cy="answer-link-card"
@@ -186,23 +190,24 @@ function VideoPlayer(args: VideoPlayerParams) {
         position: "absolute",
         right: 5,
         top: 5,
-        display: "inline-block",
+        display: "flex",
+        alignItems: "center",
         zIndex: 1,
         color: "#fff",
         verticalAlign: "middle",
         borderRadius: 10,
       }}
     >
-      <a
-        href={lastAnswerLink}
-        style={{ position: "relative", color: "#000", bottom: 6, left: 5 }}
-        target="_blank"
-        rel="noreferrer"
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          padding: 10,
+          alignItems: "center",
+        }}
       >
-        {lastAnswerLink?.length > 30
-          ? lastAnswerLink.slice(0, 30)
-          : lastAnswerLink}
-      </a>
+        {webLinkJSX}
+      </div>
       <InfoOutlinedIcon
         style={{ marginLeft: 10, position: "relative", top: 2 }}
       />
@@ -243,10 +248,15 @@ function VideoPlayer(args: VideoPlayerParams) {
       </div>
     </div>
   );
+  const shouldDiplayWebLinks = webLinks
+    ? webLinks.length > 0
+      ? true
+      : false
+    : false;
 
   return (
     <div style={{ position: "relative", display: "inline-block" }}>
-      {!hideLinkLabel && lastAnswerLink ? answerLinkCard : null}
+      {!hideLinkLabel && shouldDiplayWebLinks ? answerLinkCard : null}
       {mentorName ? mentorNameCard : null}
       <ReactPlayer
         style={{
