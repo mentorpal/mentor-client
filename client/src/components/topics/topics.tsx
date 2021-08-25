@@ -6,24 +6,23 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Paper } from "@material-ui/core";
-import { History, Whatshot } from "@material-ui/icons";
+import { Paper } from "@material-ui/core";
 import { normalizeString } from "utils";
 import { selectTopic } from "store/actions";
 import { State, TopicQuestions } from "types";
 import withLocation from "wrap-with-location";
-import { shouldDisplayPortrait } from "pages";
 
 import "styles/layout.css";
+import TopicTabs from "./topic-tabs";
 
 function Topics(args: {
   onSelected: (question: string) => void;
   search: {
     subject?: string;
   };
-  displayHistoryButton?: boolean;
+  showHistoryTab: boolean;
 }) {
-  const { onSelected, displayHistoryButton } = args;
+  const { onSelected, showHistoryTab } = args;
   const dispatch = useDispatch();
   const topicQuestions = useSelector<State, TopicQuestions[]>((state) => {
     if (!state.curMentor) {
@@ -49,60 +48,18 @@ function Topics(args: {
       onSelected(topQ);
     }
   }
-  // if mobile -> show history button
-  // if not mobile -> hide history button
 
-  const topicButtons = topicQuestions.map((tq, i) => {
-    return shouldDisplayPortrait() && displayHistoryButton ? (
-      <div
-        data-cy={`topic-${i}`}
-        className={
-          tq.topic === "History"
-            ? `slide topic-slide history-btn`
-            : `slide topic-slide`
-        }
-        key={i}
-      >
-        <Button
-          className={curTopic === tq.topic ? `topic-selected` : ""}
-          variant="contained"
-          color={curTopic === tq.topic ? "primary" : "default"}
-          onClick={() => onTopicSelected(tq.topic)}
-        >
-          {tq.topic === "History" ? (
-            <History style={{ marginRight: "5px" }} />
-          ) : undefined}
-          {tq.topic === "Recommended" ? (
-            <Whatshot style={{ marginRight: "5px" }} />
-          ) : undefined}
-          {tq.topic}
-        </Button>
-      </div>
-    ) : tq.topic !== "History" ? (
-      <div data-cy={`topic-${i}`} className="slide topic-slide" key={i}>
-        <Button
-          className={curTopic === tq.topic ? "topic-selected" : ""}
-          variant="contained"
-          color={curTopic === tq.topic ? "primary" : "default"}
-          onClick={() => onTopicSelected(tq.topic)}
-        >
-          {tq.topic === "History" ? (
-            <History style={{ marginRight: "5px" }} />
-          ) : undefined}
-          {tq.topic === "Recommended" ? (
-            <Whatshot style={{ marginRight: "5px" }} />
-          ) : undefined}
-          {tq.topic}
-        </Button>
-      </div>
-    ) : null;
-  });
+  const tabsContainer = (
+    <TopicTabs
+      topicQuestions={topicQuestions}
+      onTopicSelected={onTopicSelected}
+      showHistoryTab={showHistoryTab}
+    />
+  );
 
   return (
-    <Paper elevation={2} square>
-      <div data-cy="topics" className="carousel" style={{ height: 70 }}>
-        {topicButtons}
-      </div>
+    <Paper elevation={2} square className="topics-wrapper">
+      {tabsContainer}
     </Paper>
   );
 }
