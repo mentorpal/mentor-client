@@ -65,12 +65,12 @@ jobs:
       - name: docker login
         run: docker login -u ${{ secrets.DOCKER_LOGIN }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Docker build
-        run: export DOCKER_IMAGE=uscictdocker/mentor-client:${{ steps.tag.outputs.image_tag }} && make docker-build
+        run: export DOCKER_IMAGE=mentorpal/mentor-client:${{ steps.tag.outputs.image_tag }} && make docker-build
       - name: docker tag release as version
         if: needs.publish-check.outputs.is_release == 'true'
-        run: docker tag "uscictdocker/mentor-client:${{ steps.tag.outputs.image_tag }}" "uscictdocker/mentor-client:${GITHUB_REF#refs/tags/}"
+        run: docker tag "mentorpal/mentor-client:${{ steps.tag.outputs.image_tag }}" "mentorpal/mentor-client:${GITHUB_REF#refs/tags/}"
       - name: docker tag main as latest
         if: github.ref == 'refs/heads/main'
-        run: docker tag "uscictdocker/mentor-client:${{ steps.tag.outputs.image_tag }}" "uscictdocker/mentor-client:latest"
+        run: docker tag "mentorpal/mentor-client:${{ steps.tag.outputs.image_tag }}" "mentorpal/mentor-client:latest"
       - name: docker push
-        run: docker push --all-tags uscictdocker/mentor-client
+        run: docker push --all-tags mentorpal/mentor-client
