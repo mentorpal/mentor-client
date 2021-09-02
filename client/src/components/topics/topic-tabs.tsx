@@ -85,36 +85,34 @@ function TopicTabs(props: {
 
   const mobileView = (
     <div className="tab-container-mobile">
-      <Paper className={classes.root}>
-        <Tabs
-          value={selectedTabIx}
-          TabIndicatorProps={{
-            style: { background: "#ddd", height: "10px" },
-          }}
-          textColor="primary"
-          onChange={onChange}
-          aria-label="disabled tabs example"
-          data-cy="topics"
-        >
+      <Tabs
+        value={selectedTabIx}
+        TabIndicatorProps={{
+          style: { background: "#ddd", height: "10px" },
+        }}
+        textColor="primary"
+        onChange={onChange}
+        aria-label="disabled tabs example"
+        data-cy="topics"
+      >
+        <Tab
+          label={curTopic && curTopic !== "History" ? curTopic : firstTopic}
+          data-cy="topic-tab"
+          onClick={onClickOpen}
+          className="topic-tab"
+          data-test={curTopic !== "History" ? curTopic : null}
+          icon={<ArrowDropDown />}
+        />
+        {showHistoryTab ? null : (
           <Tab
-            label={curTopic && curTopic !== "History" ? curTopic : firstTopic}
-            data-cy="topic-tab"
-            onClick={onClickOpen}
+            label="History"
+            data-cy="history-tab"
+            onClick={() => onTopicSelected("History")}
             className="topic-tab"
-            data-test={curTopic !== "History" ? curTopic : null}
-            icon={<ArrowDropDown />}
+            icon={<History />}
           />
-          {showHistoryTab ? null : (
-            <Tab
-              label="History"
-              data-cy="history-tab"
-              onClick={() => onTopicSelected("History")}
-              className="topic-tab"
-              icon={<History />}
-            />
-          )}
-        </Tabs>
-      </Paper>
+        )}
+      </Tabs>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Topics</DialogTitle>
         <DialogContent data-cy="topics-questions-list">
@@ -144,20 +142,18 @@ function TopicTabs(props: {
           aria-label="disabled tabs example"
           data-cy="topic-tabs"
         >
-          {topicQuestions.map(({ topic }, i) =>
-            topic !== "History" ? (
-              <Tab
-                key={i}
-                label={topic}
-                onClick={() => onTopicClick(topic)}
-                className={
-                  curTopic === topic ? "topic-tab topic-selected " : "topic-tab"
-                }
-                data-test={curTopic === topic ? topic : null}
-                data-cy={`desktop-tab-${i}`}
-              />
-            ) : null
-          )}
+          {topicQuestions.map(({ topic }, i) => (
+            <Tab
+              key={i}
+              label={topic}
+              onClick={() => onTopicClick(topic)}
+              className={
+                curTopic === topic ? "topic-tab topic-selected " : "topic-tab"
+              }
+              data-test={curTopic === topic ? topic : null}
+              data-cy={topic === "History" ? "history-tab" : `desktop-tab-${i}`}
+            />
+          ))}
         </Tabs>
       </Paper>
     </div>

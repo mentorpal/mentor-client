@@ -219,6 +219,7 @@ function VideoPlayer(args: VideoPlayerParams) {
           margin: "0 auto",
           zIndex: 0,
         }}
+        width="90%"
         className="player-wrapper react-player-wrapper"
         url={videoUrl}
         muted={Boolean(isIdle)}
