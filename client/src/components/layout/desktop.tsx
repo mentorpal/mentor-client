@@ -8,7 +8,7 @@ import React from "react";
 import { Collapse } from "@material-ui/core";
 import GuestPrompt from "components/guest-prompt";
 import { MentorType } from "types";
-import { UseWitInputtData } from "pages/use-input-data";
+import { UseWitInputtData } from "components/layout/use-input-data";
 import Input from "components/input";
 import "styles/history-chat-responsive.css";
 
