@@ -75,6 +75,10 @@
   display: inline-block;
 }
 
+.video-container {
+  margin-top: 2rem;
+}
+
 @media only screen and (max-width: 1200px) {
   .player-wrapper {
     width: auto;
@@ -95,6 +99,9 @@
   .player-wrapper > video {
     height: 100% !important;
     width: 100% !important;
+  }
+  .video-container {
+    margin-top: 0px;
   }
 }
 
@@ -118,5 +125,8 @@
   .player-wrapper > video {
     height: 100% !important;
     width: 100% !important;
+  }
+  .video-container {
+    margin-top: 0px;
   }
 }
