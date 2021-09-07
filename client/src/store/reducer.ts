@@ -7,6 +7,7 @@ The full terms of this copyright and license should always be found in the root 
 import { normalizeString } from "utils";
 import {
   ANSWER_FINISHED,
+  VIDEO_FINISHED,
   FEEDBACK_SEND_SUCCEEDED,
   FEEDBACK_SENT,
   MENTOR_FAVED,
@@ -40,6 +41,7 @@ import {
   FEEDBACK_SEND_FAILED,
   FeedbackSendSucceededAction,
   FeedbackSendFailedAction,
+  VideoFinishedAction,
 } from "./actions";
 import {
   MentorState,
@@ -265,6 +267,7 @@ function onMentorLoadResults(
           feedback: Feedback.NONE,
           feedbackId: "",
           isFeedbackSendInProgress: false,
+          isVideoInProgress: false,
         },
       ],
     },
@@ -320,6 +323,7 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               feedback: Feedback.NONE,
               feedbackId: "",
               isFeedbackSendInProgress: false,
+              isVideoInProgress: true,
             },
           ],
         },
@@ -425,6 +429,23 @@ function findAskLinks(text: string): AskLink[] {
   return askLinks;
 }
 
+function onVideoFinished(state: State, action: VideoFinishedAction): State {
+  return {
+    ...state,
+    chat: {
+      ...state.chat,
+      messages: state.chat.messages.map((m) => {
+        return m.isVideoInProgress !== action.payload.isVideoInProgress
+          ? {
+              ...m,
+              isVideoInProgress: action.payload.isVideoInProgress,
+            }
+          : m;
+      }),
+    },
+  };
+}
+
 function onQuestionAnswered(
   state: State,
   action: QuestionAnsweredAction
@@ -474,6 +495,7 @@ function onQuestionAnswered(
           feedback: Feedback.NONE,
           feedbackId: action.payload.answerFeedbackId,
           isFeedbackSendInProgress: false,
+          isVideoInProgress: true,
           askLinks: findAskLinks(action.payload.answerText),
           webLinks: findWebLinks(action.payload.answerText),
         },
@@ -527,6 +549,8 @@ export default function reducer(
       return onQuestionSent(state, action);
     case QUESTION_ANSWERED:
       return onQuestionAnswered(state, action);
+    case VIDEO_FINISHED:
+      return onVideoFinished(state, action);
     case QUESTION_ERROR:
       return {
         ...state,

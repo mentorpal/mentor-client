@@ -60,15 +60,20 @@ export function ChatItem(props: {
   styles: StyleProps;
   setAnswerVisibility: (show: boolean) => void;
   visibility: boolean;
+  mentorType: string;
 }): JSX.Element {
-  const { message, i, styles, setAnswerVisibility, visibility } = props;
+  const { message, i, styles, setAnswerVisibility, visibility, mentorType } =
+    props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
   const config = useSelector<State, Config>((s) => s.config);
 
   const isUser = !message.mentorId;
   const mentorColor = message.color || "#88929e";
-  const isVisible = visibility;
+  const isVisible =
+    mentorType === "CHAT"
+      ? visibility
+      : visibility && !message.isVideoInProgress;
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(event.currentTarget);

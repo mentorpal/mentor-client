@@ -85,7 +85,7 @@ describe("Chat", () => {
     cy.get("[data-cy=chat-msg-2] a").should("have.attr", "target", "_blank");
   });
 
-  it("can give feedback on classifier answer", () => {
+  it.only("can give feedback on classifier answer", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["covid"] },
       mentorData: [covid],

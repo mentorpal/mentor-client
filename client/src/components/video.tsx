@@ -17,6 +17,7 @@ import {
   answerFinished,
   faveMentor,
   mentorAnswerPlaybackStarted,
+  onVideoFinished,
 } from "store/actions";
 import { State, WebLink } from "types";
 import "styles/video.css";
@@ -98,6 +99,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
   function onEnded() {
     setHideLinkLabel(true);
     dispatch(answerFinished());
+    dispatch(onVideoFinished(false));
   }
 
   function onPlay() {

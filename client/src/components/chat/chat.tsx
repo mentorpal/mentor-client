@@ -73,6 +73,7 @@ export function Chat(args: {
   const { height, windowHeight, width, bubbleColor } = args;
   const styles = useStyles();
   const {
+    mentorType,
     lastQuestionId,
     visibilityShowAllPref,
     getQuestionVisibilityPref,
@@ -195,6 +196,7 @@ export function Chat(args: {
                   setQuestionVisibilityPref(m.questionId, show);
                 }}
                 visibility={isQuestionsAnswersVisible(m.questionId)}
+                mentorType={mentorType}
               />
             </div>
           );
