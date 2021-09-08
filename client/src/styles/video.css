@@ -73,6 +73,7 @@
 .video-player-wrapper {
   position: relative;
   display: inline-block;
+  margin-top: 50px;
 }
 
 @media only screen and (max-width: 1200px) {
@@ -99,6 +100,10 @@
   .video-container {
     margin-top: 0px;
   }
+  .video-player-wrapper {
+    position: relative;
+    display: inline-block;
+  }
 }
 
 @media (max-width: 600px) {
@@ -123,6 +128,9 @@
     width: 100% !important;
   }
   .video-container {
+    margin-top: 0px;
+  }
+  .video-player-wrapper {
     margin-top: 0px;
   }
 }
