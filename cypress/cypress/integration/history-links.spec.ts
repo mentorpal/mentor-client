@@ -186,6 +186,9 @@ describe("Chat History (Video Mentors Links)", () => {
       });
     // wait for it to finish
     cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
+    cy.get("video")
+      .should("have.prop", "ended", true)
+      .should("have.prop", "paused", true);
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
@@ -233,6 +236,9 @@ describe("Chat History (Video Mentors Links)", () => {
       });
     // wait for it to finish
     cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
+    cy.get("video")
+      .should("have.prop", "ended", true)
+      .should("have.prop", "paused", true);
 
     // not mistake it for a link
     cy.get("[data-cy=answer-link-card]").should("not.exist");

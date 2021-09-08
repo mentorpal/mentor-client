@@ -63,9 +63,6 @@ describe("Chat History (Video Mentors)", () => {
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.intercept("**/questions/?mentor=carlos&query=*", {
-      fixture: "response_with_feedback2.json",
-    });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
       fixture: "video_response.mp4",
@@ -101,7 +98,7 @@ describe("Chat History (Video Mentors)", () => {
       cy.get("[data-cy=chat-msg-6]")
         .scrollIntoView()
         .should("be.visible")
-        .contains("Another feedback (testing parenthesis).");
+        .contains("Give me feedback");
     });
   });
 
@@ -114,9 +111,6 @@ describe("Chat History (Video Mentors)", () => {
     cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
-    });
-    cy.intercept("**/questions/?mentor=carlos&query=*", {
-      fixture: "response_with_feedback2.json",
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
@@ -153,7 +147,7 @@ describe("Chat History (Video Mentors)", () => {
       cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
       cy.get("[data-cy=chat-msg-3]")
         .should("be.visible")
-        .contains("Another feedback (testing parenthesis).");
+        .contains("Give me feedback.");
     });
   });
 
@@ -280,7 +274,7 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-1]").contains("Good feedback test");
       cy.get("[data-cy=chat-msg-2]").within(($cm) => {
-        cy.get("[data-cy=feedback-btn]").should("exist");
+        cy.get("[data-cy=feedback-btn]").should("exist").should("be.visible");
         cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
       });
     });
@@ -297,7 +291,7 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-4]").contains("Bad feedback test");
       cy.get("[data-cy=chat-msg-5]").within(($cm) => {
-        cy.get("[data-cy=feedback-btn]").should("exist");
+        cy.get("[data-cy=feedback-btn]").should("exist").should("be.visible");
         cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
       });
     });
