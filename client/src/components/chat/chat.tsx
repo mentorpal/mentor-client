@@ -151,6 +151,7 @@ export function Chat(args: {
   return (
     <div
       data-cy="history-chat"
+      id="history-chat"
       data-topic="History"
       className={
         !shouldDisplayPortrait()

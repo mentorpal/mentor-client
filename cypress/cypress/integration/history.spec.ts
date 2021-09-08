@@ -11,7 +11,6 @@ import {
 } from "../support/helpers";
 const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
-Cypress.config("defaultCommandTimeout", 8000);
 
 describe("Chat History (Video Mentors)", () => {
   it("does not display in topics list if no questions have been asked", () => {
@@ -85,8 +84,9 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
       cy.get("[data-cy=chat-msg-4]").contains("user msg 2");
-      cy.get("[data-cy=chat-msg-5]")
+      cy.get("[data-cy=chat-msg-5]", { timeout: 8000 })
         .should("be.visible")
+        .scrollIntoView()
         .contains("Give me feedback");
       cy.get("[data-cy=chat-msg-6]")
         .scrollIntoView()
@@ -131,7 +131,7 @@ describe("Chat History (Video Mentors)", () => {
     // should display question and answers once video finishes
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
-      cy.get("[data-cy=chat-msg-2]")
+      cy.get("[data-cy=chat-msg-2]", { timeout: 8000 })
         .should("be.visible")
         .contains("Give me feedback.");
       cy.get("[data-cy=chat-msg-3]")
@@ -176,14 +176,18 @@ describe("Chat History (Video Mentors)", () => {
     // write msgs
     cy.get("[data-cy=input-field]").type("Good feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=input-field]").type("Bad feedback test");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=visibility-switch]").find("input").check();
 
     // provide feedback
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-1]").contains("Good feedback test");
+      cy.get("[data-cy=chat-msg-2]", {
+        timeout: 8000,
+      })
+        .should("be.visible")
+        .contains("Give me feedback.");
+
       cy.get("[data-cy=chat-msg-2]").within(($cm) => {
         cy.get("[data-cy=feedback-btn]").should("exist");
         cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
@@ -244,6 +248,11 @@ describe("Chat History (Video Mentors)", () => {
     // provide feedback
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-1]").contains("Good feedback test");
+      cy.get("[data-cy=chat-msg-2]", {
+        timeout: 8000,
+      })
+        .should("be.visible")
+        .contains("Give me feedback.");
       cy.get("[data-cy=chat-msg-2]").within(($cm) => {
         cy.get("[data-cy=feedback-btn]").should("exist");
         cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
@@ -310,6 +319,11 @@ describe("Chat History (Video Mentors)", () => {
       cy.get("[data-cy=chat-msg-1]")
         .scrollIntoView()
         .contains("Good feedback test");
+      cy.get("[data-cy=chat-msg-2]", {
+        timeout: 8000,
+      })
+        .should("be.visible")
+        .contains("Give me feedback.");
       cy.get("[data-cy=chat-msg-5]").within(($cm) => {
         cy.get("[data-cy=feedback-btn]").should("exist");
         cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
@@ -428,6 +442,14 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
+      cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
+      cy.get("[data-cy=chat-msg-2]", {
+        timeout: 8000,
+      })
+        .should("be.visible")
+        .contains("Give me feedback.");
+      cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
+
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         cy.get("[data-cy=visibility-switch]").should("exist");
         cy.get("[data-cy=visibility-switch]")
@@ -535,6 +557,13 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
+      cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
+      cy.get("[data-cy=chat-msg-2]", {
+        timeout: 8000,
+      })
+        .should("be.visible")
+        .contains("Give me feedback.");
+      cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         // hidden answers
         cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
@@ -629,6 +658,14 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
+      cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
+      cy.get("[data-cy=chat-msg-2]", {
+        timeout: 8000,
+      })
+        .should("be.visible")
+        .contains("Give me feedback.");
+      cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
+
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         // show first question's answers
         cy.get("[data-cy=vsbyIcon-1]").should("exist");

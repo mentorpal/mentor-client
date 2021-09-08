@@ -12,7 +12,6 @@ import {
 const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
 const julianne = require("../fixtures/julianne.json");
-Cypress.config("defaultCommandTimeout", 8000);
 
 describe("Chat History (Video Mentors Links)", () => {
   it("Tap link opens link in new tab", () => {
@@ -179,6 +178,11 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
+      cy.get("[data-cy=chat-msg-2]", { timeout: 8000 })
+        .should("be.visible")
+        .contains(
+          "I'm a computer programmer (I think) Tell me more, I like to code (I think) what to know"
+        );
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         cy.get("[data-cy=ask-icon-2]").should("be.visible");
         cy.get("[data-cy=ask-link-0]").trigger("mouseover").click();
@@ -218,6 +222,11 @@ describe("Chat History (Video Mentors Links)", () => {
     // not mistake it for a link
     cy.get("[data-cy=answer-link-card]").should("not.exist");
     cy.get("[data-cy=history-chat]").within(($hc) => {
+      cy.get("[data-cy=chat-msg-2]", { timeout: 8000 })
+        .should("be.visible")
+        .contains(
+          "I'm a computer programmer (I think) Tell me more, I like to code (I think) what to know"
+        );
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         cy.get("[data-cy=ask-icon-2]", { timeout: 8000 }).should("be.visible");
       });
