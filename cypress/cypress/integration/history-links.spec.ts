@@ -177,12 +177,17 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.get("[data-cy=input-field]").type("What do you do for living?");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
+    // play video
+    cy.get("video")
+      .should("have.prop", "paused", true)
+      .and("have.prop", "ended", false)
+      .then(($video) => {
+        $video[0].play();
+      });
+    // wait for it to finish
+    cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
+
     cy.get("[data-cy=history-chat]").within(($hc) => {
-      cy.get("[data-cy=chat-msg-2]", { timeout: 8000 })
-        .should("be.visible")
-        .contains(
-          "I'm a computer programmer (I think) Tell me more, I like to code (I think) what to know"
-        );
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         cy.get("[data-cy=ask-icon-2]").should("be.visible");
         cy.get("[data-cy=ask-link-0]").trigger("mouseover").click();
@@ -219,16 +224,26 @@ describe("Chat History (Video Mentors Links)", () => {
     );
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
+    // play video
+    cy.get("video")
+      .should("have.prop", "paused", true)
+      .and("have.prop", "ended", false)
+      .then(($video) => {
+        $video[0].play();
+      });
+    // wait for it to finish
+    cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
+
     // not mistake it for a link
     cy.get("[data-cy=answer-link-card]").should("not.exist");
     cy.get("[data-cy=history-chat]").within(($hc) => {
-      cy.get("[data-cy=chat-msg-2]", { timeout: 8000 })
+      cy.get("[data-cy=chat-msg-2]")
         .should("be.visible")
         .contains(
           "I'm a computer programmer (I think) Tell me more, I like to code (I think) what to know"
         );
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=ask-icon-2]", { timeout: 8000 }).should("be.visible");
+        cy.get("[data-cy=ask-icon-2]").should("be.visible");
       });
     });
     // not mistake it for a link
