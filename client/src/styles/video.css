@@ -1,5 +1,11 @@
+.player-wrapper {
+  height: 70vh !important;
+  width: 50vw !important;
+}
+
 .player-wrapper > video {
-  height: auto;
+  height: 70vh !important;
+  width: 50vw !important;
 }
 .star-icon {
   position: relative;
@@ -67,4 +73,56 @@
 .video-player-wrapper {
   position: relative;
   display: inline-block;
+}
+
+@media only screen and (max-width: 1200px) {
+  .player-wrapper {
+    width: auto;
+    height: auto;
+  }
+  .react-player {
+    padding-top: 56.25%;
+    position: relative;
+  }
+
+  .react-player > div {
+    position: absolute;
+  }
+  .player-wrapper {
+    height: 70vh !important;
+    width: 90vw !important;
+  }
+  .player-wrapper > video {
+    height: 100% !important;
+    width: 100% !important;
+  }
+  .video-container {
+    margin-top: 0px;
+  }
+}
+
+@media (max-width: 600px) {
+  .player-wrapper {
+    width: auto;
+    height: auto;
+  }
+  .react-player {
+    padding-top: 56.25%;
+    position: relative;
+  }
+
+  .react-player > div {
+    position: absolute;
+  }
+  .player-wrapper {
+    height: 40vh !important;
+    width: 90vw !important;
+  }
+  .player-wrapper > video {
+    height: 100% !important;
+    width: 100% !important;
+  }
+  .video-container {
+    margin-top: 0px;
+  }
 }

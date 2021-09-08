@@ -18,6 +18,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import useLocalStorage from "use-local-storage";
+import "styles/layout.css";
 
 interface HeaderMentorData {
   _id: string;
@@ -197,35 +198,34 @@ function Header(): JSX.Element {
       data-cy="header"
       data-mentor={mentor._id}
       style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        height: 55,
         backgroundColor: `${styleHeaderColor}`,
         color: `${styleHeaderTextColor}`,
       }}
+      className="header-container"
     >
-      {mentor.name !== "USC" ? (
-        <IconButton
-          aria-label="information"
-          component="span"
-          style={{
-            position: "absolute",
-            left: "50px",
-            color: `${styleHeaderTextColor}`,
-          }}
-          onClick={handleClickHome}
-          data-cy="home-button"
-        >
-          <HomeIcon />
-        </IconButton>
-      ) : (
-        ""
-      )}
-
-      <Typography>
-        {mentor.name}: {mentor.title}
-      </Typography>
+      <div className="home-btn-wrapper">
+        {mentor.name !== "USC" ? (
+          <IconButton
+            aria-label="information"
+            component="span"
+            style={{
+              color: `${styleHeaderTextColor}`,
+            }}
+            className="home-btn"
+            onClick={handleClickHome}
+            data-cy="home-button"
+          >
+            <HomeIcon />
+          </IconButton>
+        ) : (
+          ""
+        )}
+      </div>
+      <div className="header-mentor-info">
+        <Typography>
+          {mentor.name}: {mentor.title}
+        </Typography>
+      </div>
       {/* Show disclaimer */}
       {disclaimerDisabled ? (
         <></>

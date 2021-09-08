@@ -243,7 +243,6 @@ function onMentorLoadResults(
   const mentor = action?.payload?.mentor;
   const curMentorIntro =
     action?.payload?.mentorsById[mentor || ""]?.data?.mentor;
-
   const curMentorIntroTranscript = curMentorIntro
     ? getUtterance(curMentorIntro, UtteranceName.INTRO)?.transcript
     : "";

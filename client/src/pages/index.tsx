@@ -10,11 +10,7 @@ import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Cmi5 from "@xapi/cmi5";
 import { hasCmi } from "cmiutils";
-import GuestPrompt from "components/guest-prompt";
 import Header from "components/header";
-import Input from "components/input";
-import Video from "components/video";
-import VideoPanel from "components/video-panel";
 import { loadConfig, loadMentors, setGuestName } from "store/actions";
 import { Config, LoadStatus, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
@@ -22,9 +18,11 @@ import "styles/layout.css";
 import { fetchMentorByAccessToken } from "api";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
-import Chat from "components/chat";
-
 import "styles/history-chat-responsive.css";
+
+import Desktop from "components/layout/desktop";
+import { isMobile } from "react-device-detect";
+import Mobile from "components/layout/mobile";
 
 const useStyles = makeStyles((theme) => ({
   flexRoot: {
@@ -111,6 +109,7 @@ function IndexPage(props: {
   const [windowHeight, setWindowHeight] = React.useState<number>(0);
   const [chatHeight, setChatHeight] = React.useState<number>(0);
   const curTopic = useSelector<State, string>((state) => state.curTopic);
+
   const { guest, subject, recommendedQuestions } = props.search;
   let { mentor } = props.search;
 
@@ -248,47 +247,26 @@ function IndexPage(props: {
     );
   }
 
-  const historyChatLandscape = (
-    <div
-      style={{
-        height: shouldDisplayPortrait() ? "250px" : windowHeight,
-      }}
-    >
-      <Chat height={windowHeight} windowHeight={windowHeight} />
-    </div>
-  );
-
   return (
     <MuiThemeProvider theme={brandedTheme}>
       <Header />
-      <div className="history-template">
-        <div className="video-mentor-wrapper" style={{ height: windowHeight }}>
-          <div className={styles.flexRoot} style={{ height: windowHeight }}>
-            <div className={styles.flexFixedChildHeader}>
-              <VideoPanel />
-            </div>
-            <div className={styles.flexExpandChild}>
-              {mentorType === MentorType.CHAT ? (
-                <Chat
-                  height={chatHeight}
-                  windowHeight={windowHeight}
-                  width={"50vw"}
-                  bubbleColor={"#88929e"}
-                />
-              ) : (
-                <Video playing={hasSessionUser()} />
-              )}
-            </div>
-            <div className={styles.flexFixedChild}>
-              <Input showHistoryTab={mentorType === MentorType.CHAT} />
-            </div>
-            {!hasSessionUser() ? <GuestPrompt /> : undefined}
-          </div>
-        </div>
-        {!shouldDisplayPortrait() && mentorType !== "CHAT"
-          ? historyChatLandscape
-          : null}
-      </div>
+      {shouldDisplayPortrait() || isMobile ? (
+        <Mobile
+          mentorType={mentorType}
+          chatHeight={chatHeight}
+          windowHeight={windowHeight}
+          hasSessionUser={hasSessionUser}
+          curTopic={curTopic}
+        />
+      ) : (
+        <Desktop
+          mentorType={mentorType}
+          chatHeight={chatHeight}
+          windowHeight={windowHeight}
+          hasSessionUser={hasSessionUser}
+          curTopic={curTopic}
+        />
+      )}
     </MuiThemeProvider>
   );
 }

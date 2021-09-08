@@ -6,11 +6,9 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Divider, Paper, InputBase, Collapse } from "@material-ui/core";
+import { Button, Divider, Paper, InputBase } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Topics from "components/topics/topics";
-import Questions from "components/questions";
 import { sendQuestion, userInputChanged } from "store/actions";
 import { Config, MentorQuestionSource, QuestionInput, State } from "types";
 import { isMobile } from "react-device-detect";
@@ -26,12 +24,13 @@ const useStyles = makeStyles(() => ({
   },
   inputField: {
     flex: 1,
-    margin: "2px 4px",
+    margin: "10px 4px 10px 4px",
     paddingLeft: "8px",
     borderStyle: "solid",
     borderWidth: "1px",
-    borderRadius: "5px",
+    borderRadius: "1rem",
     borderColor: "rgba(0, 0, 0, 0.20)",
+    backgroundColor: "#fff",
   },
   button: {
     color: "#7d7d7d !important",
@@ -39,6 +38,7 @@ const useStyles = makeStyles(() => ({
     height: "50px",
     width: "20px",
     borderRadius: "50%",
+    backgroundColor: "#fff !important",
   },
   divider: {
     width: 1,
@@ -47,8 +47,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function Input(props: { showHistoryTab: boolean }): JSX.Element {
-  const { showHistoryTab } = props;
+function Input(): JSX.Element {
   const dispatch = useDispatch();
   const classes = useStyles();
   const config = useSelector<State, Config>((s) => s.config);
@@ -87,10 +86,6 @@ function Input(props: { showHistoryTab: boolean }): JSX.Element {
     handleQuestionSend(questionInput.question, questionInput.source);
   }
 
-  function onQuestionSelected(question: string) {
-    handleQuestionSend(question, MentorQuestionSource.TOPIC_LIST);
-  }
-
   // Input field should be updated (user typed a question or selected a topic)
   function onQuestionInputChanged(question: string) {
     handleQuestionChanged(question, MentorQuestionSource.USER);
@@ -99,10 +94,6 @@ function Input(props: { showHistoryTab: boolean }): JSX.Element {
   // Input field was clicked on
   function onQuestionInputSelected(): void {
     handleQuestionChanged(questionInput.question, questionInput.source);
-  }
-
-  function onTopicSelected(question: string) {
-    handleQuestionChanged(question, MentorQuestionSource.TOPIC_LIST);
   }
 
   // Input field key was entered (check if user hit enter)
@@ -122,48 +113,47 @@ function Input(props: { showHistoryTab: boolean }): JSX.Element {
     }
   };
 
-  return (
-    <div data-cy="input-field-wrapper" data-topic={curTopic}>
-      <Paper
-        className={[classes.root, "input-wrapper"].join(" ")}
-        square
-        style={{ height: 60, padding: 10 }}
+  const inputCard = (
+    <Paper className={[classes.root, "input-wrapper"].join(" ")} square>
+      <InputBase
+        data-cy="input-field"
+        className={[
+          classes.inputField,
+          animatingInputField ? "input-field-animation" : "",
+        ].join(" ")}
+        value={questionInput.question}
+        multiline
+        rows={2}
+        rowsMax={2}
+        placeholder={curQuestion || "Ask a question"}
+        onChange={(e) => {
+          onQuestionInputChanged(e.target.value);
+        }}
+        onClick={onQuestionInputSelected}
+        onBlur={onBlur}
+        onKeyPress={onKeyPress}
+      />
+      <Divider className={classes.divider} />
+      <Button
+        data-cy="input-send"
+        className="send-question-btn"
+        onClick={() => onQuestionInputSend()}
+        disabled={!questionInput.question}
+        variant="contained"
+        color="primary"
       >
-        <InputBase
-          id="input-field"
-          data-cy="input-field"
-          className={[
-            classes.inputField,
-            animatingInputField ? "input-field-animation" : "",
-          ].join(" ")}
-          value={questionInput.question}
-          multiline
-          rows={2}
-          rowsMax={2}
-          placeholder={curQuestion || "Ask a question"}
-          onChange={(e) => {
-            onQuestionInputChanged(e.target.value);
-          }}
-          onClick={onQuestionInputSelected}
-          onBlur={onBlur}
-          onKeyPress={onKeyPress}
-        />
-        <Divider className={classes.divider} />
-        <Button
-          data-cy="input-send"
-          className={classes.button}
-          onClick={() => onQuestionInputSend()}
-          disabled={!questionInput.question}
-          variant="contained"
-          color="primary"
-        >
-          <SendRoundedIcon style={{ fontSize: 25, marginLeft: 5 }} />
-        </Button>
-      </Paper>
-      <Topics onSelected={onTopicSelected} showHistoryTab={showHistoryTab} />
-      <Collapse in={Boolean(curTopic)} timeout="auto" unmountOnExit>
-        <Questions onSelected={onQuestionSelected} />
-      </Collapse>
+        <SendRoundedIcon style={{ fontSize: 25, marginLeft: 5 }} />
+      </Button>
+    </Paper>
+  );
+
+  return (
+    <div
+      data-cy="input-field-wrapper"
+      data-topic={curTopic}
+      className="input-container"
+    >
+      {inputCard}
     </div>
   );
 }
