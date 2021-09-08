@@ -116,7 +116,6 @@ function Input(): JSX.Element {
   const inputCard = (
     <Paper className={[classes.root, "input-wrapper"].join(" ")} square>
       <InputBase
-        id="input-field"
         data-cy="input-field"
         className={[
           classes.inputField,
