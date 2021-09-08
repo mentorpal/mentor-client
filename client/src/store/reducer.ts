@@ -323,7 +323,6 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               feedback: Feedback.NONE,
               feedbackId: "",
               isFeedbackSendInProgress: false,
-              isVideoInProgress: true,
             },
           ],
         },

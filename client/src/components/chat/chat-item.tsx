@@ -285,6 +285,7 @@ export function ChatItem(props: {
               </div>
               <div
                 data-cy="click-neutral"
+                data-test-in-progress={message.isFeedbackSendInProgress}
                 onClick={() => {
                   onFeedbackClicked(Feedback.NEUTRAL);
                 }}
@@ -297,6 +298,7 @@ export function ChatItem(props: {
               </div>
               <div
                 data-cy="click-bad"
+                data-test-in-progress={message.isFeedbackSendInProgress}
                 onClick={() => {
                   onFeedbackClicked(Feedback.BAD);
                 }}

@@ -12,6 +12,7 @@ import {
 const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
 const julianne = require("../fixtures/julianne.json");
+const VIDEO_TIMEOUT = 8000;
 
 describe("Chat History (Video Mentors Links)", () => {
   it("Tap link opens link in new tab", () => {
@@ -153,70 +154,85 @@ describe("Chat History (Video Mentors Links)", () => {
       });
   });
 
-  it("Answer recommends a question with prefix", () => {
-    mockDefaultSetup(cy, {
-      config: { mentorsDefault: ["clint", "carlos"] },
-      mentorData: [clint, carlos],
-      apiResponse: "response_with_markdown.json",
-      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null)],
-    });
-    cy.visit("/");
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_prefix.json",
-    });
-    cy.intercept("**/questions/?mentor=carlos&query=*", {
-      fixture: "response_with_feedback.json",
-    });
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
-    cy.get("[data-cy=history-chat]").should("exist");
-    // write msgs
-    cy.get("[data-cy=input-field]").type("What do you do for living?");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
-
-    cy.get("[data-cy=history-chat]").within(($hc) => {
-      cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=ask-icon-2]").should("be.visible");
-        cy.get("[data-cy=ask-link-0]").trigger("mouseover").click();
-        cy.get("[data-cy=chat-msg-4]", { timeout: 2000 }).contains(
-          "what does a computer programmer do?"
-        );
+  it(
+    "Answer recommends a question with prefix",
+    { defaultCommandTimeout: VIDEO_TIMEOUT },
+    () => {
+      mockDefaultSetup(cy, {
+        config: { mentorsDefault: ["clint", "carlos"] },
+        mentorData: [clint, carlos],
+        apiResponse: "response_with_prefix.json",
       });
-    });
-  });
-
-  it("Can display answer text with the word 'ask' and not mistake it for a link", () => {
-    mockDefaultSetup(cy, {
-      config: { mentorsDefault: ["clint", "carlos"] },
-      mentorData: [clint, carlos],
-      apiResponse: "response_with_markdown.json",
-      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null)],
-    });
-    cy.visit("/");
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_prefix.json",
-    });
-    cy.intercept("**/questions/?mentor=carlos&query=*", {
-      fixture: "response_with_feedback.json",
-    });
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
-    cy.get("[data-cy=history-chat]").should("exist");
-
-    // write msgs
-    cy.get("[data-cy=input-field]").type(
-      "I want to ask what do you do for living?"
-    );
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
-
-    // not mistake it for a link
-    cy.get("[data-cy=answer-link-card]").should("not.exist");
-    cy.get("[data-cy=history-chat]").within(($hc) => {
-      cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=ask-icon-2]").should("be.visible");
+      cy.intercept("**/questions/?mentor=clint&query=*", {
+        fixture: "response_with_prefix.json",
       });
-    });
-    // not mistake it for a link
-    cy.get("[data-cy=answer-link-card]").should("not.exist");
-  });
+      cy.intercept("**/questions/?mentor=carlos&query=*", {
+        fixture: "response_with_feedback.json",
+      });
+      // video intercept
+      cy.intercept("http://videos.org/answer_id.mp4", {
+        fixture: "video_response.mp4",
+      });
+      cy.visit("/");
+
+      cy.get("[data-cy=history-tab]").trigger("mouseover").click();
+      cy.get("[data-cy=history-chat]").should("exist");
+      // write msgs
+      cy.get("[data-cy=input-field]").type("What do you do for living?");
+      cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+      cy.get("[data-cy=history-chat]").within(($hc) => {
+        cy.get("[data-cy=chat-thread]").within(($hc) => {
+          cy.get("[data-cy=ask-icon-2]").should("be.visible");
+          cy.get("[data-cy=ask-link-0]").trigger("mouseover").click();
+          cy.get("[data-cy=chat-msg-4]", { timeout: 2000 }).contains(
+            "what does a computer programmer do?"
+          );
+        });
+      });
+    }
+  );
+
+  it(
+    "Can display answer text with the word 'ask' and not mistake it for a link",
+    { defaultCommandTimeout: VIDEO_TIMEOUT },
+    () => {
+      mockDefaultSetup(cy, {
+        config: { mentorsDefault: ["clint", "carlos"] },
+        mentorData: [clint, carlos],
+        apiResponse: "response_with_prefix.json",
+      });
+      cy.intercept("**/questions/?mentor=clint&query=*", {
+        fixture: "response_with_prefix.json",
+      });
+      cy.intercept("**/questions/?mentor=carlos&query=*", {
+        fixture: "response_with_feedback.json",
+      });
+      // video intercept
+      cy.intercept("http://videos.org/answer_id.mp4", {
+        fixture: "video_response.mp4",
+      });
+      cy.visit("/");
+      cy.get("[data-cy=history-tab]").trigger("mouseover").click();
+      cy.get("[data-cy=history-chat]").should("exist");
+
+      // write msgs
+      cy.get("[data-cy=input-field]").type(
+        "I want to ask what do you do for living?"
+      );
+      cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+      // not mistake it for a link
+      cy.get("[data-cy=answer-link-card]").should("not.exist");
+      cy.get("[data-cy=history-chat]").within(($hc) => {
+        cy.get("[data-cy=chat-thread]").within(($hc) => {
+          cy.get("[data-cy=ask-icon-2]").should("be.visible");
+        });
+      });
+      // not mistake it for a link
+      cy.get("[data-cy=answer-link-card]").should("not.exist");
+    }
+  );
 
   it("Can display answer text open and close parentheses and not mistake them for links", () => {
     mockDefaultSetup(cy, {
@@ -241,6 +257,7 @@ describe("Chat History (Video Mentors Links)", () => {
     // not mistake it for a link
     cy.get("[data-cy=answer-link-card]").should("not.exist");
   });
+
   it("shows the web link for the actively playing mentor video as user selects mentors", () => {
     // visit a page with two mentors: mentor1 and mentor2
     mockDefaultSetup(cy, {

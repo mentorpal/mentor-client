@@ -39,7 +39,7 @@ export interface ChatMsg {
   questionId: string;
   askLinks?: AskLink[];
   webLinks?: WebLink[];
-  isVideoInProgress: boolean;
+  isVideoInProgress?: boolean;
 }
 
 export interface Mentor {
