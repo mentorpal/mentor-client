@@ -193,8 +193,12 @@ describe("Chat History (Video Mentors Links)", () => {
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=ask-icon-2]").should("be.visible");
-        cy.get("[data-cy=ask-link-0]").trigger("mouseover").click();
+        cy.get("[data-cy=chat-msg-2]")
+          .scrollIntoView()
+          .within(() => {
+            cy.get("[data-cy=ask-icon-2]").should("exist");
+            cy.get("[data-cy=ask-link-0]").trigger("mouseover").click();
+          });
         cy.get("[data-cy=chat-msg-4]").contains(
           "what does a computer programmer do?"
         );
@@ -245,13 +249,14 @@ describe("Chat History (Video Mentors Links)", () => {
     // not mistake it for a link
     cy.get("[data-cy=answer-link-card]").should("not.exist");
     cy.get("[data-cy=history-chat]").within(($hc) => {
-      cy.get("[data-cy=chat-msg-2]")
-        .should("be.visible")
-        .contains(
-          "I'm a computer programmer (I think) Tell me more, I like to code (I think) what to know"
-        );
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=ask-icon-2]").should("be.visible");
+        cy.get("[data-cy=chat-msg-2]")
+          .should("exist")
+          .contains(
+            "I'm a computer programmer (I think) Tell me more, I like to code (I think) what to know"
+          );
+
+        cy.get("[data-cy=ask-icon-2]").should("exist");
       });
     });
     // not mistake it for a link
