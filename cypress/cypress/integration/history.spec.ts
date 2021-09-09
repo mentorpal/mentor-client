@@ -83,10 +83,14 @@ describe("Chat History (Video Mentors)", () => {
       .should("have.prop", "paused", true)
       .and("have.prop", "ended", false)
       .then(($video) => {
-        $video[0].play();
+        $video[$video.length - 1].play();
       });
     // wait for it to finish
-    cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
 
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
@@ -96,8 +100,8 @@ describe("Chat History (Video Mentors)", () => {
         .scrollIntoView()
         .contains("Give me feedback");
       cy.get("[data-cy=chat-msg-6]")
-        .scrollIntoView()
         .should("be.visible")
+        .scrollIntoView()
         .contains("Give me feedback");
     });
   });
@@ -137,10 +141,14 @@ describe("Chat History (Video Mentors)", () => {
       .should("have.prop", "paused", true)
       .and("have.prop", "ended", false)
       .then(($video) => {
-        $video[0].play();
+        $video[$video.length - 1].play();
       });
     // wait for it to finish
-    cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
 
     // should display question and answers once video finishes
     cy.get("[data-cy=history-chat").within(($hc) => {
@@ -193,10 +201,14 @@ describe("Chat History (Video Mentors)", () => {
       .should("have.prop", "paused", true)
       .and("have.prop", "ended", false)
       .then(($video) => {
-        $video[0].play();
+        $video[$video.length - 1].play();
       });
     // wait for it to finish
-    cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
 
     cy.get("[data-cy=visibility-switch]").find("input").check();
 
@@ -263,10 +275,14 @@ describe("Chat History (Video Mentors)", () => {
       .should("have.prop", "paused", true)
       .and("have.prop", "ended", false)
       .then(($video) => {
-        $video[0].play();
+        $video[$video.length - 1].play();
       });
     // wait for it to finish
-    cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
 
     cy.get("[data-cy=visibility-switch]").find("input").check();
 
@@ -332,15 +348,21 @@ describe("Chat History (Video Mentors)", () => {
 
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
     // play video
     cy.get("video")
       .should("have.prop", "paused", true)
       .and("have.prop", "ended", false)
       .then(($video) => {
-        $video[0].play();
+        $video[$video.length - 1].play();
       });
     // wait for it to finish
-    cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
+
     cy.get("[data-cy=visibility-switch]").find("input").check();
 
     // provide feedback
@@ -475,10 +497,14 @@ describe("Chat History (Video Mentors)", () => {
       .should("have.prop", "paused", true)
       .and("have.prop", "ended", false)
       .then(($video) => {
-        $video[0].play();
+        $video[$video.length - 1].play();
       });
     // wait for it to finish
-    cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
@@ -546,10 +572,14 @@ describe("Chat History (Video Mentors)", () => {
       .should("have.prop", "paused", true)
       .and("have.prop", "ended", false)
       .then(($video) => {
-        $video[0].play();
+        $video[$video.length - 1].play();
       });
     // wait for it to finish
-    cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
 
     cy.get("[data-cy=visibility-switch]").find("input").check();
 
@@ -605,10 +635,14 @@ describe("Chat History (Video Mentors)", () => {
       .should("have.prop", "paused", true)
       .and("have.prop", "ended", false)
       .then(($video) => {
-        $video[0].play();
+        $video[$video.length - 1].play();
       });
     // wait for it to finish
-    cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
@@ -665,10 +699,14 @@ describe("Chat History (Video Mentors)", () => {
       .should("have.prop", "paused", true)
       .and("have.prop", "ended", false)
       .then(($video) => {
-        $video[0].play();
+        $video[$video.length - 1].play();
       });
     // wait for it to finish
-    cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
@@ -721,10 +759,14 @@ describe("Chat History (Video Mentors)", () => {
       .should("have.prop", "paused", true)
       .and("have.prop", "ended", false)
       .then(($video) => {
-        $video[0].play();
+        $video[$video.length - 1].play();
       });
     // wait for it to finish
-    cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();

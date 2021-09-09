@@ -182,13 +182,14 @@ describe("Chat History (Video Mentors Links)", () => {
       .should("have.prop", "paused", true)
       .and("have.prop", "ended", false)
       .then(($video) => {
-        $video[0].play();
+        $video[$video.length - 1].play();
       });
     // wait for it to finish
-    cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
-    cy.get("video")
-      .should("have.prop", "ended", true)
-      .should("have.prop", "paused", true);
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
@@ -232,13 +233,14 @@ describe("Chat History (Video Mentors Links)", () => {
       .should("have.prop", "paused", true)
       .and("have.prop", "ended", false)
       .then(($video) => {
-        $video[0].play();
+        $video[$video.length - 1].play();
       });
     // wait for it to finish
-    cy.get("video", { timeout: 10000 }).and("have.prop", "ended", true);
-    cy.get("video")
-      .should("have.prop", "ended", true)
-      .should("have.prop", "paused", true);
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
 
     // not mistake it for a link
     cy.get("[data-cy=answer-link-card]").should("not.exist");

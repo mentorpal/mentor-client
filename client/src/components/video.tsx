@@ -222,6 +222,7 @@ function VideoPlayer(args: VideoPlayerParams) {
           zIndex: 0,
         }}
         className="player-wrapper react-player-wrapper"
+        data-cy="playing-video-mentor"
         url={videoUrl}
         muted={Boolean(isIdle)}
         onDuration={setDuration}
