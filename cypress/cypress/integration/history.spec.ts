@@ -69,8 +69,6 @@ describe("Chat History (Video Mentors)", () => {
 
     cy.get("[data-cy=input-field]").type("user msg 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=input-field]").type("user msg 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // play video
     cy.get("video")
@@ -87,16 +85,17 @@ describe("Chat History (Video Mentors)", () => {
     );
 
     cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
-      cy.get("[data-cy=chat-msg-4]").contains("user msg 2");
-      cy.get("[data-cy=chat-msg-5]")
-        .scrollIntoView()
-        .should("be.visible")
-        .contains("Give me feedback");
-      cy.get("[data-cy=chat-msg-6]")
-        .scrollIntoView()
-        .should("be.visible")
-        .contains("Give me feedback");
+      cy.get("[data-cy=chat-thread]").within(($hc) => {
+        cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
+        cy.get("[data-cy=chat-msg-2]")
+          .scrollIntoView()
+          .should("be.visible")
+          .contains("Give me feedback");
+        cy.get("[data-cy=chat-msg-3]")
+          .scrollIntoView()
+          .should("be.visible")
+          .contains("Give me feedback");
+      });
     });
   });
 
@@ -124,9 +123,11 @@ describe("Chat History (Video Mentors)", () => {
 
     // should display question and not answers
     cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
-      cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
-      cy.get("[data-cy=chat-msg-3]").should("not.be.visible");
+      cy.get("[data-cy=chat-thread]").within(($hc) => {
+        cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
+        cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
+        cy.get("[data-cy=chat-msg-3]").should("not.be.visible");
+      });
     });
 
     // play video
@@ -145,11 +146,13 @@ describe("Chat History (Video Mentors)", () => {
 
     // should display question and answers once video finishes
     cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
-      cy.get("[data-cy=chat-msg-3]")
-        .scrollIntoView()
-        .should("be.visible")
-        .contains("Give me feedback.");
+      cy.get("[data-cy=chat-thread]").within(($hc) => {
+        cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
+        cy.get("[data-cy=chat-msg-3]")
+          .scrollIntoView()
+          .should("be.visible")
+          .contains("Give me feedback.");
+      });
     });
   });
 

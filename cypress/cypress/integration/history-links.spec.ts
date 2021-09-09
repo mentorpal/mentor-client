@@ -170,11 +170,13 @@ describe("Chat History (Video Mentors Links)", () => {
       fixture: "video_response.mp4",
     });
     cy.visit("/");
-
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
+
     // write msgs
-    cy.get("[data-cy=input-field]").type("What do you do for living?");
+    cy.get("[data-cy=input-field]").type(
+      "I want to ask what do you do for living?"
+    );
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // play video
@@ -196,7 +198,7 @@ describe("Chat History (Video Mentors Links)", () => {
         cy.get("[data-cy=chat-msg-2]")
           .scrollIntoView()
           .within(() => {
-            cy.get("[data-cy=ask-icon-2]").should("be.visible");
+            cy.get("[data-cy=ask-icon-2]");
             cy.get("[data-cy=ask-link-0]")
               .should("exist")
               .trigger("mouseover")
