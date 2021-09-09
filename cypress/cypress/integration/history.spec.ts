@@ -87,14 +87,8 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
-        cy.get("[data-cy=chat-msg-2]")
-          .scrollIntoView()
-          .should("be.visible")
-          .contains("Give me feedback");
-        cy.get("[data-cy=chat-msg-3]")
-          .scrollIntoView()
-          .should("be.visible")
-          .contains("Give me feedback");
+        cy.get("[data-cy=chat-msg-2]").contains("Give me feedback");
+        cy.get("[data-cy=chat-msg-3]").contains("Give me feedback");
       });
     });
   });
