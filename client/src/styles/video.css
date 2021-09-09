@@ -1,6 +1,7 @@
 .player-wrapper {
   height: 70vh !important;
   width: 50vw !important;
+  border-radius: 10px;
 }
 
 .player-wrapper > video {
@@ -92,6 +93,7 @@
   .player-wrapper {
     height: 70vh !important;
     width: 90vw !important;
+    border-radius: 10px;
   }
   .player-wrapper > video {
     height: 100% !important;
@@ -122,6 +124,7 @@
   .player-wrapper {
     height: 40vh !important;
     width: 90vw !important;
+    border-radius: 5px;
   }
   .player-wrapper > video {
     height: 100% !important;

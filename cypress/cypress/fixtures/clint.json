@@ -90,7 +90,7 @@
     },
     {
       "question": {
-        "question": "Are you fun at parties?",
+        "question": "What's your favorite movie?",
         "type": "QUESTION"
       },
       "topics": [
@@ -122,7 +122,7 @@
     },
     {
       "question": {
-        "question": "Are you fun at parties?",
+        "question": "What's your favorite food?",
         "type": "QUESTION"
       },
       "topics": [
@@ -138,7 +138,7 @@
     },
     {
       "question": {
-        "question": "Are you fun at parties?",
+        "question": "Do you like any sport?",
         "type": "QUESTION"
       },
       "topics": [
@@ -187,7 +187,7 @@
     },
     {
       "question": {
-        "question": "Are you fun at parties?",
+        "question": "What's your favorite place?",
         "type": "QUESTION"
       },
       "topics": [

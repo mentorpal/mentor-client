@@ -61,7 +61,6 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "response_with_feedback.json",
     });
     cy.visit("/");
-    // cy.viewport("macbook-11");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
 
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
