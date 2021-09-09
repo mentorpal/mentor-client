@@ -53,11 +53,6 @@ describe("Chat History (Video Mentors)", () => {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
-      gqlQueries: [
-        cyMockGQL("UserQuestionSetFeedback", {
-          userQuestionSetFeedback: null,
-        }),
-      ],
     });
     cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
@@ -68,7 +63,6 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "video_response.mp4",
     });
     cy.visit("/");
-    cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
 
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
@@ -121,7 +115,6 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "video_response.mp4",
     });
     cy.visit("/");
-    cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 
@@ -289,10 +282,12 @@ describe("Chat History (Video Mentors)", () => {
     // provide feedback
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-1]").contains("Good feedback test");
-      cy.get("[data-cy=chat-msg-2]").within(($cm) => {
-        cy.get("[data-cy=feedback-btn]").should("exist").should("be.visible");
-        cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
-      });
+      cy.get("[data-cy=chat-msg-2]")
+        .scrollIntoView()
+        .within(($cm) => {
+          cy.get("[data-cy=feedback-btn]").should("exist").should("exist");
+          cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
+        });
     });
     cy.get("[data-cy=click-good]").should("exist");
     cy.get("[data-cy=click-good]").should(
@@ -301,19 +296,30 @@ describe("Chat History (Video Mentors)", () => {
       "false"
     );
     cy.get("[data-cy=click-good]").trigger("mouseover").click();
-    cy.get("[data-cy=selected-good]").should("be.visible");
+    cy.get("[data-cy=chat-msg-2]")
+      .scrollIntoView()
+      .within(() => {
+        cy.get("[data-cy=selected-good]").should("be.visible");
+      });
 
     // provide bad feedback
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-4]").contains("Bad feedback test");
-      cy.get("[data-cy=chat-msg-5]").within(($cm) => {
-        cy.get("[data-cy=feedback-btn]").should("exist").should("be.visible");
-        cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
-      });
+      cy.get("[data-cy=chat-msg-5]")
+        .scrollIntoView()
+        .within(($cm) => {
+          cy.get("[data-cy=feedback-btn]").should("exist").should("exist");
+          cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
+        });
     });
     cy.get("[data-cy=click-bad]").should("exist");
     cy.get("[data-cy=click-bad]").trigger("mouseover").click();
-    cy.get("[data-cy=selected-bad]").should("be.visible");
+
+    cy.get("[data-cy=chat-msg-5]")
+      .scrollIntoView()
+      .within(() => {
+        cy.get("[data-cy=selected-bad]").should("be.visible");
+      });
   });
 
   it("can give feedback on multiple mentor answers", () => {
@@ -458,7 +464,7 @@ describe("Chat History (Video Mentors)", () => {
     });
   });
 
-  it("Answers can be toggled open to see the transcript of the response", () => {
+  it.only("Answers can be toggled open to see the transcript of the response", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
@@ -526,7 +532,7 @@ describe("Chat History (Video Mentors)", () => {
 
         // show answers toggle
         cy.get("[data-cy=visibility-switch]").find("input").check();
-        cy.get("[data-cy=chat-msg-2]").should("be.visible");
+        cy.get("[data-cy=chat-msg-2]").scrollIntoView().should("be.visible");
         cy.get("[data-cy=chat-msg-3]").scrollIntoView().should("be.visible");
         cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
         cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
