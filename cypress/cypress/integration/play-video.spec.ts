@@ -36,7 +36,6 @@ describe("Play video and wait for it to end", () => {
       .should("have.prop", "paused", true)
       .and("have.prop", "ended", false)
       .then(($video) => {
-        console.log($video);
         $video[$video.length - 1].play();
       });
     // wait for it to finish

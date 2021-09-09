@@ -90,12 +90,12 @@ describe("Chat History (Video Mentors)", () => {
       cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
       cy.get("[data-cy=chat-msg-4]").contains("user msg 2");
       cy.get("[data-cy=chat-msg-5]")
-        .should("be.visible")
         .scrollIntoView()
+        .should("be.visible")
         .contains("Give me feedback");
       cy.get("[data-cy=chat-msg-6]")
-        .should("be.visible")
         .scrollIntoView()
+        .should("be.visible")
         .contains("Give me feedback");
     });
   });
@@ -147,6 +147,7 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
       cy.get("[data-cy=chat-msg-3]")
+        .scrollIntoView()
         .should("be.visible")
         .contains("Give me feedback.");
     });
@@ -464,7 +465,7 @@ describe("Chat History (Video Mentors)", () => {
     });
   });
 
-  it.only("Answers can be toggled open to see the transcript of the response", () => {
+  it("Answers can be toggled open to see the transcript of the response", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
