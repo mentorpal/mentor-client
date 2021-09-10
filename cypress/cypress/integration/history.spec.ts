@@ -93,63 +93,6 @@ describe("Chat History (Video Mentors)", () => {
     });
   });
 
-  it("Displays answers after video ends", () => {
-    mockDefaultSetup(cy, {
-      config: { mentorsDefault: ["clint", "carlos"] },
-      mentorData: [clint, carlos],
-      apiResponse: "response_with_feedback.json",
-    });
-    cy.visit("/");
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_feedback.json",
-    });
-    // video intercept
-    cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
-    });
-    cy.visit("/");
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
-    cy.get("[data-cy=history-chat]").should("exist");
-
-    // ask first question
-    cy.get("[data-cy=input-field]").type("user msg 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
-
-    // should display question and not answers
-    cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
-        cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
-        cy.get("[data-cy=chat-msg-3]").should("not.be.visible");
-      });
-    });
-
-    // play video
-    cy.get("video")
-      .should("have.prop", "paused", true)
-      .and("have.prop", "ended", false)
-      .then(($video) => {
-        $video[$video.length - 1].play();
-      });
-    // wait for it to finish
-    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
-      "have.prop",
-      "ended",
-      true
-    );
-
-    // should display question and answers once video finishes
-    cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
-        cy.get("[data-cy=chat-msg-3]")
-          .scrollIntoView()
-          .should("be.visible")
-          .contains("Give me feedback.");
-      });
-    });
-  });
-
   it("can give feedback on mentor answer", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
