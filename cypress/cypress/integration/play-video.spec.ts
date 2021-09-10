@@ -32,12 +32,16 @@ describe("Play video and wait for it to end", () => {
     });
     cy.visit("/");
 
-    cy.get("video")
-      .should("have.prop", "paused", true)
-      .and("have.prop", "ended", false)
-      .then(($video) => {
-        $video[$video.length - 1].play();
-      });
+    cy.get("[data-cy=playing-video-mentor]").within(() => {
+      cy.get("video")
+        .should("have.prop", "paused", true)
+        .and("have.prop", "ended", false)
+        .then(($video) => {
+          console.log($video);
+          $video[$video.length - 1].play();
+        });
+    });
+
     // wait for it to finish
     cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
       "have.prop",
