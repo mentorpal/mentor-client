@@ -9,8 +9,6 @@ import ReactPlayer from "react-player";
 import { idleUrl } from "api";
 import { MentorQuestionStatus, State } from "types";
 import { useSelector } from "react-redux";
-import { isMobile } from "react-device-detect";
-import { shouldDisplayPortrait } from "pages";
 
 function VideoThumbnail(props: { mentor: string }): JSX.Element {
   const [isPlaying, setPlaying] = useState(true);
@@ -24,10 +22,15 @@ function VideoThumbnail(props: { mentor: string }): JSX.Element {
   });
   return (
     <ReactPlayer
-      style={{ opacity: isDisabled ? "0.25" : "1", backgroundColor: "black" }}
+      style={{
+        opacity: isDisabled ? "0.25" : "1",
+        backgroundColor: "black",
+        margin: 2,
+        height: "40%",
+      }}
       url={idle}
-      height={50}
-      width={isMobile || shouldDisplayPortrait() ? 50 : 100}
+      height={60}
+      width={60}
       onStart={() => setPlaying(false)}
       playing={isPlaying}
       volume={0.0}

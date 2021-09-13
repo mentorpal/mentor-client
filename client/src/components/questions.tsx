@@ -11,7 +11,6 @@ import ScrollingQuestions from "components/scrolling-questions";
 import { State } from "types";
 import withLocation from "wrap-with-location";
 import Chat from "./chat";
-import { shouldDisplayPortrait } from "pages";
 
 const theme = createMuiTheme({
   palette: {
@@ -64,9 +63,8 @@ function Questions(props: {
     return orderedQuestions;
   });
 
-  const historyComponent = shouldDisplayPortrait() ? (
-    <Chat height={500} windowHeight={500} />
-  ) : null;
+  const historyComponent = <Chat height={490} windowHeight={490} />;
+
   const content =
     curTopic === "History" ? (
       historyComponent

@@ -121,6 +121,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
       data-cy="video-container"
       data-test-playing={Boolean(playing)}
       data-video-type={isIdle ? "idle" : "answer"}
+      className="video-container"
     >
       <MemoVideoPlayer
         isIdle={Boolean(isIdle)}
@@ -221,6 +222,7 @@ function VideoPlayer(args: VideoPlayerParams) {
           margin: "0 auto",
           zIndex: 0,
         }}
+        width="90%"
         className="player-wrapper react-player-wrapper"
         data-cy="playing-video-mentor"
         url={videoUrl}

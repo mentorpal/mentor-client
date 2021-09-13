@@ -1,8 +1,10 @@
-.history-template {
-  display: flex;
+.main-container {
+  /* display: flex;
   flex-direction: row;
   padding: 10px;
-  justify-content: space-around;
+  justify-content: space-around; */
+  display: grid;
+  grid-template-columns: 55vw 45vw;
   background-color: #eeeeee;
 }
 
@@ -16,7 +18,6 @@
   background-color: #fff;
   padding: 1rem;
   border-radius: 10px;
-  width: 50vw;
 }
 .history-chat-title {
   color: #444c54;
@@ -25,7 +26,7 @@
 }
 
 @media only screen and (max-width: 1200px) {
-  .history-template {
+  .main-container {
     display: contents;
     flex-direction: column;
     padding: 10px;

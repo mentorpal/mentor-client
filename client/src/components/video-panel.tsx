@@ -58,11 +58,7 @@ function VideoPanel(): JSX.Element {
   }
 
   return (
-    <div
-      data-cy="video-panel"
-      className="carousel"
-      style={{ height: 80, marginBottom: "0.5rem" }}
-    >
+    <div data-cy="video-panel" className="carousel">
       {Object.keys(mentorsById)
         .filter((mId) => mentorsById[mId]?.mentorType === MentorType.VIDEO)
         .map((id, i) => {
@@ -85,6 +81,7 @@ function VideoPanel(): JSX.Element {
                   style={{
                     display: "flex",
                     justifyContent: "center",
+                    marginBottom: 15,
                   }}
                 >
                   <Star
