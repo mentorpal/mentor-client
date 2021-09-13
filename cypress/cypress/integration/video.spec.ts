@@ -11,6 +11,25 @@ const FAKE_STYLE_HEADER_LOGO =
   "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png";
 
 describe("Video Mentor", () => {
+  describe("Plays a video in response to a user question", () => {
+    it("plays a mentor response and displays subtitles", () => {
+      mockDefaultSetup(cy);
+      cy.visit("/?mentor=clint");
+      cy.get("[data-cy=input-field]").type("is the food good");
+      cy.get("[data-cy=input-send]").trigger("mouseover").click();
+      cy.get("[data-cy=video-container]").should(
+        "have.attr",
+        "data-video-type",
+        "answer"
+      );
+      cy.get("[data-cy=video-container]").within(($vc) => {
+        cy.get("video").should("exist");
+        cy.get("video")
+          .should("have.attr", "src")
+          .and("match", /.*answer_id.mp4$/);
+      });
+    });
+  });
   it("Display mentor-name card over the left-corner of the video", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },

@@ -581,11 +581,7 @@ describe("Chat History (Video Mentors)", () => {
         $video[$video.length - 1].play();
       });
     // wait for it to finish
-    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
-      "have.prop",
-      "ended",
-      true
-    );
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 });
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
