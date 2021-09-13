@@ -39,6 +39,8 @@ export interface ChatMsg {
   questionId: string;
   askLinks?: AskLink[];
   webLinks?: WebLink[];
+  answerMedia?: Media[];
+  answerId?: string;
 }
 
 export interface Mentor {
@@ -176,6 +178,7 @@ export enum MentorSelectReason {
   OFF_TOPIC_FAV = "OFF_TOPIC_FAV",
   USER_FAV = "USER_FAV",
   USER_SELECT = "USER_SELECT",
+  REPLAY = "REPLAY",
 }
 
 export enum ResultStatus {

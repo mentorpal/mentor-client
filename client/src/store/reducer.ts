@@ -475,6 +475,8 @@ function onQuestionAnswered(
           isFeedbackSendInProgress: false,
           askLinks: findAskLinks(action.payload.answerText),
           webLinks: findWebLinks(action.payload.answerText),
+          answerMedia: mentor.answer_media,
+          answerId: mentor.answer_id,
         },
       ],
     },

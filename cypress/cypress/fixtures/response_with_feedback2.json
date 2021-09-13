@@ -1,8 +1,19 @@
 {
   "query": "how old are you",
-  "answer_id": "answer_id",
+  "answer_id": "answer_id_feedback_2",
   "answer_text": "Another feedback (testing parenthesis).",
-  "answer_media": [],
+  "answer_media": [
+    {
+      "type": "video",
+      "tag": "web",
+      "url": "http://videos.org/answer_id2.mp4"
+    },
+    {
+      "type": "video",
+      "tag": "mobile",
+      "url": "http://videos.org/answer_id2.mp4"
+    }
+  ],
   "confidence": -0.5140574318328217,
   "feedback_id": "feedback_id2",
   "classifier": ""

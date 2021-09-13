@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { ChatLink, ChatMsg, LINK_TYPE_WEB, MentorType, State } from "types";
+import { useDispatch, useSelector } from "react-redux";
+import { rePlayAnswer } from "store/actions";
+
+import {
+  ChatLink,
+  ChatMsg,
+  LINK_TYPE_WEB,
+  MentorSelectReason,
+  MentorType,
+  State,
+} from "types";
 
 export interface UseWithChatData {
   mentorType: string;
@@ -10,6 +19,7 @@ export interface UseWithChatData {
   setQuestionVisibilityPref: (questionId: string, show: boolean) => void;
   setVisibilityShowAllPref: (show: boolean) => void;
   mentorNameForChatMsg: (chatMsg: ChatMsg) => string;
+  rePlayQuestionVideo: (mId: string, answerId: string) => void;
 }
 
 export enum ItemVisibilityPrefs {
@@ -45,6 +55,8 @@ export function useWithChatData(): UseWithChatData {
   const [visibilityShowAllPref, setVisibilityShowAllPref] = useState<boolean>(
     mentorType === "CHAT" ? true : false
   );
+  const dispatch = useDispatch();
+
   const lastQuestionId = useSelector<State, string>((s) => {
     return s.chat.messages.length > 0
       ? s.chat.messages[s.chat.messages.length - 1].questionId
@@ -94,6 +106,11 @@ export function useWithChatData(): UseWithChatData {
     return mentorNameById[chatMsg.mentorId] || "";
   }
 
+  function rePlayQuestionVideo(mId: string, answerId: string) {
+    dispatch(rePlayAnswer(mId, answerId, MentorSelectReason.REPLAY));
+    // dispatch(nextMentor(mId))
+  }
+
   return {
     mentorType,
     lastQuestionId,
@@ -102,5 +119,6 @@ export function useWithChatData(): UseWithChatData {
     setQuestionVisibilityPref,
     setVisibilityShowAllPref,
     mentorNameForChatMsg,
+    rePlayQuestionVideo,
   };
 }

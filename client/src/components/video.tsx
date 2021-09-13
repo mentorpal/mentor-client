@@ -23,7 +23,7 @@ import "styles/video.css";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
-interface VideoData {
+export interface VideoData {
   src: string;
   subtitles: string;
 }
@@ -118,7 +118,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
     <div
       data-cy="video-container"
       data-test-playing={Boolean(playing)}
-      data-video-type={isIdle ? "idle" : "answer"}
+      data-video-type={isIdle ? "idle" : "an  swer"}
       className="video-container"
     >
       <MemoVideoPlayer

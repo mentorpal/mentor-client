@@ -468,6 +468,29 @@ export function mentorAnswerPlaybackStarted(video: {
   };
 }
 
+export const rePlayAnswer =
+  (mId: string, answerId: string, reason: MentorSelectReason) =>
+  async (
+    dispatch: ThunkDispatch<State, void, AnyAction>,
+    getState: () => State
+  ) => {
+    const curState = getState();
+    const curAnswer = curState.chat.messages.find((m) => {
+      if (m.mentorId === mId && m.answerId === answerId) {
+        return m;
+      }
+    });
+    console.log(curAnswer);
+    return dispatch({
+      payload: {
+        id: curAnswer?.mentorId,
+        reason,
+        answerId,
+      },
+      type: MENTOR_SELECTED,
+    });
+  };
+
 export const selectMentor =
   (mentor: string, reason: MentorSelectReason, setFav = false) =>
   (dispatch: ThunkDispatch<State, void, MentorSelectedAction>) => {
@@ -687,7 +710,7 @@ const onMentorAnswerPlaybackStarted = (
   },
 });
 
-const onQuestionSent = (payload: {
+export const onQuestionSent = (payload: {
   question: string;
   questionId: string;
   source: MentorQuestionSource;
@@ -696,7 +719,7 @@ const onQuestionSent = (payload: {
   type: QUESTION_SENT,
 });
 
-function onQuestionAnswered(response: QuestionResponse) {
+export function onQuestionAnswered(response: QuestionResponse) {
   return {
     payload: response,
     type: QUESTION_ANSWERED,
