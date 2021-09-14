@@ -125,16 +125,16 @@ function Video(args: { playing?: boolean }): JSX.Element {
   }
 
   function onEnded() {
-    replayData.webLinks.length > 0
-      ? setHideLinkLabel(false)
-      : setHideLinkLabel(true);
+    setHideLinkLabel(true);
     dispatch(answerFinished());
   }
 
   function onPlay() {
     setHideLinkLabel(false);
     if (isIdle) {
-      setHideLinkLabel(true);
+      replayData.webLinks.length > 0
+        ? setHideLinkLabel(false)
+        : setHideLinkLabel(true);
       return;
     }
     dispatch(
