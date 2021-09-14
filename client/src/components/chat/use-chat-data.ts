@@ -19,7 +19,11 @@ export interface UseWithChatData {
   setQuestionVisibilityPref: (questionId: string, show: boolean) => void;
   setVisibilityShowAllPref: (show: boolean) => void;
   mentorNameForChatMsg: (chatMsg: ChatMsg) => string;
-  rePlayQuestionVideo: (mId: string, answerId: string) => void;
+  rePlayQuestionVideo: (
+    mId: string,
+    answerId: string,
+    answerText: string
+  ) => void;
 }
 
 export enum ItemVisibilityPrefs {
@@ -37,6 +41,7 @@ export function hrefToChatLink(href: string, chatMsg: ChatMsg): ChatLink {
     chatMsg.askLinks?.find((x) => x.href === href) || {
       type: LINK_TYPE_WEB,
       href,
+      answerId: chatMsg.answerId || "",
     }
   );
 }
@@ -106,8 +111,14 @@ export function useWithChatData(): UseWithChatData {
     return mentorNameById[chatMsg.mentorId] || "";
   }
 
-  function rePlayQuestionVideo(mId: string, answerId: string) {
-    dispatch(rePlayAnswer(mId, answerId, MentorSelectReason.REPLAY));
+  function rePlayQuestionVideo(
+    mId: string,
+    answerId: string,
+    answerText: string
+  ) {
+    dispatch(
+      rePlayAnswer(mId, answerId, MentorSelectReason.REPLAY, answerText)
+    );
     // dispatch(nextMentor(mId))
   }
 

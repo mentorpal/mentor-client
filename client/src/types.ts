@@ -16,6 +16,7 @@ export const LINK_TYPE_WEB = "web";
 export interface WebLink {
   type: typeof LINK_TYPE_WEB;
   href: string;
+  answerId: string;
 }
 export interface AskLink {
   type: typeof LINK_TYPE_ASK;

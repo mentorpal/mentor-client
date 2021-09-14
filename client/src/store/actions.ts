@@ -191,6 +191,7 @@ export interface ReplayVideoAction {
     mentorId: string;
     answerId: string;
     reason: MentorSelectReason;
+    answerText: string;
   };
 }
 
@@ -480,7 +481,12 @@ export function mentorAnswerPlaybackStarted(video: {
 }
 
 export const rePlayAnswer =
-  (mentorId: string, answerId: string, reason: MentorSelectReason) =>
+  (
+    mentorId: string,
+    answerId: string,
+    reason: MentorSelectReason,
+    answerText: string
+  ) =>
   async (
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
@@ -490,6 +496,7 @@ export const rePlayAnswer =
         mentorId,
         answerId,
         reason,
+        answerText,
       },
       type: REPLAY_VIDEO,
     });

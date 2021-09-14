@@ -1,8 +1,19 @@
 {
   "query": "how old are you",
-  "answer_id": "answer_id",
+  "answer_id": "answer_id_4",
   "answer_text": "I'm a computer programmer (I think) [Tell me more](ask://what+does+a+computer+programmer+do?), I like to code (I think) [what to know](ask://what+is+coding?)",
-  "answer_media": [],
+  "answer_media": [
+    {
+      "type": "video",
+      "tag": "web",
+      "url": "http://videos.org/answer_id4.mp4"
+    },
+    {
+      "type": "video",
+      "tag": "mobile",
+      "url": "http://videos.org/answer_id4.mp4"
+    }
+  ],
   "confidence": -0.5140574318328217,
   "feedback_id": "feedback_id2",
   "classifier": ""

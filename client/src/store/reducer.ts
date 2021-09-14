@@ -395,7 +395,7 @@ function onQuestionInputChanged(
   });
 }
 
-function findWebLinks(text: string): WebLink[] {
+function findWebLinks(text: string, answerId: string): WebLink[] {
   const REGEX_WEB_LINKS_ALL =
     /(https?:\/\/(?:www.|(?!www))[^\s.]+\.[^\s]{2,}|www.[^\s]+.[^\s]{2,})/gi;
 
@@ -406,6 +406,7 @@ function findWebLinks(text: string): WebLink[] {
     return {
       type: LINK_TYPE_WEB,
       href: link,
+      answerId: answerId,
     };
   });
 
@@ -481,7 +482,10 @@ function onQuestionAnswered(
           feedbackId: action.payload.answerFeedbackId,
           isFeedbackSendInProgress: false,
           askLinks: findAskLinks(action.payload.answerText),
-          webLinks: findWebLinks(action.payload.answerText),
+          webLinks: findWebLinks(
+            action.payload.answerText,
+            mentor?.answer_id || ""
+          ),
           answerMedia: mentor.answer_media,
           answerId: mentor.answer_id,
           replay: false,
@@ -518,6 +522,11 @@ function onReplayVideo(state: State, action: ReplayVideoAction): State {
         return m.answerId === action.payload.answerId
           ? {
               ...m,
+              askLinks: findAskLinks(action.payload.answerText),
+              webLinks: findWebLinks(
+                action.payload.answerText,
+                action.payload.answerId
+              ),
               replay: true,
             }
           : m;
