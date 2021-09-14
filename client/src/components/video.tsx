@@ -88,6 +88,12 @@ function Video(args: { playing?: boolean }): JSX.Element {
 
   const [hideLinkLabel, setHideLinkLabel] = useState<boolean>(false);
   const isIdle = useSelector<State, boolean>((state) => state.isIdle);
+  const replayData = useSelector<State, string>((state) => {
+    const videoData = state.chat.messages.find((m) => {
+      return m.replay ? m.answerMedia : null;
+    });
+    return videoUrl(videoData?.answerMedia || []);
+  });
 
   const [duration, setDuration] = useState(Number.NaN);
 
@@ -120,6 +126,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
       data-test-playing={Boolean(playing)}
       data-video-type={isIdle ? "idle" : "answer"}
       className="video-container"
+      data-test-replay={replayData}
     >
       <MemoVideoPlayer
         isIdle={Boolean(isIdle)}
@@ -129,7 +136,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
         setDuration={setDuration}
         subtitlesOn={Boolean(subtitlesSupported)}
         subtitlesUrl={video.subtitles}
-        videoUrl={video.src}
+        videoUrl={replayData ? replayData : video.src}
         webLinks={webLinks}
         hideLinkLabel={hideLinkLabel}
         mentorName={mentorName ? mentorName?.name : ""}

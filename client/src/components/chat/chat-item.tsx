@@ -183,6 +183,7 @@ export function ChatItem(props: {
         onClick={() =>
           rePlayQuestionVideo(message.mentorId, message.answerId || "")
         }
+        data-cy={`replay-icon-${i}`}
       />
     ) : null;
 

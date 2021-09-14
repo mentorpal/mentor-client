@@ -570,18 +570,20 @@ describe("Chat History (Video Mentors)", () => {
     cy.intercept("**/questions/?mentor=carlos&query=question+2", {
       fixture: "response_with_markdown.json",
     });
+    cy.intercept("**/questions/?mentor=clint&query=question+3", {
+      fixture: "response_with_markdown2.json",
+    });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
       fixture: "video_response.mp4",
-    });
+    }).as("askClint");
     cy.intercept("http://videos.org/answer_id2.mp4", {
       fixture: "video_intro.mp4",
-    });
+    }).as("askCarlos");
     cy.intercept("http://videos.org/answer_id3.mp4", {
-      fixture: "video_intro.mp4",
-    });
+      fixture: "3.mp4",
+    }).as("askAnotherAnswer");
     cy.visit("/");
-    // cy.viewport("macbook-11");
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
     cy.get("[data-cy=history-chat]").should("exist");
@@ -589,5 +591,23 @@ describe("Chat History (Video Mentors)", () => {
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    cy.get("[data-cy=input-field]").type("question 2");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    cy.get("[data-cy=visibility-switch]").find("input").check();
+
+    cy.get("[data-cy=video-container]").should(
+      "have.attr",
+      "data-test-replay",
+      ""
+    );
+    cy.get("[data-cy=history-chat]").within(($hc) => {
+      cy.get("[data-cy=chat-thread]").within(($hc) => {
+        cy.get("[data-cy=chat-msg-6]").within(() => {
+          cy.get("[data-cy=replay-icon-6]").trigger("mouseover").click();
+        });
+      });
+    });
   });
 });

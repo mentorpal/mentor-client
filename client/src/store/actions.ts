@@ -41,6 +41,7 @@ import {
 import * as uuid from "uuid";
 
 const RESPONSE_CUTOFF = -100;
+export const REPLAY_VIDEO = "REPLAY_VIDEO";
 export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished playing
 export const CONFIG_LOAD_FAILED = "CONFIG_LOAD_FAILED";
 export const CONFIG_LOAD_STARTED = "CONFIG_LOAD_STARTED";
@@ -184,6 +185,15 @@ export interface QuestionSentAction {
   };
 }
 
+export interface ReplayVideoAction {
+  type: typeof REPLAY_VIDEO;
+  payload: {
+    mentorId: string;
+    answerId: string;
+    reason: MentorSelectReason;
+  };
+}
+
 export type QuestionAction =
   | QuestionAnsweredAction
   | QuestionErrorAction
@@ -213,7 +223,8 @@ export type MentorClientAction =
   | MentorAction
   | QuestionAction
   | TopicSelectedAction
-  | QuestionInputChangedAction;
+  | QuestionInputChangedAction
+  | ReplayVideoAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
@@ -469,25 +480,18 @@ export function mentorAnswerPlaybackStarted(video: {
 }
 
 export const rePlayAnswer =
-  (mId: string, answerId: string, reason: MentorSelectReason) =>
+  (mentorId: string, answerId: string, reason: MentorSelectReason) =>
   async (
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
   ) => {
-    const curState = getState();
-    const curAnswer = curState.chat.messages.find((m) => {
-      if (m.mentorId === mId && m.answerId === answerId) {
-        return m;
-      }
-    });
-    console.log(curAnswer);
     return dispatch({
       payload: {
-        id: curAnswer?.mentorId,
-        reason,
+        mentorId,
         answerId,
+        reason,
       },
-      type: MENTOR_SELECTED,
+      type: REPLAY_VIDEO,
     });
   };
 

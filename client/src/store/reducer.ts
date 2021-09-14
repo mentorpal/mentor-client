@@ -40,6 +40,8 @@ import {
   FEEDBACK_SEND_FAILED,
   FeedbackSendSucceededAction,
   FeedbackSendFailedAction,
+  REPLAY_VIDEO,
+  ReplayVideoAction,
 } from "./actions";
 import {
   MentorState,
@@ -300,6 +302,11 @@ function onMentorLoadResults(
 }
 
 function onQuestionSent(state: State, action: QuestionSentAction): State {
+  state.chat.messages.find((m) => {
+    if (m.replay) {
+      m.replay = false;
+    }
+  });
   return onMentorNext(
     onQuestionInputChanged(
       {
@@ -477,9 +484,11 @@ function onQuestionAnswered(
           webLinks: findWebLinks(action.payload.answerText),
           answerMedia: mentor.answer_media,
           answerId: mentor.answer_id,
+          replay: false,
         },
       ],
     },
+
     isIdle: false,
     mentorsById: {
       ...state.mentorsById,
@@ -492,6 +501,28 @@ function topicSelected(state: State, action: TopicSelectedAction): State {
   return {
     ...state,
     curTopic: action.topic,
+  };
+}
+
+function onReplayVideo(state: State, action: ReplayVideoAction): State {
+  state.chat.messages.find((m) => {
+    if (m.replay) {
+      m.replay = false;
+    }
+  });
+  return {
+    ...state,
+    chat: {
+      ...state.chat,
+      messages: state.chat.messages.map((m) => {
+        return m.answerId === action.payload.answerId
+          ? {
+              ...m,
+              replay: true,
+            }
+          : m;
+      }),
+    },
   };
 }
 
@@ -528,6 +559,8 @@ export default function reducer(
       return onQuestionSent(state, action);
     case QUESTION_ANSWERED:
       return onQuestionAnswered(state, action);
+    case REPLAY_VIDEO:
+      return onReplayVideo(state, action);
     case QUESTION_ERROR:
       return {
         ...state,

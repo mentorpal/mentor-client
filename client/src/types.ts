@@ -41,6 +41,7 @@ export interface ChatMsg {
   webLinks?: WebLink[];
   answerMedia?: Media[];
   answerId?: string;
+  replay?: boolean;
 }
 
 export interface Mentor {
