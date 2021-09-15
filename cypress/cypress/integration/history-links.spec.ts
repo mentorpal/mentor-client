@@ -175,8 +175,11 @@ describe("Chat History (Video Mentors Links)", () => {
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=ask-icon-2]").should("be.visible");
-        cy.get("[data-cy=ask-link-0]").trigger("mouseover").click();
+        cy.get("[data-cy=chat-msg-2]").within(() => {
+          cy.get("[data-cy=ask-icon-2]").should("be.visible");
+          cy.get("[data-cy=ask-link-0]").trigger("mouseover").click();
+        });
+
         cy.get("[data-cy=chat-msg-4]", { timeout: 2000 }).contains(
           "what does a computer programmer do?"
         );
