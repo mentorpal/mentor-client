@@ -50,56 +50,98 @@ describe("Chat History (Video Mentors)", () => {
 
   it("displays both questions and answers as a chat", () => {
     mockDefaultSetup(cy, {
-      config: { mentorsDefault: ["clint"] },
-      mentorData: [clint],
+      config: { mentorsDefault: ["clint", "carlos"] },
+      mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
-      gqlQueries: [
-        cyMockGQL("UserQuestionSetFeedback", { userQuestionSetFeedback: null }),
-      ],
     });
+    cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
+    // video intercept
+    cy.intercept("http://videos.org/answer_id.mp4", {
+      fixture: "video_response.mp4",
+    });
     cy.visit("/");
-    cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
 
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
-
     cy.get("[data-cy=history-chat]").should("exist");
 
     cy.get("[data-cy=input-field]").type("user msg 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=input-field]").type("user msg 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    // play video
+    cy.get("video")
+      .should("have.prop", "paused", true)
+      .and("have.prop", "ended", false)
+      .then(($video) => {
+        $video[$video.length - 1].play();
+      });
+    // wait for it to finish
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 });
 
     cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
-      cy.get("[data-cy=chat-msg-3]").contains("user msg 2");
+      cy.get("[data-cy=chat-thread]").within(($hc) => {
+        cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
+        cy.get("[data-cy=chat-msg-2]").contains("Give me feedback");
+        cy.get("[data-cy=chat-msg-3]").contains("Give me feedback");
+      });
     });
   });
 
   it("can give feedback on mentor answer", () => {
     mockDefaultSetup(cy, {
-      config: { mentorsDefault: ["clint"] },
-      mentorData: [clint],
+      config: { mentorsDefault: ["clint", "carlos"] },
+      mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
       gqlQueries: [
-        cyMockGQL("UserQuestionSetFeedback", { userQuestionSetFeedback: null }),
+        cyMockGQL("UserQuestionSetFeedback", {
+          userQuestionSetFeedback: null,
+        }),
       ],
     });
     cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
+      fixture: "response_with_feedback2.json",
+    });
+    // video intercept
+    cy.intercept("http://videos.org/answer_id.mp4", {
+      fixture: "video_response.mp4",
+    });
+    cy.visit("/");
+    cy.intercept("**/questions/?mentor=clint&query=Good+feedback+test", {
+      fixture: "response_with_feedback.json",
+    });
+    cy.intercept("**/questions/?mentor=clint&query=Bad+feedback+test", {
+      fixture: "response_with_feedback.json",
+    });
 
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
+
     // write msgs
     cy.get("[data-cy=input-field]").type("Good feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=input-field]").type("Bad feedback test");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    // play video
+    cy.get("video")
+      .should("have.prop", "paused", true)
+      .and("have.prop", "ended", false)
+      .then(($video) => {
+        $video[$video.length - 1].play();
+      });
+    // wait for it to finish
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
+
     cy.get("[data-cy=visibility-switch]").find("input").check();
+
     // provide feedback
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-1]").contains("Good feedback test");
@@ -124,43 +166,28 @@ describe("Chat History (Video Mentors)", () => {
       mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
       gqlQueries: [
-        cyMockGQL("UserQuestionSetFeedback", { userQuestionSetFeedback: null }),
+        cyMockGQL("UserQuestionSetFeedback", {
+          userQuestionSetFeedback: null,
+        }),
       ],
     });
     cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
       fixture: "response_with_feedback2.json",
     });
-
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
-    cy.get("[data-cy=history-chat]").should("exist");
-
-    // write msgs
-    cy.get("[data-cy=input-field]").type("Question 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
-
-    cy.get("[data-cy=input-field]").type("Question 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
-  });
-
-  it("can give feedback on multiple mentor answers", () => {
-    mockDefaultSetup(cy, {
-      config: { mentorsDefault: ["clint", "carlos"] },
-      mentorData: [clint, carlos],
-      apiResponse: "response_with_feedback.json",
-      gqlQueries: [
-        cyMockGQL("UserQuestionSetFeedback", { userQuestionSetFeedback: null }),
-      ],
+    // video intercept
+    cy.intercept("http://videos.org/answer_id.mp4", {
+      fixture: "video_response.mp4",
     });
     cy.visit("/");
-    cy.intercept("**/questions/?mentor=clint&query=*", {
+    cy.intercept("**/questions/?mentor=clint&query=Good+feedback+test", {
       fixture: "response_with_feedback.json",
     });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_feedback2.json",
+    cy.intercept("**/questions/?mentor=clint&query=Bad+feedback+test", {
+      fixture: "response_with_feedback.json",
     });
 
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
@@ -172,6 +199,113 @@ describe("Chat History (Video Mentors)", () => {
 
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    // play video
+    cy.get("video")
+      .should("have.prop", "paused", true)
+      .and("have.prop", "ended", false)
+      .then(($video) => {
+        $video[$video.length - 1].play();
+      });
+    // wait for it to finish
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
+
+    cy.get("[data-cy=visibility-switch]").find("input").check();
+
+    // provide feedback
+    cy.get("[data-cy=history-chat").within(($hc) => {
+      cy.get("[data-cy=chat-msg-1]").contains("Good feedback test");
+      cy.get("[data-cy=chat-msg-2]")
+        .scrollIntoView()
+        .within(($cm) => {
+          cy.get("[data-cy=feedback-btn]").should("exist").should("exist");
+          cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
+        });
+    });
+    cy.get("[data-cy=click-good]").should("exist");
+    cy.get("[data-cy=click-good]").should(
+      "have.attr",
+      "data-test-in-progress",
+      "false"
+    );
+    cy.get("[data-cy=click-good]").trigger("mouseover").click();
+    cy.get("[data-cy=chat-msg-2]")
+      .scrollIntoView()
+      .within(() => {
+        cy.get("[data-cy=selected-good]").should("be.visible");
+      });
+
+    // provide bad feedback
+    cy.get("[data-cy=history-chat").within(($hc) => {
+      cy.get("[data-cy=chat-msg-4]").contains("Bad feedback test");
+      cy.get("[data-cy=chat-msg-5]")
+        .scrollIntoView()
+        .within(($cm) => {
+          cy.get("[data-cy=feedback-btn]").should("exist").should("exist");
+          cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
+        });
+    });
+    cy.get("[data-cy=click-bad]").should("exist");
+    cy.get("[data-cy=click-bad]").trigger("mouseover").click();
+
+    cy.get("[data-cy=chat-msg-5]")
+      .scrollIntoView()
+      .within(() => {
+        cy.get("[data-cy=selected-bad]").should("be.visible");
+      });
+  });
+
+  it("can give feedback on multiple mentor answers", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint", "carlos"] },
+      mentorData: [clint, carlos],
+      apiResponse: "response_with_feedback.json",
+      gqlQueries: [
+        cyMockGQL("UserQuestionSetFeedback", {
+          userQuestionSetFeedback: null,
+        }),
+      ],
+    });
+    cy.visit("/");
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_with_feedback.json",
+    });
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
+      fixture: "response_with_feedback2.json",
+    });
+    // video intercept
+    cy.intercept("http://videos.org/answer_id.mp4", {
+      fixture: "video_response.mp4",
+    });
+
+    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=history-chat]").should("exist");
+
+    // write msgs
+    cy.get("[data-cy=input-field]").type("Good feedback test");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    cy.get("[data-cy=input-field]").type("Bad feedback test");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    // play video
+    cy.get("video")
+      .should("have.prop", "paused", true)
+      .and("have.prop", "ended", false)
+      .then(($video) => {
+        $video[$video.length - 1].play();
+      });
+    // wait for it to finish
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
+
     cy.get("[data-cy=visibility-switch]").find("input").check();
 
     // provide feedback
@@ -179,6 +313,11 @@ describe("Chat History (Video Mentors)", () => {
       cy.get("[data-cy=chat-msg-1]")
         .scrollIntoView()
         .contains("Good feedback test");
+      cy.get("[data-cy=chat-msg-2]", {
+        timeout: 8000,
+      })
+        .should("be.visible")
+        .contains("Give me feedback.");
       cy.get("[data-cy=chat-msg-5]").within(($cm) => {
         cy.get("[data-cy=feedback-btn]").should("exist");
         cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
@@ -217,16 +356,24 @@ describe("Chat History (Video Mentors)", () => {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
-      gqlQueries: [
-        cyMockGQL("UserQuestionSetFeedback", { userQuestionSetFeedback: null }),
-      ],
     });
     cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
       fixture: "response_with_feedback2.json",
+    });
+    // video intercept
+    cy.intercept("http://videos.org/answer_id.mp4", {
+      fixture: "video_response.mp4",
+    });
+    cy.visit("/");
+    cy.intercept("**/questions/?mentor=clint&query=Good+feedback+test", {
+      fixture: "response_with_feedback.json",
+    });
+    cy.intercept("**/questions/?mentor=clint&query=Bad+feedback+test", {
+      fixture: "response_with_feedback.json",
     });
 
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
@@ -239,7 +386,7 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
-    cy.get("[data-cy=visibility-switch]").find("input").uncheck();
+    cy.get("[data-cy=visibility-switch]").find("input").check();
 
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-2]")
@@ -259,21 +406,25 @@ describe("Chat History (Video Mentors)", () => {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
-      gqlQueries: [
-        cyMockGQL("UserQuestionSetFeedback", { userQuestionSetFeedback: null }),
-      ],
-    });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_feedback.json",
     });
     cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
       fixture: "response_with_feedback2.json",
     });
-
+    // video intercept
+    cy.intercept("http://videos.org/answer_id.mp4", {
+      fixture: "video_response.mp4",
+    });
+    cy.visit("/");
+    cy.intercept("**/questions/?mentor=clint&query=Good+feedback+test", {
+      fixture: "response_with_feedback.json",
+    });
+    cy.intercept("**/questions/?mentor=clint&query=Bad+feedback+test", {
+      fixture: "response_with_feedback.json",
+    });
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 
@@ -284,7 +435,24 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
+    // play video
+    cy.get("video")
+      .should("have.prop", "paused", true)
+      .and("have.prop", "ended", false)
+      .then(($video) => {
+        $video[$video.length - 1].play();
+      });
+    // wait for it to finish
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
+
     cy.get("[data-cy=history-chat]").within(($hc) => {
+      cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
+      cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
+
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         cy.get("[data-cy=visibility-switch]").should("exist");
         cy.get("[data-cy=visibility-switch]")
@@ -301,7 +469,7 @@ describe("Chat History (Video Mentors)", () => {
 
         // show answers toggle
         cy.get("[data-cy=visibility-switch]").find("input").check();
-        cy.get("[data-cy=chat-msg-2]").should("be.visible");
+        cy.get("[data-cy=chat-msg-2]").scrollIntoView().should("be.visible");
         cy.get("[data-cy=chat-msg-3]").scrollIntoView().should("be.visible");
         cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
         cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
@@ -319,16 +487,17 @@ describe("Chat History (Video Mentors)", () => {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
-      gqlQueries: [
-        cyMockGQL("UserQuestionSetFeedback", { userQuestionSetFeedback: null }),
-      ],
     });
     cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
       fixture: "response_with_feedback2.json",
+    });
+    // video intercept
+    cy.intercept("http://videos.org/answer_id.mp4", {
+      fixture: "video_response.mp4",
     });
 
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
@@ -340,6 +509,20 @@ describe("Chat History (Video Mentors)", () => {
 
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    // play video
+    cy.get("video")
+      .should("have.prop", "paused", true)
+      .and("have.prop", "ended", false)
+      .then(($video) => {
+        $video[$video.length - 1].play();
+      });
+    // wait for it to finish
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
 
     cy.get("[data-cy=visibility-switch]").find("input").check();
 
@@ -353,37 +536,31 @@ describe("Chat History (Video Mentors)", () => {
         cy.get("[data-cy=chat-msg-3]").should("not.be.visible");
 
         // Hide answers
-        cy.get("[data-cy=chat-msg-4]").scrollIntoView();
+        // cy.get("[data-cy=chat-msg-4]").scrollIntoView();
         cy.get("[data-cy=vsbyIcon-4]").should("exist");
         cy.get("[data-cy=vsbyIcon-4]").trigger("mouseover").click();
         cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
         cy.get("[data-cy=chat-msg-3]").should("not.be.visible");
-
-        // show answers
-        cy.get("[data-cy=vsbyIcon-4]").should("exist");
-        cy.get("[data-cy=vsbyIcon-4]").trigger("mouseover").click();
-        cy.get("[data-cy=chat-msg-5]").should("be.visible");
-        cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
       });
     });
   });
 
-  it("Question's answers can be toggled individually", () => {
+  it("Question's answers can be toggled individually 2", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
-      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null)],
-    });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_feedback.json",
     });
     cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
       fixture: "response_with_feedback2.json",
+    });
+    // video intercept
+    cy.intercept("http://videos.org/answer_id.mp4", {
+      fixture: "video_response.mp4",
     });
 
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
@@ -396,38 +573,28 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
-    cy.get("[data-cy=history-chat]").within(($hc) => {
-      cy.get("[data-cy=chat-thread]").within(($hc) => {
-        // hidden answers
-        cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
-        cy.get("[data-cy=chat-msg-3]").should("not.be.visible");
-
-        // hidden answers
-        cy.get("[data-cy=chat-msg-5]").should("be.visible");
-        cy.get("[data-cy=chat-msg-6]").should("be.visible");
+    // play video
+    cy.get("video")
+      .should("have.prop", "paused", true)
+      .and("have.prop", "ended", false)
+      .then(($video) => {
+        $video[$video.length - 1].play();
       });
-    });
-
-    // write msgs
-    cy.get("[data-cy=input-field]").type("Question 3");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    // wait for it to finish
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 });
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
+      cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
+      cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         // hidden answers
-        cy.get("[data-cy=chat-msg-1]").should("be.visible");
         cy.get("[data-cy=chat-msg-2]").should("not.be.visible");
         cy.get("[data-cy=chat-msg-3]").should("not.be.visible");
 
         // hidden answers
-        cy.get("[data-cy=chat-msg-4]").should("be.visible");
-        cy.get("[data-cy=chat-msg-5]").should("not.be.visible");
-        cy.get("[data-cy=chat-msg-6]").should("not.be.visible");
-
-        // visible answers
-        cy.get("[data-cy=chat-msg-7]").should("be.visible");
-        cy.get("[data-cy=chat-msg-8]").should("be.visible");
-        cy.get("[data-cy=chat-msg-9]").should("be.visible");
+        cy.get("[data-cy=chat-msg-4]").scrollIntoView();
+        cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
       });
     });
   });
@@ -437,17 +604,17 @@ describe("Chat History (Video Mentors)", () => {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
-      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null)],
-    });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_feedback.json",
     });
     cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
       fixture: "response_with_feedback2.json",
+    });
+    // video intercept
+    cy.intercept("http://videos.org/answer_id.mp4", {
+      fixture: "video_response.mp4",
     });
 
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
@@ -465,6 +632,20 @@ describe("Chat History (Video Mentors)", () => {
 
     cy.get("[data-cy=input-field]").type("Question 4");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    // play video
+    cy.get("video")
+      .should("have.prop", "paused", true)
+      .and("have.prop", "ended", false)
+      .then(($video) => {
+        $video[$video.length - 1].play();
+      });
+    // wait for it to finish
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
@@ -483,17 +664,17 @@ describe("Chat History (Video Mentors)", () => {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
-      gqlQueries: [cyMockGQL("userQuestionSetFeedback", null)],
-    });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_feedback.json",
     });
     cy.visit("/");
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.intercept("**/questions/?mentor=clint&query=*", {
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
       fixture: "response_with_feedback2.json",
+    });
+    // video intercept
+    cy.intercept("http://videos.org/answer_id.mp4", {
+      fixture: "video_response.mp4",
     });
 
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
@@ -512,7 +693,24 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-field]").type("Question 4");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
+    // play video
+    cy.get("video")
+      .should("have.prop", "paused", true)
+      .and("have.prop", "ended", false)
+      .then(($video) => {
+        $video[$video.length - 1].play();
+      });
+    // wait for it to finish
+    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
+      "have.prop",
+      "ended",
+      true
+    );
+
     cy.get("[data-cy=history-chat]").within(($hc) => {
+      cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
+      cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
+
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         // show first question's answers
         cy.get("[data-cy=vsbyIcon-1]").should("exist");
@@ -549,9 +747,6 @@ describe("Chat History (Video Mentors)", () => {
         // show first question's answers
         cy.get("[data-cy=chat-msg-3]").scrollIntoView().should("be.visible");
         cy.get("[data-cy=chat-msg-2]").scrollIntoView().should("be.visible");
-        // show last question's answers
-        cy.get("[data-cy=chat-msg-14]").scrollIntoView().should("be.visible");
-        cy.get("[data-cy=chat-msg-15]").scrollIntoView().should("be.visible");
       });
     });
   });

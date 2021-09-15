@@ -7,10 +7,30 @@ The full terms of this copyright and license should always be found in the root 
 import { mockDefaultSetup, cyMockGQL } from "../support/helpers";
 const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
+const carlos_subject_selected = require("../fixtures/carlos-subject-selected.json");
 const FAKE_STYLE_HEADER_LOGO =
   "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png";
 
 describe("Video Mentor", () => {
+  describe("Plays a video in response to a user question", () => {
+    it("plays a mentor response and displays subtitles", () => {
+      mockDefaultSetup(cy);
+      cy.visit("/?mentor=clint");
+      cy.get("[data-cy=input-field]").type("is the food good");
+      cy.get("[data-cy=input-send]").trigger("mouseover").click();
+      cy.get("[data-cy=video-container]").should(
+        "have.attr",
+        "data-video-type",
+        "answer"
+      );
+      cy.get("[data-cy=video-container]").within(($vc) => {
+        cy.get("video").should("exist");
+        cy.get("video")
+          .should("have.attr", "src")
+          .and("match", /.*answer_id.mp4$/);
+      });
+    });
+  });
   it("Display mentor-name card over the left-corner of the video", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
@@ -141,5 +161,38 @@ describe("Video Mentor", () => {
       })
       .should("have.css", "background-color", "rgb(153, 0, 0)")
       .contains("Mentor Panel");
+  });
+
+  it("If mentor does not have question answer, should still show thumbnail and respond with Don't know answer (no video error)", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["carlos_subject_selected"] },
+      mentorData: [carlos_subject_selected],
+      apiResponse: "response_with_feedback.json",
+    });
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
+      fixture: "response_with_feedback.json",
+    });
+    // video intercept
+    cy.intercept("http://videos.org/answer_id.mp4", {
+      fixture: "video_off_topic.mp4",
+    });
+
+    cy.visit("/");
+    cy.viewport("macbook-11");
+
+    cy.get("[data-cy=header]").should("have.attr", "data-mentor", "carlos");
+    cy.get("[data-cy=header]").contains("Carlos Rios: Marine Logistician");
+
+    cy.get("[data-cy=video-container").within(($hc) => {
+      cy.get("[data-cy=mentor-name-card]").should("exist");
+    });
+
+    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=history-chat]").should("exist");
+    // write msgs
+    cy.get("[data-cy=input-field]").type("Question 1");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    // display card over a corner of the video
+    cy.get("[data-cy=mentor-name-card]").should("exist");
   });
 });

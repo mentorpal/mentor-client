@@ -73,6 +73,7 @@ export function Chat(args: {
   const { height, windowHeight, width, bubbleColor } = args;
   const styles = useStyles();
   const {
+    mentorType,
     lastQuestionId,
     visibilityShowAllPref,
     getQuestionVisibilityPref,
@@ -150,6 +151,7 @@ export function Chat(args: {
   return (
     <div
       data-cy="history-chat"
+      id="history-chat"
       data-topic="History"
       className={
         !shouldDisplayPortrait()
@@ -195,6 +197,7 @@ export function Chat(args: {
                   setQuestionVisibilityPref(m.questionId, show);
                 }}
                 visibility={isQuestionsAnswersVisible(m.questionId)}
+                mentorType={mentorType}
               />
             </div>
           );
