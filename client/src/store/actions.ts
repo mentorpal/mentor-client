@@ -37,11 +37,13 @@ import {
   QuestionInput,
   MentorDataResult,
   Feedback,
+  ChatMsg,
 } from "../types";
 import * as uuid from "uuid";
 
 const RESPONSE_CUTOFF = -100;
 export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished playing
+export const VIDEO_FINISHED = "VIDEO_FINISHED"; // mentor video has finished playing
 export const CONFIG_LOAD_FAILED = "CONFIG_LOAD_FAILED";
 export const CONFIG_LOAD_STARTED = "CONFIG_LOAD_STARTED";
 export const CONFIG_LOAD_SUCCEEDED = "CONFIG_LOAD_SUCCEEDED";
@@ -164,6 +166,13 @@ export interface QuestionAnsweredAction {
   payload: QuestionResponse;
 }
 
+export interface VideoFinishedAction {
+  type: typeof VIDEO_FINISHED;
+  payload: {
+    isVideoInProgress: boolean;
+  };
+}
+
 export interface QuestionErrorAction {
   type: typeof QUESTION_ERROR;
   mentor: string;
@@ -188,7 +197,8 @@ export type QuestionAction =
   | QuestionAnsweredAction
   | QuestionErrorAction
   | QuestionResultAction
-  | QuestionSentAction;
+  | QuestionSentAction
+  | VideoFinishedAction;
 
 export interface GuestNameSetAction {
   type: typeof GUEST_NAME_SET;
@@ -217,6 +227,17 @@ export type MentorClientAction =
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
+
+export const onVideoFinished =
+  (isVideoInProgress: boolean) =>
+  async (dispatch: ThunkDispatch<State, void, VideoFinishedAction>) => {
+    dispatch({
+      type: VIDEO_FINISHED,
+      payload: {
+        isVideoInProgress: isVideoInProgress,
+      },
+    });
+  };
 
 export const feedbackSend =
   (feedbackId: string, feedback: Feedback) =>
