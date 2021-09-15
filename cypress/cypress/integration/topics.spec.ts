@@ -44,7 +44,7 @@ describe("Topics list", () => {
     // test that the content displayed in the questions-list panel is the list of questions for the default/selected topic
     cy.get("[data-cy=scrolling-questions-list]").within(() => {
       cy.get("li").eq(0).contains("Where were you born?");
-      cy.get("li").eq(1).contains("Are you fun at parties?");
+      cy.get("li").eq(1).contains("What's your favorite movie?");
     });
   });
 
@@ -62,7 +62,7 @@ describe("Topics list", () => {
     // test that the content displayed in the questions-list panel is the list of questions for the default/selected topic
     cy.get("[data-cy=scrolling-questions-list]").within(() => {
       cy.get("li").eq(0).contains("Where were you born?");
-      cy.get("li").eq(1).contains("Are you fun at parties?");
+      cy.get("li").eq(1).contains("What's your favorite movie?");
     });
   });
 
@@ -287,7 +287,7 @@ describe("Topics list", () => {
       "data-topic",
       "About Me"
     );
-    cy.get("[data-cy=input-field]").contains("Are you fun at parties?");
+    cy.get("[data-cy=input-field]").contains("What's your favorite movie?");
   });
 
   it("does not recommend a topic question that has already been asked (via topic button)", () => {
@@ -336,7 +336,7 @@ describe("Topics list", () => {
       "data-topic",
       "About Me"
     );
-    cy.get("[data-cy=input-field]").contains("Are you fun at parties?");
+    cy.get("[data-cy=input-field]").contains("What's your favorite movie?");
   });
 
   it("skips topic questions that have already been asked", () => {
@@ -370,6 +370,6 @@ describe("Topics list", () => {
       "data-topic",
       "About Me"
     );
-    cy.get("[data-cy=input-field]").contains("Are you fun at parties");
+    cy.get("[data-cy=input-field]").contains("What's your favorite movie?");
   });
 });

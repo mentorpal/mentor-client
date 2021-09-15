@@ -1,6 +1,7 @@
 .player-wrapper {
   height: 70vh !important;
   width: 50vw !important;
+  border-radius: 10px;
 }
 
 .player-wrapper > video {
@@ -73,6 +74,7 @@
 .video-player-wrapper {
   position: relative;
   display: inline-block;
+  margin-top: 50px;
 }
 
 @media only screen and (max-width: 1200px) {
@@ -91,6 +93,7 @@
   .player-wrapper {
     height: 70vh !important;
     width: 90vw !important;
+    border-radius: 10px;
   }
   .player-wrapper > video {
     height: 100% !important;
@@ -98,6 +101,10 @@
   }
   .video-container {
     margin-top: 0px;
+  }
+  .video-player-wrapper {
+    position: relative;
+    display: inline-block;
   }
 }
 
@@ -117,12 +124,16 @@
   .player-wrapper {
     height: 40vh !important;
     width: 90vw !important;
+    border-radius: 5px;
   }
   .player-wrapper > video {
     height: 100% !important;
     width: 100% !important;
   }
   .video-container {
+    margin-top: 0px;
+  }
+  .video-player-wrapper {
     margin-top: 0px;
   }
 }

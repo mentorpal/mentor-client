@@ -58,7 +58,6 @@ function ScrollingQuestions(args: ScrollingQuestionsParams): JSX.Element {
       data-topic={topic}
       data-mentor={mentor}
       className="scroll"
-      style={{ height: 200 }}
       disablePadding
     >
       {questions.map((question: string, i: number) => (
