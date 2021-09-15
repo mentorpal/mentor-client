@@ -7,7 +7,7 @@ The full terms of this copyright and license should always be found in the root 
 import { mockDefaultSetup } from "../support/helpers";
 
 describe("Plays a video in response to a user question", () => {
-  it.only("plays a mentor response and displays subtitles", () => {
+  it("plays a mentor response and displays subtitles", () => {
     mockDefaultSetup(cy);
     cy.visit("/?mentor=clint");
     cy.get("[data-cy=input-field]").type("is the food good");

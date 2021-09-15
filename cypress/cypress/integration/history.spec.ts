@@ -605,12 +605,32 @@ describe("Chat History (Video Mentors)", () => {
       "data-test-replay",
       "http://videos.org/answer_id.mp4"
     );
-    // cy.get("[data-cy=history-chat]").within(($hc) => {
-    //   cy.get("[data-cy=chat-thread]").within(($hc) => {
-    //     cy.get("[data-cy=chat-msg-6]").within(() => {
-    //       cy.get("[data-cy=replay-icon-6]").trigger("mouseover").click();
-    //     });
-    //   });
-    // });
+    cy.get("[data-cy=history-chat]").within(($hc) => {
+      cy.get("[data-cy=chat-thread]").within(($hc) => {
+        cy.get("[data-cy=chat-msg-6]").within(() => {
+          cy.get("[data-cy=replay-icon-6]").trigger("mouseover").click();
+        });
+      });
+    });
+
+    cy.get("[data-cy=video-container]").should(
+      "have.attr",
+      "data-test-replay",
+      "http://videos.org/answer_id7.mp4"
+    );
+
+    cy.get("[data-cy=history-chat]").within(($hc) => {
+      cy.get("[data-cy=chat-thread]").within(($hc) => {
+        cy.get("[data-cy=chat-msg-2]").within(() => {
+          cy.get("[data-cy=replay-icon-2]").trigger("mouseover").click();
+        });
+      });
+    });
+
+    cy.get("[data-cy=video-container]").should(
+      "have.attr",
+      "data-test-replay",
+      "http://videos.org/answer_id3.mp4"
+    );
   });
 });
