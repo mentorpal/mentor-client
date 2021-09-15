@@ -69,8 +69,6 @@ function TopicTabs(props: {
     handleClose();
   };
 
-  console.log(selectedTabIx);
-
   const topics = topicQuestions.map(({ topic }, index) =>
     topic !== "History" ? (
       <MenuItem
