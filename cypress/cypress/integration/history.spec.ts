@@ -556,7 +556,7 @@ describe("Chat History (Video Mentors)", () => {
     });
   });
 
-  it.only("Replay video by clicking chat msg", () => {
+  it("Replay video by clicking chat msg", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
@@ -603,7 +603,7 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=video-container]").should(
       "have.attr",
       "data-test-replay",
-      ""
+      "http://videos.org/answer_id.mp4"
     );
     // cy.get("[data-cy=history-chat]").within(($hc) => {
     //   cy.get("[data-cy=chat-thread]").within(($hc) => {

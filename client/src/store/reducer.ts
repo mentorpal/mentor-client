@@ -42,6 +42,8 @@ import {
   FeedbackSendFailedAction,
   REPLAY_VIDEO,
   ReplayVideoAction,
+  PLAY_IDLE_AFTER_REPLAY_VIDEO,
+  PlayIdleAfterReplayVideoAction,
 } from "./actions";
 import {
   MentorState,
@@ -63,6 +65,7 @@ import { getUtterance } from "api";
 export const initialState: State = {
   chat: {
     messages: [],
+    replay: false,
   },
   config: {
     cmi5Enabled: false,
@@ -302,11 +305,7 @@ function onMentorLoadResults(
 }
 
 function onQuestionSent(state: State, action: QuestionSentAction): State {
-  state.chat.messages.find((m) => {
-    if (m.replay) {
-      m.replay = false;
-    }
-  });
+  state.chat.replay = false;
   return onMentorNext(
     onQuestionInputChanged(
       {
@@ -531,6 +530,25 @@ function onReplayVideo(state: State, action: ReplayVideoAction): State {
             }
           : m;
       }),
+      replay: true,
+    },
+  };
+}
+
+export function onPlayIdleAfterReplay(
+  state: State,
+  action: PlayIdleAfterReplayVideoAction
+): State {
+  state.chat.messages.find((m) => {
+    if (m.replay) {
+      m.replay = false;
+    }
+  });
+  return {
+    ...state,
+    chat: {
+      ...state.chat,
+      replay: action.payload.replay,
     },
   };
 }
@@ -570,6 +588,8 @@ export default function reducer(
       return onQuestionAnswered(state, action);
     case REPLAY_VIDEO:
       return onReplayVideo(state, action);
+    case PLAY_IDLE_AFTER_REPLAY_VIDEO:
+      return onPlayIdleAfterReplay(state, action);
     case QUESTION_ERROR:
       return {
         ...state,

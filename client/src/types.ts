@@ -9,6 +9,7 @@ export interface ChatData {
   lastQuestionAt?: Date;
   lastAnswerAt?: Date;
   messages: ChatMsg[];
+  replay: boolean;
 }
 
 export const LINK_TYPE_ASK = "ask";

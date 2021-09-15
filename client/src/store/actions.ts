@@ -42,6 +42,7 @@ import * as uuid from "uuid";
 
 const RESPONSE_CUTOFF = -100;
 export const REPLAY_VIDEO = "REPLAY_VIDEO";
+export const PLAY_IDLE_AFTER_REPLAY_VIDEO = "PLAY_IDLE_AFTER_REPLAY_VIDEO";
 export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished playing
 export const CONFIG_LOAD_FAILED = "CONFIG_LOAD_FAILED";
 export const CONFIG_LOAD_STARTED = "CONFIG_LOAD_STARTED";
@@ -195,6 +196,13 @@ export interface ReplayVideoAction {
   };
 }
 
+export interface PlayIdleAfterReplayVideoAction {
+  type: typeof PLAY_IDLE_AFTER_REPLAY_VIDEO;
+  payload: {
+    replay: boolean;
+  };
+}
+
 export type QuestionAction =
   | QuestionAnsweredAction
   | QuestionErrorAction
@@ -225,7 +233,8 @@ export type MentorClientAction =
   | QuestionAction
   | TopicSelectedAction
   | QuestionInputChangedAction
-  | ReplayVideoAction;
+  | ReplayVideoAction
+  | PlayIdleAfterReplayVideoAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
@@ -499,6 +508,20 @@ export const rePlayAnswer =
         answerText,
       },
       type: REPLAY_VIDEO,
+    });
+  };
+
+export const playIdleAfterReplay =
+  (replay: boolean) =>
+  async (
+    dispatch: ThunkDispatch<State, void, AnyAction>,
+    getState: () => State
+  ) => {
+    return dispatch({
+      payload: {
+        replay,
+      },
+      type: PLAY_IDLE_AFTER_REPLAY_VIDEO,
     });
   };
 
