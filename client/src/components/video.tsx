@@ -18,6 +18,7 @@ import {
   faveMentor,
   mentorAnswerPlaybackStarted,
   playIdleAfterReplay,
+  onVideoFinished,
 } from "store/actions";
 import { State, WebLink } from "types";
 import "styles/video.css";
@@ -148,12 +149,15 @@ function Video(args: { playing?: boolean }): JSX.Element {
     setHideLinkLabel(true);
     dispatch(playIdleAfterReplay(false));
     dispatch(answerFinished());
+    dispatch(onVideoFinished(false));
   }
 
   function onPlay() {
     setHideLinkLabel(false);
     if (isIdle) {
       setHideLinkLabel(true);
+      dispatch(answerFinished());
+
       return;
     }
     dispatch(
@@ -273,6 +277,7 @@ function VideoPlayer(args: VideoPlayerParams) {
         }}
         width="90%"
         className="player-wrapper react-player-wrapper"
+        data-cy="playing-video-mentor"
         url={videoUrl}
         muted={Boolean(isIdle)}
         onDuration={setDuration}

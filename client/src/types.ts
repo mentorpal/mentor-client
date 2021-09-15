@@ -44,6 +44,7 @@ export interface ChatMsg {
   answerMedia?: Media[];
   answerId?: string;
   replay?: boolean;
+  isVideoInProgress?: boolean;
 }
 
 export interface Mentor {

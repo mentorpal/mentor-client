@@ -61,6 +61,7 @@ export function ChatItem(props: {
   styles: StyleProps;
   setAnswerVisibility: (show: boolean) => void;
   visibility: boolean;
+  mentorType: string;
   rePlayQuestionVideo: (
     mId: string,
     answerId: string,
@@ -73,6 +74,7 @@ export function ChatItem(props: {
     styles,
     setAnswerVisibility,
     visibility,
+    mentorType,
     rePlayQuestionVideo,
   } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
@@ -81,7 +83,10 @@ export function ChatItem(props: {
 
   const isUser = !message.mentorId;
   const mentorColor = message.color || "#88929e";
-  const isVisible = visibility;
+  const isVisible =
+    mentorType === "CHAT"
+      ? visibility
+      : visibility && !message.isVideoInProgress;
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(event.currentTarget);
@@ -314,6 +319,7 @@ export function ChatItem(props: {
               </div>
               <div
                 data-cy="click-neutral"
+                data-test-in-progress={message.isFeedbackSendInProgress}
                 onClick={() => {
                   onFeedbackClicked(Feedback.NEUTRAL);
                 }}
@@ -326,6 +332,7 @@ export function ChatItem(props: {
               </div>
               <div
                 data-cy="click-bad"
+                data-test-in-progress={message.isFeedbackSendInProgress}
                 onClick={() => {
                   onFeedbackClicked(Feedback.BAD);
                 }}
