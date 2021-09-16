@@ -52,7 +52,7 @@ describe("Topics list", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.viewport(1300, 1000);
     // test that the first topic tab is selected
-    cy.get("[data-cy=topic-tabs]").within(() => {
+    cy.get("[data-cy=topics]").within(() => {
       cy.get("[data-cy=desktop-tab-0]").should(
         "have.attr",
         "data-test",
