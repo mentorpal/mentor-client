@@ -28,6 +28,29 @@
           "topics": [{ "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46" }],
           "question": { "question": "What is your job?", "type": "QUESTION" }
         }
+      ],
+      "answers": [
+        {
+          "question": {
+            "question": "Where were you born?"
+          },
+          "transcript": "",
+          "status": "COMPLETE"
+        },
+        {
+          "question": {
+            "question": "What's your favorite place?"
+          },
+          "transcript": "",
+          "status": "COMPLETE"
+        },
+        {
+          "question": {
+            "question": "Are you fun at parties?"
+          },
+          "transcript": "",
+          "status": "COMPLETE"
+        }
       ]
     },
     {
@@ -61,6 +84,29 @@
             "question": "This is an idle calibration video. Please get into position and look at the camera without speaking or moving.",
             "type": "UTTERANCE"
           }
+        }
+      ],
+      "answers": [
+        {
+          "question": {
+            "question": "Where were you born?"
+          },
+          "transcript": "",
+          "status": "COMPLETE"
+        },
+        {
+          "question": {
+            "question": "What's your favorite place?"
+          },
+          "transcript": "",
+          "status": "COMPLETE"
+        },
+        {
+          "question": {
+            "question": "Are you fun at parties?"
+          },
+          "transcript": "",
+          "status": "COMPLETE"
         }
       ]
     }
@@ -105,6 +151,29 @@
         "question": "This is an idle calibration video. Please get into position and look at the camera without speaking or moving.",
         "type": "UTTERANCE"
       }
+    }
+  ],
+  "answers": [
+    {
+      "question": {
+        "question": "Where were you born?"
+      },
+      "transcript": "",
+      "status": "COMPLETE"
+    },
+    {
+      "question": {
+        "question": "What's your favorite place?"
+      },
+      "transcript": "",
+      "status": "COMPLETE"
+    },
+    {
+      "question": {
+        "question": "Are you fun at parties?"
+      },
+      "transcript": "",
+      "status": "COMPLETE"
     }
   ],
   "utterances": []

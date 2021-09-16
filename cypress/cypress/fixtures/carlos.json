@@ -78,6 +78,36 @@
       "topics": []
     }
   ],
+  "answers": [
+    {
+      "question": {
+        "question": "Where were you born?"
+      },
+      "transcript": "",
+      "status": "COMPLETE"
+    },
+    {
+      "question": {
+        "question": "What's your favorite place?"
+      },
+      "transcript": "",
+      "status": "COMPLETE"
+    },
+    {
+      "question": {
+        "question": "Are you fun at parties?"
+      },
+      "transcript": "",
+      "status": "COMPLETE"
+    },
+    {
+      "question": {
+        "question": "What do you do in the marines?"
+      },
+      "transcript": "",
+      "status": "COMPLETE"
+    }
+  ],
   "utterances": [
     {
       "_id": "idle",

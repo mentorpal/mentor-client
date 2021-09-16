@@ -49,6 +49,22 @@
           },
           "topics": []
         }
+      ],
+      "answers": [
+        {
+          "question": {
+            "question": "Where were you born?"
+          },
+          "transcript": "",
+          "status": "COMPLETE"
+        },
+        {
+          "question": {
+            "question": "How old are you?"
+          },
+          "transcript": "",
+          "status": "INCOMPLETE"
+        }
       ]
     },
     {
@@ -71,6 +87,15 @@
               "name": "COVID-19 General Information"
             }
           ]
+        }
+      ],
+      "answers": [
+        {
+          "question": {
+            "question": "What are the symptoms of COVID-19?"
+          },
+          "transcript": "",
+          "status": "COMPLETE"
         }
       ]
     }
@@ -130,6 +155,30 @@
         "type": "UTTERANCE"
       },
       "topics": []
+    }
+  ],
+
+  "answers": [
+    {
+      "question": {
+        "question": "Where were you born?"
+      },
+      "transcript": "",
+      "status": "COMPLETE"
+    },
+    {
+      "question": {
+        "question": "How old are you?"
+      },
+      "transcript": "",
+      "status": "INCOMPLETE"
+    },
+    {
+      "question": {
+        "question": "What are the symptoms of COVID-19?"
+      },
+      "transcript": "",
+      "status": "COMPLETE"
     }
   ],
   "utterances": [
