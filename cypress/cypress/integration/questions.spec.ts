@@ -212,7 +212,7 @@ describe("Questions list", () => {
     cy.viewport("macbook-11");
   });
 
-  it.only("Do not show unanswered questions (subject)", () => {
+  it("Do not show unanswered questions (subject)", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
       mentorData: [clint_subject],

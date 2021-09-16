@@ -360,7 +360,7 @@ export const loadMentors: ActionCreator<
           const subject = mentor.subjects.find(
             (s) => s._id === (subjectId || mentor.defaultSubject?._id)
           );
-
+          console.log("mentor:", mentor);
           console.log("mentor.subjects:", mentor.subjects);
           console.log("subject: ", subject);
           console.log("subjectId: ", subjectId);

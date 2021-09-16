@@ -42,7 +42,7 @@ function TopicTabs(props: {
 
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
-  const [selectedTabIx, setSelectedTabIx] = React.useState<number>(0);
+  const [selectedTabIx, setSelectedTabIx] = React.useState<number>(1);
   const curTopic = useSelector<State, string>((s) => s.curTopic);
   const curMentor = useSelector<State, string>((state) => state.curMentor);
 
