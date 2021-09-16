@@ -220,6 +220,7 @@ function onMentorsLoadRequested(
         subjects: [],
         questions: [],
         utterances: [],
+        answers: [],
       },
       topic_questions: [],
       status: MentorQuestionStatus.NONE,

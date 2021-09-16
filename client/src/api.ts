@@ -167,6 +167,12 @@ export async function fetchMentor(
               type
             }
           }
+          answers {
+            question {
+              question
+            }
+            status
+          }
           utterances(status: $status) {
             _id
             transcript

@@ -4,7 +4,12 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { visitAsGuestWithDefaultSetup } from "../support/helpers";
+import {
+  mockDefaultSetup,
+  visitAsGuestWithDefaultSetup,
+} from "../support/helpers";
+const clint_no_subject = require("../fixtures/clint_no_subject.json");
+const clint_subject = require("../fixtures/clint_subject.json");
 
 describe("Questions list", () => {
   it("displays list of questions for selected topic", () => {
@@ -195,5 +200,25 @@ describe("Questions list", () => {
       .find("div")
       .invoke("attr", "style")
       .should("contain", "gray");
+  });
+
+  it("Do not show unanswered questions (no subject)", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint"] },
+      mentorData: [clint_no_subject],
+      apiResponse: "response_with_feedback.json",
+    });
+    cy.visit("/");
+    cy.viewport("macbook-11");
+  });
+
+  it.only("Do not show unanswered questions (subject)", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint"] },
+      mentorData: [clint_subject],
+      apiResponse: "response_with_feedback.json",
+    });
+    cy.visit("/");
+    cy.viewport("macbook-11");
   });
 });

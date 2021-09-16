@@ -1,0 +1,216 @@
+{
+  "_id": "clint",
+  "name": "Clinton Anderson",
+  "title": "Nuclear Electrician's Mate",
+  "mentorType": "VIDEO",
+  "defaultSubject": null,
+  "subjects": [
+    {
+      "_id": "607766dec525ba495568e79d",
+      "topics": [
+        { "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46", "name": "About Me" }
+      ],
+      "questions": [
+        {
+          "topics": [{ "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46" }],
+          "question": { "question": "Who are you?", "type": "QUESTION" }
+        },
+        {
+          "topics": [{ "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46" }],
+          "question": { "question": "How old are you?", "type": "QUESTION" }
+        },
+        {
+          "topics": [{ "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46" }],
+          "question": { "question": "Where do you live?", "type": "QUESTION" }
+        },
+        {
+          "topics": [{ "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46" }],
+          "question": { "question": "What is your job?", "type": "QUESTION" }
+        }
+      ]
+    },
+    {
+      "_id": "606cebab4deb58698ee5bb4d",
+      "topics": [],
+      "questions": [
+        {
+          "topics": [],
+          "question": {
+            "question": "This is a custom mentor question",
+            "type": "QUESTION"
+          }
+        },
+        {
+          "topics": [],
+          "question": {
+            "question": "Please give a short introduction about yourself. Include your name, age, job title, where you work, and what you do.",
+            "type": "UTTERANCE"
+          }
+        },
+        {
+          "topics": [],
+          "question": {
+            "question": "Please repeat the following: \"Sorry, I didn't understand the question. Try asking me something else.\"",
+            "type": "UTTERANCE"
+          }
+        },
+        {
+          "topics": [],
+          "question": {
+            "question": "This is an idle calibration video. Please get into position and look at the camera without speaking or moving.",
+            "type": "UTTERANCE"
+          }
+        }
+      ]
+    }
+  ],
+  "topics": [
+    {
+      "id": "aboutme",
+      "name": "About Me"
+    },
+    {
+      "id": "aboutjob",
+      "name": "About the Job"
+    }
+  ],
+  "questions": [
+    {
+      "question": {
+        "question": "Who are you and what do you do?",
+        "type": "QUESTION"
+      },
+      "topics": [
+        {
+          "id": "aboutme",
+          "name": "About Me"
+        }
+      ]
+    },
+    {
+      "question": {
+        "question": "How old are you?",
+        "type": "QUESTION"
+      },
+      "topics": [
+        {
+          "id": "aboutme",
+          "name": "About Me"
+        }
+      ]
+    },
+    {
+      "question": {
+        "question": "Do you like your job?",
+        "type": "QUESTION"
+      },
+      "topics": [
+        {
+          "id": "aboutjob",
+          "name": "About the Job"
+        }
+      ]
+    },
+    {
+      "question": {
+        "question": "Do you like any sport?",
+        "type": "QUESTION"
+      },
+      "topics": [
+        {
+          "id": "aboutjob",
+          "name": "About the Job"
+        }
+      ]
+    }
+  ],
+  "answers": [
+    {
+      "question": {
+        "question": "Who are you and what do you do?"
+      },
+      "transcript": "",
+      "status": "INCOMPLETE"
+    },
+    {
+      "question": {
+        "question": "How old are you?"
+      },
+      "transcript": "",
+      "status": "INCOMPLETE"
+    },
+    {
+      "question": {
+        "question": "Do you like your job?"
+      },
+      "transcript": "",
+      "status": "INCOMPLETE"
+    },
+    {
+      "question": {
+        "question": "Do you like any sport?"
+      },
+      "transcript": "",
+      "status": "COMPLETE"
+    }
+  ],
+  "utterances": [
+    {
+      "_id": "idle",
+      "transcript": "",
+      "question": {
+        "name": "_IDLE_"
+      },
+      "media": [
+        {
+          "type": "video",
+          "tag": "web",
+          "url": "http://videos.org/answer_id.mp4"
+        },
+        {
+          "type": "video",
+          "tag": "mobile",
+          "url": "http://videos.org/answer_id.mp4"
+        }
+      ]
+    },
+    {
+      "_id": "intro",
+      "transcript": "My name is EMC Clint Anderson. I was born in California and I have lived there most of my life. I graduated from Paramount and a couple of years after I finished high school, I joined the US Navy. I was an Electrician's Mate. I served on an aircraft carrier for eight years and then afterwards, I went to the United States Navy Reserve. During that time I started going to school with some of the abundant benefits that the military reserve has given me and I started working with various companies.",
+      "question": {
+        "name": "_INTRO_"
+      },
+      "media": [
+        {
+          "type": "video",
+          "tag": "web",
+          "url": "http://videos.org/answer_id.mp4"
+        },
+        {
+          "type": "video",
+          "tag": "mobile",
+          "url": "http://videos.org/answer_id.mp4"
+        }
+      ]
+    },
+    {
+      "_id": "offtopic",
+      "transcript": "That is a great question, but unfortunately I never recorded an answer to that.",
+      "question": {
+        "name": "_OFF_TOPIC_"
+      },
+      "media": [
+        {
+          "type": "video",
+          "tag": "web",
+          "url": "http://videos.org/answer_id.mp4"
+        },
+        {
+          "type": "video",
+          "tag": "mobile",
+          "url": "http://videos.org/answer_id.mp4"
+        }
+      ]
+    }
+  ]
+}
