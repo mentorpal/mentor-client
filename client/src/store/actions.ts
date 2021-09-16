@@ -360,11 +360,6 @@ export const loadMentors: ActionCreator<
           const subject = mentor.subjects.find(
             (s) => s._id === (subjectId || mentor.defaultSubject?._id)
           );
-          console.log("mentor:", mentor);
-          console.log("subject: ", subject);
-          console.log("mentor.subjects:", mentor.subjects);
-          console.log("subject: ", subject);
-          console.log("subjectId: ", subjectId);
 
           const topics = subject ? subject.topics : mentor.topics;
 
@@ -376,15 +371,11 @@ export const loadMentors: ActionCreator<
             subject ? subject.answers : mentor.answers
           ).filter((q) => q.status === "COMPLETE");
 
-          console.log("questionsAnswered: ", questionsAnswered);
-
           const asnwersWithTopics = questions.filter((question) => {
             return questionsAnswered.some((answer) => {
               return question.question.question === answer.question.question;
             });
           });
-
-          console.log("asnwersWithTopics: ", asnwersWithTopics);
 
           const topicQuestions: TopicQuestions[] = [];
           const recommendedQuestions = getState().recommendedQuestions;
