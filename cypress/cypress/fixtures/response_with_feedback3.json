@@ -1,0 +1,20 @@
+{
+  "query": "how old are you",
+  "answer_id": "answer_id_feedback11",
+  "answer_text": "Give me feedback.",
+  "answer_media": [
+    {
+      "type": "video",
+      "tag": "web",
+      "url": "http://videos.org/answer_id11.mp4"
+    },
+    {
+      "type": "video",
+      "tag": "mobile",
+      "url": "http://videos.org/answer_id11.mp4"
+    }
+  ],
+  "confidence": -0.5140574318328217,
+  "feedback_id": "feedback_id",
+  "classifier": ""
+}

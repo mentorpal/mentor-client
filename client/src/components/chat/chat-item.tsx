@@ -21,6 +21,7 @@ import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
 import RecordVoiceOverIcon from "@material-ui/icons/RecordVoiceOver";
 import ChevronRightRoundedIcon from "@material-ui/icons/ChevronRightRounded";
 import ExpandMoreRoundedIcon from "@material-ui/icons/ExpandMoreRounded";
+import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
 
 import CloseIcon from "@material-ui/icons/Close";
 
@@ -61,9 +62,21 @@ export function ChatItem(props: {
   setAnswerVisibility: (show: boolean) => void;
   visibility: boolean;
   mentorType: string;
+  rePlayQuestionVideo: (
+    mId: string,
+    answerId: string,
+    answerText: string
+  ) => void;
 }): JSX.Element {
-  const { message, i, styles, setAnswerVisibility, visibility, mentorType } =
-    props;
+  const {
+    message,
+    i,
+    styles,
+    setAnswerVisibility,
+    visibility,
+    mentorType,
+    rePlayQuestionVideo,
+  } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
   const config = useSelector<State, Config>((s) => s.config);
@@ -172,6 +185,21 @@ export function ChatItem(props: {
     />
   ) : null;
 
+  const rePlayBtn =
+    !isUser && isVisible ? (
+      <PlayCircleOutlineIcon
+        style={{ marginRight: 10, cursor: "pointer", color: "#000000c9" }}
+        onClick={() =>
+          rePlayQuestionVideo(
+            message.mentorId,
+            message.answerId || "",
+            message.text
+          )
+        }
+        data-cy={`replay-icon-${i}`}
+      />
+    ) : null;
+
   const mentorBubbleName = (
     <p
       style={{
@@ -200,12 +228,18 @@ export function ChatItem(props: {
           maxWidth: 750,
           marginLeft: isUser || message.isIntro ? 0 : 50,
           backgroundColor: message.isIntro ? "#eaeaea" : mentorColor,
-          color: message.isIntro ? "#000" : message.isUser ? "#fff" : "#000",
+          color: message.isIntro
+            ? "#000000c9"
+            : message.isUser
+            ? "#fff"
+            : "#000000c9",
           marginTop: !message.isUser ? "0.6rem" : "",
           marginBottom: "0.6rem",
         }}
       >
         {!message.isIntro ? visibilityIcon : null}
+        {rePlayBtn}
+
         <ReactMarkdown
           source={message.text}
           renderers={{ link: LinkRenderer }}

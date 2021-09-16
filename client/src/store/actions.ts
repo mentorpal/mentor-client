@@ -42,6 +42,8 @@ import {
 import * as uuid from "uuid";
 
 const RESPONSE_CUTOFF = -100;
+export const REPLAY_VIDEO = "REPLAY_VIDEO";
+export const PLAY_IDLE_AFTER_REPLAY_VIDEO = "PLAY_IDLE_AFTER_REPLAY_VIDEO";
 export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished playing
 export const VIDEO_FINISHED = "VIDEO_FINISHED"; // mentor video has finished playing
 export const CONFIG_LOAD_FAILED = "CONFIG_LOAD_FAILED";
@@ -193,6 +195,23 @@ export interface QuestionSentAction {
   };
 }
 
+export interface ReplayVideoAction {
+  type: typeof REPLAY_VIDEO;
+  payload: {
+    mentorId: string;
+    answerId: string;
+    reason: MentorSelectReason;
+    answerText: string;
+  };
+}
+
+export interface PlayIdleAfterReplayVideoAction {
+  type: typeof PLAY_IDLE_AFTER_REPLAY_VIDEO;
+  payload: {
+    replay: boolean;
+  };
+}
+
 export type QuestionAction =
   | QuestionAnsweredAction
   | QuestionErrorAction
@@ -223,7 +242,9 @@ export type MentorClientAction =
   | MentorAction
   | QuestionAction
   | TopicSelectedAction
-  | QuestionInputChangedAction;
+  | QuestionInputChangedAction
+  | ReplayVideoAction
+  | PlayIdleAfterReplayVideoAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
@@ -506,6 +527,42 @@ export function mentorAnswerPlaybackStarted(video: {
   };
 }
 
+export const rePlayAnswer =
+  (
+    mentorId: string,
+    answerId: string,
+    reason: MentorSelectReason,
+    answerText: string
+  ) =>
+  async (
+    dispatch: ThunkDispatch<State, void, AnyAction>,
+    getState: () => State
+  ) => {
+    return dispatch({
+      payload: {
+        mentorId,
+        answerId,
+        reason,
+        answerText,
+      },
+      type: REPLAY_VIDEO,
+    });
+  };
+
+export const playIdleAfterReplay =
+  (replay: boolean) =>
+  async (
+    dispatch: ThunkDispatch<State, void, AnyAction>,
+    getState: () => State
+  ) => {
+    return dispatch({
+      payload: {
+        replay,
+      },
+      type: PLAY_IDLE_AFTER_REPLAY_VIDEO,
+    });
+  };
+
 export const selectMentor =
   (mentor: string, reason: MentorSelectReason, setFav = false) =>
   (dispatch: ThunkDispatch<State, void, MentorSelectedAction>) => {
@@ -725,7 +782,7 @@ const onMentorAnswerPlaybackStarted = (
   },
 });
 
-const onQuestionSent = (payload: {
+export const onQuestionSent = (payload: {
   question: string;
   questionId: string;
   source: MentorQuestionSource;
@@ -734,7 +791,7 @@ const onQuestionSent = (payload: {
   type: QUESTION_SENT,
 });
 
-function onQuestionAnswered(response: QuestionResponse) {
+export function onQuestionAnswered(response: QuestionResponse) {
   return {
     payload: response,
     type: QUESTION_ANSWERED,

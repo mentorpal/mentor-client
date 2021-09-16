@@ -80,6 +80,7 @@ export function Chat(args: {
     setQuestionVisibilityPref,
     setVisibilityShowAllPref,
     mentorNameForChatMsg,
+    rePlayQuestionVideo,
   } = useWithChatData();
 
   const colorByMentorId = useSelector<State, Record<string, string>>((s) => {
@@ -197,6 +198,7 @@ export function Chat(args: {
                   setQuestionVisibilityPref(m.questionId, show);
                 }}
                 visibility={isQuestionsAnswersVisible(m.questionId)}
+                rePlayQuestionVideo={rePlayQuestionVideo}
                 mentorType={mentorType}
               />
             </div>
