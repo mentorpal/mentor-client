@@ -41,6 +41,10 @@ import {
   FEEDBACK_SEND_FAILED,
   FeedbackSendSucceededAction,
   FeedbackSendFailedAction,
+  REPLAY_VIDEO,
+  ReplayVideoAction,
+  PLAY_IDLE_AFTER_REPLAY_VIDEO,
+  PlayIdleAfterReplayVideoAction,
   VideoFinishedAction,
 } from "./actions";
 import {
@@ -63,6 +67,7 @@ import { getUtterance } from "api";
 export const initialState: State = {
   chat: {
     messages: [],
+    replay: false,
   },
   config: {
     cmi5Enabled: false,
@@ -303,6 +308,7 @@ function onMentorLoadResults(
 }
 
 function onQuestionSent(state: State, action: QuestionSentAction): State {
+  state.chat.replay = false;
   return onMentorNext(
     onQuestionInputChanged(
       {
@@ -391,7 +397,7 @@ function onQuestionInputChanged(
   });
 }
 
-function findWebLinks(text: string): WebLink[] {
+function findWebLinks(text: string, answerId: string): WebLink[] {
   const REGEX_WEB_LINKS_ALL =
     /(https?:\/\/(?:www.|(?!www))[^\s.]+\.[^\s]{2,}|www.[^\s]+.[^\s]{2,})/gi;
 
@@ -402,6 +408,7 @@ function findWebLinks(text: string): WebLink[] {
     return {
       type: LINK_TYPE_WEB,
       href: link,
+      answerId: answerId,
     };
   });
 
@@ -495,10 +502,17 @@ function onQuestionAnswered(
           isFeedbackSendInProgress: false,
           isVideoInProgress: true,
           askLinks: findAskLinks(action.payload.answerText),
-          webLinks: findWebLinks(action.payload.answerText),
+          webLinks: findWebLinks(
+            action.payload.answerText,
+            mentor?.answer_id || ""
+          ),
+          answerMedia: mentor.answer_media,
+          answerId: mentor.answer_id,
+          replay: false,
         },
       ],
     },
+
     isIdle: false,
     mentorsById: {
       ...state.mentorsById,
@@ -511,6 +525,52 @@ function topicSelected(state: State, action: TopicSelectedAction): State {
   return {
     ...state,
     curTopic: action.topic,
+  };
+}
+
+function onReplayVideo(state: State, action: ReplayVideoAction): State {
+  state.chat.messages.find((m) => {
+    if (m.replay) {
+      m.replay = false;
+    }
+  });
+  return {
+    ...state,
+    chat: {
+      ...state.chat,
+      messages: state.chat.messages.map((m) => {
+        return m.answerId === action.payload.answerId
+          ? {
+              ...m,
+              askLinks: findAskLinks(action.payload.answerText),
+              webLinks: findWebLinks(
+                action.payload.answerText,
+                action.payload.answerId
+              ),
+              replay: true,
+            }
+          : m;
+      }),
+      replay: true,
+    },
+  };
+}
+
+export function onPlayIdleAfterReplay(
+  state: State,
+  action: PlayIdleAfterReplayVideoAction
+): State {
+  state.chat.messages.find((m) => {
+    if (m.replay) {
+      m.replay = false;
+    }
+  });
+  return {
+    ...state,
+    chat: {
+      ...state.chat,
+      replay: action.payload.replay,
+    },
   };
 }
 
@@ -547,6 +607,10 @@ export default function reducer(
       return onQuestionSent(state, action);
     case QUESTION_ANSWERED:
       return onQuestionAnswered(state, action);
+    case REPLAY_VIDEO:
+      return onReplayVideo(state, action);
+    case PLAY_IDLE_AFTER_REPLAY_VIDEO:
+      return onPlayIdleAfterReplay(state, action);
     case VIDEO_FINISHED:
       return onVideoFinished(state, action);
     case QUESTION_ERROR:

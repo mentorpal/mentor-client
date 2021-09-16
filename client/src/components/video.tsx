@@ -17,6 +17,7 @@ import {
   answerFinished,
   faveMentor,
   mentorAnswerPlaybackStarted,
+  playIdleAfterReplay,
   onVideoFinished,
 } from "store/actions";
 import { State, WebLink } from "types";
@@ -24,7 +25,7 @@ import "styles/video.css";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
-interface VideoData {
+export interface VideoData {
   src: string;
   subtitles: string;
 }
@@ -34,6 +35,17 @@ function Video(args: { playing?: boolean }): JSX.Element {
   const dispatch = useDispatch();
   const curMentor = useSelector<State, string>((state) => state.curMentor);
   const video = useSelector<State, VideoData | null>((state) => {
+    if (state.chat.replay) {
+      const videoMedia = state.chat.messages.find((m) => {
+        if (m.replay) {
+          return m.answerMedia;
+        }
+      });
+      return {
+        src: videoUrl(videoMedia?.answerMedia || []),
+        subtitles: subtitleUrl(videoMedia?.answerMedia || []),
+      };
+    }
     if (!state.curMentor) {
       return null;
     }
@@ -52,6 +64,15 @@ function Video(args: { playing?: boolean }): JSX.Element {
 
   // returns an array of WebLinks
   const webLinks = useSelector<State, WebLink[] | undefined>((state) => {
+    if (state.chat.replay) {
+      const videoWebLinks = state.chat.messages.find((m) => {
+        if (m.replay) {
+          return m.webLinks;
+        }
+      });
+      return videoWebLinks?.webLinks;
+    }
+
     const chatData = state.chat.messages;
     const lastQuestionId = chatData[chatData.length - 1].questionId;
     const lastWebLink = chatData.filter((m) => {
@@ -76,6 +97,29 @@ function Video(args: { playing?: boolean }): JSX.Element {
     if (!state.curMentor) {
       return null;
     }
+    if (state.chat.replay) {
+      const replayMentorData = state.chat.messages.find((m) => {
+        if (m.replay) {
+          return m.webLinks;
+        }
+      });
+      const _id = replayMentorData
+        ? state.mentorsById[replayMentorData?.mentorId].mentor._id
+        : "";
+      const name = replayMentorData
+        ? state.mentorsById[replayMentorData?.mentorId].mentor.name
+        : "";
+      const title = replayMentorData
+        ? state.mentorsById[replayMentorData?.mentorId].mentor.title
+        : "";
+
+      return {
+        _id,
+        name,
+        title,
+      };
+    }
+
     const m = state.mentorsById[state.curMentor];
     if (!(m && m.mentor)) {
       return null;
@@ -88,7 +132,12 @@ function Video(args: { playing?: boolean }): JSX.Element {
   });
 
   const [hideLinkLabel, setHideLinkLabel] = useState<boolean>(false);
-  const isIdle = useSelector<State, boolean>((state) => state.isIdle);
+  const isIdle = useSelector<State, boolean>((state) => {
+    if (state.chat.replay) {
+      return false;
+    }
+    return state.isIdle;
+  });
 
   const [duration, setDuration] = useState(Number.NaN);
 
@@ -98,6 +147,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
 
   function onEnded() {
     setHideLinkLabel(true);
+    dispatch(playIdleAfterReplay(false));
     dispatch(answerFinished());
     dispatch(onVideoFinished(false));
   }
@@ -106,6 +156,8 @@ function Video(args: { playing?: boolean }): JSX.Element {
     setHideLinkLabel(false);
     if (isIdle) {
       setHideLinkLabel(true);
+      dispatch(answerFinished());
+
       return;
     }
     dispatch(
@@ -122,6 +174,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
       data-test-playing={Boolean(playing)}
       data-video-type={isIdle ? "idle" : "answer"}
       className="video-container"
+      data-test-replay={video.src}
     >
       <MemoVideoPlayer
         isIdle={Boolean(isIdle)}

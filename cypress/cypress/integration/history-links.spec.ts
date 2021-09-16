@@ -197,10 +197,10 @@ describe("Chat History (Video Mentors Links)", () => {
         $video[$video.length - 1].play();
       });
     // wait for it to finish
-    cy.get("[data-cy=playing-video-mentor] video", { timeout: 20000 }).and(
-      "have.prop",
-      "ended",
-      true
+    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
+      "have.attr",
+      "data-test-replay",
+      "http://videos.org/answer_id.mp4"
     );
 
     cy.get("[data-cy=history-chat]").within(($hc) => {

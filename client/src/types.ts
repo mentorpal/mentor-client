@@ -9,6 +9,7 @@ export interface ChatData {
   lastQuestionAt?: Date;
   lastAnswerAt?: Date;
   messages: ChatMsg[];
+  replay: boolean;
 }
 
 export const LINK_TYPE_ASK = "ask";
@@ -16,6 +17,7 @@ export const LINK_TYPE_WEB = "web";
 export interface WebLink {
   type: typeof LINK_TYPE_WEB;
   href: string;
+  answerId: string;
 }
 export interface AskLink {
   type: typeof LINK_TYPE_ASK;
@@ -39,6 +41,9 @@ export interface ChatMsg {
   questionId: string;
   askLinks?: AskLink[];
   webLinks?: WebLink[];
+  answerMedia?: Media[];
+  answerId?: string;
+  replay?: boolean;
   isVideoInProgress?: boolean;
 }
 
@@ -177,6 +182,7 @@ export enum MentorSelectReason {
   OFF_TOPIC_FAV = "OFF_TOPIC_FAV",
   USER_FAV = "USER_FAV",
   USER_SELECT = "USER_SELECT",
+  REPLAY = "REPLAY",
 }
 
 export enum ResultStatus {
