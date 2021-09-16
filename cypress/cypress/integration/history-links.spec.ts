@@ -180,7 +180,6 @@ describe("Chat History (Video Mentors Links)", () => {
       fixture: "video_response.mp4",
     });
     cy.visit("/");
-    cy.viewport("macbook-11");
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 

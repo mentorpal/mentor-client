@@ -119,7 +119,6 @@ export function useWithChatData(): UseWithChatData {
     dispatch(
       rePlayAnswer(mId, answerId, MentorSelectReason.REPLAY, answerText)
     );
-    // dispatch(nextMentor(mId))
   }
 
   return {
