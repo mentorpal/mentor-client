@@ -509,6 +509,7 @@ describe("Chat History (Video Mentors)", () => {
       apiResponse: "response_with_feedback.json",
     });
     cy.visit("/");
+    cy.viewport(1220, 800);
     cy.intercept("**/questions/?mentor=clint&query=*", {
       fixture: "response_with_feedback3.json",
     });

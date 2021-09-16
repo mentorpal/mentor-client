@@ -131,29 +131,53 @@ function TopicTabs(props: {
 
   const desktopView = (
     <div className="tab-container-desktop">
-      <Paper className={classes.root}>
+      <Paper className={classes.root} style={{ display: "flex" }}>
+        <div>
+          <Tabs
+            value={selectedTabIx}
+            TabIndicatorProps={{
+              style: { background: "#ddd", height: "10px", top: 0 },
+            }}
+            textColor="primary"
+            onChange={onChange}
+            aria-label="disabled tabs example"
+            data-cy="topics"
+          >
+            <Tab
+              label={"History"}
+              onClick={() => onTopicClick("History")}
+              className={["topic-tab topic-selected"].join(" ")}
+              data-test="History"
+              data-cy="history-tab"
+              onChange={onChange}
+            />
+          </Tabs>
+        </div>
         <Tabs
           value={selectedTabIx}
           TabIndicatorProps={{
-            style: { background: "#ddd", height: "10px" },
+            style: { background: "#ddd", height: "10px", top: 0 },
           }}
           textColor="primary"
           onChange={onChange}
           aria-label="disabled tabs example"
-          data-cy="topic-tabs"
+          data-cy="topics"
         >
-          {topicQuestions.map(({ topic }, i) => (
-            <Tab
-              key={i}
-              label={topic}
-              onClick={() => onTopicClick(topic)}
-              className={
-                curTopic === topic ? "topic-tab topic-selected " : "topic-tab"
-              }
-              data-test={curTopic === topic ? topic : null}
-              data-cy={topic === "History" ? "history-tab" : `desktop-tab-${i}`}
-            />
-          ))}
+          {topicQuestions.map(({ topic }, i) =>
+            topic !== "History" ? (
+              <Tab
+                key={i}
+                value={i + 1}
+                label={topic}
+                onClick={() => onTopicClick(topic)}
+                className={
+                  curTopic === topic ? "topic-tab topic-selected" : "topic-tab"
+                }
+                data-test={curTopic === topic ? topic : null}
+                data-cy={`desktop-tab-${i}`}
+              />
+            ) : null
+          )}
         </Tabs>
       </Paper>
     </div>
