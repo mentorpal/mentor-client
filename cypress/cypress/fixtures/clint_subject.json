@@ -1,74 +1,38 @@
 {
-  "_id": "covid",
-  "name": "USC",
-  "title": "COVID-19 FAQ Chat Bot",
-  "mentorType": "CHAT",
+  "_id": "clint",
+  "name": "Clinton Anderson",
+  "title": "Nuclear Electrician's Mate",
+  "mentorType": "VIDEO",
   "defaultSubject": {
-    "_id": "covid"
+    "_id": "selected_subject"
   },
   "subjects": [
     {
-      "_id": "background",
+      "_id": "607766dec525ba495568e79d",
       "topics": [
-        {
-          "id": "aboutme",
-          "name": "About Me"
-        }
+        { "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46", "name": "About Me" }
       ],
       "questions": [
         {
-          "question": {
-            "question": "Where were you born?",
-            "type": "QUESTION"
-          },
-          "topics": [
-            {
-              "id": "aboutme",
-              "name": "About Me"
-            }
-          ]
+          "topics": [{ "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46" }],
+          "question": { "question": "Who are you?", "type": "QUESTION" }
         },
         {
-          "question": {
-            "question": "idle",
-            "type": "UTTERANCE"
-          },
-          "topics": []
+          "topics": [{ "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46" }],
+          "question": { "question": "How old are you?", "type": "QUESTION" }
         },
         {
-          "question": {
-            "question": "intro",
-            "type": "UTTERANCE"
-          },
-          "topics": []
+          "topics": [{ "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46" }],
+          "question": { "question": "Where do you live?", "type": "QUESTION" }
         },
         {
-          "question": {
-            "question": "offtopic",
-            "type": "UTTERANCE"
-          },
-          "topics": []
-        }
-      ],
-      "answers": [
-        {
-          "question": {
-            "question": "Where were you born?"
-          },
-          "transcript": "",
-          "status": "COMPLETE"
-        },
-        {
-          "question": {
-            "question": "How old are you?"
-          },
-          "transcript": "",
-          "status": "INCOMPLETE"
+          "topics": [{ "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46" }],
+          "question": { "question": "What is your job?", "type": "QUESTION" }
         }
       ]
     },
     {
-      "_id": "covid",
+      "_id": "selected_subject",
       "topics": [
         {
           "id": "covid",
@@ -106,26 +70,14 @@
       "name": "About Me"
     },
     {
-      "id": "covid",
-      "name": "COVID-19 General Guidelines"
+      "id": "aboutjob",
+      "name": "About the Job"
     }
   ],
   "questions": [
     {
       "question": {
-        "question": "What are the symptoms of COVID-19?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "covid",
-          "name": "COVID-19 General Information"
-        }
-      ]
-    },
-    {
-      "question": {
-        "question": "Where were you born?",
+        "question": "Who are you and what do you do?",
         "type": "QUESTION"
       },
       "topics": [
@@ -137,34 +89,48 @@
     },
     {
       "question": {
-        "question": "idle",
-        "type": "UTTERANCE"
+        "question": "How old are you?",
+        "type": "QUESTION"
       },
-      "topics": []
+      "topics": [
+        {
+          "id": "aboutme",
+          "name": "About Me"
+        }
+      ]
     },
     {
       "question": {
-        "question": "intro",
-        "type": "UTTERANCE"
+        "question": "Do you like your job?",
+        "type": "QUESTION"
       },
-      "topics": []
+      "topics": [
+        {
+          "id": "aboutjob",
+          "name": "About the Job"
+        }
+      ]
     },
     {
       "question": {
-        "question": "offtopic",
-        "type": "UTTERANCE"
+        "question": "Do you like any sport?",
+        "type": "QUESTION"
       },
-      "topics": []
+      "topics": [
+        {
+          "id": "aboutjob",
+          "name": "About the Job"
+        }
+      ]
     }
   ],
-
   "answers": [
     {
       "question": {
-        "question": "Where were you born?"
+        "question": "Who are you and what do you do?"
       },
       "transcript": "",
-      "status": "COMPLETE"
+      "status": "INCOMPLETE"
     },
     {
       "question": {
@@ -175,7 +141,14 @@
     },
     {
       "question": {
-        "question": "What are the symptoms of COVID-19?"
+        "question": "Do you like your job?"
+      },
+      "transcript": "",
+      "status": "INCOMPLETE"
+    },
+    {
+      "question": {
+        "question": "Do you like any sport?"
       },
       "transcript": "",
       "status": "COMPLETE"
@@ -203,7 +176,7 @@
     },
     {
       "_id": "intro",
-      "transcript": "I am a COVID-19 chat bot, you can ask me about COVID-19.",
+      "transcript": "My name is EMC Clint Anderson. I was born in California and I have lived there most of my life. I graduated from Paramount and a couple of years after I finished high school, I joined the US Navy. I was an Electrician's Mate. I served on an aircraft carrier for eight years and then afterwards, I went to the United States Navy Reserve. During that time I started going to school with some of the abundant benefits that the military reserve has given me and I started working with various companies.",
       "question": {
         "name": "_INTRO_"
       },
@@ -222,7 +195,7 @@
     },
     {
       "_id": "offtopic",
-      "transcript": "I'm sorry, I did not understand the question.",
+      "transcript": "That is a great question, but unfortunately I never recorded an answer to that.",
       "question": {
         "name": "_OFF_TOPIC_"
       },

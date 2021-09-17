@@ -56,6 +56,7 @@ export interface Mentor {
   subjects: Subject[];
   topics: Topic[];
   questions: SubjectQuestion[];
+  answers: SubjectAnswer[];
   utterances: Answer[];
 }
 
@@ -63,6 +64,7 @@ export interface Subject {
   _id: string;
   topics: Topic[];
   questions: SubjectQuestion[];
+  answers: SubjectAnswer[];
 }
 
 export interface Topic {
@@ -73,6 +75,11 @@ export interface Topic {
 export interface SubjectQuestion {
   question: Question;
   topics: Topic[];
+}
+
+export interface SubjectAnswer {
+  question: QuestionFromAnswer;
+  status: string;
 }
 
 export interface Question {
@@ -86,6 +93,10 @@ export interface Answer {
   question: Question;
   transcript: string;
   media: Media[];
+}
+
+export interface QuestionFromAnswer {
+  question: string;
 }
 
 export interface Media {

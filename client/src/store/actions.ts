@@ -360,10 +360,23 @@ export const loadMentors: ActionCreator<
           const subject = mentor.subjects.find(
             (s) => s._id === (subjectId || mentor.defaultSubject?._id)
           );
+
           const topics = subject ? subject.topics : mentor.topics;
+
           const questions = (
             subject ? subject.questions : mentor.questions
           ).filter((q) => q.question.type === QuestionType.QUESTION);
+
+          const questionsAnswered = (
+            subject ? subject.answers : mentor.answers
+          ).filter((q) => q.status === "COMPLETE");
+
+          const asnwersWithTopics = questions.filter((question) => {
+            return questionsAnswered.some((answer) => {
+              return question.question.question === answer.question.question;
+            });
+          });
+
           const topicQuestions: TopicQuestions[] = [];
           const recommendedQuestions = getState().recommendedQuestions;
           if (recommendedQuestions.length > 0) {
@@ -373,7 +386,7 @@ export const loadMentors: ActionCreator<
             });
           }
           for (const topic of topics) {
-            const tq = questions
+            const tq = asnwersWithTopics
               .filter((q) => q.topics.find((t) => t.id === topic.id))
               .map((q) => q.question.question);
             if (tq.length > 0) {

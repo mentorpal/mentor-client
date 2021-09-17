@@ -1,9 +1,9 @@
 {
-  "_id": "julianne",
-  "name": "Julianne Nordhagen",
-  "title": "Student Naval Aviator",
+  "_id": "clint",
+  "name": "Clinton Anderson",
+  "title": "Nuclear Electrician's Mate",
   "mentorType": "VIDEO",
-  "defaultSubject": null,
+  "defaultSubject": "About Me",
   "subjects": [],
   "topics": [
     {
@@ -11,14 +11,14 @@
       "name": "About Me"
     },
     {
-      "id": "challenges",
-      "name": "Challenges"
+      "id": "aboutjob",
+      "name": "About the Job"
     }
   ],
   "questions": [
     {
       "question": {
-        "question": "Where were you born?",
+        "question": "Who are you and what do you do?",
         "type": "QUESTION"
       },
       "topics": [
@@ -30,63 +30,66 @@
     },
     {
       "question": {
-        "question": "Were you worried about starting college?",
+        "question": "How old are you?",
         "type": "QUESTION"
       },
       "topics": [
         {
-          "id": "challenges",
-          "name": "Challenges"
+          "id": "aboutme",
+          "name": "About Me"
         }
       ]
     },
     {
       "question": {
-        "question": "idle",
-        "type": "UTTERANCE"
+        "question": "Do you like your job?",
+        "type": "QUESTION"
       },
-      "topics": []
+      "topics": [
+        {
+          "id": "aboutjob",
+          "name": "About the Job"
+        }
+      ]
     },
     {
       "question": {
-        "question": "intro",
-        "type": "UTTERANCE"
+        "question": "Do you like any sport?",
+        "type": "QUESTION"
       },
-      "topics": []
-    },
-    {
-      "question": {
-        "question": "offtopic",
-        "type": "UTTERANCE"
-      },
-      "topics": []
+      "topics": [
+        {
+          "id": "aboutjob",
+          "name": "About the Job"
+        }
+      ]
     }
   ],
   "answers": [
     {
       "question": {
-        "question": "Where were you born?"
+        "question": "Who are you and what do you do?"
       },
       "transcript": "",
-      "status": "COMPLETE"
+      "status": "INCOMPLETE"
     },
     {
       "question": {
-        "question": "What's your favorite place?"
+        "question": "How old are you?"
       },
       "transcript": "",
-      "status": "COMPLETE"
+      "status": "INCOMPLETE"
     },
     {
       "question": {
-        "question": "Are you fun at parties?"
+        "question": "Do you like your job?"
       },
       "transcript": "",
-      "status": "COMPLETE"
+      "status": "INCOMPLETE"
     },
     {
       "question": {
-        "question": "Were you worried about starting college?"
+        "question": "Do you like any sport?"
       },
       "transcript": "",
       "status": "COMPLETE"
@@ -114,7 +117,7 @@
     },
     {
       "_id": "intro",
-      "transcript": "Hi my name's Julie Nordhagen, I'm in the United States Navy and I'm currently a student naval aviator so that means that I have commissioned into the Navy and I am starting to learn how to fly planes and will then become a full trained pilot for the Navy.",
+      "transcript": "My name is EMC Clint Anderson. I was born in California and I have lived there most of my life. I graduated from Paramount and a couple of years after I finished high school, I joined the US Navy. I was an Electrician's Mate. I served on an aircraft carrier for eight years and then afterwards, I went to the United States Navy Reserve. During that time I started going to school with some of the abundant benefits that the military reserve has given me and I started working with various companies.",
       "question": {
         "name": "_INTRO_"
       },

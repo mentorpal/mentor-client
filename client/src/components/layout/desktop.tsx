@@ -35,7 +35,7 @@ function Desktop(props: {
         <Chat
           height={chatHeight}
           windowHeight={windowHeight}
-          width={"60vw"}
+          width={"auto"}
           bubbleColor={"#88929e"}
         />
       ) : (
