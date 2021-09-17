@@ -95,6 +95,24 @@ function TopicTabs(props: {
         aria-label="disabled tabs example"
         data-cy="topics"
       >
+        {showHistoryTab ? null : (
+          <Tab
+            label="History"
+            data-cy="history-tab"
+            onClick={() => onTopicSelected("History")}
+            className="topic-tab"
+            icon={
+              <History
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginLeft: 8,
+                  marginBottom: 0,
+                }}
+              />
+            }
+          />
+        )}
         <Tab
           label={curTopic && curTopic !== "History" ? curTopic : firstTopic}
           data-cy="topic-tab"
@@ -103,15 +121,6 @@ function TopicTabs(props: {
           data-test={curTopic !== "History" ? curTopic : null}
           icon={<ArrowDropDown />}
         />
-        {showHistoryTab ? null : (
-          <Tab
-            label="History"
-            data-cy="history-tab"
-            onClick={() => onTopicSelected("History")}
-            className="topic-tab"
-            icon={<History />}
-          />
-        )}
       </Tabs>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Topics</DialogTitle>

@@ -23,7 +23,7 @@ describe("Topics list", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     // test that the TOPIC tab is selected (not the history tab)
     cy.get("[data-cy=topics]").within(() => {
-      cy.get("button").eq(0).should("have.attr", "data-test", "About Me");
+      cy.get("button").eq(1).should("have.attr", "data-test", "About Me");
     });
 
     cy.get("[data-cy=scrolling-questions-list]").should(
