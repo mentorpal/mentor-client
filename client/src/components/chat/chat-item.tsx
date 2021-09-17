@@ -188,7 +188,7 @@ export function ChatItem(props: {
   const rePlayBtn =
     !isUser && isVisible ? (
       <PlayCircleOutlineIcon
-        style={{ marginRight: 10, cursor: "pointer", color: "#000000c9" }}
+        style={{ marginRight: 10, cursor: "pointer", color: "#0000008a" }}
         onClick={() =>
           rePlayQuestionVideo(
             message.mentorId,
@@ -238,7 +238,7 @@ export function ChatItem(props: {
         }}
       >
         {!message.isIntro ? visibilityIcon : null}
-        {rePlayBtn}
+        {mentorType === "VIDEO" ? rePlayBtn : null}
 
         <ReactMarkdown
           source={message.text}

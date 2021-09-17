@@ -11,7 +11,7 @@ const carlos_subject_selected = require("../fixtures/carlos-subject-selected.jso
 const FAKE_STYLE_HEADER_LOGO =
   "http://scribe.usc.edu/wp-content/uploads/2021/02/PrimShield_Word_SmUse_Gold-Wh_RGB-1.png";
 
-describe.only("Video Mentor", () => {
+describe("Video Mentor", () => {
   describe("Plays a video in response to a user question", () => {
     it("plays a mentor response and displays subtitles", () => {
       mockDefaultSetup(cy);

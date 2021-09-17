@@ -143,14 +143,16 @@ function TopicTabs(props: {
             aria-label="disabled tabs example"
             data-cy="topics"
           >
-            <Tab
-              label={"History"}
-              onClick={() => onTopicClick("History")}
-              className={["topic-tab topic-selected"].join(" ")}
-              data-test="History"
-              data-cy="history-tab"
-              onChange={onChange}
-            />
+            {showHistoryTab ? null : (
+              <Tab
+                label={"History"}
+                onClick={() => onTopicClick("History")}
+                className={["topic-tab topic-selected"].join(" ")}
+                data-test="History"
+                data-cy="history-tab"
+                onChange={onChange}
+              />
+            )}
           </Tabs>
         </div>
         <Tabs
@@ -182,6 +184,7 @@ function TopicTabs(props: {
       </Paper>
     </div>
   );
+
   // if mobile -> show history button
   // if not mobile -> hide history button
   return (
