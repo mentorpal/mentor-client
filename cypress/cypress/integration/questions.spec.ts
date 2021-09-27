@@ -12,7 +12,7 @@ const clint_no_subject = require("../fixtures/clint_no_subject.json");
 const clint_subject = require("../fixtures/clint_subject.json");
 
 describe("Questions list", () => {
-  it("displays list of questions for selected topic", () => {
+  it.only("displays list of questions for selected topic", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=scrolling-questions-list]").should(
       "have.attr",

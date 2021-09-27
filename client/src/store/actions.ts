@@ -357,6 +357,9 @@ export const loadMentors: ActionCreator<
         const result = await fetchMentor(config, mentorId);
         if (result.status === 200 && result.data.data) {
           const mentor: Mentor = result.data.data.mentor;
+          console.log(" result.data.data:", result.data.data);
+          console.log("mentor:", mentor);
+
           const subject = mentor.subjects.find(
             (s) => s._id === (subjectId || mentor.defaultSubject?._id)
           );
@@ -367,15 +370,26 @@ export const loadMentors: ActionCreator<
             subject ? subject.questions : mentor.questions
           ).filter((q) => q.question.type === QuestionType.QUESTION);
 
+          console.log("questions:", questions);
+          console.log("subject:", subject);
+
           const questionsAnswered = (
-            subject ? subject.answers : mentor.answers
+            subject
+              ? subject.answers
+                ? subject.answers
+                : mentor.answers
+              : mentor.answers
           ).filter((q) => q.status === "COMPLETE");
+
+          console.log("questionsAnswered:", questionsAnswered);
 
           const asnwersWithTopics = questions.filter((question) => {
             return questionsAnswered.some((answer) => {
               return question.question.question === answer.question.question;
             });
           });
+
+          console.log("asnwersWithTopics:", asnwersWithTopics);
 
           const topicQuestions: TopicQuestions[] = [];
           const recommendedQuestions = getState().recommendedQuestions;
@@ -396,6 +410,8 @@ export const loadMentors: ActionCreator<
               });
             }
           }
+
+          // https://v2.mentorpal.org/chat/?mentor=60bad2ab733e6a54b909a351&mentor=60c2857a3ba5612cf4974dc3
           topicQuestions.push({ topic: "History", questions: [] });
           const intro = getUtterance(mentor, UtteranceName.INTRO);
           const mentorData: MentorState = {
