@@ -289,8 +289,6 @@ function onMentorLoadResults(
     ),
   };
 
-  console.log(s);
-
   if (action.payload.mentor) {
     s = mentorSelected(s, {
       type: MENTOR_SELECTED,
