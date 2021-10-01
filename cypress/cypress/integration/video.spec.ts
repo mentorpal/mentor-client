@@ -178,7 +178,6 @@ describe("Video Mentor", () => {
     });
 
     cy.visit("/");
-    cy.viewport("macbook-11");
 
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "carlos");
     cy.get("[data-cy=header]").contains("Carlos Rios: Marine Logistician");
