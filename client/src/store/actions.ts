@@ -31,13 +31,11 @@ import {
   XapiResultAnswerStatusByMentorId,
   Config,
   UtteranceName,
-  Mentor,
-  TopicQuestions,
-  QuestionType,
+  MentorClientData,
   QuestionInput,
   MentorDataResult,
   Feedback,
-  ChatMsg,
+  TopicQuestions,
 } from "../types";
 import * as uuid from "uuid";
 
@@ -360,29 +358,10 @@ export const loadMentors: ActionCreator<
     };
     for (const mentorId of mentors) {
       try {
-        const result = await fetchMentor(config, mentorId);
-        if (result.status === 200 && result.data.data) {
-          const mentor: Mentor = result.data.data.mentor;
-          const subject = mentor.subjects.find(
-            (s) => s._id === (subjectId || mentor.defaultSubject?._id)
-          );
-
-          const topics = subject ? subject.topics : mentor.topics;
-
-          const questions = (
-            subject ? subject.questions : mentor.questions
-          ).filter((q) => q.question.type === QuestionType.QUESTION);
-
-          const questionsAnswered = (
-            subject ? subject.answers : mentor.answers
-          ).filter((q) => q.status === "COMPLETE");
-
-          const asnwersWithTopics = questions.filter((question) => {
-            return questionsAnswered.some((answer) => {
-              return question.question.question === answer.question.question;
-            });
-          });
-
+        const mentorResult = await fetchMentor(config, mentorId, subjectId);
+        if (mentorResult.status === 200 && mentorResult.data.data) {
+          const mentor: MentorClientData =
+            mentorResult.data.data.mentorClientData;
           const topicQuestions: TopicQuestions[] = [];
           const recommendedQuestions = getState().recommendedQuestions;
           if (recommendedQuestions.length > 0) {
@@ -391,17 +370,7 @@ export const loadMentors: ActionCreator<
               questions: recommendedQuestions,
             });
           }
-          for (const topic of topics) {
-            const tq = asnwersWithTopics
-              .filter((q) => q.topics.find((t) => t.id === topic.id))
-              .map((q) => q.question.question);
-            if (tq.length > 0) {
-              topicQuestions.push({
-                topic: topic.name,
-                questions: tq,
-              });
-            }
-          }
+          topicQuestions.push(...mentor.topicQuestions);
           topicQuestions.push({ topic: "History", questions: [] });
           const intro = getUtterance(mentor, UtteranceName.INTRO);
           const mentorData: MentorState = {
@@ -417,7 +386,7 @@ export const loadMentors: ActionCreator<
             status: ResultStatus.SUCCEEDED,
           };
         } else {
-          console.error(`error loading mentor ${mentorId}`, result);
+          console.error(`error loading mentor ${mentorId}`, mentorResult);
         }
       } catch (mentorErr) {
         console.error(mentorErr);

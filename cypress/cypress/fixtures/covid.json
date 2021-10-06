@@ -3,191 +3,17 @@
   "name": "USC",
   "title": "COVID-19 FAQ Chat Bot",
   "mentorType": "CHAT",
-  "defaultSubject": {
-    "_id": "covid"
-  },
-  "subjects": [
+  "topicQuestions": [
     {
-      "_id": "background",
-      "topics": [
-        {
-          "id": "aboutme",
-          "name": "About Me"
-        }
-      ],
-      "questions": [
-        {
-          "question": {
-            "question": "Where were you born?",
-            "type": "QUESTION"
-          },
-          "topics": [
-            {
-              "id": "aboutme",
-              "name": "About Me"
-            }
-          ]
-        },
-        {
-          "question": {
-            "question": "idle",
-            "type": "UTTERANCE"
-          },
-          "topics": []
-        },
-        {
-          "question": {
-            "question": "intro",
-            "type": "UTTERANCE"
-          },
-          "topics": []
-        },
-        {
-          "question": {
-            "question": "offtopic",
-            "type": "UTTERANCE"
-          },
-          "topics": []
-        }
-      ],
-      "answers": [
-        {
-          "question": {
-            "question": "Where were you born?"
-          },
-          "transcript": "",
-          "status": "COMPLETE"
-        },
-        {
-          "question": {
-            "question": "How old are you?"
-          },
-          "transcript": "",
-          "status": "INCOMPLETE"
-        }
-      ]
-    },
-    {
-      "_id": "covid",
-      "topics": [
-        {
-          "id": "covid",
-          "name": "COVID-19 General Information"
-        }
-      ],
-      "questions": [
-        {
-          "question": {
-            "question": "What are the symptoms of COVID-19?",
-            "type": "QUESTION"
-          },
-          "topics": [
-            {
-              "id": "covid",
-              "name": "COVID-19 General Information"
-            }
-          ]
-        }
-      ],
-      "answers": [
-        {
-          "question": {
-            "question": "What are the symptoms of COVID-19?"
-          },
-          "transcript": "",
-          "status": "COMPLETE"
-        }
-      ]
-    }
-  ],
-  "topics": [
-    {
-      "id": "aboutme",
-      "name": "About Me"
-    },
-    {
-      "id": "covid",
-      "name": "COVID-19 General Guidelines"
-    }
-  ],
-  "questions": [
-    {
-      "question": {
-        "question": "What are the symptoms of COVID-19?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "covid",
-          "name": "COVID-19 General Information"
-        }
-      ]
-    },
-    {
-      "question": {
-        "question": "Where were you born?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "aboutme",
-          "name": "About Me"
-        }
-      ]
-    },
-    {
-      "question": {
-        "question": "idle",
-        "type": "UTTERANCE"
-      },
-      "topics": []
-    },
-    {
-      "question": {
-        "question": "intro",
-        "type": "UTTERANCE"
-      },
-      "topics": []
-    },
-    {
-      "question": {
-        "question": "offtopic",
-        "type": "UTTERANCE"
-      },
-      "topics": []
-    }
-  ],
-
-  "answers": [
-    {
-      "question": {
-        "question": "Where were you born?"
-      },
-      "transcript": "",
-      "status": "COMPLETE"
-    },
-    {
-      "question": {
-        "question": "How old are you?"
-      },
-      "transcript": "",
-      "status": "INCOMPLETE"
-    },
-    {
-      "question": {
-        "question": "What are the symptoms of COVID-19?"
-      },
-      "transcript": "",
-      "status": "COMPLETE"
+      "topic": "COVID-19 General Information",
+      "questions": ["What are the symptoms of COVID-19?"]
     }
   ],
   "utterances": [
     {
       "_id": "idle",
       "transcript": "",
-      "question": {
-        "name": "_IDLE_"
-      },
+      "name": "_IDLE_",
       "media": [
         {
           "type": "video",
@@ -204,9 +30,7 @@
     {
       "_id": "intro",
       "transcript": "I am a COVID-19 chat bot, you can ask me about COVID-19.",
-      "question": {
-        "name": "_INTRO_"
-      },
+      "name": "_INTRO_",
       "media": [
         {
           "type": "video",
@@ -223,9 +47,7 @@
     {
       "_id": "offtopic",
       "transcript": "I'm sorry, I did not understand the question.",
-      "question": {
-        "name": "_OFF_TOPIC_"
-      },
+      "name": "_OFF_TOPIC_",
       "media": [
         {
           "type": "video",

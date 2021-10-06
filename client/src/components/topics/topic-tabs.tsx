@@ -39,15 +39,13 @@ function TopicTabs(props: {
   showHistoryTab: boolean;
 }): JSX.Element {
   const { topicQuestions, onTopicSelected, showHistoryTab } = props;
-
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
   const [selectedTabIx, setSelectedTabIx] = React.useState<number>(1);
   const curTopic = useSelector<State, string>((s) => s.curTopic);
   const curMentor = useSelector<State, string>((state) => state.curMentor);
-
   const firstTopic = useSelector<State, string>((state) => {
-    return state.mentorsById[curMentor]?.mentor?.topics[0]?.name || "";
+    return state.mentorsById[curMentor]?.mentor?.topicQuestions[0]?.topic || "";
   });
 
   const onChange = (
