@@ -71,7 +71,6 @@ describe("Chat", () => {
     cy.intercept("**/questions/?mentor=*&query=*", {
       fixture: "response_with_markdown.json",
     });
-    cy.viewport("iphone-x");
     cy.visit("/");
     cy.get("[data-cy=chat-thread]").should("exist");
     cy.get("[data-cy=input-field]").type("test");
@@ -97,7 +96,6 @@ describe("Chat", () => {
     cy.intercept("**/questions/?mentor=covid&query=*", {
       fixture: "response_with_feedback.json",
     });
-    cy.viewport("iphone-x");
     cy.visit("/");
     cy.get("[data-cy=chat-thread]").should("exist");
     cy.get("[data-cy=input-field]").type("test");

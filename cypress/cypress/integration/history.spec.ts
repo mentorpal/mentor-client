@@ -4,6 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
+
 import {
   visitAsGuestWithDefaultSetup,
   mockDefaultSetup,
@@ -388,7 +389,7 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "video_response.mp4",
     });
     cy.visit("/");
-
+    cy.viewport(1200, 800);
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 
@@ -428,21 +429,25 @@ describe("Chat History (Video Mentors)", () => {
         cy.get("[data-cy=chat-msg-3]").should("not.be.visible");
         // the answers for the last question are visible by default
         // even if the show-all toggle is left unchecked
-        cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
-        cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
-
-        // show answers toggle
-        cy.get("[data-cy=visibility-switch]").find("input").check();
-        cy.get("[data-cy=chat-msg-2]").scrollIntoView().should("be.visible");
-        cy.get("[data-cy=chat-msg-3]").scrollIntoView().should("be.visible");
-        cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
-        cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
-
-        // the answers for the last question are visible by default
-        // even if the show-all toggle is left unchecked
-        cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
-        cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
+        // cy.get("[data-cy=chat-msg-5]").scrollIntoView();
+        cy.get("[data-cy=chat-msg-5]").should("be.visible");
+        cy.get("[data-cy=chat-msg-6]")
+          .scrollIntoView()
+          .should("not.be.visible");
       });
+    });
+    cy.get("[data-cy=history-chat]").within(($hc) => {
+      // show answers toggle
+      cy.get("[data-cy=visibility-switch]").find("input").check();
+      cy.get("[data-cy=chat-msg-2]").scrollIntoView().should("be.visible");
+      cy.get("[data-cy=chat-msg-3]").scrollIntoView().should("be.visible");
+      cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
+      cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
+
+      // the answers for the last question are visible by default
+      // even if the show-all toggle is left unchecked
+      cy.get("[data-cy=chat-msg-5]").scrollIntoView().should("be.visible");
+      cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
     });
   });
 
@@ -770,7 +775,6 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "video_response.mp4",
     });
     cy.visit("/");
-    cy.viewport("macbook-11");
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
     cy.get("[data-cy=history-chat]").should("exist");

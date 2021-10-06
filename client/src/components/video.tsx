@@ -18,7 +18,7 @@ import {
   faveMentor,
   mentorAnswerPlaybackStarted,
   playIdleAfterReplay,
-  onVideoFinished,
+  onMentorDisplayAnswer,
 } from "store/actions";
 import { State, WebLink } from "types";
 import "styles/video.css";
@@ -33,6 +33,9 @@ export interface VideoData {
 function Video(args: { playing?: boolean }): JSX.Element {
   const { playing = false } = args;
   const dispatch = useDispatch();
+  const numberMentors = useSelector<State, number>((state) => {
+    return Object.keys(state.mentorsById).length;
+  });
   const curMentor = useSelector<State, string>((state) => state.curMentor);
   const video = useSelector<State, VideoData | null>((state) => {
     if (state.chat.replay) {
@@ -149,11 +152,12 @@ function Video(args: { playing?: boolean }): JSX.Element {
     setHideLinkLabel(true);
     dispatch(playIdleAfterReplay(false));
     dispatch(answerFinished());
-    dispatch(onVideoFinished(false));
   }
 
   function onPlay() {
     setHideLinkLabel(false);
+    dispatch(onMentorDisplayAnswer(false, curMentor));
+
     if (isIdle) {
       setHideLinkLabel(true);
       dispatch(answerFinished());
@@ -188,6 +192,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
         webLinks={webLinks}
         hideLinkLabel={hideLinkLabel}
         mentorName={mentorName ? mentorName?.name : ""}
+        numberMentors={numberMentors}
       />
       <LoadingSpinner mentor={curMentor} />
       <MessageStatus mentor={curMentor} />
@@ -207,6 +212,7 @@ interface VideoPlayerParams {
   webLinks: WebLink[] | undefined;
   hideLinkLabel: boolean;
   mentorName: string;
+  numberMentors: number;
 }
 
 function VideoPlayer(args: VideoPlayerParams) {
@@ -222,6 +228,7 @@ function VideoPlayer(args: VideoPlayerParams) {
     webLinks,
     hideLinkLabel,
     mentorName,
+    numberMentors,
   } = args;
 
   const webLinkJSX = webLinks?.map((wl, i) => {
@@ -265,7 +272,10 @@ function VideoPlayer(args: VideoPlayerParams) {
     : false;
 
   return (
-    <div className="video-player-wrapper">
+    <div
+      className="video-player-wrapper"
+      style={numberMentors > 1 ? { marginTop: 0 } : { marginTop: 50 }}
+    >
       {!hideLinkLabel && shouldDiplayWebLinks ? answerLinkCard : null}
       {mentorName ? mentorNameCard : null}
       <ReactPlayer
