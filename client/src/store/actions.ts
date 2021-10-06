@@ -172,6 +172,7 @@ export interface VideoFinishedAction {
   type: typeof VIDEO_FINISHED;
   payload: {
     isVideoInProgress: boolean;
+    curMentor: string;
   };
 }
 
@@ -249,13 +250,14 @@ export type MentorClientAction =
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
 
-export const onVideoFinished =
-  (isVideoInProgress: boolean) =>
+export const onMentorDisplayAnswer =
+  (isVideoInProgress: boolean, curMentor: string) =>
   async (dispatch: ThunkDispatch<State, void, VideoFinishedAction>) => {
     dispatch({
       type: VIDEO_FINISHED,
       payload: {
-        isVideoInProgress: isVideoInProgress,
+        isVideoInProgress,
+        curMentor,
       },
     });
   };
@@ -284,14 +286,16 @@ export const feedbackSend =
       });
     } catch (err) {
       console.error(err);
-      return dispatch({
-        type: FEEDBACK_SEND_FAILED,
-        payload: {
-          errors: [err.message],
-          feedback,
-          feedbackId,
-        },
-      });
+      if (err instanceof Error) {
+        return dispatch({
+          type: FEEDBACK_SEND_FAILED,
+          payload: {
+            errors: [err.message],
+            feedback,
+            feedbackId,
+          },
+        });
+      }
     }
   };
 
@@ -308,10 +312,12 @@ export const loadConfig =
       });
     } catch (err) {
       console.error(err);
-      return dispatch({
-        type: CONFIG_LOAD_FAILED,
-        errors: [err.message],
-      });
+      if (err instanceof Error) {
+        return dispatch({
+          type: CONFIG_LOAD_FAILED,
+          errors: [err.message],
+        });
+      }
     }
   };
 

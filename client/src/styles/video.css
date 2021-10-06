@@ -74,7 +74,6 @@
 .video-player-wrapper {
   position: relative;
   display: inline-block;
-  margin-top: 50px;
 }
 
 @media only screen and (max-width: 1200px) {

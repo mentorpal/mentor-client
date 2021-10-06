@@ -435,13 +435,17 @@ function findAskLinks(text: string): AskLink[] {
   return askLinks;
 }
 
-function onVideoFinished(state: State, action: VideoFinishedAction): State {
+function onMentorDisplayAnswer(
+  state: State,
+  action: VideoFinishedAction
+): State {
   return {
     ...state,
     chat: {
       ...state.chat,
       messages: state.chat.messages.map((m) => {
-        return m.isVideoInProgress !== action.payload.isVideoInProgress
+        return m.isVideoInProgress !== action.payload.isVideoInProgress &&
+          m.mentorId === action.payload.curMentor
           ? {
               ...m,
               isVideoInProgress: action.payload.isVideoInProgress,
@@ -613,7 +617,7 @@ export default function reducer(
     case PLAY_IDLE_AFTER_REPLAY_VIDEO:
       return onPlayIdleAfterReplay(state, action);
     case VIDEO_FINISHED:
-      return onVideoFinished(state, action);
+      return onMentorDisplayAnswer(state, action);
     case QUESTION_ERROR:
       return {
         ...state,

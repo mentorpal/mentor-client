@@ -209,7 +209,6 @@ describe("Questions list", () => {
       apiResponse: "response_with_feedback.json",
     });
     cy.visit("/");
-    cy.viewport("macbook-11");
   });
 
   it("Do not show unanswered questions (subject)", () => {
@@ -219,6 +218,5 @@ describe("Questions list", () => {
       apiResponse: "response_with_feedback.json",
     });
     cy.visit("/");
-    cy.viewport("macbook-11");
   });
 });
