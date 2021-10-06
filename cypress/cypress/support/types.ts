@@ -8,7 +8,6 @@ The full terms of this copyright and license should always be found in the root 
 export interface Mentor {
   _id: string;
   name: string;
-  firstName: string;
   title: string;
   mentorType: MentorType;
   topics: Topic[];

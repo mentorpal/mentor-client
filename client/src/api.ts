@@ -6,12 +6,11 @@ The full terms of this copyright and license should always be found in the root 
 */
 import axios, { AxiosResponse } from "axios";
 import {
-  Answer,
+  Utterance,
   Config,
   Media,
-  Mentor,
+  MentorClientData,
   QuestionApiData,
-  Status,
   UtteranceName,
 } from "types";
 
@@ -58,13 +57,13 @@ export async function fetchConfig(graphqlUrl = "/graphql"): Promise<Config> {
 }
 
 export function getUtterance(
-  mentor: Mentor,
+  mentor: MentorClientData,
   utterance: UtteranceName
-): Answer | undefined {
+): Utterance | undefined {
   if (!(mentor && Array.isArray(mentor.utterances))) {
     return undefined;
   }
-  return mentor.utterances.find((a) => a.question.name === utterance);
+  return mentor.utterances.find((a) => a.name === utterance);
 }
 
 export function videoUrl(media: Media[], tag?: string): string {
@@ -76,7 +75,7 @@ export function videoUrl(media: Media[], tag?: string): string {
   );
 }
 
-export function idleUrl(mentor: Mentor, tag?: string): string {
+export function idleUrl(mentor: MentorClientData, tag?: string): string {
   const idle = getUtterance(mentor, UtteranceName.IDLE);
   return idle ? videoUrl(idle.media, tag) : "";
 }
@@ -92,7 +91,7 @@ export function subtitleUrl(media: Media[], tag?: string): string {
 }
 
 interface MentorQueryData {
-  mentor: Mentor;
+  mentorClientData: MentorClientData;
 }
 
 interface GraphQLResponse<T> {
@@ -102,7 +101,7 @@ interface GraphQLResponse<T> {
 
 export async function fetchMentorByAccessToken(
   accessToken: string
-): Promise<Mentor> {
+): Promise<MentorClientData> {
   const headers = { Authorization: `bearer ${accessToken}` };
   const result = await axios.post(
     GRAPHQL_ENDPOINT,
@@ -111,10 +110,10 @@ export async function fetchMentorByAccessToken(
       query {
         me {
           mentor {
-            _id  
-            }
+            _id
           }
         }
+      }
     `,
     },
     { headers: headers }
@@ -124,64 +123,28 @@ export async function fetchMentorByAccessToken(
 
 export async function fetchMentor(
   config: Config,
-  mentorId: string
+  mentorId: string,
+  subjectId?: string
 ): Promise<AxiosResponse<GraphQLResponse<MentorQueryData>>> {
   return await axios.post<GraphQLResponse<MentorQueryData>>(config.urlGraphql, {
     query: `
-      query FetchMentor($id: ID!, $status: String!){
-        mentor(id: $id) {
+      query FetchMentor($mentor: ID!, $subject: ID) {
+        mentorClientData(mentor: $mentor, subject: $subject) {
           _id
           name
-          firstName
           title
           mentorType
-          defaultSubject {
-            _id
+          topicQuestions {
+            topic
+            questions
           }
-          subjects {
+          utterances {
             _id
-            topics {
-              id
-              name
-            }
-            questions {
-              topics {
-                id
-              }
-              question {
-                question
-                type
-              }
-            }
-          }
-          topics {
-            id
             name
-          }
-          questions {
-            topics {
-              id
-            }
-            question {
-              question
-              type
-            }
-          }
-          answers {
-            question {
-              question
-            }
-            status
-          }
-          utterances(status: $status) {
-            _id
             transcript
-            question {
-              name
-            }
             media {
-              type
               tag
+              type
               url
             }
           }
@@ -189,8 +152,8 @@ export async function fetchMentor(
       }
     `,
     variables: {
-      id: mentorId,
-      status: Status.COMPLETE,
+      mentor: mentorId,
+      subject: subjectId,
     },
   });
 }

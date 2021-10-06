@@ -139,10 +139,10 @@ export function cyMockMentorData(data: any[]) {
   let mentorList = [];
   if (Array.isArray(data)) {
     data.forEach((mentor) => {
-      mentorList.push({ mentor: mentor });
+      mentorList.push({ mentorClientData: mentor });
     });
   } else {
-    mentorList.push({ mentor: data });
+    mentorList.push({ mentorClientData: data });
   }
   return cyMockGQL("FetchMentor", mentorList);
 }
