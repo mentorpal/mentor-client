@@ -3,278 +3,43 @@
   "name": "Clinton Anderson",
   "title": "Nuclear Electrician's Mate",
   "mentorType": "VIDEO",
-  "defaultSubject": null,
-  "subjects": [],
-  "topics": [
+  "topicQuestions": [
     {
-      "id": "aboutme",
-      "name": "About Me"
-    },
-    {
-      "id": "aboutjob",
-      "name": "About the Job"
-    },
-    {
-      "id": "biography",
-      "name": "Biography"
-    },
-    {
-      "id": "forfun",
-      "name": "For fun"
-    },
-    {
-      "id": "education",
-      "name": "Education"
-    }
-  ],
-  "questions": [
-    {
-      "question": {
-        "question": "What qualifications and experience do recruiters",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "aboutthejob",
-          "name": "About the Job"
-        },
-        {
-          "id": "aboutjob",
-          "name": "About the Job"
-        }
+      "topic": "About Me",
+      "questions": [
+        "Where were you born?",
+        "What's your favorite movie?",
+        "What's your favorite place?",
+        "Are you fun at parties?"
       ]
     },
     {
-      "question": {
-        "question": "Where were you born?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "education",
-          "name": "Education"
-        }
+      "topic": "About the Job",
+      "questions": [
+        "What qualifications and experience do recruiters",
+        "What's your favorite movie?",
+        "What's your favorite place?",
+        "Are you fun at parties?"
       ]
     },
     {
-      "question": {
-        "question": "Where were you born?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "forfun",
-          "name": "For fun"
-        }
-      ]
+      "topic": "Biography",
+      "questions": ["Where were you born?"]
     },
     {
-      "question": {
-        "question": "Where were you born?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "biography",
-          "name": "Biography"
-        }
-      ]
+      "topic": "For fun",
+      "questions": ["Where were you born?"]
     },
     {
-      "question": {
-        "question": "Where were you born?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "aboutme",
-          "name": "About Me"
-        }
-      ]
-    },
-    {
-      "question": {
-        "question": "What qualifications and experience do recruiters look for when choosing new people for this field?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "aboutjob",
-          "name": "About the Job"
-        }
-      ]
-    },
-    {
-      "question": {
-        "question": "What's your favorite movie?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "aboutme",
-          "name": "About Me"
-        },
-        {
-          "id": "aboutjob",
-          "name": "About the Job"
-        }
-      ]
-    },
-    {
-      "question": {
-        "question": "Are you fun at parties?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "aboutme",
-          "name": "About Me"
-        },
-        {
-          "id": "aboutjob",
-          "name": "About the Job"
-        }
-      ]
-    },
-    {
-      "question": {
-        "question": "What's your favorite food?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "aboutme",
-          "name": "About Me"
-        },
-        {
-          "id": "aboutjob",
-          "name": "About the Job"
-        }
-      ]
-    },
-
-    {
-      "question": {
-        "question": "Do you like any sport?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "aboutme",
-          "name": "About Me"
-        },
-        {
-          "id": "aboutjob",
-          "name": "About the Job"
-        }
-      ]
-    },
-
-    {
-      "question": {
-        "question": "Are you fun at parties?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "aboutme",
-          "name": "About Me"
-        },
-        {
-          "id": "aboutjob",
-          "name": "About the Job"
-        }
-      ]
-    },
-    {
-      "question": {
-        "question": "What's your favorite place?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "aboutme",
-          "name": "About Me"
-        },
-        {
-          "id": "aboutjob",
-          "name": "About the Job"
-        }
-      ]
-    },
-    {
-      "question": {
-        "question": "idle",
-        "type": "UTTERANCE"
-      },
-      "topics": []
-    },
-    {
-      "question": {
-        "question": "intro",
-        "type": "UTTERANCE"
-      },
-      "topics": []
-    },
-    {
-      "question": {
-        "question": "offtopic",
-        "type": "UTTERANCE"
-      },
-      "topics": []
-    }
-  ],
-  "answers": [
-    {
-      "question": {
-        "question": "What qualifications and experience do recruiters"
-      },
-      "transcript": "",
-      "status": "COMPLETE"
-    },
-    {
-      "question": {
-        "question": "Where were you born?"
-      },
-      "transcript": "",
-      "status": "COMPLETE"
-    },
-    {
-      "question": {
-        "question": "What's your favorite movie?"
-      },
-      "transcript": "",
-      "status": "COMPLETE"
-    },
-    {
-      "question": {
-        "question": "What's your favorite place?"
-      },
-      "transcript": "",
-      "status": "COMPLETE"
-    },
-    {
-      "question": {
-        "question": "Are you fun at parties?"
-      },
-      "transcript": "",
-      "status": "COMPLETE"
-    },
-    {
-      "question": {
-        "question": "What qualifications and experience do recruiters"
-      },
-      "transcript": "",
-      "status": "COMPLETE"
+      "topic": "Education",
+      "questions": ["Where were you born?"]
     }
   ],
   "utterances": [
     {
       "_id": "idle",
       "transcript": "",
-      "question": {
-        "name": "_IDLE_"
-      },
+      "name": "_IDLE_",
       "media": [
         {
           "type": "video",
@@ -291,9 +56,7 @@
     {
       "_id": "intro",
       "transcript": "My name is EMC Clint Anderson. I was born in California and I have lived there most of my life. I graduated from Paramount and a couple of years after I finished high school, I joined the US Navy. I was an Electrician's Mate. I served on an aircraft carrier for eight years and then afterwards, I went to the United States Navy Reserve. During that time I started going to school with some of the abundant benefits that the military reserve has given me and I started working with various companies.",
-      "question": {
-        "name": "_INTRO_"
-      },
+      "name": "_INTRO_",
       "media": [
         {
           "type": "video",
@@ -310,9 +73,7 @@
     {
       "_id": "offtopic",
       "transcript": "That is a great question, but unfortunately I never recorded an answer to that.",
-      "question": {
-        "name": "_OFF_TOPIC_"
-      },
+      "name": "_OFF_TOPIC_",
       "media": [
         {
           "type": "video",

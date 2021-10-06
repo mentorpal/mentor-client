@@ -3,164 +3,21 @@
   "name": "Clinton Anderson",
   "title": "Nuclear Electrician's Mate",
   "mentorType": "VIDEO",
-  "defaultSubject": {
-    "_id": "selected_subject"
-  },
-  "subjects": [
+  "topicQuestions": [
     {
-      "_id": "607766dec525ba495568e79d",
-      "topics": [
-        { "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46", "name": "About Me" }
-      ],
-      "questions": [
-        {
-          "topics": [{ "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46" }],
-          "question": { "question": "Who are you?", "type": "QUESTION" }
-        },
-        {
-          "topics": [{ "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46" }],
-          "question": { "question": "How old are you?", "type": "QUESTION" }
-        },
-        {
-          "topics": [{ "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46" }],
-          "question": { "question": "Where do you live?", "type": "QUESTION" }
-        },
-        {
-          "topics": [{ "id": "beb47e9e-b025-4ddf-8e26-568e4e635e46" }],
-          "question": { "question": "What is your job?", "type": "QUESTION" }
-        }
-      ]
+      "topic": "About Me",
+      "questions": []
     },
     {
-      "_id": "selected_subject",
-      "topics": [
-        {
-          "id": "covid",
-          "name": "COVID-19 General Information"
-        }
-      ],
-      "questions": [
-        {
-          "question": {
-            "question": "What are the symptoms of COVID-19?",
-            "type": "QUESTION"
-          },
-          "topics": [
-            {
-              "id": "covid",
-              "name": "COVID-19 General Information"
-            }
-          ]
-        }
-      ],
-      "answers": [
-        {
-          "question": {
-            "question": "What are the symptoms of COVID-19?"
-          },
-          "transcript": "",
-          "status": "COMPLETE"
-        }
-      ]
-    }
-  ],
-  "topics": [
-    {
-      "id": "aboutme",
-      "name": "About Me"
-    },
-    {
-      "id": "aboutjob",
-      "name": "About the Job"
-    }
-  ],
-  "questions": [
-    {
-      "question": {
-        "question": "Who are you and what do you do?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "aboutme",
-          "name": "About Me"
-        }
-      ]
-    },
-    {
-      "question": {
-        "question": "How old are you?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "aboutme",
-          "name": "About Me"
-        }
-      ]
-    },
-    {
-      "question": {
-        "question": "Do you like your job?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "aboutjob",
-          "name": "About the Job"
-        }
-      ]
-    },
-    {
-      "question": {
-        "question": "Do you like any sport?",
-        "type": "QUESTION"
-      },
-      "topics": [
-        {
-          "id": "aboutjob",
-          "name": "About the Job"
-        }
-      ]
-    }
-  ],
-  "answers": [
-    {
-      "question": {
-        "question": "Who are you and what do you do?"
-      },
-      "transcript": "",
-      "status": "INCOMPLETE"
-    },
-    {
-      "question": {
-        "question": "How old are you?"
-      },
-      "transcript": "",
-      "status": "INCOMPLETE"
-    },
-    {
-      "question": {
-        "question": "Do you like your job?"
-      },
-      "transcript": "",
-      "status": "INCOMPLETE"
-    },
-    {
-      "question": {
-        "question": "Do you like any sport?"
-      },
-      "transcript": "",
-      "status": "COMPLETE"
+      "topic": "About the Job",
+      "questions": ["Do you like any sport?"]
     }
   ],
   "utterances": [
     {
       "_id": "idle",
       "transcript": "",
-      "question": {
-        "name": "_IDLE_"
-      },
+      "name": "_IDLE_",
       "media": [
         {
           "type": "video",
@@ -177,9 +34,7 @@
     {
       "_id": "intro",
       "transcript": "My name is EMC Clint Anderson. I was born in California and I have lived there most of my life. I graduated from Paramount and a couple of years after I finished high school, I joined the US Navy. I was an Electrician's Mate. I served on an aircraft carrier for eight years and then afterwards, I went to the United States Navy Reserve. During that time I started going to school with some of the abundant benefits that the military reserve has given me and I started working with various companies.",
-      "question": {
-        "name": "_INTRO_"
-      },
+      "name": "_INTRO_",
       "media": [
         {
           "type": "video",
@@ -196,9 +51,7 @@
     {
       "_id": "offtopic",
       "transcript": "That is a great question, but unfortunately I never recorded an answer to that.",
-      "question": {
-        "name": "_OFF_TOPIC_"
-      },
+      "name": "_OFF_TOPIC_",
       "media": [
         {
           "type": "video",

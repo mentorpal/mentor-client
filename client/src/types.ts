@@ -47,56 +47,20 @@ export interface ChatMsg {
   isVideoInProgress?: boolean;
 }
 
-export interface Mentor {
+export interface MentorClientData {
   _id: string;
   name: string;
   title: string;
   mentorType: MentorType;
-  defaultSubject?: Subject;
-  subjects: Subject[];
-  topics: Topic[];
-  questions: SubjectQuestion[];
-  answers: SubjectAnswer[];
-  utterances: Answer[];
+  topicQuestions: TopicQuestions[];
+  utterances: Utterance[];
 }
 
-export interface Subject {
+export interface Utterance {
   _id: string;
-  topics: Topic[];
-  questions: SubjectQuestion[];
-  answers: SubjectAnswer[];
-}
-
-export interface Topic {
-  id: string;
   name: string;
-}
-
-export interface SubjectQuestion {
-  question: Question;
-  topics: Topic[];
-}
-
-export interface SubjectAnswer {
-  question: QuestionFromAnswer;
-  status: string;
-}
-
-export interface Question {
-  question: string;
-  type: QuestionType;
-  name: UtteranceName;
-}
-
-export interface Answer {
-  _id: string;
-  question: Question;
   transcript: string;
   media: Media[];
-}
-
-export interface QuestionFromAnswer {
-  question: string;
 }
 
 export interface Media {
@@ -216,7 +180,7 @@ export interface TopicQuestions {
 }
 
 export interface MentorState {
-  mentor: Mentor;
+  mentor: MentorClientData;
   topic_questions: TopicQuestions[];
   status: MentorQuestionStatus;
   answerDuration: number;
