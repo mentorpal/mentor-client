@@ -57,11 +57,12 @@ export default function GuestPrompt(): JSX.Element {
     window.location.href = addCmi(window.location.href, {
       activityId: window.location.href,
       actor: {
-        name: `${name}`,
+        objectType: "Agent",
         account: {
           name: `${userId}`,
           homePage: `${urlRoot}/guests`,
         },
+        name: `${name}`,
       },
       endpoint: absUrl(config.cmi5Endpoint),
       fetch: `${absUrl(config.cmi5Fetch)}${

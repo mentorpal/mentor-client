@@ -416,9 +416,9 @@ function sendCmi5Statement(statement: any) {
   try {
     Cmi5.instance
       .sendCmi5AllowedStatement(statement)
-      .catch((err: Error) => console.error(err));
+      .catch((err: Error) => console.error(JSON.stringify(err, null, " ")));
   } catch (err2) {
-    console.error(err2);
+    console.error(JSON.stringify(err2));
   }
 }
 
@@ -493,6 +493,10 @@ export function mentorAnswerPlaybackStarted(video: {
           "https://mentorpal.org/xapi/verb/answer-playback-started":
             toXapiResultExt(mentorData, curState),
         },
+      },
+      object: {
+        id: `${window.location.protocol}//${window.location.host}`,
+        objectType: "Activity",
       },
     });
   };
@@ -572,25 +576,27 @@ export const sendQuestion =
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
   ) => {
-    if (Cmi5.isCmiAvailable && Cmi5.instance.isAuthenticated) {
-      sendCmi5Statement({
-        verb: {
-          id: "https://mentorpal.org/xapi/verb/asked",
-          display: {
-            "en-US": "asked",
+    sendCmi5Statement({
+      verb: {
+        id: "https://mentorpal.org/xapi/verb/asked",
+        display: {
+          "en-US": "asked",
+        },
+      },
+      result: {
+        extensions: {
+          "https://mentorpal.org/xapi/verb/asked": {
+            questionIndex: currentQuestionIndex(getState()) + 1,
+            text: q.question,
+            source: q.source,
           },
         },
-        result: {
-          extensions: {
-            "https://mentorpal.org/xapi/verb/asked": {
-              questionIndex: currentQuestionIndex(getState()) + 1,
-              text: q.question,
-              source: q.source,
-            },
-          },
-        },
-      });
-    }
+      },
+      object: {
+        id: `${window.location.protocol}//${window.location.host}`,
+        objectType: "Activity",
+      },
+    });
     const questionId = uuid.v4();
     clearNextMentorTimer();
     dispatch(onQuestionSent({ ...q, questionId }));
@@ -632,6 +638,10 @@ export const sendQuestion =
                     questionIndex: currentQuestionIndex(getState()),
                   },
                 },
+              },
+              object: {
+                id: `${window.location.protocol}//${window.location.host}`,
+                objectType: "Activity",
               },
             });
             dispatch(onQuestionAnswered(response));

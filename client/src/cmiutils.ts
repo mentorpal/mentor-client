@@ -4,6 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
+import { LaunchParameters } from "@xapi/cmi5";
 import queryString from "query-string";
 import { Agent } from "@gradiant/xapi-dsl";
 
@@ -15,7 +16,7 @@ export interface CmiParams {
   registration: string;
 }
 
-export function addCmi(url: string, cp: CmiParams): string {
+export function addCmi(url: string, cp: LaunchParameters): string {
   return `${url}${url.includes("?") ? "" : "?"}${
     url.endsWith("&") ? "" : "&"
   }activityId=${encodeURIComponent(cp.activityId)}&actor=${encodeURIComponent(
