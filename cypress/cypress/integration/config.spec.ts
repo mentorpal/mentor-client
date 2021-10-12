@@ -17,7 +17,9 @@ describe("Config", () => {
   });
 
   it("enables cmi5 guest prompt if config.cmi5Enabled=false", () => {
-    mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
+    mockDefaultSetup(cy, {
+      config: { cmi5Enabled: true, displayGuestPrompt: true },
+    });
     cy.visit("/");
     cy.get("[data-cy=guest-prompt]").should("exist");
   });

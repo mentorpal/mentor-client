@@ -8,13 +8,17 @@ import { mockDefaultSetup } from "../support/helpers";
 
 describe("Guest Prompt", () => {
   it("does not prompt if cmi5 is not enabled", () => {
-    mockDefaultSetup(cy, { config: { cmi5Enabled: false } });
+    mockDefaultSetup(cy, {
+      config: { cmi5Enabled: false, displayGuestPrompt: false },
+    });
     cy.visit("/");
     cy.get("[data-cy=guest-prompt]").should("not.exist");
   });
 
   it("prompts anonymous user for a guest name when cmi5 enabled", () => {
-    mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
+    mockDefaultSetup(cy, {
+      config: { cmi5Enabled: true, displayGuestPrompt: true },
+    });
     cy.visit("/");
     cy.get("[data-cy=guest-prompt]").should("exist");
     cy.get("[data-cy=guest-prompt-header]").contains("Enter Your Name:");
@@ -22,7 +26,9 @@ describe("Guest Prompt", () => {
   });
 
   it("does not play video until there is a session user when cmi5 enabled", () => {
-    mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
+    mockDefaultSetup(cy, {
+      config: { cmi5Enabled: true, displayGuestPrompt: true },
+    });
     cy.visit("/");
     cy.get("[data-cy=video-container]").within(($video) => {
       cy.get("video").should("not.have.attr", "autoplay");
@@ -30,7 +36,9 @@ describe("Guest Prompt", () => {
   });
 
   it("reloads with a guest session on submit name via guest prompt", () => {
-    mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
+    mockDefaultSetup(cy, {
+      config: { cmi5Enabled: true, displayGuestPrompt: true },
+    });
     cy.visit("/");
     cy.get("[data-cy=guest-prompt-input]").type("guestuser1");
     cy.get("[data-cy=guest-prompt-input-send]").trigger("mouseover").click();
@@ -43,7 +51,9 @@ describe("Guest Prompt", () => {
   });
 
   it("loads a single specific mentor", () => {
-    mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
+    mockDefaultSetup(cy, {
+      config: { cmi5Enabled: true, displayGuestPrompt: true },
+    });
     cy.visit("/?mentor=clint");
     cy.get("[data-cy=guest-prompt-input]").type("guestuser1");
     cy.get("[data-cy=guest-prompt-input-send]").trigger("mouseover").click();
@@ -56,7 +66,9 @@ describe("Guest Prompt", () => {
   });
 
   it("accepts enter in guest-name input field as submit", () => {
-    mockDefaultSetup(cy, { config: { cmi5Enabled: true } });
+    mockDefaultSetup(cy, {
+      config: { cmi5Enabled: true, displayGuestPrompt: true },
+    });
     cy.visit("/");
     cy.get("[data-cy=guest-prompt-input]").type("guestuser2\n");
     cy.url().should("include", "actor=");
