@@ -775,6 +775,7 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "video_response.mp4",
     });
     cy.visit("/");
+    cy.viewport(1200, 800);
     cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
     cy.get("[data-cy=history-chat]").should("exist");
@@ -803,7 +804,10 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         cy.get("[data-cy=chat-msg-6]").within(() => {
-          cy.get("[data-cy=replay-icon-6]").trigger("mouseover").click();
+          cy.get("[data-cy=replay-icon-6]", { timeout: 30000 })
+            .scrollIntoView()
+            .trigger("mouseover")
+            .click();
         });
       });
     });
