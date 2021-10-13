@@ -65,12 +65,12 @@ const useStyles = makeStyles((theme) => ({
 const MENTOR_COLORS = ["#eaeaea", "#d4e8d9", "#ffebcf", "#f5cccd"];
 
 export function Chat(args: {
-  height: number;
+  height?: number;
   windowHeight?: number;
   width?: string;
   bubbleColor?: string;
 }): JSX.Element {
-  const { height, windowHeight, width, bubbleColor } = args;
+  const { width, bubbleColor } = args;
   const styles = useStyles();
   const {
     mentorType,
@@ -162,10 +162,10 @@ export function Chat(args: {
     >
       <List
         data-cy="chat-thread"
-        className={styles.list}
+        className={[styles.list, "chat-thread"].join(" ")}
         style={{
           width: shouldDisplayPortrait() ? "100%" : width ? width : "40vw",
-          height: shouldDisplayPortrait() || windowHeight ? height : "300px",
+          // height: shouldDisplayPortrait() || windowHeight ? height : "300px",
         }}
         disablePadding={true}
         id="chat-thread"
