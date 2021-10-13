@@ -40,4 +40,14 @@ export function hasCmi(urlOrQueryString: string): boolean {
   );
 }
 
+export function getParams(urlOrQueryString: string): string | string[] {
+  console.log("getting params");
+  const cutIx = urlOrQueryString.indexOf("?");
+  const urlQs =
+    cutIx !== -1 ? urlOrQueryString.substring(cutIx + 1) : urlOrQueryString;
+  const params = queryString.parse(urlQs);
+  const userID = params.userID ? params.userID : "";
+  return userID;
+}
+
 export default addCmi;
