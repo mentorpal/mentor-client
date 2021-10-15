@@ -45,6 +45,13 @@ const useStyles = makeStyles(() => ({
     height: 28,
     marginLeft: 10,
   },
+  input: {
+    "&::placeholder": {
+      color: "#000 !important",
+      opacity: 0.7,
+      fontSize: 20,
+    },
+  },
 }));
 
 function Input(): JSX.Element {
@@ -125,6 +132,9 @@ function Input(): JSX.Element {
         multiline
         rows={2}
         rowsMax={2}
+        classes={{
+          input: classes.input,
+        }}
         placeholder={curQuestion || "Ask a question"}
         onChange={(e) => {
           onQuestionInputChanged(e.target.value);

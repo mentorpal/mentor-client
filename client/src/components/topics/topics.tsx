@@ -4,12 +4,12 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Paper } from "@material-ui/core";
 import { normalizeString } from "utils";
 import { selectTopic } from "store/actions";
-import { State, TopicQuestions } from "types";
+import { MentorType, State, TopicQuestions } from "types";
 import withLocation from "wrap-with-location";
 
 import "styles/layout.css";
@@ -24,16 +24,45 @@ function Topics(args: {
 }) {
   const { onSelected, showHistoryTab } = args;
   const dispatch = useDispatch();
+
   const topicQuestions = useSelector<State, TopicQuestions[]>((state) => {
     if (!state.curMentor) {
       return [];
     }
     return state.mentorsById[state.curMentor]?.topic_questions || [];
   });
+
+  const mentorType = useSelector<State, MentorType>((state) => {
+    if (!state.curMentor) {
+      return MentorType.VIDEO;
+    }
+    return (
+      state.mentorsById[state.curMentor]?.mentor?.mentorType || MentorType.VIDEO
+    );
+  });
+
+  const existRecommendedQuestions = useSelector<State, boolean>((state) => {
+    const curMentor = state.curMentor;
+    const topicQuestions = state.mentorsById[curMentor].topic_questions;
+
+    const recommendedQuestions = topicQuestions.filter((q) => {
+      return q.topic === "Recommended";
+    });
+    return recommendedQuestions.length > 0;
+  });
+
   const curTopic = useSelector<State, string>((state) => state.curTopic);
   const questionsAsked = useSelector<State, string[]>(
     (state) => state.questionsAsked || []
   );
+
+  useEffect(() => {
+    mentorType === "VIDEO"
+      ? existRecommendedQuestions
+        ? dispatch(selectTopic("Recommended"))
+        : dispatch(selectTopic("History"))
+      : null;
+  }, []);
 
   async function onTopicSelected(topic: string) {
     if (curTopic === topic) {
@@ -54,6 +83,7 @@ function Topics(args: {
       topicQuestions={topicQuestions}
       onTopicSelected={onTopicSelected}
       showHistoryTab={showHistoryTab}
+      existRecommendedQuestions={existRecommendedQuestions}
     />
   );
 

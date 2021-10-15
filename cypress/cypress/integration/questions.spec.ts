@@ -14,6 +14,10 @@ const clint_subject = require("../fixtures/clint_subject.json");
 describe("Questions list", () => {
   it("displays list of questions for selected topic", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-questions-list]").within(() => {
+      cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
+    });
     cy.get("[data-cy=scrolling-questions-list]").should(
       "have.attr",
       "data-topic",
@@ -32,13 +36,11 @@ describe("Questions list", () => {
 
   it("changes questions when switching topics", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(1)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+
+    cy.get("[data-cy=topics-questions-list]").within(() => {
+      cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
+    });
 
     cy.get("[data-cy=scrolling-questions-list]").should(
       "have.attr",
@@ -58,6 +60,10 @@ describe("Questions list", () => {
 
   it("changes questions when switching mentors", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-questions-list]").within(() => {
+      cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
+    });
     cy.get("[data-cy=scrolling-questions-list]").should(
       "have.attr",
       "data-topic",
@@ -97,6 +103,10 @@ describe("Questions list", () => {
 
   it("greys out questions that have been asked (via topic button)", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-questions-list]").within(() => {
+      cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
+    });
     cy.get("[data-cy=scrolling-questions-list]").should(
       "have.attr",
       "data-topic",
@@ -138,12 +148,15 @@ describe("Questions list", () => {
 
   it("greys out questions that have been asked (via input field)", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-questions-list]").within(() => {
+      cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
+    });
     cy.get("[data-cy=scrolling-questions-list]").should(
       "have.attr",
       "data-topic",
       "About Me"
     );
-    cy.get("[data-cy=input-field]").type("where were you born?");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=scrolling-questions-list]")
       .get(`[data-cy=${CSS.escape("Where were you born?")}]`)
@@ -156,6 +169,10 @@ describe("Questions list", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=input-field]").type("where were you born?");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-questions-list]").within(() => {
+      cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
+    });
     cy.get("[data-cy=scrolling-questions-list]")
       .get(`[data-cy=${CSS.escape("Where were you born?")}]`)
       .find("div")
@@ -178,6 +195,10 @@ describe("Questions list", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=input-field]").type("Are you fun at parties?");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-questions-list]").within(() => {
+      cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
+    });
     cy.get("[data-cy=scrolling-questions-list]")
       .get(`[data-cy=${CSS.escape("Are you fun at parties?")}]`)
       .find("div")

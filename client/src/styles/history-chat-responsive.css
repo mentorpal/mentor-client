@@ -41,29 +41,47 @@
   .chat-thread {
     height: 72vh;
   }
+  .scrolling-questions-container {
+    height: 72vh;
+  }
 }
 @media screen and (min-height: 700px) {
   .chat-thread {
     height: 64vh;
+  }
+  .scrolling-questions-container {
+    height: 72vh;
   }
 }
 @media screen and (min-height: 800px) {
   .chat-thread {
     height: 65vh;
   }
+  .scrolling-questions-container {
+    height: 72vh;
+  }
 }
 @media screen and (min-height: 900px) {
   .chat-thread {
     height: 70vh;
+  }
+  .scrolling-questions-container {
+    height: 72vh;
   }
 }
 @media screen and (min-height: 1400px) {
   .chat-thread {
     height: 72vh;
   }
+  .scrolling-questions-container {
+    height: 72vh;
+  }
 }
 @media (min-width: 1650px) {
   .chat-thread {
     height: 73vh;
+  }
+  .scrolling-questions-container {
+    height: 72vh;
   }
 }

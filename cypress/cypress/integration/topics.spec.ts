@@ -14,13 +14,17 @@ describe("Topics list", () => {
       .click()
       .get("[data-cy=topics-questions-list]")
       .within(() => {
-        cy.get("[data-cy=topic-opt-item]").contains("About Me");
-        cy.get("[data-cy=topic-opt-item]").contains("About the Job");
+        cy.get("[data-cy=topic-opt-item-0]").contains("About Me");
+        cy.get("[data-cy=topic-opt-item-1]").contains("About the Job");
       });
   });
 
   it("has default topic selected (mobile)", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-questions-list]").within(() => {
+      cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
+    });
     // test that the TOPIC tab is selected (not the history tab)
     cy.get("[data-cy=topics]").within(() => {
       cy.get("button").eq(1).should("have.attr", "data-test", "About Me");
@@ -52,17 +56,19 @@ describe("Topics list", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.viewport(1300, 1000);
     // test that the first topic tab is selected
-    cy.get("[data-cy=topics]").within(() => {
-      cy.get("[data-cy=desktop-tab-0]").should(
+    cy.get("[data-cy=history-tab]").within(() => {
+      cy.get("[data-cy=history-tab-inner]").should(
         "have.attr",
         "data-test",
-        "About Me"
+        "History"
       );
     });
+
     // test that the content displayed in the questions-list panel is the list of questions for the default/selected topic
-    cy.get("[data-cy=scrolling-questions-list]").within(() => {
-      cy.get("li").eq(0).contains("Where were you born?");
-      cy.get("li").eq(1).contains("What's your favorite movie?");
+    cy.get("[data-cy=chat-thread]").within(() => {
+      cy.get("[data-cy=chat-msg-0]").contains(
+        "My name is EMC Clint Anderson. I was born in California and I have lived there most of my life. I graduated from Paramount and a couple of years after I finished high school, I joined the US Navy. I was an Electrician's Mate. I served on an aircraft carrier for eight years and then afterwards, I went to the United States Navy Reserve. During that time I started going to school with some of the abundant benefits that the military reserve has given me and I started working with various companies."
+      );
     });
   });
 
@@ -72,20 +78,27 @@ describe("Topics list", () => {
       .trigger("mouseover")
       .click()
       .get("div>li")
-      .eq(1)
+      .eq(2)
       .trigger("mouseover")
       .click();
 
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(1)
-      .should("have.attr", "data-test", "About the Job");
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+
+    cy.get("[data-cy=topics-questions-list]").within(() => {
+      cy.get("[data-cy=topic-opt-item-1]").should(
+        "have.attr",
+        "data-test",
+        "About the Job"
+      );
+    });
   });
 
   it("can collapse questions list by clicking selected topic", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-questions-list]").within(() => {
+      cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
+    });
     cy.get("[data-cy=scrolling-questions-list]");
     cy.get("[data-cy=topic-tab]")
       .trigger("mouseover")
@@ -118,8 +131,8 @@ describe("Topics list", () => {
       .click()
       .get("[data-cy=topics-questions-list]")
       .within(() => {
-        cy.get("[data-cy=topic-opt-item]").contains("About Me");
-        cy.get("[data-cy=topic-opt-item]").contains("About the Job");
+        cy.get("[data-cy=topic-opt-item-0]").contains("About Me");
+        cy.get("[data-cy=topic-opt-item-1]").contains("About the Job");
       });
     // close topics
     cy.get("[data-cy=close-topics]").trigger("mouseover").click();
@@ -135,8 +148,8 @@ describe("Topics list", () => {
       .click()
       .get("[data-cy=topics-questions-list]")
       .within(() => {
-        cy.get("[data-cy=topic-opt-item]").contains("About Me");
-        cy.get("[data-cy=topic-opt-item]").contains("Challenges");
+        cy.get("[data-cy=topic-opt-item-0]").contains("About Me");
+        cy.get("[data-cy=topic-opt-item-1]").contains("Challenges");
       });
     // close topics
     cy.get("[data-cy=close-topics]").trigger("mouseover").click();
@@ -148,7 +161,7 @@ describe("Topics list", () => {
       .trigger("mouseover")
       .click()
       .get("div>li")
-      .eq(1)
+      .eq(2)
       .trigger("mouseover")
       .click();
 
@@ -181,7 +194,7 @@ describe("Topics list", () => {
       .trigger("mouseover")
       .click()
       .get("div>li")
-      .eq(1)
+      .eq(2)
       .trigger("mouseover")
       .click();
 
@@ -215,7 +228,7 @@ describe("Topics list", () => {
       .trigger("mouseover")
       .click()
       .get("div>li")
-      .eq(1)
+      .eq(2)
       .trigger("mouseover")
       .click();
 
@@ -242,7 +255,7 @@ describe("Topics list", () => {
       .trigger("mouseover")
       .click()
       .get("div>li")
-      .eq(1)
+      .eq(2)
       .trigger("mouseover")
       .click();
 
@@ -261,6 +274,10 @@ describe("Topics list", () => {
     cy.get("[data-cy=input-field]").type("where were you born?");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-questions-list]").within(() => {
+      cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
+    });
     cy.get("[data-cy=topic-tab]")
       .trigger("mouseover")
       .click()
@@ -343,6 +360,11 @@ describe("Topics list", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=input-field]").type("where were you born?");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-questions-list]").within(() => {
+      cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
+    });
 
     cy.get("[data-cy=topic-tab]")
       .trigger("mouseover")

@@ -262,13 +262,26 @@ body {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background-color: rgb(204, 204, 204);
+  background-color: rgb(109, 109, 109);
   border-radius: 1rem;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(139, 139, 139);
+  background: rgb(73, 73, 73);
+}
+
+.input-field-animation::placeholder {
+  color: #000 !important;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: #000 !important;
+}
+input:-moz-placeholder,
+textarea:-moz-placeholder {
+  color: #000 !important;
 }
 
 @keyframes blink-animation {
