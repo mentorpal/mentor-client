@@ -68,6 +68,7 @@ export const initialState: State = {
   chat: {
     messages: [],
     replay: false,
+    questionSent: false,
   },
   config: {
     cmi5Enabled: false,
@@ -329,6 +330,7 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               isFeedbackSendInProgress: false,
             },
           ],
+          questionSent: true,
         },
         curQuestion: action.payload.question,
         curQuestionSource: action.payload.source,
@@ -499,7 +501,7 @@ function onQuestionAnswered(
           isIntro: false,
           isUser: false,
           questionId: action.payload.questionId,
-          text: action.payload.answerText,
+          text: action.payload.answerText.trim(),
           feedback: Feedback.NONE,
           feedbackId: action.payload.answerFeedbackId,
           isFeedbackSendInProgress: false,
@@ -512,8 +514,10 @@ function onQuestionAnswered(
           answerMedia: mentor.answer_media,
           answerId: mentor.answer_id,
           replay: false,
+          confidence: mentor.confidence,
         },
       ],
+      questionSent: false,
     },
 
     isIdle: false,

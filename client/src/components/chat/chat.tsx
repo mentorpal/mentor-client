@@ -81,6 +81,7 @@ export function Chat(args: {
     setVisibilityShowAllPref,
     mentorNameForChatMsg,
     rePlayQuestionVideo,
+    mentorNameById,
   } = useWithChatData();
 
   const colorByMentorId = useSelector<State, Record<string, string>>((s) => {
@@ -93,6 +94,7 @@ export function Chat(args: {
   });
 
   const chatData = useSelector<State, ChatData>((s) => s.chat);
+  const questionSent = useSelector<State, boolean>((s) => s.chat.questionSent);
   useEffect(() => {
     animateScroll.scrollToBottom({
       containerId: "chat-thread",
@@ -149,6 +151,37 @@ export function Chat(args: {
     setVisibilityShowAllPref(visibilityShowAllPref);
   }, [visibilityShowAllPref]);
 
+  const totalMentors = Object.keys(mentorNameById).length;
+  if (
+    totalMentors > 1 &&
+    chatData.messages.length >= 2 + totalMentors &&
+    !questionSent &&
+    mentorType !== "CHAT"
+  ) {
+    // get last mentors answers to sort them
+    const lastAnswers = chatData.messages.slice(
+      -Object.keys(mentorNameById).length
+    );
+    lastAnswers.map((a) => console.log(a));
+
+    const elemToDelete = Object.keys(mentorNameById).length;
+
+    // remove answers to then append the sorted ones
+    chatData.messages.length > Object.keys(mentorNameById).length
+      ? chatData.messages.splice(
+          chatData.messages.length - elemToDelete,
+          chatData.messages.length
+        )
+      : chatData.messages;
+
+    // sort last mentors answers
+    const answersSorted = lastAnswers.sort((a, b) =>
+      String(b.confidence).localeCompare(String(a.confidence))
+    );
+    // concat sorted answers to the previous ones
+    chatData.messages = chatData.messages.concat(answersSorted);
+  }
+
   return (
     <div
       data-cy="history-chat"
@@ -165,7 +198,6 @@ export function Chat(args: {
         className={[styles.list, "chat-thread"].join(" ")}
         style={{
           width: shouldDisplayPortrait() ? "100%" : width ? width : "40vw",
-          // height: shouldDisplayPortrait() || windowHeight ? height : "300px",
         }}
         disablePadding={true}
         id="chat-thread"

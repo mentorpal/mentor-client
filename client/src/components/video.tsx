@@ -157,7 +157,6 @@ function Video(args: { playing?: boolean }): JSX.Element {
   function onPlay() {
     setHideLinkLabel(false);
     dispatch(onMentorDisplayAnswer(false, curMentor));
-
     if (isIdle) {
       setHideLinkLabel(true);
       dispatch(answerFinished());
