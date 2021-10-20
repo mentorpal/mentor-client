@@ -693,7 +693,7 @@ export const sendQuestion =
     );
   };
 
-const NEXT_MENTOR_DELAY = 3000;
+const NEXT_MENTOR_DELAY = 1000;
 let timer: NodeJS.Timer | null;
 export const answerFinished =
   () =>
