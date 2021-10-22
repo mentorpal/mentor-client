@@ -786,7 +786,7 @@ describe("Chat History (Video Mentors)", () => {
     });
   });
 
-  it.only("Replay video by clicking chat msg", () => {
+  it("Replay video by clicking chat msg", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
