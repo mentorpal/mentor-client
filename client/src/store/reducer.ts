@@ -501,7 +501,7 @@ function onQuestionAnswered(
           isIntro: false,
           isUser: false,
           questionId: action.payload.questionId,
-          text: action.payload.answerText.trim(),
+          text: action.payload.answerText,
           feedback: Feedback.NONE,
           feedbackId: action.payload.answerFeedbackId,
           isFeedbackSendInProgress: false,

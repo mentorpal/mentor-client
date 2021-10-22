@@ -162,7 +162,6 @@ export function Chat(args: {
     const lastAnswers = chatData.messages.slice(
       -Object.keys(mentorNameById).length
     );
-    lastAnswers.map((a) => console.log(a));
 
     const elemToDelete = Object.keys(mentorNameById).length;
 
@@ -178,8 +177,8 @@ export function Chat(args: {
     const answersSorted = lastAnswers.sort((a, b) =>
       String(b.confidence).localeCompare(String(a.confidence))
     );
-    // concat sorted answers to the previous ones
-    chatData.messages = chatData.messages.concat(answersSorted);
+
+    chatData.messages.push(...answersSorted);
   }
 
   return (
