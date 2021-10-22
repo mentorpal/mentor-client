@@ -13,10 +13,11 @@ import Questions from "components/questions";
 import React from "react";
 import { Collapse } from "@material-ui/core";
 import GuestPrompt from "components/guest-prompt";
-import { MentorType } from "types";
+import { MentorType, State } from "types";
 import { UseWitInputtData } from "components/layout/use-input-data";
 import Input from "components/input";
 import "styles/history-chat-responsive.css";
+import { useSelector } from "react-redux";
 
 function Desktop(props: {
   mentorType: MentorType;
@@ -28,6 +29,10 @@ function Desktop(props: {
   const { mentorType, chatHeight, windowHeight, hasSessionUser, curTopic } =
     props;
   const { onTopicSelected, onQuestionSelected } = UseWitInputtData();
+  const displayGuestPrompt = useSelector<State, boolean>(
+    (state) => state.config.displayGuestPrompt
+  );
+
   const leftPanel = (
     <div>
       <VideoPanel />
@@ -39,7 +44,7 @@ function Desktop(props: {
           bubbleColor={"#88929e"}
         />
       ) : (
-        <Video playing={hasSessionUser()} />
+        <Video playing={hasSessionUser() || !displayGuestPrompt} />
       )}
     </div>
   );
@@ -53,7 +58,7 @@ function Desktop(props: {
       <Collapse in={Boolean(curTopic)} timeout="auto" unmountOnExit>
         <Questions onSelected={onQuestionSelected} />
       </Collapse>
-      {!hasSessionUser() ? <GuestPrompt /> : undefined}
+      {!hasSessionUser() && displayGuestPrompt ? <GuestPrompt /> : undefined}
       <Input />
     </div>
   );

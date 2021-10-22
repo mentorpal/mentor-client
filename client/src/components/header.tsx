@@ -83,7 +83,7 @@ function Header(): JSX.Element {
   };
 
   const handleClickHome = () => {
-    window.location.href = "/admin";
+    window.location.href = "/";
   };
 
   const handleAgree = () => {

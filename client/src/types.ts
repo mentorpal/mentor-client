@@ -93,6 +93,7 @@ export interface Config {
   disclaimerTitle: string;
   disclaimerText: string;
   disclaimerDisabled: boolean;
+  displayGuestPrompt: boolean;
 }
 
 export enum QuestionType {

@@ -116,6 +116,7 @@ export interface Config {
   disclaimerTitle: string;
   disclaimerText: string;
   disclaimerDisabled: boolean;
+  displayGuestPrompt: boolean;
 }
 
 export function addGuestParams(query = {}, guestName = "guest") {
@@ -205,6 +206,7 @@ export const CONFIG_DEFAULT: Config = {
   disclaimerTitle: "",
   disclaimerText: "",
   disclaimerDisabled: true,
+  displayGuestPrompt: false,
 };
 
 const clint = require("../fixtures/clint.json");

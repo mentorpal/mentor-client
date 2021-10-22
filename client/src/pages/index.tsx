@@ -6,10 +6,11 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { v1 as uuidv1 } from "uuid";
 import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Cmi5 from "@xapi/cmi5";
-import { hasCmi } from "cmiutils";
+import addCmi, { getParams, hasCmi } from "cmiutils";
 import Header from "components/header";
 import { loadConfig, loadMentors, setGuestName } from "store/actions";
 import { Config, LoadStatus, MentorType, State } from "types";
@@ -175,6 +176,33 @@ function IndexPage(props: {
     }
     if (!isConfigLoadComplete(configLoadStatus)) {
       return;
+    }
+    if (
+      config.cmi5Enabled &&
+      !Cmi5.isCmiAvailable &&
+      !config.displayGuestPrompt
+    ) {
+      const urlRoot = `${window.location.protocol}//${window.location.host}`;
+      let userId = getParams(window.location.href);
+      if (!userId || typeof userId !== "string") {
+        userId = uuidv1();
+      }
+      window.location.href = addCmi(window.location.href, {
+        activityId: window.location.href,
+        actor: {
+          objectType: "Agent",
+          account: {
+            name: userId,
+            homePage: `${urlRoot}/guests`,
+          },
+          name: "guest",
+        },
+        endpoint: config.cmi5Endpoint,
+        fetch: `${config.cmi5Fetch}${
+          config.cmi5Fetch.includes("?") ? "" : "?"
+        }&username=${encodeURIComponent("guest")}&userid=${userId}`,
+        registration: uuidv1(),
+      });
     }
     if (config.cmi5Enabled && Cmi5.isCmiAvailable) {
       try {

@@ -35,6 +35,7 @@ export async function fetchConfig(graphqlUrl = "/graphql"): Promise<Config> {
           styleHeaderColor
           styleHeaderTextColor
           styleHeaderLogo
+          displayGuestPrompt
         }
       }
     `,

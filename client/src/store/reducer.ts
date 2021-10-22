@@ -84,6 +84,7 @@ export const initialState: State = {
     disclaimerText: process.env.DISCLAIMER_TEXT || "",
     disclaimerDisabled:
       process.env.DISCLAIMER_DISABLED?.toLowerCase() === "true" || true,
+    displayGuestPrompt: false,
   },
   configLoadStatus: LoadStatus.NONE,
   guestName: "",
