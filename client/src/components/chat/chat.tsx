@@ -165,7 +165,6 @@ export function Chat(args: {
         className={[styles.list, "chat-thread"].join(" ")}
         style={{
           width: shouldDisplayPortrait() ? "100%" : width ? width : "40vw",
-          // height: shouldDisplayPortrait() || windowHeight ? height : "300px",
         }}
         disablePadding={true}
         id="chat-thread"
