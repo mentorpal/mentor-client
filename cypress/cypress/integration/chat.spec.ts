@@ -19,7 +19,7 @@ describe("Chat", () => {
     });
     cy.visit("/");
     cy.get("[data-cy=video-container]").should("exist");
-    cy.get("[data-cy=chat-thread]").should("not.exist");
+    cy.get("[data-cy=chat-thread]").should("exist");
   });
 
   it("replaces video if mentor type is chat", () => {

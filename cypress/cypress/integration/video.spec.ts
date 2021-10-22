@@ -48,7 +48,6 @@ describe("Video Mentor", () => {
       cy.get("[data-cy=mentor-name-card]").should("exist");
     });
 
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");
@@ -83,7 +82,7 @@ describe("Video Mentor", () => {
     });
 
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
+
     cy.get("[data-cy=history-chat]").should("exist");
 
     cy.get("[data-cy=input-field]").type("user msg 1");
@@ -186,7 +185,6 @@ describe("Video Mentor", () => {
       cy.get("[data-cy=mentor-name-card]").should("exist");
     });
 
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
     // write msgs
     cy.get("[data-cy=input-field]").type("Question 1");

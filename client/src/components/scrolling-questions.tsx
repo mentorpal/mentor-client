@@ -9,6 +9,7 @@ import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import { Whatshot } from "@material-ui/icons";
 import smoothscroll from "smoothscroll-polyfill";
 import { normalizeString } from "utils";
+import "styles/history-chat-responsive.css";
 
 interface OnQuestionSelected {
   (question: string): void;
@@ -40,6 +41,7 @@ function ScrollingQuestions(args: ScrollingQuestionsParams): JSX.Element {
     const topQuestion = questions.find((q) => {
       return !questionsAsked.includes(normalizeString(q));
     });
+
     const parent = document.getElementById("scrolling-questions-list");
     const node = document.getElementById(`${topQuestion}`);
     if (!(parent && node)) {
@@ -57,7 +59,7 @@ function ScrollingQuestions(args: ScrollingQuestionsParams): JSX.Element {
       data-cy="scrolling-questions-list"
       data-topic={topic}
       data-mentor={mentor}
-      className="scroll"
+      className="scroll scrolling-questions-container"
       disablePadding
     >
       {questions.map((question: string, i: number) => (

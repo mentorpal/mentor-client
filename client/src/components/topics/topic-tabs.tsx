@@ -37,11 +37,19 @@ function TopicTabs(props: {
   topicQuestions: TopicQuestions[];
   onTopicSelected: (topic: string) => void;
   showHistoryTab: boolean;
+  existRecommendedQuestions: boolean;
 }): JSX.Element {
-  const { topicQuestions, onTopicSelected, showHistoryTab } = props;
+  const {
+    topicQuestions,
+    onTopicSelected,
+    showHistoryTab,
+    existRecommendedQuestions,
+  } = props;
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
-  const [selectedTabIx, setSelectedTabIx] = React.useState<number>(1);
+  const [selectedTabIx, setSelectedTabIx] = React.useState<number>(
+    existRecommendedQuestions ? 1 : 0
+  );
   const curTopic = useSelector<State, string>((s) => s.curTopic);
   const curMentor = useSelector<State, string>((state) => state.curMentor);
   const firstTopic = useSelector<State, string>((state) => {
@@ -74,7 +82,8 @@ function TopicTabs(props: {
         value={index}
         onClick={() => onTopicClick(topic)}
         data-test={curTopic === topic ? topic : null}
-        data-cy="topic-opt-item"
+        data-cy={`topic-opt-item-${index}`}
+        data-active-tab={selectedTabIx === index + 1 ? "active" : "disable"}
       >
         {topic}
       </MenuItem>
@@ -86,7 +95,7 @@ function TopicTabs(props: {
       <Tabs
         value={selectedTabIx}
         TabIndicatorProps={{
-          style: { background: "#ddd", height: "10px" },
+          style: { background: "#808080", height: "10px" },
         }}
         textColor="primary"
         onChange={onChange}
@@ -135,7 +144,6 @@ function TopicTabs(props: {
       </Dialog>
     </div>
   );
-
   const desktopView = (
     <div className="tab-container-desktop">
       <Paper className={classes.root} style={{ display: "flex" }}>
@@ -148,7 +156,7 @@ function TopicTabs(props: {
             textColor="primary"
             onChange={onChange}
             aria-label="disabled tabs example"
-            data-cy="topics"
+            data-cy="history-tab"
           >
             {showHistoryTab ? null : (
               <Tab
@@ -156,7 +164,7 @@ function TopicTabs(props: {
                 onClick={() => onTopicClick("History")}
                 className={["topic-tab topic-selected"].join(" ")}
                 data-test="History"
-                data-cy="history-tab"
+                data-cy="history-tab-inner"
                 onChange={onChange}
               />
             )}
@@ -184,6 +192,7 @@ function TopicTabs(props: {
                 }
                 data-test={curTopic === topic ? topic : null}
                 data-cy={`desktop-tab-${i}`}
+                data-active-tab={selectedTabIx === i + 1 ? "active" : "disable"}
               />
             ) : null
           )}

@@ -9,6 +9,7 @@ import {
   visitAsGuestWithDefaultSetup,
   mockDefaultSetup,
   cyMockGQL,
+  addGuestParams,
 } from "../support/helpers";
 const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
@@ -32,7 +33,7 @@ describe("Chat History (Video Mentors)", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
 
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
+
     cy.get("[data-cy=input-field]").type("Hello");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").contains("Hello");
@@ -43,11 +44,58 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=input-field]").type("Where were you born?");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
 
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-msg-1]").contains("Where were you born?");
     });
+  });
+
+  it("Opens up recommended questions by default it they exists", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint"] },
+      mentorData: [clint],
+      apiResponse: "response_with_feedback.json",
+    });
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_with_feedback3.json",
+    });
+    // video intercept
+    cy.intercept("http://videos.org/answer_id.mp4", {
+      fixture: "video_response.mp4",
+    });
+    cy.visit("/", {
+      qs: addGuestParams({
+        recommendedQuestions: "Are you fun at parties?",
+      }),
+    });
+    cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
+    cy.get("[data-cy=topics]").within(() => {
+      cy.get("button").eq(1).should("have.attr", "data-test", "Recommended");
+    });
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-questions-list]").within(() => {
+      cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
+    });
+    cy.get("[data-cy=topics-questions-list]").within(() => {
+      cy.get("li").eq(0).should("have.attr", "data-active-tab", "active");
+    });
+  });
+
+  it("Opens up history if no recommended questions", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint"] },
+      mentorData: [clint],
+      apiResponse: "response_with_feedback.json",
+    });
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_with_feedback3.json",
+    });
+    // video intercept
+    cy.intercept("http://videos.org/answer_id.mp4", {
+      fixture: "video_response.mp4",
+    });
+    cy.visit("/");
+    cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
   });
 
   it("displays both questions and answers as a chat", () => {
@@ -66,7 +114,6 @@ describe("Chat History (Video Mentors)", () => {
     });
     cy.visit("/");
 
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 
     cy.get("[data-cy=input-field]").type("user msg 1");
@@ -111,7 +158,6 @@ describe("Chat History (Video Mentors)", () => {
     });
     cy.visit("/");
 
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 
     // write msgs
@@ -168,7 +214,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     cy.visit("/");
     cy.viewport(1200, 800);
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
+
     cy.get("[data-cy=history-chat]").should("exist");
 
     // write msgs
@@ -266,7 +312,6 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "video_response.mp4",
     });
 
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 
     // write msgs
@@ -347,7 +392,6 @@ describe("Chat History (Video Mentors)", () => {
     });
     cy.visit("/");
 
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 
     // write msgs
@@ -391,7 +435,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     cy.visit("/");
     cy.viewport(1200, 800);
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
+
     cy.get("[data-cy=history-chat]").should("exist");
 
     // write msgs
@@ -470,7 +514,6 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "video_response.mp4",
     });
 
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 
     // write msgs
@@ -527,7 +570,6 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "video_response.mp4",
     });
 
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 
     // write msgs
@@ -585,7 +627,6 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "video_response.mp4",
     });
 
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 
     // write msgs
@@ -659,7 +700,6 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "video_response.mp4",
     });
 
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
 
     // write msgs
@@ -777,8 +817,6 @@ describe("Chat History (Video Mentors)", () => {
     });
     cy.visit("/");
     cy.viewport(1200, 800);
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
-    cy.get("[data-cy=history-chat]").should("exist");
     cy.get("[data-cy=history-chat]").should("exist");
 
     // write msgs
