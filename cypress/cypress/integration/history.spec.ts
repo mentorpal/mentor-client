@@ -813,12 +813,6 @@ describe("Chat History (Video Mentors)", () => {
       });
     });
 
-    cy.get("[data-cy=video-container]").should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id7.mp4"
-    );
-
     // wait for it to finish
     cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
       "have.attr",
@@ -833,11 +827,5 @@ describe("Chat History (Video Mentors)", () => {
         });
       });
     });
-
-    cy.get("[data-cy=video-container]").should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id3.mp4"
-    );
   });
 });
