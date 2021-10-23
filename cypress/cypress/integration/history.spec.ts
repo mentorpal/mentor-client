@@ -13,6 +13,7 @@ import {
 } from "../support/helpers";
 const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
+const covid = require("../fixtures/covid.json");
 
 describe("Chat History (Video Mentors)", () => {
   it("does not display in topics list if no questions have been asked", () => {
@@ -865,5 +866,29 @@ describe("Chat History (Video Mentors)", () => {
         });
       });
     });
+  });
+
+  it.only("Web links/Ask links", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["covid"] },
+      mentorData: [covid],
+      apiResponse: "response_test.json",
+    });
+    cy.intercept("**/questions/?mentor=clint&query=question+1", {
+      fixture: "response_test.json",
+    });
+
+    // video intercept
+    cy.intercept("http://videos.org/answer_id4.mp4", {
+      fixture: "video_response.mp4",
+    }).as("askClint");
+
+    cy.visit("/");
+    cy.viewport("macbook-13");
+    cy.get("[data-cy=history-chat]").should("exist");
+
+    // write msgs
+    cy.get("[data-cy=input-field]").type("question 1");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
   });
 });
