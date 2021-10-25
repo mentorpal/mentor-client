@@ -13,7 +13,7 @@ import {
 } from "../support/helpers";
 const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
-const covid = require("../fixtures/covid.json");
+const test = require("../fixtures/intro_test.json");
 
 describe("Chat History (Video Mentors)", () => {
   it("does not display in topics list if no questions have been asked", () => {
@@ -868,10 +868,10 @@ describe("Chat History (Video Mentors)", () => {
     });
   });
 
-  it.only("Web links/Ask links", () => {
+  it("Web links/Ask links intro", () => {
     mockDefaultSetup(cy, {
-      config: { mentorsDefault: ["covid"] },
-      mentorData: [covid],
+      config: { mentorsDefault: ["test"] },
+      mentorData: [test],
       apiResponse: "response_test.json",
     });
     cy.intercept("**/questions/?mentor=clint&query=question+1", {
@@ -884,7 +884,7 @@ describe("Chat History (Video Mentors)", () => {
     }).as("askClint");
 
     cy.visit("/");
-    cy.viewport("macbook-13");
+
     cy.get("[data-cy=history-chat]").should("exist");
 
     // write msgs
