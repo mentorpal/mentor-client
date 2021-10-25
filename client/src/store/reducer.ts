@@ -250,6 +250,8 @@ function onMentorLoadResults(
   const mentor = action?.payload?.mentor;
   const curMentorIntro =
     action?.payload?.mentorsById[mentor || ""]?.data?.mentor;
+  const mentorId = action?.payload?.mentorsById[mentor || ""]?.data?.answer_id;
+
   const curMentorIntroTranscript = curMentorIntro
     ? getUtterance(curMentorIntro, UtteranceName.INTRO)?.transcript
     : "";
@@ -272,6 +274,11 @@ function onMentorLoadResults(
           feedbackId: "",
           isFeedbackSendInProgress: false,
           isVideoInProgress: false,
+          askLinks: findAskLinks(curMentorIntroTranscript || ""),
+          webLinks: findWebLinks(
+            curMentorIntroTranscript || "",
+            mentorId || ""
+          ),
         },
       ],
     },

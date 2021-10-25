@@ -14,6 +14,7 @@ import {
 const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
 const julianne = require("../fixtures/julianne.json");
+const test = require("../fixtures/intro_test.json");
 
 describe("Chat History (Video Mentors)", () => {
   it("does not display in topics list if no questions have been asked", () => {
@@ -956,12 +957,6 @@ describe("Chat History (Video Mentors)", () => {
       });
     });
 
-    // cy.get("[data-cy=video-container]").should(
-    //   "have.attr",
-    //   "data-test-replay",
-    //   "http://videos.org/answer_id7.mp4"
-    // );
-
     // wait for it to finish
     cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
       "have.attr",
@@ -976,11 +971,29 @@ describe("Chat History (Video Mentors)", () => {
         });
       });
     });
+  });
 
-    // cy.get("[data-cy=video-container]").should(
-    //   "have.attr",
-    //   "data-test-replay",
-    //   "http://videos.org/answer_id3.mp4"
-    // );
+  it("Web links/Ask links intro", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["test"] },
+      mentorData: [test],
+      apiResponse: "response_test.json",
+    });
+    cy.intercept("**/questions/?mentor=clint&query=question+1", {
+      fixture: "response_test.json",
+    });
+
+    // video intercept
+    cy.intercept("http://videos.org/answer_id4.mp4", {
+      fixture: "video_response.mp4",
+    }).as("askClint");
+
+    cy.visit("/");
+
+    cy.get("[data-cy=history-chat]").should("exist");
+
+    // write msgs
+    cy.get("[data-cy=input-field]").type("question 1");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
   });
 });
