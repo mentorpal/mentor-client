@@ -33,6 +33,7 @@ describe("Chat History (Video Mentors)", () => {
 
   it("displays questions that have been asked via input", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
+
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
 
     cy.get("[data-cy=input-field]").type("Hello");
@@ -40,8 +41,9 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat]").contains("Hello");
   });
 
-  it("displays questions that have been asked via topic button", () => {
+  it.only("displays questions that have been asked via topic button", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
+    cy.viewport("macbook-13");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
     cy.get("[data-cy=input-field]").type("Where were you born?");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
@@ -921,8 +923,6 @@ describe("Chat History (Video Mentors)", () => {
     });
     cy.visit("/");
     cy.viewport(1200, 800);
-
-    cy.get("[data-cy=history-chat]").should("exist");
     cy.get("[data-cy=history-chat]").should("exist");
 
     // write msgs
