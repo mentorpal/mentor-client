@@ -47,6 +47,7 @@ export interface ChatMsg {
   replay?: boolean;
   isVideoInProgress?: boolean;
   confidence?: number;
+  curMentor?: string;
 }
 
 export interface MentorClientData {
@@ -215,6 +216,7 @@ export interface MentorsLoadResult {
   mentorsById: Record<string, MentorDataResult>;
   mentor?: string;
   topic?: string;
+  curMentor?: string;
 }
 
 export interface QuestionResult {

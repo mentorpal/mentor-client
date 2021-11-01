@@ -249,13 +249,22 @@ function onMentorLoadResults(
 ): State {
   const mentor = action?.payload?.mentor;
   const curMentorIntro =
-    action?.payload?.mentorsById[mentor || ""]?.data?.mentor;
+    action?.payload?.mentorsById[action.payload.curMentor || ""]?.data?.mentor;
   const mentorId = action?.payload?.mentorsById[mentor || ""]?.data?.answer_id;
-
+  const mentorName =
+    action?.payload?.mentorsById[action.payload.curMentor || ""]?.data?.mentor
+      .name;
   const curMentorIntroTranscript = curMentorIntro
     ? getUtterance(curMentorIntro, UtteranceName.INTRO)?.transcript
     : "";
 
+  const answerId = curMentorIntro
+    ? getUtterance(curMentorIntro, UtteranceName.INTRO)?._id
+    : "";
+
+  const answerMedia = curMentorIntro
+    ? getUtterance(curMentorIntro, UtteranceName.INTRO)?.media
+    : [];
   let s = {
     ...state,
     chat: {
@@ -263,17 +272,19 @@ function onMentorLoadResults(
       messages: [
         ...state.chat.messages,
         {
-          name: "",
-          color: "",
-          mentorId: "",
+          name: mentorName || "name",
+          color: "#fff",
+          mentorId: action.payload.curMentor || "",
           isIntro: true,
           isUser: false,
           text: curMentorIntroTranscript || "",
           questionId: "",
           feedback: Feedback.NONE,
           feedbackId: "",
+          answerId,
+          answerMedia,
           isFeedbackSendInProgress: false,
-          isVideoInProgress: false,
+          isVideoInProgress: true,
           askLinks: findAskLinks(curMentorIntroTranscript || ""),
           webLinks: findWebLinks(
             curMentorIntroTranscript || "",
@@ -548,6 +559,7 @@ function onReplayVideo(state: State, action: ReplayVideoAction): State {
       m.replay = false;
     }
   });
+
   return {
     ...state,
     chat: {
