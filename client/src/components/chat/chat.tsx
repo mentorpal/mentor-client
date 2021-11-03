@@ -14,6 +14,7 @@ import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
 import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
+import "styles/history-chat-responsive.css";
 import ChatItem, { ChatItemData } from "./chat-item";
 import { ItemVisibilityPrefs, useWithChatData } from "./use-chat-data";
 import { shouldDisplayPortrait } from "pages";
@@ -101,7 +102,13 @@ export function Chat(args: {
     });
   }, [chatData.messages.length]);
 
-  function isQuestionsAnswersVisible(questionId: string): boolean {
+  function isQuestionsAnswersVisible(
+    questionId: string,
+    isIntro: boolean
+  ): boolean {
+    if (isIntro) {
+      return true;
+    }
     const userPref = getQuestionVisibilityPref(questionId);
     /**
      * RULE #1: if this is the most recent question,
@@ -154,7 +161,7 @@ export function Chat(args: {
   const totalMentors = Object.keys(mentorNameById).length;
   if (
     totalMentors > 1 &&
-    chatData.messages.length >= 2 + totalMentors &&
+    chatData.messages.length >= totalMentors * 2 + 1 &&
     !questionSent &&
     mentorType !== "CHAT"
   ) {
@@ -194,9 +201,10 @@ export function Chat(args: {
     >
       <List
         data-cy="chat-thread"
-        className={[styles.list, "chat-thread"].join(" ")}
+        className="chat-thread"
         style={{
           width: shouldDisplayPortrait() ? "100%" : width ? width : "40vw",
+          padding: shouldDisplayPortrait() ? 0 : 10,
         }}
         disablePadding={true}
         id="chat-thread"
@@ -206,7 +214,7 @@ export function Chat(args: {
           const itemData: ChatItemData = {
             ...m,
             color: m.mentorId ? colorByMentorId[m.mentorId] : bubbleColor || "",
-            name: mentorNameForChatMsg(m) || "",
+            name: m.isIntro ? m.name : mentorNameForChatMsg(m),
           };
           return (
             <div
@@ -228,7 +236,7 @@ export function Chat(args: {
                 setAnswerVisibility={(show: boolean) => {
                   setQuestionVisibilityPref(m.questionId, show);
                 }}
-                visibility={isQuestionsAnswersVisible(m.questionId)}
+                visibility={isQuestionsAnswersVisible(m.questionId, m.isIntro)}
                 rePlayQuestionVideo={rePlayQuestionVideo}
                 mentorType={mentorType}
               />

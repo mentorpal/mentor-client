@@ -204,6 +204,7 @@ export function ChatItem(props: {
     <p
       style={{
         marginTop: isUser ? 6 : 3,
+        marginLeft: message.isIntro ? 30 : 62,
       }}
       className="bubble-mentor-name"
     >

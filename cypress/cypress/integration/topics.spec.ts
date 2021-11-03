@@ -74,13 +74,10 @@ describe("Topics list", () => {
 
   it("can select a topic", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(2)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-form]").within(() => {
+      cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
+    });
 
     cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
 
@@ -157,13 +154,10 @@ describe("Topics list", () => {
 
   it("keeps selected topic when switching mentors if new mentor has it", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(2)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-form]").within(() => {
+      cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
+    });
 
     cy.get("[data-cy=topic-tab]")
       .trigger("mouseover")
@@ -190,13 +184,10 @@ describe("Topics list", () => {
 
   it("does not keep selected topic when switching mentors if new mentor does not have it", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(2)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-form]").within(() => {
+      cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
+    });
 
     cy.get("[data-cy=topic-tab]")
       .trigger("mouseover")
@@ -224,13 +215,10 @@ describe("Topics list", () => {
 
   it("recommends a topic-relevant question for current mentor when topic is selected", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(2)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-form]").within(() => {
+      cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
+    });
 
     cy.get("[data-cy=input-field-wrapper]").should(
       "have.attr",
@@ -251,13 +239,10 @@ describe("Topics list", () => {
     );
     cy.get("[data-cy=video-thumbnail-julianne]").trigger("mouseover").click();
 
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(2)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-form]").within(() => {
+      cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
+    });
 
     cy.get("[data-cy=input-field-wrapper]").should(
       "have.attr",
@@ -309,13 +294,10 @@ describe("Topics list", () => {
 
   it("does not recommend a topic question that has already been asked (via topic button)", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(1)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-form]").within(() => {
+      cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
+    });
 
     cy.get("[data-cy=topic-tab]")
       .trigger("mouseover")
