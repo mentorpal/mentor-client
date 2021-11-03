@@ -239,11 +239,12 @@ export function ChatItem(props: {
       >
         {!message.isIntro ? visibilityIcon : null}
         {mentorType === "VIDEO" ? rePlayBtn : null}
-
-        <ReactMarkdown
-          source={message.text}
-          renderers={{ link: LinkRenderer }}
-        />
+        <div>
+          <ReactMarkdown
+            source={message.text}
+            renderers={{ link: LinkRenderer }}
+          />
+        </div>
         {message.askLinks?.length || 0 > 0 ? askQuestionIcon : null}
         {message.feedbackId ? (
           <div
