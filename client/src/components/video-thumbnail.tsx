@@ -28,6 +28,13 @@ function VideoThumbnail(props: { mentor: string }): JSX.Element {
         margin: 2,
         height: "40%",
       }}
+      config={{
+        file: {
+          attributes: {
+            crossOrigin: "true",
+          },
+        },
+      }}
       url={idle}
       height={60}
       width={60}
