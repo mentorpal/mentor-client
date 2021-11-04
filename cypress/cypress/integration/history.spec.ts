@@ -610,7 +610,7 @@ describe("Chat History (Video Mentors)", () => {
     });
   });
 
-  it.only("If hide and the prior bottom answer was not manually opened, then it should collapse", () => {
+  it("If hide and the prior bottom answer was not manually opened, then it should collapse", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
@@ -673,11 +673,11 @@ describe("Chat History (Video Mentors)", () => {
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        // show first questions answers
+        // show first question's answers
         cy.get("[data-cy=vsbyIcon-1]").should("exist");
         cy.get("[data-cy=vsbyIcon-1]").trigger("mouseover").click();
         cy.get("[data-cy=chat-msg-1]").scrollIntoView();
-        cy.get("[data-cy=chat-msg-2]").scrollIntoView().should("be.visible");
+        cy.get("[data-cy=chat-msg-2]").should("be.visible");
         cy.get("[data-cy=chat-msg-3]").scrollIntoView().should("be.visible");
       });
     });
