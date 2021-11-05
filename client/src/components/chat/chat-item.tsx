@@ -239,7 +239,6 @@ export function ChatItem(props: {
       >
         {!message.isIntro ? visibilityIcon : null}
         {mentorType === "VIDEO" ? rePlayBtn : null}
-
         <div>
           <ReactMarkdown
             source={message.text}
