@@ -18,7 +18,7 @@ describe("Cypress", () => {
     cy.visit("/", { qs: addGuestParams() });
   });
 
-  it.only("Grabs referral from url", () => {
+  it("Grabs referral from url", () => {
     visitAsGuestWithDefaultSetup(cy, "/?referrer=CSUFCareerCenterTesting");
     cy.viewport("macbook-13");
   });

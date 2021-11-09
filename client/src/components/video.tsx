@@ -85,7 +85,6 @@ function Video(args: { playing?: boolean }): JSX.Element {
     const chatData = state.chat.messages;
     const lastQuestionId = chatData[chatData.length - 1].questionId;
 
-    console.log(lastQuestionCounter);
     const lastWebLink = chatData.filter((m) => {
       if (m.mentorId === curMentor && m.questionId === lastQuestionId) {
         return m.webLinks;

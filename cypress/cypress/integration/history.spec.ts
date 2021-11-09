@@ -169,7 +169,7 @@ describe("Chat History (Video Mentors)", () => {
     });
   });
 
-  it.only("sort answers by confidence", () => {
+  it("sort answers by confidence", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos", "julianne"] },
       mentorData: [clint, carlos, julianne],
