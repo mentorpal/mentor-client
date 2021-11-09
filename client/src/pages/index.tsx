@@ -170,6 +170,34 @@ function IndexPage(props: {
     );
   });
 
+  const setLocalStorage = (): string => {
+    // get local user information
+    const localData = localStorage.getItem("userData");
+    // grab referrer from the URL
+    const referrer = new URL(location.href).searchParams.get("referrer");
+
+    // if referrer exists in localStorage and is the same as the one in the URL, use that one.
+    // Otherwise, use the one in the URL
+    const localReferrer =
+      JSON.parse(localData ? localData : "{}").referrer !== undefined &&
+      JSON.parse(localData ? localData : "{}").referrer === referrer
+        ? JSON.parse(localData ? localData : "").referrer
+        : referrer;
+
+    // if no referrer in localStorage, use the one from the URL
+    const referrerURL = localData ? localReferrer : referrer;
+
+    // create new localStorage object
+    const userData = {
+      referrerURL: referrerURL,
+    };
+
+    // set it in localStorage
+    localStorage.setItem("userData", JSON.stringify(userData));
+
+    return referrerURL;
+  };
+
   useEffect(() => {
     if (configLoadStatus === LoadStatus.NONE) {
       dispatch(loadConfig());
@@ -187,22 +215,28 @@ function IndexPage(props: {
       if (!userId || typeof userId !== "string") {
         userId = uuidv1();
       }
-      window.location.href = addCmi(window.location.href, {
-        activityId: window.location.href,
-        actor: {
-          objectType: "Agent",
-          account: {
-            name: userId,
-            homePage: `${urlRoot}/guests`,
+      const referrer = setLocalStorage();
+
+      window.location.href = addCmi(
+        window.location.href,
+        {
+          activityId: window.location.href,
+          actor: {
+            objectType: "Agent",
+            account: {
+              name: userId,
+              homePage: `${urlRoot}/guests-client/${referrer}`,
+            },
+            name: "guest",
           },
-          name: "guest",
+          endpoint: config.cmi5Endpoint,
+          fetch: `${config.cmi5Fetch}${
+            config.cmi5Fetch.includes("?") ? "" : "?"
+          }&username=${encodeURIComponent("guest")}&userid=${userId}`,
+          registration: uuidv1(),
         },
-        endpoint: config.cmi5Endpoint,
-        fetch: `${config.cmi5Fetch}${
-          config.cmi5Fetch.includes("?") ? "" : "?"
-        }&username=${encodeURIComponent("guest")}&userid=${userId}`,
-        registration: uuidv1(),
-      });
+        referrer
+      );
     }
     if (config.cmi5Enabled && Cmi5.isCmiAvailable) {
       try {
@@ -251,6 +285,13 @@ function IndexPage(props: {
     };
     findMentor();
   }, [configLoadStatus, mentor, subject, recommendedQuestions]);
+
+  useEffect(() => {
+    let userId = getParams(window.location.href);
+    if (!userId || typeof userId !== "string") {
+      userId = uuidv1();
+    }
+  });
 
   useEffect(() => {
     if (guest) {
