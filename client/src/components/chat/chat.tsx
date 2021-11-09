@@ -82,7 +82,6 @@ export function Chat(args: {
     setVisibilityShowAllPref,
     mentorNameForChatMsg,
     rePlayQuestionVideo,
-    mentorNameById,
   } = useWithChatData();
 
   const colorByMentorId = useSelector<State, Record<string, string>>((s) => {
@@ -95,7 +94,9 @@ export function Chat(args: {
   });
 
   const chatData = useSelector<State, ChatData>((s) => s.chat);
-  const questionSent = useSelector<State, boolean>((s) => s.chat.questionSent);
+  const lastQuestionCounter = useSelector<State, number>(
+    (s) => s.chat.lastQuestionCounter || s.questionsAsked.length + 1
+  );
   useEffect(() => {
     animateScroll.scrollToBottom({
       containerId: "chat-thread",
@@ -158,33 +159,25 @@ export function Chat(args: {
     setVisibilityShowAllPref(visibilityShowAllPref);
   }, [visibilityShowAllPref]);
 
-  const totalMentors = Object.keys(mentorNameById).length;
-  if (
-    totalMentors > 1 &&
-    chatData.messages.length >= totalMentors * 2 + 1 &&
-    !questionSent &&
-    mentorType !== "CHAT"
-  ) {
-    // get last mentors answers to sort them
-    const lastAnswers = chatData.messages.slice(
-      -Object.keys(mentorNameById).length
-    );
+  // TODO: sort answers by timestampAnswered
+  if (mentorType !== "CHAT") {
+    // get last answers
+    const lastAnswers = chatData.messages.filter((m) => {
+      return m.questionCounter === lastQuestionCounter && !m.isUser;
+    });
 
-    const elemToDelete = Object.keys(mentorNameById).length;
-
-    // remove answers to then append the sorted ones
-    chatData.messages.length > Object.keys(mentorNameById).length
-      ? chatData.messages.splice(
-          chatData.messages.length - elemToDelete,
-          chatData.messages.length
-        )
-      : chatData.messages;
-
-    // sort last mentors answers
+    // sort last answers by timestampAnswered
     const answersSorted = lastAnswers.sort((a, b) =>
-      String(b.confidence).localeCompare(String(a.confidence))
+      String(a.timestampAnswered).localeCompare(String(b.timestampAnswered))
     );
 
+    // remove unsorted answers
+    chatData.messages.splice(
+      chatData.messages.length - Object.keys(answersSorted).length,
+      chatData.messages.length
+    );
+
+    // add sorted answers to chat
     chatData.messages.push(...answersSorted);
   }
 

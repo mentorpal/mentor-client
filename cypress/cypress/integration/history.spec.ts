@@ -41,7 +41,7 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat]").contains("Hello");
   });
 
-  it.only("displays questions that have been asked via topic button", () => {
+  it("displays questions that have been asked via topic button", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.viewport("macbook-13");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
@@ -169,7 +169,7 @@ describe("Chat History (Video Mentors)", () => {
     });
   });
 
-  it("sort answers by confidence", () => {
+  it.only("sort answers by confidence", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos", "julianne"] },
       mentorData: [clint, carlos, julianne],
@@ -189,11 +189,11 @@ describe("Chat History (Video Mentors)", () => {
       fixture: "video_response.mp4",
     });
     cy.visit("/");
+    cy.viewport("macbook-13");
+    // cy.get("[data-cy=history-chat]").should("exist");
 
-    cy.get("[data-cy=history-chat]").should("exist");
-
-    cy.get("[data-cy=input-field]").type("user msg 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    // cy.get("[data-cy=input-field]").type("user msg 1");
+    // cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
     cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
@@ -201,17 +201,17 @@ describe("Chat History (Video Mentors)", () => {
       "data-test-replay",
       "http://videos.org/answer_id.mp4"
     );
-    cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=chat-msg-3]").contains("user msg 1");
-        cy.get("[data-cy=chat-msg-4]").contains("Give me feedback");
+    // cy.get("[data-cy=history-chat").within(($hc) => {
+    //   cy.get("[data-cy=chat-thread]").within(($hc) => {
+    //     cy.get("[data-cy=chat-msg-3]").contains("user msg 1");
+    //     cy.get("[data-cy=chat-msg-4]").contains("Give me feedback");
 
-        cy.get("[data-cy=chat-msg-5]").contains(
-          "Another feedback (testing parenthesis)."
-        );
-        cy.get("[data-cy=chat-msg-6]").contains("Give me feedback");
-      });
-    });
+    //     cy.get("[data-cy=chat-msg-5]").contains(
+    //       "Another feedback (testing parenthesis)."
+    //     );
+    //     cy.get("[data-cy=chat-msg-6]").contains("Give me feedback");
+    //   });
+    // });
   });
 
   it("Answer with right format", () => {

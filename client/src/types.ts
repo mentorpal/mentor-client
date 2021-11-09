@@ -11,6 +11,7 @@ export interface ChatData {
   messages: ChatMsg[];
   replay: boolean;
   questionSent: boolean;
+  lastQuestionCounter?: number;
 }
 
 export const LINK_TYPE_ASK = "ask";
@@ -48,6 +49,8 @@ export interface ChatMsg {
   isVideoInProgress?: boolean;
   confidence?: number;
   curMentor?: string;
+  timestampAnswered?: number;
+  questionCounter?: number;
 }
 
 export interface MentorClientData {

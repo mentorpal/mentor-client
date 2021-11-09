@@ -171,6 +171,8 @@ export interface VideoFinishedAction {
   payload: {
     isVideoInProgress: boolean;
     curMentor: string;
+    lastQuestion: number;
+    timestampAnswered: number;
   };
 }
 
@@ -249,13 +251,20 @@ export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
 
 export const onMentorDisplayAnswer =
-  (isVideoInProgress: boolean, curMentor: string) =>
+  (
+    isVideoInProgress: boolean,
+    curMentor: string,
+    lastQuestion: number,
+    timestampAnswered: number
+  ) =>
   async (dispatch: ThunkDispatch<State, void, VideoFinishedAction>) => {
     dispatch({
       type: VIDEO_FINISHED,
       payload: {
         isVideoInProgress,
         curMentor,
+        lastQuestion,
+        timestampAnswered,
       },
     });
   };

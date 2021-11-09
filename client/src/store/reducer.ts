@@ -69,6 +69,7 @@ export const initialState: State = {
     messages: [],
     replay: false,
     questionSent: false,
+    lastQuestionCounter: 0,
   },
   config: {
     cmi5Enabled: false,
@@ -290,6 +291,7 @@ function onMentorLoadResults(
             curMentorIntroTranscript || "",
             mentorId || ""
           ),
+          // timestampAnswered: Date.now()
         },
       ],
     },
@@ -346,9 +348,11 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               feedback: Feedback.NONE,
               feedbackId: "",
               isFeedbackSendInProgress: false,
+              questionCounter: state.questionsAsked.length + 1,
             },
           ],
           questionSent: true,
+          lastQuestionCounter: state.questionsAsked.length + 1,
         },
         curQuestion: action.payload.question,
         curQuestionSource: action.payload.source,
@@ -467,6 +471,7 @@ function onMentorDisplayAnswer(
           ? {
               ...m,
               isVideoInProgress: action.payload.isVideoInProgress,
+              timestampAnswered: action.payload.timestampAnswered,
             }
           : m;
       }),
@@ -533,6 +538,7 @@ function onQuestionAnswered(
           answerId: mentor.answer_id,
           replay: false,
           confidence: mentor.confidence,
+          questionCounter: state.questionsAsked.length,
         },
       ],
       questionSent: false,
