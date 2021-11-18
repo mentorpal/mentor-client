@@ -271,9 +271,6 @@ function VideoPlayer(args: VideoPlayerParams) {
       : false
     : false;
 
-    console.log(`subtitles on: ${subtitlesOn}`)
-    console.log(`subtitles url: ${subtitlesUrl}`)
-
   return (
     <div
       className="video-player-wrapper"
