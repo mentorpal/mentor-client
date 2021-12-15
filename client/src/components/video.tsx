@@ -198,7 +198,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
         onPlay={onPlay}
         playing={Boolean(playing)}
         setDuration={setDuration}
-        subtitlesOn={Boolean(subtitlesSupported)}
+        subtitlesOn={Boolean(subtitlesSupported) && Boolean(video.subtitles)}
         subtitlesUrl={video.subtitles}
         videoUrl={video.src}
         webLinks={webLinks}
