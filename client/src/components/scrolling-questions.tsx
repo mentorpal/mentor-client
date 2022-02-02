@@ -6,7 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useEffect } from "react";
 import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
-import { Whatshot } from "@material-ui/icons";
+import { Whatshot, PlayCircleOutline } from "@material-ui/icons";
 import smoothscroll from "smoothscroll-polyfill";
 import { normalizeString } from "utils";
 import "styles/history-chat-responsive.css";
@@ -63,28 +63,35 @@ function ScrollingQuestions(args: ScrollingQuestionsParams): JSX.Element {
       disablePadding
     >
       {questions.map((question: string, i: number) => (
-        <ListItem
-          key={i}
-          data-cy={question}
-          onClick={() => onQuestionSelected(question)}
-        >
-          {recommended.includes(question) ? (
-            <ListItemIcon>
-              <Whatshot
-                className="recommended-question-icon"
-                style={{ height: 25, width: 25 }}
-              />
-            </ListItemIcon>
-          ) : undefined}
-          <ListItemText
-            primary={question}
-            style={{
-              color: questionsAsked.includes(normalizeString(question))
-                ? "gray"
-                : "black",
-            }}
-          />
-        </ListItem>
+        <div key={i} className="listed-question">
+          <ListItem
+            key={i}
+            data-cy={question}
+            onClick={() => onQuestionSelected(question)}
+          >
+            {recommended.includes(question) ? (
+              <ListItemIcon>
+                <Whatshot
+                  className="recommended-question-icon"
+                  style={{ height: 25, width: 25 }}
+                />
+              </ListItemIcon>
+            ) : undefined}
+            <div
+              data-cy="listed-question-content-container"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                color: questionsAsked.includes(normalizeString(question))
+                  ? "gray"
+                  : "black",
+              }}
+            >
+              <PlayCircleOutline style={{ margin: "5px" }} />
+              <ListItemText primary={question} />
+            </div>
+          </ListItem>
+        </div>
       ))}
     </List>
   );
