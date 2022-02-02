@@ -24,6 +24,12 @@ import "styles/history-chat-responsive.css";
 import Desktop from "components/layout/desktop";
 import { isMobile } from "react-device-detect";
 import Mobile from "components/layout/mobile";
+import { SurveyDialog } from "components/survey-dialog";
+import {
+  getLocalStorage,
+  removeLocalStorageItem,
+  setLocalStorage,
+} from "utils";
 
 const useStyles = makeStyles((theme) => ({
   flexRoot: {
@@ -111,6 +117,12 @@ function IndexPage(props: {
   const [chatHeight, setChatHeight] = React.useState<number>(0);
   const curTopic = useSelector<State, string>((state) => state.curTopic);
 
+  const [pollingTimer, setPollingTimer] = React.useState<boolean>(false);
+  const [showSurveyPopup, setShowSurveyPopup] = React.useState<boolean>(false);
+  const surveyPopupTitle =
+    getLocalStorage("timertext") ||
+    `You have spent ${getLocalStorage("timerpopup")} seconds in the system!`;
+
   const { guest, subject, recommendedQuestions } = props.search;
   let { mentor } = props.search;
 
@@ -139,8 +151,67 @@ function IndexPage(props: {
     },
   });
 
+  function checkForSurveyPopupVariables() {
+    const timerpopup = new URL(location.href).searchParams.get("timerpopup");
+    if (timerpopup) {
+      setLocalStorage("timerpopup", timerpopup);
+      setLocalStorage("timespentonpage", "0");
+      const timertext = new URL(location.href).searchParams.get("timertext");
+      if (timertext) {
+        setLocalStorage("timertext", timertext);
+      }
+      setPollingTimer(true);
+    } else {
+      const localStorageTimerPopup = getLocalStorage("timerpopup");
+      const localStorageTimeSpent = getLocalStorage("timespentonpage");
+      if (localStorageTimerPopup && localStorageTimeSpent) {
+        setPollingTimer(true);
+      }
+    }
+  }
+
+  function clearTimerLocalStorage() {
+    removeLocalStorageItem("timespentonpage");
+    removeLocalStorageItem("timerpopup");
+    removeLocalStorageItem("timertext");
+    setPollingTimer(false);
+  }
+
+  function closeSurveyPopup() {
+    setShowSurveyPopup(false);
+    clearTimerLocalStorage();
+  }
+
+  function pollTimer(): void {
+    const timeSpentOnPage = getLocalStorage("timespentonpage");
+    const newTimeSpentOnPage = Number(timeSpentOnPage) + 10;
+
+    const timerDuration = getLocalStorage("timerpopup");
+    if (!timerDuration || !timeSpentOnPage) {
+      console.error("local storage not set correctly");
+      clearTimerLocalStorage();
+      return;
+    }
+
+    if (newTimeSpentOnPage >= Number(timerDuration) && !showSurveyPopup) {
+      setShowSurveyPopup(true);
+      setPollingTimer(false);
+    } else {
+      setLocalStorage("timespentonpage", String(newTimeSpentOnPage));
+    }
+  }
+
+  useEffect(() => {
+    if (!pollingTimer) {
+      return;
+    }
+    const id = setInterval(() => pollTimer(), pollingTimer ? 10000 : undefined);
+    return () => clearInterval(id);
+  }, [pollingTimer]);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
+    checkForSurveyPopupVariables();
     const handleResize = () => setWindowHeight(window.innerHeight);
     window.addEventListener("resize", handleResize);
     setWindowHeight(window.innerHeight);
@@ -295,6 +366,11 @@ function IndexPage(props: {
           curTopic={curTopic}
         />
       )}
+      <SurveyDialog
+        open={showSurveyPopup}
+        title={surveyPopupTitle}
+        closeDialog={() => closeSurveyPopup()}
+      />
     </MuiThemeProvider>
   );
 }

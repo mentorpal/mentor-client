@@ -26,3 +26,24 @@ export function isMentorReady(m: MentorState): boolean {
     m.status === MentorQuestionStatus.ANSWERED
   );
 }
+
+export function setLocalStorage(key: string, value: string): void {
+  if (typeof window == "undefined") {
+    return;
+  }
+  localStorage.setItem(key, value);
+}
+
+export function getLocalStorage(key: string): string {
+  if (typeof window == "undefined") {
+    return "";
+  }
+  return localStorage.getItem(key) || "";
+}
+
+export function removeLocalStorageItem(key: string): void {
+  if (typeof window == "undefined") {
+    return;
+  }
+  localStorage.removeItem(key);
+}
