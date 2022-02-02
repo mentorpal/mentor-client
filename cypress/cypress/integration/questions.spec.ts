@@ -117,20 +117,10 @@ describe("Questions list", () => {
       .find("div")
       .invoke("attr", "style")
       .should("contain", "black");
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(1)
-      .trigger("mouseover")
-      .click();
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(0)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=scrolling-questions-list]")
       .get(`[data-cy=${CSS.escape("Where were you born?")}]`)
@@ -138,12 +128,12 @@ describe("Questions list", () => {
       .invoke("attr", "style")
       .should("contain", "gray");
 
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(0)
-      .should("have.attr", "data-test", "About Me");
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-0]").should(
+      "have.attr",
+      "data-test",
+      "About Me"
+    );
   });
 
   it("greys out questions that have been asked (via input field)", () => {
@@ -191,7 +181,7 @@ describe("Questions list", () => {
       .should("contain", "gray");
   });
 
-  it("keeps greyed out questions when switching topics if new topic also has it", () => {
+  it.only("keeps greyed out questions when switching topics if new topic also has it", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=input-field]").type("Are you fun at parties?");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
@@ -204,13 +194,8 @@ describe("Questions list", () => {
       .find("div")
       .invoke("attr", "style")
       .should("contain", "gray");
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(1)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
     cy.get("[data-cy=scrolling-questions-list]").should(
       "have.attr",
       "data-topic",
