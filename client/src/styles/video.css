@@ -21,6 +21,13 @@
   left: 5;
 }
 
+.video-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .answer-link-card-container {
   background-color: #373737ad;
   position: absolute;
@@ -74,6 +81,18 @@
 .video-player-wrapper {
   position: relative;
   display: inline-block;
+}
+
+.email-mentor-button {
+  font-weight: bold;
+  cursor: pointer;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+}
+.email-mentor-button:hover {
+  color: blue;
+  text-decoration: underline;
 }
 
 @media only screen and (max-width: 1200px) {
