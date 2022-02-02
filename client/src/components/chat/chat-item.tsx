@@ -78,7 +78,7 @@ export function ChatItem(props: {
     visibility,
     mentorType,
     rePlayQuestionVideo,
-    mostRecentResponse
+    mostRecentResponse,
   } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
@@ -92,7 +92,7 @@ export function ChatItem(props: {
       : visibility && !message.isVideoInProgress;
 
   useEffect(() => {
-    if(!(isVisible && mostRecentResponse)){
+    if (!(isVisible && mostRecentResponse)) {
       return;
     }
     animateScroll.scrollToBottom({
