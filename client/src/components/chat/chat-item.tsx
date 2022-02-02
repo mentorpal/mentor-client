@@ -4,9 +4,10 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React from "react";
+import React, { useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { useDispatch, useSelector } from "react-redux";
+import { animateScroll } from "react-scroll";
 import {
   Avatar,
   ListItem,
@@ -67,6 +68,7 @@ export function ChatItem(props: {
     answerId: string,
     answerText: string
   ) => void;
+  mostRecentResponse: boolean;
 }): JSX.Element {
   const {
     message,
@@ -76,6 +78,7 @@ export function ChatItem(props: {
     visibility,
     mentorType,
     rePlayQuestionVideo,
+    mostRecentResponse
   } = props;
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const dispatch = useDispatch();
@@ -87,6 +90,15 @@ export function ChatItem(props: {
     mentorType === "CHAT"
       ? visibility
       : visibility && !message.isVideoInProgress;
+
+  useEffect(() => {
+    if(!(isVisible && mostRecentResponse)){
+      return;
+    }
+    animateScroll.scrollToBottom({
+      containerId: "chat-thread",
+    });
+  }, [isVisible]);
 
   function handleFeedbackClick(event: React.MouseEvent<HTMLDivElement>) {
     setAnchorEl(event.currentTarget);

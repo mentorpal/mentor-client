@@ -199,6 +199,7 @@ export function Chat(args: {
                 visibility={isQuestionsAnswersVisible(m.questionId)}
                 rePlayQuestionVideo={rePlayQuestionVideo}
                 mentorType={mentorType}
+                mostRecentResponse={i==(chatData.messages.length-1)}
               />
             </div>
           );
