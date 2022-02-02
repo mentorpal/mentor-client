@@ -13,7 +13,7 @@ const FAKE_STYLE_HEADER_LOGO =
 
 describe("Video Mentor", () => {
   describe("Plays a video in response to a user question", () => {
-    it.only("plays a mentor response and displays subtitles", () => {
+    it("plays a mentor response and displays subtitles", () => {
       mockDefaultSetup(cy, { mentorData: clint });
       cy.visit("/?mentor=clint");
       cy.get("[data-cy=input-field]").type("is the food good");
