@@ -51,6 +51,7 @@ export interface MentorClientData {
   _id: string;
   name: string;
   title: string;
+  email: string;
   mentorType: MentorType;
   topicQuestions: TopicQuestions[];
   utterances: Utterance[];
