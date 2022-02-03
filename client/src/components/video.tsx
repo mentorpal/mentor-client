@@ -34,6 +34,12 @@ export interface VideoData {
 function Video(args: { playing?: boolean }): JSX.Element {
   const { playing = false } = args;
   const dispatch = useDispatch();
+  const isQuestionSent = useSelector<State, boolean>(
+    (s) => s.chat.questionSent
+  );
+  const lastQuestionCounter = useSelector<State, number>(
+    (s) => s.chat.lastQuestionCounter || s.questionsAsked.length + 1
+  );
   const numberMentors = useSelector<State, number>((state) => {
     return Object.keys(state.mentorsById).length;
   });
@@ -79,6 +85,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
 
     const chatData = state.chat.messages;
     const lastQuestionId = chatData[chatData.length - 1].questionId;
+
     const lastWebLink = chatData.filter((m) => {
       if (m.mentorId === curMentor && m.questionId === lastQuestionId) {
         return m.webLinks;
@@ -163,7 +170,12 @@ function Video(args: { playing?: boolean }): JSX.Element {
 
   function onPlay() {
     setHideLinkLabel(false);
-    dispatch(onMentorDisplayAnswer(false, curMentor));
+
+    if (!isQuestionSent) {
+      dispatch(
+        onMentorDisplayAnswer(false, curMentor, lastQuestionCounter, Date.now())
+      );
+    }
 
     if (isIdle) {
       setHideLinkLabel(true);

@@ -16,14 +16,20 @@ export interface CmiParams {
   registration: string;
 }
 
-export function addCmi(url: string, cp: LaunchParameters): string {
+export function addCmi(
+  url: string,
+  cp: LaunchParameters,
+  referrer: string
+): string {
   return `${url}${url.includes("?") ? "" : "?"}${
     url.endsWith("&") ? "" : "&"
   }activityId=${encodeURIComponent(cp.activityId)}&actor=${encodeURIComponent(
     JSON.stringify(cp.actor)
   )}&endpoint=${encodeURIComponent(cp.endpoint)}&fetch=${encodeURIComponent(
     cp.fetch
-  )}&registration=${encodeURIComponent(cp.registration)}`;
+  )}&registration=${encodeURIComponent(
+    cp.registration
+  )}&referrer=${encodeURIComponent(referrer)}`;
 }
 
 export function hasCmi(urlOrQueryString: string): boolean {
@@ -46,6 +52,7 @@ export function getParams(urlOrQueryString: string): string | string[] {
     cutIx !== -1 ? urlOrQueryString.substring(cutIx + 1) : urlOrQueryString;
   const params = queryString.parse(urlQs);
   const userID = params.userID ? params.userID : "";
+
   return userID;
 }
 

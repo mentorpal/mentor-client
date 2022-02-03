@@ -75,7 +75,7 @@ describe("Chat", () => {
     cy.get("[data-cy=chat-thread]").should("exist");
     cy.get("[data-cy=input-field]").type("test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    cy.get("[data-cy=chat-msg-2]").contains("Click https://www.google.com");
+    cy.get("[data-cy=chat-msg-2]").contains("Click here");
     cy.get("[data-cy=chat-msg-2] a").should(
       "have.attr",
       "href",

@@ -112,7 +112,7 @@ describe("Video Mentor", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
+      cy.get("[data-cy=chat-msg-2]").contains("user msg 1");
     });
 
     // Mentor Card at the end

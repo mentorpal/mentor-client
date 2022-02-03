@@ -13,6 +13,7 @@ import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
 import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
+import "styles/history-chat-responsive.css";
 import ChatItem, { ChatItemData } from "./chat-item";
 import { ItemVisibilityPrefs, useWithChatData } from "./use-chat-data";
 import { shouldDisplayPortrait } from "pages";
@@ -102,9 +103,18 @@ export function Chat(args: {
     }, {});
   });
 
-  const chatData = useSelector<State, ChatData>((s) => s.chat);
+  const lastQuestionCounter = useSelector<State, number>(
+    (s) => s.chat.lastQuestionCounter || s.questionsAsked.length + 1
+  );
 
-  function isQuestionsAnswersVisible(questionId: string): boolean {
+  const chatData = useSelector<State, ChatData>((s) => s.chat);
+  function isQuestionsAnswersVisible(
+    questionId: string,
+    isIntro: boolean
+  ): boolean {
+    if (isIntro) {
+      return true;
+    }
     const userPref = getQuestionVisibilityPref(questionId);
     /**
      * RULE #1: if this is the most recent question,
@@ -154,6 +164,28 @@ export function Chat(args: {
     setVisibilityShowAllPref(visibilityShowAllPref);
   }, [visibilityShowAllPref]);
 
+  // TODO: sort answers by timestampAnswered
+  if (mentorType !== "CHAT") {
+    // get last answers
+    const lastAnswers = chatData.messages.filter((m) => {
+      return m.questionCounter === lastQuestionCounter && !m.isUser;
+    });
+
+    // sort last answers by timestampAnswered
+    const answersSorted = lastAnswers.sort((a, b) =>
+      String(a.timestampAnswered).localeCompare(String(b.timestampAnswered))
+    );
+
+    // remove unsorted answers
+    chatData.messages.splice(
+      chatData.messages.length - Object.keys(answersSorted).length,
+      chatData.messages.length
+    );
+
+    // add sorted answers to chat
+    chatData.messages.push(...answersSorted);
+  }
+
   return (
     <div
       data-cy="history-chat"
@@ -167,9 +199,10 @@ export function Chat(args: {
     >
       <List
         data-cy="chat-thread"
-        className={[styles.list, "chat-thread"].join(" ")}
+        className="chat-thread"
         style={{
           width: shouldDisplayPortrait() ? "100%" : width ? width : "40vw",
+          padding: shouldDisplayPortrait() ? 0 : 10,
         }}
         disablePadding={true}
         id="chat-thread"
@@ -179,7 +212,7 @@ export function Chat(args: {
           const itemData: ChatItemData = {
             ...m,
             color: m.mentorId ? colorByMentorId[m.mentorId] : bubbleColor || "",
-            name: mentorNameForChatMsg(m) || "",
+            name: m.isIntro ? m.name : mentorNameForChatMsg(m),
           };
           return (
             <div
@@ -201,7 +234,7 @@ export function Chat(args: {
                 setAnswerVisibility={(show: boolean) => {
                   setQuestionVisibilityPref(m.questionId, show);
                 }}
-                visibility={isQuestionsAnswersVisible(m.questionId)}
+                visibility={isQuestionsAnswersVisible(m.questionId, m.isIntro)}
                 rePlayQuestionVideo={rePlayQuestionVideo}
                 mentorType={mentorType}
                 mostRecentMsg={i == chatData.messages.length - 1}

@@ -54,22 +54,26 @@ export default function GuestPrompt(): JSX.Element {
     }
     const urlRoot = `${window.location.protocol}//${window.location.host}`;
     const userId = uuidv1();
-    window.location.href = addCmi(window.location.href, {
-      activityId: window.location.href,
-      actor: {
-        objectType: "Agent",
-        account: {
-          name: `${userId}`,
-          homePage: `${urlRoot}/guests`,
+    window.location.href = addCmi(
+      window.location.href,
+      {
+        activityId: window.location.href,
+        actor: {
+          objectType: "Agent",
+          account: {
+            name: `${userId}`,
+            homePage: `${urlRoot}/guests`,
+          },
+          name: `${name}`,
         },
-        name: `${name}`,
+        endpoint: absUrl(config.cmi5Endpoint),
+        fetch: `${absUrl(config.cmi5Fetch)}${
+          config.cmi5Fetch.includes("?") ? "" : "?"
+        }&username=${encodeURIComponent(name)}&userid=${userId}`,
+        registration: uuidv1(),
       },
-      endpoint: absUrl(config.cmi5Endpoint),
-      fetch: `${absUrl(config.cmi5Fetch)}${
-        config.cmi5Fetch.includes("?") ? "" : "?"
-      }&username=${encodeURIComponent(name)}&userid=${userId}`,
-      registration: uuidv1(),
-    });
+      ""
+    );
   }
 
   function onInput(name: string) {

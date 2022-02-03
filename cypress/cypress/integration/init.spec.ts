@@ -4,7 +4,10 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { addGuestParams } from "../support/helpers";
+import {
+  addGuestParams,
+  visitAsGuestWithDefaultSetup,
+} from "../support/helpers";
 
 describe("Cypress", () => {
   it("is working", () => {
@@ -13,5 +16,10 @@ describe("Cypress", () => {
 
   it("visits the app at base URL", () => {
     cy.visit("/", { qs: addGuestParams() });
+  });
+
+  it("Grabs referral from url", () => {
+    visitAsGuestWithDefaultSetup(cy, "/?referrer=CSUFCareerCenterTesting");
+    cy.viewport("macbook-13");
   });
 });

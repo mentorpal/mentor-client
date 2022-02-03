@@ -117,8 +117,8 @@ export function ChatItem(props: {
     children: React.ReactNode;
     node: { url: string };
   }) {
-    const linkAnswer =
-      props.href.length > 30 ? props.href.slice(0, 30) : props.href;
+    // const linkAnswer =
+    //   props.href.length > 30 ? props.href.slice(0, 30) : props.href;
     const chatLink = hrefToChatLink(props?.node?.url || "", message);
     return chatLink.type === LINK_TYPE_ASK ? (
       <a
@@ -133,7 +133,7 @@ export function ChatItem(props: {
       </a>
     ) : (
       <a href={props.href} target="_blank" rel="noreferrer">
-        {linkAnswer}
+        {props.children}
       </a>
     );
   }
@@ -216,13 +216,13 @@ export function ChatItem(props: {
     <p
       style={{
         marginTop: isUser ? 6 : 3,
+        marginLeft: message.isIntro ? 30 : 62,
       }}
       className="bubble-mentor-name"
     >
       {message.name}
     </p>
   );
-
   return (
     <div>
       {!isUser && isVisible ? mentorBubbleName : null}
