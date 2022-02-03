@@ -6,7 +6,6 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { animateScroll } from "react-scroll";
 import { List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -63,7 +62,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MENTOR_COLORS = ["#eaeaea", "#d4e8d9", "#ffebcf", "#f5cccd"];
+const MENTOR_COLORS = [
+  "#d4e8d9", // light green
+  "#ffb8f0", // light purple
+  "#ffebcf", // light orange
+  "#f5cccd", // light red
+  "#aaffc3", // mint
+  "#ffffd6", // light yellow
+  "#ffd6fd", // light pink
+  "#b8bfff", // light blue
+  "#d6ffec", // seafoam green
+  "#ffd8b1", // apricot
+];
 
 export function Chat(args: {
   height?: number;
@@ -93,16 +103,11 @@ export function Chat(args: {
     }, {});
   });
 
-  const chatData = useSelector<State, ChatData>((s) => s.chat);
   const lastQuestionCounter = useSelector<State, number>(
     (s) => s.chat.lastQuestionCounter || s.questionsAsked.length + 1
   );
-  useEffect(() => {
-    animateScroll.scrollToBottom({
-      containerId: "chat-thread",
-    });
-  }, [chatData.messages.length]);
 
+  const chatData = useSelector<State, ChatData>((s) => s.chat);
   function isQuestionsAnswersVisible(
     questionId: string,
     isIntro: boolean
@@ -232,6 +237,7 @@ export function Chat(args: {
                 visibility={isQuestionsAnswersVisible(m.questionId, m.isIntro)}
                 rePlayQuestionVideo={rePlayQuestionVideo}
                 mentorType={mentorType}
+                mostRecentMsg={i == chatData.messages.length - 1}
               />
             </div>
           );

@@ -223,6 +223,7 @@ function onMentorsLoadRequested(
         _id: mentorId,
         name: "",
         title: "",
+        email: "",
         mentorType: MentorType.VIDEO,
         topicQuestions: [],
         utterances: [],

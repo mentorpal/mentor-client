@@ -25,6 +25,14 @@
   margin-bottom: 0;
 }
 
+.listed-question {
+  cursor: pointer;
+}
+
+.listed-question:hover {
+  background: rgb(196, 239, 255);
+}
+
 @media only screen and (max-width: 1200px) {
   .main-container {
     display: contents;
