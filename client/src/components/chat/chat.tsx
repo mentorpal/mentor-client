@@ -61,7 +61,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MENTOR_COLORS = ["#eaeaea", "#d4e8d9", "#ffebcf", "#f5cccd"];
+const MENTOR_COLORS = [
+  "#d4e8d9", // light green
+  "#ffb8f0", // light purple
+  "#ffebcf", // light orange
+  "#f5cccd", // light red
+  "#aaffc3", // mint
+  "#ffffd6", // light yellow
+  "#ffd6fd", // light pink
+  "#b8bfff", // light blue
+  "#d6ffec", // seafoam green
+  "#ffd8b1", // apricot
+];
 
 export function Chat(args: {
   height?: number;

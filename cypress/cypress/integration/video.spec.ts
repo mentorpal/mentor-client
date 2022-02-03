@@ -14,9 +14,16 @@ const FAKE_STYLE_HEADER_LOGO =
 describe("Video Mentor", () => {
   describe("Plays a video in response to a user question", () => {
     it("plays a mentor response and displays subtitles", () => {
-      mockDefaultSetup(cy);
+      mockDefaultSetup(cy, { mentorData: clint });
       cy.visit("/?mentor=clint");
       cy.get("[data-cy=input-field]").type("is the food good");
+      // have to wait until the intro video is done to send a question
+      // to truly check if we are recieving a response to the question
+      cy.get("[data-cy=video-container]", { timeout: 8000 }).should(
+        "have.attr",
+        "data-video-type",
+        "idle"
+      );
       cy.get("[data-cy=input-send]").trigger("mouseover").click();
       cy.get("[data-cy=video-container]").should(
         "have.attr",
