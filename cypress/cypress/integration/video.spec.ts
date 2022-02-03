@@ -63,6 +63,22 @@ describe("Video Mentor", () => {
     cy.get("[data-cy=mentor-name-card]").should("exist");
   });
 
+  it("displays email icon if email exists", () => {
+    mockDefaultSetup(cy);
+    cy.visit("/?mentor=clint");
+    cy.get("[data-cy=email-mentor-icon]").should("exist");
+  });
+
+  it("does not display email icon if email does not exist", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["carlos"] },
+      mentorData: [carlos],
+      apiResponse: "response_with_feedback.json",
+    });
+    cy.visit("/");
+    cy.get("[data-cy=email-mentor-icon]").should("not.exist");
+  });
+
   it("Display mentor-name card & star over the left-corner of the video", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },

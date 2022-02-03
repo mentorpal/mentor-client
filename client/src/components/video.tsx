@@ -12,6 +12,7 @@ import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import { videoUrl, subtitleUrl, idleUrl } from "api";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
+import MailIcon from "@material-ui/icons/Mail";
 import { chromeVersion } from "utils";
 import {
   answerFinished,
@@ -94,9 +95,10 @@ function Video(args: { playing?: boolean }): JSX.Element {
     _id: string;
     name: string;
     title: string;
+    email: string;
   }
 
-  const mentorName = useSelector<State, HeaderMentorData | null>((state) => {
+  const mentorData = useSelector<State, HeaderMentorData | null>((state) => {
     if (!state.curMentor) {
       return null;
     }
@@ -106,21 +108,25 @@ function Video(args: { playing?: boolean }): JSX.Element {
           return m.webLinks;
         }
       });
-      const _id = replayMentorData
-        ? state.mentorsById[replayMentorData?.mentorId].mentor._id
-        : "";
-      const name = replayMentorData
-        ? state.mentorsById[replayMentorData?.mentorId].mentor.name
-        : "";
-      const title = replayMentorData
-        ? state.mentorsById[replayMentorData?.mentorId].mentor.title
-        : "";
+      const replayedMentor = replayMentorData?.mentorId
+        ? state.mentorsById[replayMentorData.mentorId].mentor
+        : undefined;
 
-      return {
-        _id,
-        name,
-        title,
-      };
+      if (replayedMentor) {
+        return {
+          _id: replayedMentor._id,
+          name: replayedMentor.name,
+          title: replayedMentor.title,
+          email: replayedMentor.email,
+        };
+      } else {
+        return {
+          _id: "",
+          name: "",
+          title: "",
+          email: "",
+        };
+      }
     }
 
     const m = state.mentorsById[state.curMentor];
@@ -131,6 +137,7 @@ function Video(args: { playing?: boolean }): JSX.Element {
       _id: m.mentor._id,
       name: m.mentor.name,
       title: m.mentor.title,
+      email: m.mentor.email,
     };
   });
 
@@ -172,6 +179,11 @@ function Video(args: { playing?: boolean }): JSX.Element {
     );
   }
 
+  const sendMail = (email: string, subject: string): void => {
+    const url = `mailto:${email}?subject=${subject}`;
+    window.open(url);
+  };
+
   return (
     <div
       data-cy="video-container"
@@ -191,11 +203,25 @@ function Video(args: { playing?: boolean }): JSX.Element {
         videoUrl={video.src}
         webLinks={webLinks}
         hideLinkLabel={hideLinkLabel}
-        mentorName={mentorName ? mentorName?.name : ""}
+        mentorName={mentorData ? mentorData.name : ""}
         numberMentors={numberMentors}
       />
       <LoadingSpinner mentor={curMentor} />
       <MessageStatus mentor={curMentor} />
+      {mentorData?.email && mentorData.name ? (
+        <div
+          data-cy="email-mentor-icon"
+          className="email-mentor-button"
+          onClick={() =>
+            sendMail(
+              mentorData.email,
+              `Contacting ${mentorData.name} for more information`
+            )
+          }
+        >
+          Email Mentor <MailIcon />
+        </div>
+      ) : undefined}
     </div>
   );
 }
