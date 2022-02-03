@@ -15,7 +15,9 @@ import {
 } from "types";
 
 export const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT || "/graphql";
-export async function fetchConfig(graphqlUrl = "/graphql"): Promise<Config> {
+export async function fetchConfig(
+  graphqlUrl = GRAPHQL_ENDPOINT
+): Promise<Config> {
   const gqlRes = await axios.post<GraphQLResponse<{ config: Config }>>(
     graphqlUrl,
     {
@@ -134,6 +136,7 @@ export async function fetchMentor(
           _id
           name
           title
+          email
           mentorType
           topicQuestions {
             topic
