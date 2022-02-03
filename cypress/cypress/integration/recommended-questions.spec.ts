@@ -30,12 +30,8 @@ describe("Recommended questions", () => {
         recommendedQuestions: "Howdy",
       }),
     });
-    cy.get("[data-cy=topics]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(0)
-      .contains("Recommended");
+    cy.get("[data-cy=topics]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-0]").contains("Recommended");
   });
 
   it("list recommended questions in question list", () => {
@@ -68,28 +64,23 @@ describe("Recommended questions", () => {
         recommendedQuestions: "Are you fun at parties?",
       }),
     });
-    cy.get("[data-cy=topics]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(0)
-      .should("not.have.attr", "data-test", "About Me");
+    cy.get("[data-cy=topics]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-0]").should(
+      "not.have.attr",
+      "data-test",
+      "About Me"
+    );
     cy.get("[data-cy=close-topics]").trigger("mouseover").click();
 
-    cy.get("[data-cy=topics]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(2)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topics]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-2]").trigger("mouseover").click();
 
-    cy.get("[data-cy=topics]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(2)
-      .should("have.attr", "data-test", "About the Job");
+    cy.get("[data-cy=topics]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-2]").should(
+      "have.attr",
+      "data-test",
+      "About the Job"
+    );
     cy.get("[data-cy=close-topics]").trigger("mouseover").click();
 
     cy.get("[data-cy=scrolling-questions-list]")
