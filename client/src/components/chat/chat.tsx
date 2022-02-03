@@ -6,7 +6,6 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { animateScroll } from "react-scroll";
 import { List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -104,11 +103,6 @@ export function Chat(args: {
   });
 
   const chatData = useSelector<State, ChatData>((s) => s.chat);
-  useEffect(() => {
-    animateScroll.scrollToBottom({
-      containerId: "chat-thread",
-    });
-  }, [chatData.messages.length]);
 
   function isQuestionsAnswersVisible(questionId: string): boolean {
     const userPref = getQuestionVisibilityPref(questionId);
@@ -210,6 +204,7 @@ export function Chat(args: {
                 visibility={isQuestionsAnswersVisible(m.questionId)}
                 rePlayQuestionVideo={rePlayQuestionVideo}
                 mentorType={mentorType}
+                mostRecentMsg={i == chatData.messages.length - 1}
               />
             </div>
           );
