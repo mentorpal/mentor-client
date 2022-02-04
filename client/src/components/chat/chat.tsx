@@ -92,7 +92,10 @@ export function Chat(args: {
     setVisibilityShowAllPref,
     mentorNameForChatMsg,
     rePlayQuestionVideo,
+    mentorNameById,
   } = useWithChatData();
+
+  const numMentors = Object.keys(mentorNameById).length;
 
   const colorByMentorId = useSelector<State, Record<string, string>>((s) => {
     const mentorIds = Object.getOwnPropertyNames(s.mentorsById);
@@ -237,7 +240,7 @@ export function Chat(args: {
                 visibility={isQuestionsAnswersVisible(m.questionId, m.isIntro)}
                 rePlayQuestionVideo={rePlayQuestionVideo}
                 mentorType={mentorType}
-                mostRecentMsg={i == chatData.messages.length - 1}
+                mostRecentMsg={i >= chatData.messages.length - numMentors}
               />
             </div>
           );
