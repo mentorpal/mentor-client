@@ -24,6 +24,12 @@ import "styles/history-chat-responsive.css";
 import Desktop from "components/layout/desktop";
 import { isMobile } from "react-device-detect";
 import Mobile from "components/layout/mobile";
+import { SurveyDialog } from "components/survey-dialog";
+import {
+  getLocalStorage,
+  removeLocalStorageItem,
+  setLocalStorage,
+} from "utils";
 
 const useStyles = makeStyles((theme) => ({
   flexRoot: {
@@ -111,6 +117,17 @@ function IndexPage(props: {
   const [chatHeight, setChatHeight] = React.useState<number>(0);
   const curTopic = useSelector<State, string>((state) => state.curTopic);
 
+  const [pollingTimer, setPollingTimer] = React.useState<boolean>(false);
+  const [showSurveyPopup, setShowSurveyPopup] = React.useState<boolean>(false);
+  const surveyPopupTitle =
+    getLocalStorage("timertext") ||
+    `You have spent ${getLocalStorage(
+      "postsurveytime"
+    )} seconds in the system! Please click the link below to take our survey`;
+  const surveyLink = `https://fullerton.qualtrics.com/jfe/form/SV_1ZzDYgNPzLE2QPI?userid=${getLocalStorage(
+    "qualtricsuserid"
+  )}`;
+
   const { guest, subject, recommendedQuestions } = props.search;
   let { mentor } = props.search;
 
@@ -139,8 +156,71 @@ function IndexPage(props: {
     },
   });
 
+  function checkForSurveyPopupVariables() {
+    const searchParams = new URL(location.href).searchParams;
+    const postsurveytime = searchParams.get("postsurveytime");
+    const qualtricsUserId = searchParams.get("userid");
+    if (postsurveytime && qualtricsUserId) {
+      setLocalStorage("postsurveytime", postsurveytime);
+      setLocalStorage("qualtricsuserid", qualtricsUserId);
+      setLocalStorage("timespentonpage", "0");
+      const timertext = searchParams.get("timertext");
+      if (timertext) {
+        setLocalStorage("timertext", timertext);
+      }
+      setPollingTimer(true);
+    } else {
+      const localStorageTimerPopup = getLocalStorage("postsurveytime");
+      const localStorageTimeSpent = getLocalStorage("timespentonpage");
+      if (localStorageTimerPopup && localStorageTimeSpent) {
+        setPollingTimer(true);
+      }
+    }
+  }
+
+  function clearTimerLocalStorage() {
+    removeLocalStorageItem("timespentonpage");
+    removeLocalStorageItem("postsurveytime");
+    removeLocalStorageItem("qualtricsuserid");
+    removeLocalStorageItem("timertext");
+    setPollingTimer(false);
+  }
+
+  function closeSurveyPopup() {
+    setShowSurveyPopup(false);
+    clearTimerLocalStorage();
+  }
+
+  function pollTimer(): void {
+    const timeSpentOnPage = getLocalStorage("timespentonpage");
+    const newTimeSpentOnPage = Number(timeSpentOnPage) + 10;
+
+    const timerDuration = getLocalStorage("postsurveytime");
+    if (!timerDuration || !timeSpentOnPage) {
+      console.error("local storage not set correctly");
+      clearTimerLocalStorage();
+      return;
+    }
+
+    if (newTimeSpentOnPage >= Number(timerDuration) && !showSurveyPopup) {
+      setShowSurveyPopup(true);
+      setPollingTimer(false);
+    } else {
+      setLocalStorage("timespentonpage", String(newTimeSpentOnPage));
+    }
+  }
+
+  useEffect(() => {
+    if (!pollingTimer) {
+      return;
+    }
+    const id = setInterval(() => pollTimer(), pollingTimer ? 10000 : undefined);
+    return () => clearInterval(id);
+  }, [pollingTimer]);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
+    checkForSurveyPopupVariables();
     const handleResize = () => setWindowHeight(window.innerHeight);
     window.addEventListener("resize", handleResize);
     setWindowHeight(window.innerHeight);
@@ -170,7 +250,7 @@ function IndexPage(props: {
     );
   });
 
-  const setLocalStorage = (): string => {
+  const setupLocalStorage = (): string => {
     // get local user information
     const localData = localStorage.getItem("userData");
     // grab referrer from the URL
@@ -215,7 +295,7 @@ function IndexPage(props: {
       if (!userId || typeof userId !== "string") {
         userId = uuidv1();
       }
-      const referrer = setLocalStorage();
+      const referrer = setupLocalStorage();
 
       window.location.href = addCmi(
         window.location.href,
@@ -336,6 +416,12 @@ function IndexPage(props: {
           curTopic={curTopic}
         />
       )}
+      <SurveyDialog
+        open={showSurveyPopup}
+        title={surveyPopupTitle}
+        link={surveyLink}
+        closeDialog={() => closeSurveyPopup()}
+      />
     </MuiThemeProvider>
   );
 }

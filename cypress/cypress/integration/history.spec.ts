@@ -466,7 +466,8 @@ describe("Chat History (Video Mentors)", () => {
       "http://videos.org/answer_id.mp4"
     );
 
-    cy.get("[data-cy=visibility-switch]").find("input").check();
+    cy.get("[data-cy=visibility-switch]").invoke("mouseover").click();
+    cy.get("[data-cy=visibility-switch]").should("have.class", "Mui-checked");
 
     // provide feedback
     cy.get("[data-cy=history-chat").within(($hc) => {
