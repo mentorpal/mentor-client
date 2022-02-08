@@ -31,6 +31,7 @@ export async function fetchConfig(
           urlClassifier
           urlGraphql
           urlVideo
+          filterEmailMentorAddress
           disclaimerTitle
           disclaimerText
           disclaimerDisabled

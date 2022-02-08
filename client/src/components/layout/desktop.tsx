@@ -32,6 +32,9 @@ function Desktop(props: {
   const displayGuestPrompt = useSelector<State, boolean>(
     (state) => state.config.displayGuestPrompt
   );
+  const configEmailMentorAddress = useSelector<State, string>(
+    (state) => state.config.filterEmailMentorAddress
+  );
 
   const leftPanel = (
     <div>
@@ -44,7 +47,10 @@ function Desktop(props: {
           bubbleColor={"#88929e"}
         />
       ) : (
-        <Video playing={hasSessionUser() || !displayGuestPrompt} />
+        <Video
+          playing={hasSessionUser() || !displayGuestPrompt}
+          configEmailMentorAddress={configEmailMentorAddress}
+        />
       )}
     </div>
   );

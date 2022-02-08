@@ -82,6 +82,7 @@ export const initialState: State = {
     styleHeaderLogo: process.env.HEADER_LOGO || "",
     styleHeaderColor: process.env.HEADER_COLOR || "",
     styleHeaderTextColor: process.env.HEADER_TEXT_COLOR || "",
+    filterEmailMentorAddress: process.env.FILTER_EMAIL_MENTOR_ADDRESS || "",
     disclaimerTitle: process.env.DISCLAIMER_TITLE || "",
     disclaimerText: process.env.DISCLAIMER_TEXT || "",
     disclaimerDisabled:
