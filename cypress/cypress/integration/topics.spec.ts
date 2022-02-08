@@ -37,12 +37,12 @@ describe("Topics list", () => {
     );
 
     // test that within the TOPIC dropdown that the first item is already selected
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(0)
-      .should("have.attr", "data-test", "About Me");
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-0]").should(
+      "have.attr",
+      "data-test",
+      "About Me"
+    );
     cy.get("[data-cy=close-topics]").trigger("mouseover").click();
 
     // test that the content displayed in the questions-list panel is the list of questions for the default/selected topic
@@ -74,13 +74,10 @@ describe("Topics list", () => {
 
   it("can select a topic", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(2)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-form]").within(() => {
+      cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
+    });
 
     cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
 
@@ -100,22 +97,17 @@ describe("Topics list", () => {
       cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
     });
     cy.get("[data-cy=scrolling-questions-list]");
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(0)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
 
     cy.get("[data-cy=scrolling-questions-list]").should("not.exist");
 
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(0)
-      .should("not.have.attr", "data-test", "About Me");
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-0]").should(
+      "not.have.attr",
+      "data-test",
+      "About Me"
+    );
   });
 
   it("changes topics when selecting a mentor", () => {
@@ -157,20 +149,14 @@ describe("Topics list", () => {
 
   it("keeps selected topic when switching mentors if new mentor has it", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(2)
-      .trigger("mouseover")
-      .click();
-
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(1)
-      .should("have.attr", "data-test", "About the Job");
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-1]").should(
+      "have.attr",
+      "data-test",
+      "About the Job"
+    );
     cy.get("[data-cy=close-topics]").trigger("mouseover").click();
 
     cy.get("[data-cy=video-thumbnail-carlos]").should(
@@ -180,30 +166,24 @@ describe("Topics list", () => {
     );
     cy.get("[data-cy=video-thumbnail-carlos]").trigger("mouseover").click();
 
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(1)
-      .should("have.attr", "data-test", "About the Job");
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-1]").should(
+      "have.attr",
+      "data-test",
+      "About the Job"
+    );
   });
 
   it("does not keep selected topic when switching mentors if new mentor does not have it", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(2)
-      .trigger("mouseover")
-      .click();
-
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(1)
-      .should("have.attr", "data-test", "About the Job");
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-1]").should(
+      "have.attr",
+      "data-test",
+      "About the Job"
+    );
     cy.get("[data-cy=close-topics]").trigger("mouseover").click();
 
     cy.get("[data-cy=video-thumbnail-julianne]").should(
@@ -213,24 +193,21 @@ describe("Topics list", () => {
     );
     cy.get("[data-cy=video-thumbnail-julianne]").trigger("mouseover").click();
 
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(1)
-      .should("not.have.attr", "data-test", "About the Job");
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-1]").should(
+      "not.have.attr",
+      "data-test",
+      "About the Job"
+    );
     cy.get("[data-cy=close-topics]").trigger("mouseover").click();
   });
 
   it("recommends a topic-relevant question for current mentor when topic is selected", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(2)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-form]").within(() => {
+      cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
+    });
 
     cy.get("[data-cy=input-field-wrapper]").should(
       "have.attr",
@@ -251,13 +228,10 @@ describe("Topics list", () => {
     );
     cy.get("[data-cy=video-thumbnail-julianne]").trigger("mouseover").click();
 
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(2)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-form]").within(() => {
+      cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
+    });
 
     cy.get("[data-cy=input-field-wrapper]").should(
       "have.attr",
@@ -278,26 +252,16 @@ describe("Topics list", () => {
     cy.get("[data-cy=topics-questions-list]").within(() => {
       cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
     });
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(1)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
 
     cy.get("[data-cy=input-field-wrapper]").should(
       "have.attr",
       "data-topic",
       "About the Job"
     );
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(0)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
 
     cy.get("[data-cy=input-field-wrapper]").should(
       "have.attr",
@@ -309,44 +273,24 @@ describe("Topics list", () => {
 
   it("does not recommend a topic question that has already been asked (via topic button)", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(1)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
 
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(0)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
 
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(1)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
 
     cy.get("[data-cy=input-field-wrapper]").should(
       "have.attr",
       "data-topic",
       "About the Job"
     );
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(0)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
 
     cy.get("[data-cy=input-field-wrapper]").should(
       "have.attr",
@@ -366,26 +310,16 @@ describe("Topics list", () => {
       cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
     });
 
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(1)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-1]").trigger("mouseover").click();
 
     cy.get("[data-cy=input-field-wrapper]").should(
       "have.attr",
       "data-topic",
       "About the Job"
     );
-    cy.get("[data-cy=topic-tab]")
-      .trigger("mouseover")
-      .click()
-      .get("div>li")
-      .eq(0)
-      .trigger("mouseover")
-      .click();
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
 
     cy.get("[data-cy=input-field-wrapper]").should(
       "have.attr",

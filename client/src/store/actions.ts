@@ -171,6 +171,8 @@ export interface VideoFinishedAction {
   payload: {
     isVideoInProgress: boolean;
     curMentor: string;
+    lastQuestion: number;
+    timestampAnswered: number;
   };
 }
 
@@ -249,13 +251,20 @@ export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
 
 export const onMentorDisplayAnswer =
-  (isVideoInProgress: boolean, curMentor: string) =>
+  (
+    isVideoInProgress: boolean,
+    curMentor: string,
+    lastQuestion: number,
+    timestampAnswered: number
+  ) =>
   async (dispatch: ThunkDispatch<State, void, VideoFinishedAction>) => {
     dispatch({
       type: VIDEO_FINISHED,
       payload: {
         isVideoInProgress,
         curMentor,
+        lastQuestion,
+        timestampAnswered,
       },
     });
   };
@@ -321,7 +330,7 @@ export const loadConfig =
 
 export const loadMentors: ActionCreator<
   ThunkAction<
-    Promise<MentorsLoadResultAction>, // The type of the last action to be dispatched - will always be promise<T> for async actions
+    Promise<void>, // The type of the last action to be dispatched - will always be promise<T> for async actions
     State, // The type for the data within the last action
     string, // The type of the parameter for the nested function
     MentorsLoadResultAction // The type of the last action to be dispatched
@@ -400,13 +409,33 @@ export const loadMentors: ActionCreator<
         mentorLoadResult.mentorsById[mentorLoadResult.mentor]?.data
           ?.topic_questions;
       if (tqs && tqs.length > 0) {
-        mentorLoadResult.topic = tqs[0].topic;
+        const recommendedQuestions = getState().recommendedQuestions;
+        let mentorType: string | undefined = "";
+        for (const mentor in mentorLoadResult.mentorsById) {
+          mentorType =
+            mentorLoadResult?.mentorsById[mentor]?.data?.mentor.mentorType;
+        }
+        mentorLoadResult.topic =
+          recommendedQuestions?.length > 0 || mentorType === "CHAT"
+            ? tqs[0].topic
+            : tqs[tqs.length - 1].topic;
       }
     }
-    return dispatch<MentorsLoadResultAction>({
-      type: MENTORS_LOAD_RESULT,
-      payload: mentorLoadResult,
-    });
+    const curState = getState();
+    if (
+      curState.chat.messages.length <
+      Object.keys(mentorLoadResult.mentorsById).length
+    ) {
+      for (const mentor in mentorLoadResult.mentorsById) {
+        mentorLoadResult.curMentor = mentor;
+        dispatch<MentorsLoadResultAction>({
+          type: MENTORS_LOAD_RESULT,
+          payload: mentorLoadResult,
+        });
+      }
+    }
+
+    return;
   };
 
 function sendCmi5Statement(statement: any) {

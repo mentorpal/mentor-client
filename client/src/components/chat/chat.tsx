@@ -6,7 +6,6 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { animateScroll } from "react-scroll";
 import { List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -14,6 +13,7 @@ import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
 
 import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
+import "styles/history-chat-responsive.css";
 import ChatItem, { ChatItemData } from "./chat-item";
 import { ItemVisibilityPrefs, useWithChatData } from "./use-chat-data";
 import { shouldDisplayPortrait } from "pages";
@@ -62,7 +62,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MENTOR_COLORS = ["#eaeaea", "#d4e8d9", "#ffebcf", "#f5cccd"];
+const MENTOR_COLORS = [
+  "#d4e8d9", // light green
+  "#ffb8f0", // light purple
+  "#ffebcf", // light orange
+  "#f5cccd", // light red
+  "#aaffc3", // mint
+  "#ffffd6", // light yellow
+  "#ffd6fd", // light pink
+  "#b8bfff", // light blue
+  "#d6ffec", // seafoam green
+  "#ffd8b1", // apricot
+];
 
 export function Chat(args: {
   height?: number;
@@ -81,7 +92,10 @@ export function Chat(args: {
     setVisibilityShowAllPref,
     mentorNameForChatMsg,
     rePlayQuestionVideo,
+    mentorNameById,
   } = useWithChatData();
+
+  const numMentors = Object.keys(mentorNameById).length;
 
   const colorByMentorId = useSelector<State, Record<string, string>>((s) => {
     const mentorIds = Object.getOwnPropertyNames(s.mentorsById);
@@ -92,14 +106,18 @@ export function Chat(args: {
     }, {});
   });
 
-  const chatData = useSelector<State, ChatData>((s) => s.chat);
-  useEffect(() => {
-    animateScroll.scrollToBottom({
-      containerId: "chat-thread",
-    });
-  }, [chatData.messages.length]);
+  const lastQuestionCounter = useSelector<State, number>(
+    (s) => s.chat.lastQuestionCounter || s.questionsAsked.length + 1
+  );
 
-  function isQuestionsAnswersVisible(questionId: string): boolean {
+  const chatData = useSelector<State, ChatData>((s) => s.chat);
+  function isQuestionsAnswersVisible(
+    questionId: string,
+    isIntro: boolean
+  ): boolean {
+    if (isIntro) {
+      return true;
+    }
     const userPref = getQuestionVisibilityPref(questionId);
     /**
      * RULE #1: if this is the most recent question,
@@ -149,6 +167,28 @@ export function Chat(args: {
     setVisibilityShowAllPref(visibilityShowAllPref);
   }, [visibilityShowAllPref]);
 
+  // TODO: sort answers by timestampAnswered
+  if (mentorType !== "CHAT") {
+    // get last answers
+    const lastAnswers = chatData.messages.filter((m) => {
+      return m.questionCounter === lastQuestionCounter && !m.isUser;
+    });
+
+    // sort last answers by timestampAnswered
+    const answersSorted = lastAnswers.sort((a, b) =>
+      String(a.timestampAnswered).localeCompare(String(b.timestampAnswered))
+    );
+
+    // remove unsorted answers
+    chatData.messages.splice(
+      chatData.messages.length - Object.keys(answersSorted).length,
+      chatData.messages.length
+    );
+
+    // add sorted answers to chat
+    chatData.messages.push(...answersSorted);
+  }
+
   return (
     <div
       data-cy="history-chat"
@@ -162,9 +202,10 @@ export function Chat(args: {
     >
       <List
         data-cy="chat-thread"
-        className={[styles.list, "chat-thread"].join(" ")}
+        className="chat-thread"
         style={{
           width: shouldDisplayPortrait() ? "100%" : width ? width : "40vw",
+          padding: shouldDisplayPortrait() ? 0 : 10,
         }}
         disablePadding={true}
         id="chat-thread"
@@ -174,7 +215,7 @@ export function Chat(args: {
           const itemData: ChatItemData = {
             ...m,
             color: m.mentorId ? colorByMentorId[m.mentorId] : bubbleColor || "",
-            name: mentorNameForChatMsg(m) || "",
+            name: m.isIntro ? m.name : mentorNameForChatMsg(m),
           };
           return (
             <div
@@ -196,9 +237,10 @@ export function Chat(args: {
                 setAnswerVisibility={(show: boolean) => {
                   setQuestionVisibilityPref(m.questionId, show);
                 }}
-                visibility={isQuestionsAnswersVisible(m.questionId)}
+                visibility={isQuestionsAnswersVisible(m.questionId, m.isIntro)}
                 rePlayQuestionVideo={rePlayQuestionVideo}
                 mentorType={mentorType}
+                mostRecentMsg={i >= chatData.messages.length - numMentors}
               />
             </div>
           );

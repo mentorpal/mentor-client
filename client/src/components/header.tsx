@@ -83,7 +83,9 @@ function Header(): JSX.Element {
   };
 
   const handleClickHome = () => {
-    window.location.href = "/";
+    const referrer = new URL(location.href).searchParams.get("referrer");
+
+    window.location.href = `/home/?referrer=${referrer}`;
   };
 
   const handleAgree = () => {

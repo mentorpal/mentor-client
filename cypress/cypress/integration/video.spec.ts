@@ -14,9 +14,16 @@ const FAKE_STYLE_HEADER_LOGO =
 describe("Video Mentor", () => {
   describe("Plays a video in response to a user question", () => {
     it("plays a mentor response and displays subtitles", () => {
-      mockDefaultSetup(cy);
+      mockDefaultSetup(cy, { mentorData: clint });
       cy.visit("/?mentor=clint");
       cy.get("[data-cy=input-field]").type("is the food good");
+      // have to wait until the intro video is done to send a question
+      // to truly check if we are recieving a response to the question
+      cy.get("[data-cy=video-container]", { timeout: 8000 }).should(
+        "have.attr",
+        "data-video-type",
+        "idle"
+      );
       cy.get("[data-cy=input-send]").trigger("mouseover").click();
       cy.get("[data-cy=video-container]").should(
         "have.attr",
@@ -56,6 +63,22 @@ describe("Video Mentor", () => {
     cy.get("[data-cy=mentor-name-card]").should("exist");
   });
 
+  it("displays email icon if email exists", () => {
+    mockDefaultSetup(cy);
+    cy.visit("/?mentor=clint");
+    cy.get("[data-cy=email-mentor-icon]").should("exist");
+  });
+
+  it("does not display email icon if email does not exist", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["carlos"] },
+      mentorData: [carlos],
+      apiResponse: "response_with_feedback.json",
+    });
+    cy.visit("/");
+    cy.get("[data-cy=email-mentor-icon]").should("not.exist");
+  });
+
   it("Display mentor-name card & star over the left-corner of the video", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
@@ -89,7 +112,7 @@ describe("Video Mentor", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-msg-1]").contains("user msg 1");
+      cy.get("[data-cy=chat-msg-2]").contains("user msg 1");
     });
 
     // Mentor Card at the end

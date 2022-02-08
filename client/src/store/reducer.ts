@@ -68,6 +68,8 @@ export const initialState: State = {
   chat: {
     messages: [],
     replay: false,
+    questionSent: false,
+    lastQuestionCounter: 0,
   },
   config: {
     cmi5Enabled: false,
@@ -221,6 +223,7 @@ function onMentorsLoadRequested(
         _id: mentorId,
         name: "",
         title: "",
+        email: "",
         mentorType: MentorType.VIDEO,
         topicQuestions: [],
         utterances: [],
@@ -248,13 +251,22 @@ function onMentorLoadResults(
 ): State {
   const mentor = action?.payload?.mentor;
   const curMentorIntro =
-    action?.payload?.mentorsById[mentor || ""]?.data?.mentor;
+    action?.payload?.mentorsById[action.payload.curMentor || ""]?.data?.mentor;
   const mentorId = action?.payload?.mentorsById[mentor || ""]?.data?.answer_id;
-
+  const mentorName =
+    action?.payload?.mentorsById[action.payload.curMentor || ""]?.data?.mentor
+      .name;
   const curMentorIntroTranscript = curMentorIntro
     ? getUtterance(curMentorIntro, UtteranceName.INTRO)?.transcript
     : "";
 
+  const answerId = curMentorIntro
+    ? getUtterance(curMentorIntro, UtteranceName.INTRO)?._id
+    : "";
+
+  const answerMedia = curMentorIntro
+    ? getUtterance(curMentorIntro, UtteranceName.INTRO)?.media
+    : [];
   let s = {
     ...state,
     chat: {
@@ -262,22 +274,25 @@ function onMentorLoadResults(
       messages: [
         ...state.chat.messages,
         {
-          name: "",
-          color: "",
-          mentorId: "",
+          name: mentorName || "name",
+          color: "#fff",
+          mentorId: action.payload.curMentor || "",
           isIntro: true,
           isUser: false,
           text: curMentorIntroTranscript || "",
           questionId: "",
           feedback: Feedback.NONE,
           feedbackId: "",
+          answerId,
+          answerMedia,
           isFeedbackSendInProgress: false,
-          isVideoInProgress: false,
+          isVideoInProgress: true,
           askLinks: findAskLinks(curMentorIntroTranscript || ""),
           webLinks: findWebLinks(
             curMentorIntroTranscript || "",
             mentorId || ""
           ),
+          // timestampAnswered: Date.now()
         },
       ],
     },
@@ -334,8 +349,11 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
               feedback: Feedback.NONE,
               feedbackId: "",
               isFeedbackSendInProgress: false,
+              questionCounter: state.questionsAsked.length + 1,
             },
           ],
+          questionSent: true,
+          lastQuestionCounter: state.questionsAsked.length + 1,
         },
         curQuestion: action.payload.question,
         curQuestionSource: action.payload.source,
@@ -454,6 +472,7 @@ function onMentorDisplayAnswer(
           ? {
               ...m,
               isVideoInProgress: action.payload.isVideoInProgress,
+              timestampAnswered: action.payload.timestampAnswered,
             }
           : m;
       }),
@@ -519,8 +538,11 @@ function onQuestionAnswered(
           answerMedia: mentor.answer_media,
           answerId: mentor.answer_id,
           replay: false,
+          confidence: mentor.confidence,
+          questionCounter: state.questionsAsked.length,
         },
       ],
+      questionSent: false,
     },
 
     isIdle: false,
@@ -544,6 +566,7 @@ function onReplayVideo(state: State, action: ReplayVideoAction): State {
       m.replay = false;
     }
   });
+
   return {
     ...state,
     chat: {

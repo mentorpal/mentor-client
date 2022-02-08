@@ -10,6 +10,8 @@ export interface ChatData {
   lastAnswerAt?: Date;
   messages: ChatMsg[];
   replay: boolean;
+  questionSent: boolean;
+  lastQuestionCounter?: number;
 }
 
 export const LINK_TYPE_ASK = "ask";
@@ -45,12 +47,17 @@ export interface ChatMsg {
   answerId?: string;
   replay?: boolean;
   isVideoInProgress?: boolean;
+  confidence?: number;
+  curMentor?: string;
+  timestampAnswered?: number;
+  questionCounter?: number;
 }
 
 export interface MentorClientData {
   _id: string;
   name: string;
   title: string;
+  email: string;
   mentorType: MentorType;
   topicQuestions: TopicQuestions[];
   utterances: Utterance[];
@@ -213,6 +220,7 @@ export interface MentorsLoadResult {
   mentorsById: Record<string, MentorDataResult>;
   mentor?: string;
   topic?: string;
+  curMentor?: string;
 }
 
 export interface QuestionResult {

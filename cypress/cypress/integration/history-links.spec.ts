@@ -28,13 +28,13 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=history-chat]").should("exist");
-    cy.get("[data-cy=chat-msg-2]").contains("Click https://www.google.com");
-    cy.get("[data-cy=chat-msg-2] a").should(
+    cy.get("[data-cy=chat-msg-3]").contains("Click here");
+    cy.get("[data-cy=chat-msg-3] a").should(
       "have.attr",
       "href",
       "https://www.google.com"
     );
-    cy.get("[data-cy=chat-msg-2] a").should("have.attr", "target", "_blank");
+    cy.get("[data-cy=chat-msg-3] a").should("have.attr", "target", "_blank");
   });
 
   it("Display link-label over a corner of the video", () => {
@@ -100,7 +100,6 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.intercept("**/questions/?mentor=carlos&query=*", {
       fixture: "response_with_feedback.json",
     });
-
     cy.get("[data-cy=video-container]").within(() => {
       cy.get("[data-cy=answer-link-card]").should("not.exist");
     });
@@ -111,9 +110,16 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
+    // wait for it to finish
+    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
+      "have.attr",
+      "data-test-replay",
+      "http://videos.org/answer_id.mp4"
+    );
+
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=chat-msg-2]").contains("Click https://www.google.com");
+        cy.get("[data-cy=chat-msg-4]").contains("Click here");
       });
     });
     // Compare last answer link with video label
@@ -151,7 +157,7 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.get("[data-cy=input-field]")
       .invoke("val")
       .then((linkAnswerLabel) => {
-        cy.get("[data-cy=chat-msg-3]")
+        cy.get("[data-cy=chat-msg-4]")
           .find("p")
           .should("have.value", linkAnswerLabel);
       });
@@ -182,13 +188,22 @@ describe("Chat History (Video Mentors Links)", () => {
     );
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
-    // play video
-    cy.get("video")
-      .should("have.prop", "paused", true)
-      .and("have.prop", "ended", false)
-      .then(($video) => {
-        $video[$video.length - 1].play();
+    cy.get("[data-cy=history-chat]").within(($hc) => {
+      cy.get("[data-cy=chat-thread]").within(($hc) => {
+        cy.get("[data-cy=chat-msg-4]").within(() => {
+          cy.get("[data-cy=ask-link-0]")
+            .should((el) => {
+              expect(Cypress.dom.isAttached(el), "is attached").to.eq(true);
+            })
+            .should("exist")
+            .click({ force: true });
+        });
+        cy.get("[data-cy=chat-msg-5]").contains(
+          "what does a computer programmer do?"
+        );
       });
+    });
+    cy.get("[data-cy=visibility-switch]").find("input").check();
     // wait for it to finish
     cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
       "have.attr",
@@ -196,26 +211,10 @@ describe("Chat History (Video Mentors Links)", () => {
       "http://videos.org/answer_id.mp4"
     );
 
-    cy.get("[data-cy=history-chat]").within(($hc) => {
-      cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=chat-msg-2]")
-          .scrollIntoView()
-          .within(() => {
-            cy.get("[data-cy=ask-link-0]")
-              .should("exist")
-              .trigger("mouseover")
-              .click();
-          });
-        cy.get("[data-cy=chat-msg-4]").contains(
-          "what does a computer programmer do?"
-        );
-      });
-    });
-
-    cy.get("[data-cy=chat-msg-2]")
+    cy.get("[data-cy=chat-msg-4]")
       .scrollIntoView()
       .within(() => {
-        cy.get("[data-cy=ask-icon-2]");
+        cy.get("[data-cy=ask-icon-4]");
       });
   });
 
@@ -245,7 +244,7 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.get("[data-cy=answer-link-card]").should("not.exist");
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=chat-msg-1]").should("be.visible");
+        cy.get("[data-cy=chat-msg-2]").should("be.visible");
         // cy.get("[data-cy=ask-icon-2]").should("be.visible");
       });
     });
@@ -292,27 +291,26 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.intercept("**/questions/?mentor=carlos&query=*", {
       fixture: "response_with_markdown2.json",
     });
-    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
 
     // submit a question
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
-    // // click thumbnail for mentor 2
-    // cy.get("[data-cy=video-thumbnail-carlos]").trigger("mouseover").click();
-    // // EXPECT: displays link for '/mentor2/something-else'' over video
-    // cy.get("[data-cy=video-container]").within(() => {
-    //   cy.get("[data-cy=answer-link-card]").contains(
-    //     "https://www.amazon.com/-/es/VA"
-    //   );
-    // });
+    // click thumbnail for mentor 2
+    cy.get("[data-cy=video-thumbnail-carlos]").trigger("mouseover").click();
+    // EXPECT: displays link for '/mentor2/something-else'' over video
+    cy.get("[data-cy=video-container]").within(() => {
+      cy.get("[data-cy=answer-link-card]").contains(
+        "https://www.amazon.com/-/es/VA"
+      );
+    });
 
-    // // click thumbnail for mentor 1
-    // cy.get("[data-cy=video-thumbnail-clint]").trigger("mouseover").click();
-    // // EXPECT: displays link for '/mentor1/more-info' over video
-    // cy.get("[data-cy=video-container]").within(() => {
-    //   cy.get("[data-cy=answer-link-card]").contains("https://www.google.com");
-    // });
+    // click thumbnail for mentor 1
+    cy.get("[data-cy=video-thumbnail-clint]").trigger("mouseover").click();
+    // EXPECT: displays link for '/mentor1/more-info' over video
+    cy.get("[data-cy=video-container]").within(() => {
+      cy.get("[data-cy=answer-link-card]").contains("https://www.google.com");
+    });
   });
 
   it("clears the web link for the actively playing mentor video as user selects mentors", () => {
@@ -342,16 +340,16 @@ describe("Chat History (Video Mentors Links)", () => {
     // click thumbnail for mentor 2
     cy.get("[data-cy=video-thumbnail-julianne]").trigger("mouseover").click();
     // EXPECT: no web link over video (if there's no web link, no link card should display)
-    // cy.get("[data-cy=video-container]").within(() => {
-    //   cy.get("[data-cy=answer-link-card]").should("not.exist");
-    // });
+    cy.get("[data-cy=video-container]").within(() => {
+      cy.get("[data-cy=answer-link-card]").should("not.exist");
+    });
 
     // click thumbnail for mentor 1
-    // cy.get("[data-cy=video-thumbnail-clint]").trigger("mouseover").click();
-    // // EXPECT: displays link for '/mentor1/more-info' over video
-    // cy.get("[data-cy=video-container]").within(() => {
-    //   cy.get("[data-cy=answer-link-card]").should("exist");
-    //   cy.get("[data-cy=answer-link-card]").contains("https://www.google.com");
-    // });
+    cy.get("[data-cy=video-thumbnail-clint]").trigger("mouseover").click();
+    // EXPECT: displays link for '/mentor1/more-info' over video
+    cy.get("[data-cy=video-container]").within(() => {
+      cy.get("[data-cy=answer-link-card]").should("exist");
+      cy.get("[data-cy=answer-link-card]").contains("https://www.google.com");
+    });
   });
 });

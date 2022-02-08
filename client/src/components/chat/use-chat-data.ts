@@ -15,6 +15,7 @@ export interface UseWithChatData {
   mentorType: string;
   lastQuestionId: string;
   visibilityShowAllPref: boolean;
+  mentorNameById: Record<string, string>;
   getQuestionVisibilityPref: (questionId: string) => ItemVisibilityPrefs;
   setQuestionVisibilityPref: (questionId: string, show: boolean) => void;
   setVisibilityShowAllPref: (show: boolean) => void;
@@ -130,5 +131,6 @@ export function useWithChatData(): UseWithChatData {
     setVisibilityShowAllPref,
     mentorNameForChatMsg,
     rePlayQuestionVideo,
+    mentorNameById,
   };
 }
