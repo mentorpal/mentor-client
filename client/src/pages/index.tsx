@@ -121,7 +121,12 @@ function IndexPage(props: {
   const [showSurveyPopup, setShowSurveyPopup] = React.useState<boolean>(false);
   const surveyPopupTitle =
     getLocalStorage("timertext") ||
-    `You have spent ${getLocalStorage("timerpopup")} seconds in the system!`;
+    `You have spent ${getLocalStorage(
+      "postsurveytime"
+    )} seconds in the system! Please click the link below to take our survey`;
+  const surveyLink = `https://fullerton.qualtrics.com/jfe/form/SV_1ZzDYgNPzLE2QPI?userid=${getLocalStorage(
+    "qualtricsuserid"
+  )}`;
 
   const { guest, subject, recommendedQuestions } = props.search;
   let { mentor } = props.search;
@@ -152,17 +157,20 @@ function IndexPage(props: {
   });
 
   function checkForSurveyPopupVariables() {
-    const timerpopup = new URL(location.href).searchParams.get("timerpopup");
-    if (timerpopup) {
-      setLocalStorage("timerpopup", timerpopup);
+    const searchParams = new URL(location.href).searchParams;
+    const postsurveytime = searchParams.get("postsurveytime");
+    const qualtricsUserId = searchParams.get("userid");
+    if (postsurveytime && qualtricsUserId) {
+      setLocalStorage("postsurveytime", postsurveytime);
+      setLocalStorage("qualtricsuserid", qualtricsUserId);
       setLocalStorage("timespentonpage", "0");
-      const timertext = new URL(location.href).searchParams.get("timertext");
+      const timertext = searchParams.get("timertext");
       if (timertext) {
         setLocalStorage("timertext", timertext);
       }
       setPollingTimer(true);
     } else {
-      const localStorageTimerPopup = getLocalStorage("timerpopup");
+      const localStorageTimerPopup = getLocalStorage("postsurveytime");
       const localStorageTimeSpent = getLocalStorage("timespentonpage");
       if (localStorageTimerPopup && localStorageTimeSpent) {
         setPollingTimer(true);
@@ -172,7 +180,8 @@ function IndexPage(props: {
 
   function clearTimerLocalStorage() {
     removeLocalStorageItem("timespentonpage");
-    removeLocalStorageItem("timerpopup");
+    removeLocalStorageItem("postsurveytime");
+    removeLocalStorageItem("qualtricsuserid");
     removeLocalStorageItem("timertext");
     setPollingTimer(false);
   }
@@ -186,7 +195,7 @@ function IndexPage(props: {
     const timeSpentOnPage = getLocalStorage("timespentonpage");
     const newTimeSpentOnPage = Number(timeSpentOnPage) + 10;
 
-    const timerDuration = getLocalStorage("timerpopup");
+    const timerDuration = getLocalStorage("postsurveytime");
     if (!timerDuration || !timeSpentOnPage) {
       console.error("local storage not set correctly");
       clearTimerLocalStorage();
@@ -241,7 +250,7 @@ function IndexPage(props: {
     );
   });
 
-  const setLocalStorage = (): string => {
+  const setupLocalStorage = (): string => {
     // get local user information
     const localData = localStorage.getItem("userData");
     // grab referrer from the URL
@@ -286,7 +295,7 @@ function IndexPage(props: {
       if (!userId || typeof userId !== "string") {
         userId = uuidv1();
       }
-      const referrer = setLocalStorage();
+      const referrer = setupLocalStorage();
 
       window.location.href = addCmi(
         window.location.href,
@@ -410,6 +419,7 @@ function IndexPage(props: {
       <SurveyDialog
         open={showSurveyPopup}
         title={surveyPopupTitle}
+        link={surveyLink}
         closeDialog={() => closeSurveyPopup()}
       />
     </MuiThemeProvider>

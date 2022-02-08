@@ -10,12 +10,22 @@ import { Dialog, DialogTitle, DialogContent, Button } from "@material-ui/core";
 export function SurveyDialog(props: {
   open: boolean;
   title: string;
+  link: string;
   closeDialog: () => void;
 }): JSX.Element {
-  const { open, title, closeDialog } = props;
+  const { open, title, closeDialog, link } = props;
+
   return (
     <Dialog data-cy="survey-dialog" maxWidth="sm" fullWidth={true} open={open}>
       <DialogTitle>{title}</DialogTitle>
+      <a
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ fontSize: "24px", paddingBottom: "16px" }}
+      >
+        Careerfair Survey
+      </a>
       <DialogContent>
         <Button onClick={() => closeDialog()}>Close</Button>
       </DialogContent>
