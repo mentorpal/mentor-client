@@ -31,7 +31,10 @@ export interface VideoData {
   subtitles: string;
 }
 
-function Video(args: { playing?: boolean }): JSX.Element {
+function Video(args: {
+  playing?: boolean;
+  configEmailMentorAddress: string;
+}): JSX.Element {
   const { playing = false } = args;
   const dispatch = useDispatch();
   const isQuestionSent = useSelector<State, boolean>(
@@ -220,13 +223,13 @@ function Video(args: { playing?: boolean }): JSX.Element {
       />
       <LoadingSpinner mentor={curMentor} />
       <MessageStatus mentor={curMentor} />
-      {mentorData?.email && mentorData.name ? (
+      {mentorData?.name && args.configEmailMentorAddress ? (
         <div
           data-cy="email-mentor-icon"
           className="email-mentor-button"
           onClick={() =>
             sendMail(
-              mentorData.email,
+              args.configEmailMentorAddress,
               `Contacting ${mentorData.name} for more information`
             )
           }

@@ -64,7 +64,9 @@ describe("Video Mentor", () => {
   });
 
   it("displays email icon if email exists", () => {
-    mockDefaultSetup(cy);
+    mockDefaultSetup(cy, {
+      config: { filterEmailMentorAddress: "fakeemailaddress@gmail.com" },
+    });
     cy.visit("/?mentor=clint");
     cy.get("[data-cy=email-mentor-icon]").should("exist");
   });

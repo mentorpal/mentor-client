@@ -113,6 +113,7 @@ export interface Config {
   styleHeaderLogo: string;
   styleHeaderColor: string;
   styleHeaderTextColor: string;
+  filterEmailMentorAddress: string;
   disclaimerTitle: string;
   disclaimerText: string;
   disclaimerDisabled: boolean;
@@ -203,6 +204,7 @@ export const CONFIG_DEFAULT: Config = {
   styleHeaderLogo: "",
   styleHeaderColor: "",
   styleHeaderTextColor: "",
+  filterEmailMentorAddress: "",
   disclaimerTitle: "",
   disclaimerText: "",
   disclaimerDisabled: true,

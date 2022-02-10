@@ -97,6 +97,7 @@ export interface Config {
   styleHeaderLogo: string;
   styleHeaderColor: string;
   styleHeaderTextColor: string;
+  filterEmailMentorAddress: string;
   disclaimerTitle: string;
   disclaimerText: string;
   disclaimerDisabled: boolean;
