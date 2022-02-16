@@ -119,17 +119,35 @@ function IndexPage(props: {
 
   const [pollingTimer, setPollingTimer] = React.useState<boolean>(false);
   const [showSurveyPopup, setShowSurveyPopup] = React.useState<boolean>(false);
-  const surveyPopupTitle =
-    getLocalStorage("timertext") ||
-    `You have spent ${getLocalStorage(
-      "postsurveytime"
-    )} seconds in the system! Please click the link below to take our survey`;
+  const surveyPopupTitle = generateSurveyPopupTitle();
   const surveyLink = `https://fullerton.qualtrics.com/jfe/form/SV_1ZzDYgNPzLE2QPI?userid=${getLocalStorage(
     "qualtricsuserid"
   )}`;
 
   const { guest, subject, recommendedQuestions } = props.search;
   let { mentor } = props.search;
+
+  function generateSurveyPopupTitle(): string {
+    const surveyTimeFromLocalStorage = getLocalStorage("postsurveytime");
+    const surveyTime = surveyTimeFromLocalStorage
+      ? Number(surveyTimeFromLocalStorage)
+      : 0;
+    const timerTextFromLocalStorage = getLocalStorage("timertext");
+
+    if (timerTextFromLocalStorage) {
+      return timerTextFromLocalStorage;
+    }
+
+    if (!surveyTime) {
+      return "Please click the link below to take our survey";
+    } else if (surveyTime > 60) {
+      return `You have now spent ${Math.round(
+        surveyTime / 60
+      )} minutes on this site! Please click the link below to continue our survey`;
+    } else {
+      return `You have now spent ${surveyTime} seconds on this site! Please click the link below to continue our survey`;
+    }
+  }
 
   function hasSessionUser(): boolean {
     return Boolean(
