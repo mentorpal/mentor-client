@@ -71,6 +71,22 @@ describe("Video Mentor", () => {
     cy.get("[data-cy=email-mentor-icon]").should("exist");
   });
 
+  it.only("displays email disclaimer on hover", () => {
+    mockDefaultSetup(cy, {
+      config: { filterEmailMentorAddress: "fakeemailaddress@gmail.com" },
+    });
+    cy.visit("/?mentor=clint");
+
+    cy.get("[data-cy=email-mentor-icon]")
+      .trigger("mouseover")
+      .then(() => {
+        cy.get("[role=tooltip]").should("be.visible");
+        cy.get("[role=tooltip]").contains(
+          "Please contact mentors through the provided contact email. Messages sent directly to other mentor emails found online may be ignored."
+        );
+      });
+  });
+
   it("does not display email icon if email does not exist", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["carlos"] },
