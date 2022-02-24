@@ -71,7 +71,7 @@ describe("Video Mentor", () => {
     cy.get("[data-cy=email-mentor-icon]").should("exist");
   });
 
-  it.only("displays email disclaimer on hover", () => {
+  it("displays email disclaimer on hover", () => {
     mockDefaultSetup(cy, {
       config: { filterEmailMentorAddress: "fakeemailaddress@gmail.com" },
     });
