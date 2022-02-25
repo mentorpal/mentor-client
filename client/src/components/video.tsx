@@ -23,6 +23,7 @@ import {
 } from "store/actions";
 import { State, WebLink } from "types";
 import "styles/video.css";
+import { Tooltip } from "@material-ui/core";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
@@ -224,18 +225,24 @@ function Video(args: {
       <LoadingSpinner mentor={curMentor} />
       <MessageStatus mentor={curMentor} />
       {mentorData?.name && args.configEmailMentorAddress ? (
-        <div
-          data-cy="email-mentor-icon"
-          className="email-mentor-button"
-          onClick={() =>
-            sendMail(
-              args.configEmailMentorAddress,
-              `Contacting ${mentorData.name} for more information`
-            )
-          }
+        <Tooltip
+          data-cy="email-disclaimer"
+          title="Please contact mentors through the provided contact email. Messages sent directly to other mentor emails found online may be ignored."
+          arrow
         >
-          Email Mentor <MailIcon />
-        </div>
+          <div
+            data-cy="email-mentor-icon"
+            className="email-mentor-button"
+            onClick={() =>
+              sendMail(
+                args.configEmailMentorAddress,
+                `Contacting ${mentorData.name} for more information`
+              )
+            }
+          >
+            Email Mentor <MailIcon />
+          </div>
+        </Tooltip>
       ) : undefined}
     </div>
   );
