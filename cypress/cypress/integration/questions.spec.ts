@@ -181,7 +181,7 @@ describe("Questions list", () => {
       .should("contain", "gray");
   });
 
-  it.only("keeps greyed out questions when switching topics if new topic also has it", () => {
+  it("keeps greyed out questions when switching topics if new topic also has it", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=input-field]").type("Are you fun at parties?");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
