@@ -359,12 +359,10 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
         curQuestion: action.payload.question,
         curQuestionSource: action.payload.source,
         curQuestionUpdatedAt: new Date(Date.now()),
-        questionsAsked: Array.from(
-          new Set([
-            ...state.questionsAsked,
-            normalizeString(action.payload.question),
-          ])
-        ),
+        questionsAsked: [
+          ...state.questionsAsked,
+          normalizeString(action.payload.question),
+        ],
       },
       {
         type: QUESTION_INPUT_CHANGED,
