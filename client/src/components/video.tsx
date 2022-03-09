@@ -227,7 +227,13 @@ function Video(args: {
       {mentorData?.name && args.configEmailMentorAddress ? (
         <Tooltip
           data-cy="email-disclaimer"
-          title="Please contact mentors through the provided contact email. Messages sent directly to other mentor emails found online may be ignored."
+          title={
+            <text style={{ fontSize: "15px" }}>
+              Please contact mentors through the provided contact email.
+              Messages sent directly to other mentor emails found online may be
+              ignored.
+            </text>
+          }
           arrow
         >
           <div

@@ -51,7 +51,8 @@ export function getParams(urlOrQueryString: string): string | string[] {
   const urlQs =
     cutIx !== -1 ? urlOrQueryString.substring(cutIx + 1) : urlOrQueryString;
   const params = queryString.parse(urlQs);
-  const userID = params.userID ? params.userID : "";
+  const userID =
+    params.userID && !Array.isArray(params.userID) ? params.userID : "";
 
   return userID;
 }
