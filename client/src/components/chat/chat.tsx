@@ -167,7 +167,6 @@ export function Chat(args: {
     setVisibilityShowAllPref(visibilityShowAllPref);
   }, [visibilityShowAllPref]);
 
-  // TODO: sort answers by timestampAnswered
   if (mentorType !== "CHAT") {
     // get last answers
     const lastAnswers = chatData.messages.filter((m) => {
