@@ -82,7 +82,7 @@ describe("Video Mentor", () => {
       .then(() => {
         cy.get("[role=tooltip]").should("be.visible");
         cy.get("[role=tooltip]").contains(
-          "Please contact mentors through the provided contact email. Messages sent directly to other mentor emails found online may be ignored."
+          "Please only contact mentors through the provided contact email. Messages sent directly to other mentor emails found online may be ignored."
         );
       });
   });

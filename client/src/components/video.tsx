@@ -4,7 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import { useSelector, useDispatch } from "react-redux";
 import { Star, StarBorder } from "@material-ui/icons";
@@ -13,7 +13,7 @@ import { videoUrl, subtitleUrl, idleUrl } from "api";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import MailIcon from "@material-ui/icons/Mail";
-import { chromeVersion, getCurrentFrameUri } from "utils";
+import { chromeVersion, getLocalStorage, setLocalStorage, getCurrentFrameUri } from "utils";
 import {
   answerFinished,
   faveMentor,
@@ -200,6 +200,21 @@ function Video(args: {
     window.open(url);
   };
 
+  const [disclaimerOpen, setDisclaimerOpen] = useState<boolean>(false);
+  const disclaimerDisplayed = getLocalStorage("viewedDisclaimer");
+  useEffect(() => {
+    if (!disclaimerDisplayed || disclaimerDisplayed !== "true") {
+      setDisclaimerOpen(true);
+    }
+  }, []);
+
+  function onCloseDisclaimer() {
+    setDisclaimerOpen(false);
+    if (!disclaimerDisplayed) {
+      setLocalStorage("viewedDisclaimer", "true");
+    }
+  }
+
   return (
     <div
       data-cy="video-container"
@@ -227,12 +242,29 @@ function Video(args: {
       {mentorData?.name && args.configEmailMentorAddress ? (
         <Tooltip
           data-cy="email-disclaimer"
+          open={disclaimerOpen}
+          onClose={onCloseDisclaimer}
+          onOpen={() => setDisclaimerOpen(true)}
           title={
-            <text style={{ fontSize: "15px" }}>
-              Please contact mentors through the provided contact email.
+            <div
+              style={{
+                fontSize: "15px",
+                pointerEvents: "auto",
+                cursor: !disclaimerDisplayed ? "pointer" : "none",
+              }}
+              onClick={() => onCloseDisclaimer()}
+            >
+              Please only contact mentors through the provided contact email.
               Messages sent directly to other mentor emails found online may be
               ignored.
-            </text>
+              {!disclaimerDisplayed ? (
+                <>
+                  <br /> <br /> Click here to close
+                </>
+              ) : (
+                ""
+              )}
+            </div>
           }
           arrow
         >
