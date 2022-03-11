@@ -13,7 +13,12 @@ import { videoUrl, subtitleUrl, idleUrl } from "api";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import MailIcon from "@material-ui/icons/Mail";
-import { chromeVersion, getLocalStorage, setLocalStorage, getCurrentFrameUri } from "utils";
+import {
+  chromeVersion,
+  getLocalStorage,
+  setLocalStorage,
+  getCurrentFrameUri,
+} from "utils";
 import {
   answerFinished,
   faveMentor,
