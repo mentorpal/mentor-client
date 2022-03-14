@@ -605,7 +605,6 @@ export const sendQuestion =
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
   ) => {
-    // const userEmail = new URL(location.href).searchParams.get("userEmail");
     const localData = localStorage.getItem("userData");
     const userEmail = JSON.parse(localData ? localData : "").userEmail;
 

@@ -71,6 +71,7 @@ describe("Input field", () => {
       mentorData: [clint, carlos, julianne],
       noMockApi: true,
     });
+    visitAsGuestWithDefaultSetup(cy, "/");
     cy.viewport("iphone-x");
 
     cy.intercept("**/questions/?mentor=clint&query=how+old+are+you", {
