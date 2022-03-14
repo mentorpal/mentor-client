@@ -296,6 +296,34 @@ function IndexPage(props: {
     return referrerURL;
   };
 
+  const setupLocalStorageForUserEmail = (): string => {
+    // get local user information
+    const localData = localStorage.getItem("userData");
+    // grab userEmail from the URL
+    const userEmail = new URL(location.href).searchParams.get("userEmail");
+
+    // if userEmail exists in localStorage and is the same as the one in the URL, use that one.
+    // Otherwise, use the one in the URL
+    const localUserEmail =
+      JSON.parse(localData ? localData : "{}").userEmail !== undefined &&
+      JSON.parse(localData ? localData : "{}").userEmail === userEmail
+        ? JSON.parse(localData ? localData : "").userEmail
+        : userEmail;
+
+    // if no userEmail in localStorage, use the one from the URL
+    const userEmailURL = localData ? localUserEmail : localUserEmail;
+
+    // create new localStorage object
+    const userData = {
+      userEmail: userEmailURL,
+    };
+
+    // set it in localStorage
+    localStorage.setItem("userData", JSON.stringify(userData));
+
+    return decodeURIComponent(userEmailURL);
+  };
+
   useEffect(() => {
     if (configLoadStatus === LoadStatus.NONE) {
       dispatch(loadConfig());
@@ -303,6 +331,9 @@ function IndexPage(props: {
     if (!isConfigLoadComplete(configLoadStatus)) {
       return;
     }
+    const userEmail = setupLocalStorageForUserEmail();
+    console.log("userEmail 1:", userEmail);
+
     if (
       config.cmi5Enabled &&
       !Cmi5.isCmiAvailable &&
@@ -315,6 +346,8 @@ function IndexPage(props: {
       }
       const referrer = setupLocalStorage();
 
+      console.log("userEmail 2:", userEmail);
+
       window.location.href = addCmi(
         window.location.href,
         {
@@ -325,7 +358,7 @@ function IndexPage(props: {
               name: userId,
               homePage: `${urlRoot}/guests-client/${referrer}`,
             },
-            name: "guest",
+            name: userEmail ? userEmail : "guest",
           },
           endpoint: config.cmi5Endpoint,
           fetch: `${config.cmi5Fetch}${
@@ -333,7 +366,8 @@ function IndexPage(props: {
           }&username=${encodeURIComponent("guest")}&userid=${userId}`,
           registration: uuidv1(),
         },
-        referrer
+        referrer,
+        userEmail
       );
     }
     if (config.cmi5Enabled && Cmi5.isCmiAvailable) {

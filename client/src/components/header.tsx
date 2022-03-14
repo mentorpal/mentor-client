@@ -83,9 +83,11 @@ function Header(): JSX.Element {
   };
 
   const handleClickHome = () => {
+    const localData = localStorage.getItem("userData");
+    const userEmail = JSON.parse(localData ? localData : "").userEmail;
     const referrer = new URL(location.href).searchParams.get("referrer");
 
-    window.location.href = `/home/?referrer=${referrer}`;
+    window.location.href = `/home/?referrer=${referrer}&userEmail=${userEmail}`;
   };
 
   const handleAgree = () => {

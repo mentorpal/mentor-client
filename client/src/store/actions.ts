@@ -605,6 +605,10 @@ export const sendQuestion =
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
   ) => {
+    // const userEmail = new URL(location.href).searchParams.get("userEmail");
+    const localData = localStorage.getItem("userData");
+    const userEmail = JSON.parse(localData ? localData : "").userEmail;
+
     sendCmi5Statement({
       verb: {
         id: "https://mentorpal.org/xapi/verb/asked",
@@ -618,6 +622,7 @@ export const sendQuestion =
             questionIndex: currentQuestionIndex(getState()) + 1,
             text: q.question,
             source: q.source,
+            userEmail: userEmail,
           },
         },
       },

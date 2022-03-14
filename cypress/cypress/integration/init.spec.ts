@@ -22,4 +22,12 @@ describe("Cypress", () => {
     visitAsGuestWithDefaultSetup(cy, "/?referrer=CSUFCareerCenterTesting");
     cy.viewport("macbook-13");
   });
+
+  it("Extracts user email from url", () => {
+    visitAsGuestWithDefaultSetup(cy, "/?userEmail=user@example.com");
+    cy.viewport(1000, 700);
+
+    cy.get("[data-cy=input-field]").type("Hello");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+  });
 });
