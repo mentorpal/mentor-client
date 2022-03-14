@@ -6,6 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import ReactPlayer from "react-player";
 import { MentorState, MentorQuestionStatus } from "types";
+import { v4 as uuid } from "uuid";
 
 export function normalizeString(s: string): string {
   return s.replace(/\W+/g, "").normalize().toLowerCase();
@@ -69,4 +70,20 @@ export function getCurrentFrameUri(video: ReactPlayer): string {
   const dataUri = canvas.toDataURL("image/" + format, quality);
 
   return dataUri;
+}
+
+export function getRegistrationId(): string {
+  const registrationIdFromUrl = new URL(location.href).searchParams.get(
+    "registrationId"
+  );
+  if (!registrationIdFromUrl) {
+    const registrationIdFromStorage = getLocalStorage("registrationId");
+    if (!registrationIdFromStorage) {
+      const registrationId = uuid();
+      setLocalStorage("registrationId", registrationId);
+      return registrationId;
+    }
+    return registrationIdFromStorage;
+  }
+  return registrationIdFromUrl;
 }

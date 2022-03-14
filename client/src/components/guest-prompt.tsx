@@ -11,6 +11,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import addCmi from "cmiutils";
 import { useSelector } from "react-redux";
 import { Config, State } from "types";
+import { getRegistrationId } from "utils";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -72,7 +73,7 @@ export default function GuestPrompt(): JSX.Element {
         fetch: `${absUrl(config.cmi5Fetch)}${
           config.cmi5Fetch.includes("?") ? "" : "?"
         }&username=${encodeURIComponent(name)}&userid=${userId}`,
-        registration: uuidv1(),
+        registration: getRegistrationId(),
       },
       "",
       userEmail

@@ -27,6 +27,7 @@ import Mobile from "components/layout/mobile";
 import { SurveyDialog } from "components/survey-dialog";
 import {
   getLocalStorage,
+  getRegistrationId,
   removeLocalStorageItem,
   setLocalStorage,
 } from "utils";
@@ -238,6 +239,14 @@ function IndexPage(props: {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    const registrationIdFromUrl = new URL(location.href).searchParams.get(
+      "registrationId"
+    );
+    if (registrationIdFromUrl) {
+      setLocalStorage("registrationId", registrationIdFromUrl);
+    }
+
     checkForSurveyPopupVariables();
     const handleResize = () => setWindowHeight(window.innerHeight);
     window.addEventListener("resize", handleResize);
@@ -340,19 +349,17 @@ function IndexPage(props: {
       !config.displayGuestPrompt
     ) {
       const urlRoot = `${window.location.protocol}//${window.location.host}`;
+      // TODO: Shouldn't this also check local storage?
       let userId = getParams(window.location.href);
       if (!userId || typeof userId !== "string") {
         userId = uuidv1();
       }
       const referrer = setupLocalStorage();
 
-      console.log("userEmail 2:", userEmail);
-
       window.location.href = addCmi(
         window.location.href,
         {
           activityId: window.location.href,
-          // Actor needs to be uniquely identified
           actor: {
             objectType: "Agent",
             account: {
@@ -365,7 +372,7 @@ function IndexPage(props: {
           fetch: `${config.cmi5Fetch}${
             config.cmi5Fetch.includes("?") ? "" : "?"
           }&username=${encodeURIComponent("guest")}&userid=${userId}`,
-          registration: uuidv1(),
+          registration: getRegistrationId(),
         },
         referrer,
         userEmail
