@@ -352,13 +352,14 @@ function IndexPage(props: {
         window.location.href,
         {
           activityId: window.location.href,
+          // Actor needs to be uniquely identified
           actor: {
             objectType: "Agent",
             account: {
-              name: userId,
               homePage: `${urlRoot}/guests-client/${referrer}`,
             },
-            name: userEmail ? userEmail : "guest",
+            mbox: userEmail ? userEmail : "",
+            name: userId,
           },
           endpoint: config.cmi5Endpoint,
           fetch: `${config.cmi5Fetch}${
