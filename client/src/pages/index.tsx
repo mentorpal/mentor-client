@@ -364,8 +364,9 @@ function IndexPage(props: {
             objectType: "Agent",
             account: {
               homePage: `${urlRoot}/guests-client/${referrer}`,
+              name: userId,
             },
-            mbox: userEmail ? userEmail : "",
+            mbox: userEmail ? `mailto:${userEmail}` : "mailto:",
             name: userId,
           },
           endpoint: config.cmi5Endpoint,
