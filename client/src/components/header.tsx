@@ -88,7 +88,7 @@ function Header(): JSX.Element {
     const userID = JSON.parse(localData ? localData : "").userID;
     const referrer = new URL(location.href).searchParams.get("referrer");
 
-    window.location.href = `/home/?referrer=${referrer}&userEmail=${userEmail}&userId=${userID}`;
+    window.location.href = `/home/?referrer=${referrer}&userEmail=${userEmail}&userid=${userID}`;
   };
 
   const handleAgree = () => {
