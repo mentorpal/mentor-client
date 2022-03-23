@@ -4,7 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { useSelector, useDispatch } from "react-redux";
 import { Star, StarBorder } from "@material-ui/icons";
@@ -13,12 +13,7 @@ import { videoUrl, subtitleUrl, idleUrl } from "api";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import MailIcon from "@material-ui/icons/Mail";
-import {
-  chromeVersion,
-  getLocalStorage,
-  setLocalStorage,
-  getCurrentFrameUri,
-} from "utils";
+import { chromeVersion, getLocalStorage, setLocalStorage } from "utils";
 import {
   answerFinished,
   faveMentor,
@@ -356,23 +351,12 @@ function VideoPlayer(args: VideoPlayerParams) {
       </div>
     </div>
   );
-  const reactPlayerRef = useRef<ReactPlayer>(null);
 
   const shouldDiplayWebLinks = webLinks
     ? webLinks.length > 0
       ? true
       : false
     : false;
-
-  const [posterImageUrl, setPosterImageUrl] = useState<string>("");
-
-  function setPosterImage() {
-    const player = reactPlayerRef.current;
-    if (player) {
-      const videoScreenshot = getCurrentFrameUri(player);
-      setPosterImageUrl(videoScreenshot);
-    }
-  }
 
   return (
     <div
@@ -382,7 +366,6 @@ function VideoPlayer(args: VideoPlayerParams) {
       {!hideLinkLabel && shouldDiplayWebLinks ? answerLinkCard : null}
       {mentorName ? mentorNameCard : null}
       <ReactPlayer
-        ref={reactPlayerRef}
         style={{
           backgroundColor: "black",
           position: "relative",
@@ -395,10 +378,7 @@ function VideoPlayer(args: VideoPlayerParams) {
         url={videoUrl}
         muted={Boolean(isIdle)}
         onDuration={setDuration}
-        onEnded={() => {
-          setPosterImage();
-          onEnded();
-        }}
+        onEnded={onEnded}
         onPlay={onPlay}
         loop={isIdle}
         controls={!isIdle}
@@ -409,7 +389,6 @@ function VideoPlayer(args: VideoPlayerParams) {
           file: {
             attributes: {
               crossOrigin: "true",
-              poster: posterImageUrl,
             },
             tracks: subtitlesOn
               ? [

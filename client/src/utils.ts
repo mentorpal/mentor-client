@@ -4,7 +4,6 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import ReactPlayer from "react-player";
 import { MentorState, MentorQuestionStatus } from "types";
 import { v4 as uuid } from "uuid";
 
@@ -48,28 +47,6 @@ export function removeLocalStorageItem(key: string): void {
     return;
   }
   localStorage.removeItem(key);
-}
-
-export function getCurrentFrameUri(video: ReactPlayer): string {
-  const format = "jpeg";
-  const quality = 0.92;
-
-  const canvas = <HTMLCanvasElement>document.createElement("CANVAS");
-
-  const videoPlayer = video.getInternalPlayer() as HTMLVideoElement;
-
-  if (!canvas || !videoPlayer) {
-    return "";
-  }
-
-  canvas.width = videoPlayer.videoWidth;
-  canvas.height = videoPlayer.videoHeight;
-
-  canvas.getContext("2d")?.drawImage(videoPlayer, 0, 0);
-
-  const dataUri = canvas.toDataURL("image/" + format, quality);
-
-  return dataUri;
 }
 
 export function getRegistrationId(): string {
