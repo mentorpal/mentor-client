@@ -56,7 +56,7 @@ export default function GuestPrompt(): JSX.Element {
     const urlRoot = `${window.location.protocol}//${window.location.host}`;
     const userId = uuidv1();
     const localData = localStorage.getItem("userData");
-    const userEmail = JSON.parse(localData ? localData : "").userEmail;
+    const userEmail = JSON.parse(localData ? localData : "{}").userEmail;
     window.location.href = addCmi(
       window.location.href,
       {

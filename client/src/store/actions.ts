@@ -610,7 +610,7 @@ export const sendQuestion =
     getState: () => State
   ) => {
     const localData = localStorage.getItem("userData");
-    const userEmail = JSON.parse(localData ? localData : "").userEmail;
+    const userEmail = JSON.parse(localData ? localData : "{}").userEmail;
 
     sendCmi5Statement({
       verb: {
