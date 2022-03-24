@@ -280,10 +280,14 @@ function IndexPage(props: {
   const setupLocalStorage = (): string[] => {
     // get local user information
     const localData = localStorage.getItem("userData");
+    const newId = uuidv1();
     // grab referrer from the URL
-    const userId = new URL(location.href).searchParams.get("userID");
-    const referrer = new URL(location.href).searchParams.get("referrer");
-    const userEmail = new URL(location.href).searchParams.get("userEmail");
+    const userId = new URL(location.href).searchParams.get("userID") || newId;
+    const referrer =
+      new URL(location.href).searchParams.get("referrer") || "no referrer";
+    const userEmail =
+      new URL(location.href).searchParams.get("userEmail") ||
+      `${newId}.guest@mentorpal.org`;
 
     // if userId exists in localStorage and is the same as the one in the URL, use that one.
     // Otherwise, use the one in the URL
@@ -336,7 +340,6 @@ function IndexPage(props: {
     if (!isConfigLoadComplete(configLoadStatus)) {
       return;
     }
-    const userEmail = setupLocalStorage()[2];
 
     if (
       config.cmi5Enabled &&
@@ -350,6 +353,8 @@ function IndexPage(props: {
         userId = uuidv1();
       }
       const referrer = setupLocalStorage()[1];
+      const userEmail = setupLocalStorage()[2];
+      const userIdLRS = setupLocalStorage()[0];
 
       window.location.href = addCmi(
         window.location.href,
@@ -359,17 +364,17 @@ function IndexPage(props: {
             objectType: "Agent",
             account: {
               homePage: `${urlRoot}/guests-client/${referrer}`,
-              name: setupLocalStorage()[0],
+              name: userIdLRS,
             },
-            mbox: userEmail ? `mailto:${userEmail}` : "mailto:guest@mail.com",
-            name: setupLocalStorage()[0],
+            mbox: userEmail,
+            name: userIdLRS,
           },
           endpoint: config.cmi5Endpoint,
           fetch: `${config.cmi5Fetch}${
             config.cmi5Fetch.includes("?") ? "" : "?"
-          }&username=${encodeURIComponent("guest")}&userid=${
-            setupLocalStorage()[0]
-          }`,
+          }&username=${encodeURIComponent(
+            userEmail
+          )}&userid=${userIdLRS}&userID=${userIdLRS}`,
           registration: getRegistrationId(),
         },
         referrer,
