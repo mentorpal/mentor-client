@@ -13,6 +13,7 @@ import {
   QuestionApiData,
   UtteranceName,
 } from "types";
+import { convertMentorClientDataGQL, MentorQueryDataGQL } from "types-gql";
 
 export const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT || "/graphql";
 export async function fetchConfig(
@@ -81,7 +82,11 @@ export function videoUrl(media: Media[], tag?: string): string {
 
 export function idleUrl(mentor: MentorClientData, tag?: string): string {
   const idle = getUtterance(mentor, UtteranceName.IDLE);
-  return idle ? videoUrl(idle.media, tag) : "";
+  if (idle) {
+    return videoUrl(idle.media, tag);
+  } else {
+    return "";
+  }
 }
 
 export function subtitleUrl(media: Media[], tag?: string): string {
@@ -92,10 +97,6 @@ export function subtitleUrl(media: Media[], tag?: string): string {
     media.find((m) => m.type === "subtitles" && m.tag === (tag || "en"))?.url ||
     ""
   );
-}
-
-interface MentorQueryData {
-  mentorClientData: MentorClientData;
 }
 
 interface GraphQLResponse<T> {
@@ -111,27 +112,30 @@ export async function fetchMentorByAccessToken(
     GRAPHQL_ENDPOINT,
     {
       query: `
-      query {
-        me {
-          mentor {
-            _id
+        query {
+          me {
+            mentor {
+              _id
+            }
           }
         }
-      }
-    `,
+      `,
     },
     { headers: headers }
   );
   return result.data.data.me.mentor;
 }
 
+// Update to convert to mentor
 export async function fetchMentor(
   config: Config,
   mentorId: string,
   subjectId?: string
-): Promise<AxiosResponse<GraphQLResponse<MentorQueryData>>> {
-  return await axios.post<GraphQLResponse<MentorQueryData>>(config.urlGraphql, {
-    query: `
+): Promise<MentorClientData> {
+  const gqlRes = await axios.post<GraphQLResponse<MentorQueryDataGQL>>(
+    config.urlGraphql,
+    {
+      query: `
       query FetchMentor($mentor: ID!, $subject: ID) {
         mentorClientData(mentor: $mentor, subject: $subject) {
           _id
@@ -147,7 +151,17 @@ export async function fetchMentor(
             _id
             name
             transcript
-            media {
+            webMedia {
+              tag
+              type
+              url
+            }
+            mobileMedia {
+              tag
+              type
+              url
+            }
+            vttMedia {
               tag
               type
               url
@@ -156,11 +170,30 @@ export async function fetchMentor(
         }
       }
     `,
-    variables: {
-      mentor: mentorId,
-      subject: subjectId,
-    },
-  });
+      variables: {
+        mentor: mentorId,
+        subject: subjectId,
+      },
+    }
+  );
+  // check that the data returned successfully,
+  if (gqlRes.status !== 200) {
+    throw new Error(`Mentors load failed: ${gqlRes.statusText}}`);
+  }
+  if (gqlRes.data.errors) {
+    throw new Error(
+      `errors reponse to config query: ${JSON.stringify(gqlRes.data.errors)}`
+    );
+  }
+  if (!gqlRes.data.data) {
+    throw new Error(
+      `no data in non-error reponse: ${JSON.stringify(gqlRes.data)}`
+    );
+  }
+  const mentorClientData = gqlRes.data.data.mentorClientData;
+  console.log("mentor data before reshaping");
+  console.log(mentorClientData);
+  return convertMentorClientDataGQL(mentorClientData);
 }
 
 interface GiveFeedbackResult {

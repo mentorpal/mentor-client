@@ -18,52 +18,46 @@
       "_id": "idle",
       "transcript": "",
       "name": "_IDLE_",
-      "media": [
-        {
-          "type": "video",
-          "tag": "web",
-          "url": "http://videos.org/answer_id.mp4"
-        },
-        {
-          "type": "video",
-          "tag": "mobile",
-          "url": "http://videos.org/answer_id.mp4"
-        }
-      ]
+      "webMedia": {
+        "type": "video",
+        "tag": "web",
+        "url": "http://videos.org/answer_id.mp4"
+      },
+      "mobileMedia": {
+        "type": "video",
+        "tag": "mobile",
+        "url": "http://videos.org/answer_id.mp4"
+      }
     },
     {
       "_id": "intro_julianne",
       "transcript": "Hi my name's Julie Nordhagen, I'm in the United States Navy and I'm currently a student naval aviator so that means that I have commissioned into the Navy and I am starting to learn how to fly planes and will then become a full trained pilot for the Navy.",
       "name": "_INTRO_",
-      "media": [
-        {
-          "type": "video",
-          "tag": "web",
-          "url": "http://videos.org/answer_id.mp4"
-        },
-        {
-          "type": "video",
-          "tag": "mobile",
-          "url": "http://videos.org/answer_id.mp4"
-        }
-      ]
+      "webMedia": {
+        "type": "video",
+        "tag": "web",
+        "url": "http://videos.org/answer_id.mp4"
+      },
+      "mobileMedia": {
+        "type": "video",
+        "tag": "mobile",
+        "url": "http://videos.org/answer_id.mp4"
+      }
     },
     {
       "_id": "offtopic",
       "transcript": "That is a great question, but unfortunately I never recorded an answer to that.",
       "name": "_OFF_TOPIC_",
-      "media": [
-        {
-          "type": "video",
-          "tag": "web",
-          "url": "http://videos.org/answer_id.mp4"
-        },
-        {
-          "type": "video",
-          "tag": "mobile",
-          "url": "http://videos.org/answer_id.mp4"
-        }
-      ]
+      "webMedia": {
+        "type": "video",
+        "tag": "web",
+        "url": "http://videos.org/answer_id.mp4"
+      },
+      "mobileMedia": {
+        "type": "video",
+        "tag": "mobile",
+        "url": "http://videos.org/answer_id.mp4"
+      }
     }
   ]
 }

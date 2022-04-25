@@ -198,8 +198,7 @@
             "minVideoLength": null
           },
           "transcript": "",
-          "status": "INCOMPLETE",
-          "media": null
+          "status": "INCOMPLETE"
         },
         {
           "_id": null,
@@ -214,8 +213,7 @@
             "minVideoLength": null
           },
           "transcript": "",
-          "status": "INCOMPLETE",
-          "media": null
+          "status": "INCOMPLETE"
         },
         {
           "_id": null,
@@ -230,8 +228,7 @@
             "minVideoLength": null
           },
           "transcript": "",
-          "status": "INCOMPLETE",
-          "media": null
+          "status": "INCOMPLETE"
         },
         {
           "_id": null,
@@ -251,8 +248,7 @@
             "minVideoLength": null
           },
           "transcript": "",
-          "status": "INCOMPLETE",
-          "media": null
+          "status": "INCOMPLETE"
         },
         {
           "_id": "60cfa7b42c386ac229b2204f",
@@ -267,8 +263,7 @@
             "minVideoLength": null
           },
           "transcript": "Please give a short introduction about yourself. Include your name, age, job title, where you work, and what you do.",
-          "status": "INCOMPLETE",
-          "media": []
+          "status": "INCOMPLETE"
         },
         {
           "_id": "60cfa8222c386ac229b25bc3",
@@ -283,8 +278,7 @@
             "minVideoLength": null
           },
           "transcript": "Sorry, I didn't understand the question. Try asking me something else.",
-          "status": "INCOMPLETE",
-          "media": []
+          "status": "INCOMPLETE"
         },
         {
           "_id": null,
@@ -299,8 +293,7 @@
             "minVideoLength": 10
           },
           "transcript": "",
-          "status": "INCOMPLETE",
-          "media": null
+          "status": "INCOMPLETE"
         }
       ]
     }

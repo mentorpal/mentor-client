@@ -368,36 +368,34 @@ export const loadMentors: ActionCreator<
     };
     for (const mentorId of mentors) {
       try {
-        const mentorResult = await fetchMentor(config, mentorId, subjectId);
-        if (mentorResult.status === 200 && mentorResult.data.data) {
-          const mentor: MentorClientData =
-            mentorResult.data.data.mentorClientData;
-          const topicQuestions: TopicQuestions[] = [];
-          const recommendedQuestions = getState().recommendedQuestions;
-          if (recommendedQuestions.length > 0) {
-            topicQuestions.push({
-              topic: "Recommended",
-              questions: recommendedQuestions,
-            });
-          }
-          topicQuestions.push(...mentor.topicQuestions);
-          topicQuestions.push({ topic: "History", questions: [] });
-          const intro = getUtterance(mentor, UtteranceName.INTRO);
-          const mentorData: MentorState = {
-            mentor: mentor,
-            topic_questions: topicQuestions,
-            status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
-            answer_id: intro?._id,
-            answer_media: intro?.media || [],
-            answerDuration: Number.NaN,
-          };
-          mentorLoadResult.mentorsById[mentorId] = {
-            data: mentorData,
-            status: ResultStatus.SUCCEEDED,
-          };
-        } else {
-          console.error(`error loading mentor ${mentorId}`, mentorResult);
+        const mentor: MentorClientData = await fetchMentor(
+          config,
+          mentorId,
+          subjectId
+        );
+        const topicQuestions: TopicQuestions[] = [];
+        const recommendedQuestions = getState().recommendedQuestions;
+        if (recommendedQuestions.length > 0) {
+          topicQuestions.push({
+            topic: "Recommended",
+            questions: recommendedQuestions,
+          });
         }
+        topicQuestions.push(...mentor.topicQuestions);
+        topicQuestions.push({ topic: "History", questions: [] });
+        const intro = getUtterance(mentor, UtteranceName.INTRO);
+        const mentorData: MentorState = {
+          mentor: mentor,
+          topic_questions: topicQuestions,
+          status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
+          answer_id: intro?._id,
+          answer_media: intro?.media || [],
+          answerDuration: Number.NaN,
+        };
+        mentorLoadResult.mentorsById[mentorId] = {
+          data: mentorData,
+          status: ResultStatus.SUCCEEDED,
+        };
       } catch (mentorErr) {
         console.error(mentorErr);
       }

@@ -155,7 +155,7 @@ describe("Questions list", () => {
       .should("contain", "gray");
   });
 
-  it("keeps greyed out questions when switching mentors if new mentor also has it", () => {
+  it.only("keeps greyed out questions when switching mentors if new mentor also has it", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=input-field]").type("where were you born?");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
