@@ -27,6 +27,7 @@ import Mobile from "components/layout/mobile";
 import { SurveyDialog } from "components/survey-dialog";
 import {
   getLocalStorage,
+  getRegistrationId,
   removeLocalStorageItem,
   setLocalStorage,
 } from "utils";
@@ -238,6 +239,14 @@ function IndexPage(props: {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    const registrationIdFromUrl = new URL(location.href).searchParams.get(
+      "registrationId"
+    );
+    if (registrationIdFromUrl) {
+      setLocalStorage("registrationId", registrationIdFromUrl);
+    }
+
     checkForSurveyPopupVariables();
     const handleResize = () => setWindowHeight(window.innerHeight);
     window.addEventListener("resize", handleResize);
@@ -268,11 +277,25 @@ function IndexPage(props: {
     );
   });
 
-  const setupLocalStorage = (): string => {
+  const setupLocalStorage = (): string[] => {
     // get local user information
     const localData = localStorage.getItem("userData");
+    const newId = uuidv1();
     // grab referrer from the URL
-    const referrer = new URL(location.href).searchParams.get("referrer");
+    const userId = new URL(location.href).searchParams.get("userID") || newId;
+    const referrer =
+      new URL(location.href).searchParams.get("referrer") || "no referrer";
+    const userEmail =
+      new URL(location.href).searchParams.get("userEmail") ||
+      `${newId}.guest@mentorpal.org`;
+
+    // if userId exists in localStorage and is the same as the one in the URL, use that one.
+    // Otherwise, use the one in the URL
+    const localUserId =
+      JSON.parse(localData ? localData : "{}").userID !== undefined &&
+      JSON.parse(localData ? localData : "{}").userID === userId
+        ? JSON.parse(localData ? localData : "").userID
+        : userId;
 
     // if referrer exists in localStorage and is the same as the one in the URL, use that one.
     // Otherwise, use the one in the URL
@@ -282,18 +305,32 @@ function IndexPage(props: {
         ? JSON.parse(localData ? localData : "").referrer
         : referrer;
 
+    // if userEmail exists in localStorage and is the same as the one in the URL, use that one.
+    // Otherwise, use the one in the URL
+    const localUserEmail =
+      JSON.parse(localData ? localData : "{}").userEmail !== undefined &&
+      JSON.parse(localData ? localData : "{}").userEmail === userEmail
+        ? JSON.parse(localData ? localData : "").userEmail
+        : userEmail;
+
     // if no referrer in localStorage, use the one from the URL
     const referrerURL = localData ? localReferrer : referrer;
+    // if no userEmail in localStorage, use the one from the URL
+    const userEmailURL = localData ? localUserEmail : userEmail;
+    // if no userEmail in localStorage, use the one from the URL
+    const userIdURL = localData ? localUserId : userId;
 
     // create new localStorage object
     const userData = {
+      userID: userIdURL,
       referrerURL: referrerURL,
+      userEmail: userEmailURL,
     };
 
     // set it in localStorage
     localStorage.setItem("userData", JSON.stringify(userData));
 
-    return referrerURL;
+    return [userIdURL, referrerURL, userEmail];
   };
 
   useEffect(() => {
@@ -303,17 +340,21 @@ function IndexPage(props: {
     if (!isConfigLoadComplete(configLoadStatus)) {
       return;
     }
+
     if (
       config.cmi5Enabled &&
       !Cmi5.isCmiAvailable &&
       !config.displayGuestPrompt
     ) {
       const urlRoot = `${window.location.protocol}//${window.location.host}`;
+      // TODO: Shouldn't this also check local storage?
       let userId = getParams(window.location.href);
       if (!userId || typeof userId !== "string") {
         userId = uuidv1();
       }
-      const referrer = setupLocalStorage();
+      const referrer = setupLocalStorage()[1];
+      const userEmail = setupLocalStorage()[2];
+      const userIdLRS = setupLocalStorage()[0];
 
       window.location.href = addCmi(
         window.location.href,
@@ -322,18 +363,22 @@ function IndexPage(props: {
           actor: {
             objectType: "Agent",
             account: {
-              name: userId,
               homePage: `${urlRoot}/guests-client/${referrer}`,
+              name: userIdLRS,
             },
-            name: "guest",
+            mbox: userEmail,
+            name: userIdLRS,
           },
           endpoint: config.cmi5Endpoint,
           fetch: `${config.cmi5Fetch}${
             config.cmi5Fetch.includes("?") ? "" : "?"
-          }&username=${encodeURIComponent("guest")}&userid=${userId}`,
-          registration: uuidv1(),
+          }&username=${encodeURIComponent(
+            userEmail
+          )}&userid=${userIdLRS}&userID=${userIdLRS}`,
+          registration: getRegistrationId(),
         },
-        referrer
+        referrer,
+        userEmail
       );
     }
     if (config.cmi5Enabled && Cmi5.isCmiAvailable) {

@@ -19,7 +19,8 @@ export interface CmiParams {
 export function addCmi(
   url: string,
   cp: LaunchParameters,
-  referrer: string
+  referrer: string,
+  userEmail: string
 ): string {
   return `${url}${url.includes("?") ? "" : "?"}${
     url.endsWith("&") ? "" : "&"
@@ -29,7 +30,9 @@ export function addCmi(
     cp.fetch
   )}&registration=${encodeURIComponent(
     cp.registration
-  )}&referrer=${encodeURIComponent(referrer)}`;
+  )}&referrer=${encodeURIComponent(referrer)}&userEmail=${encodeURIComponent(
+    userEmail
+  )}`;
 }
 
 export function hasCmi(urlOrQueryString: string): boolean {

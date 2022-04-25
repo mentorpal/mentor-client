@@ -4,8 +4,8 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import ReactPlayer from "react-player";
 import { MentorState, MentorQuestionStatus } from "types";
+import { v4 as uuid } from "uuid";
 
 export function normalizeString(s: string): string {
   return s.replace(/\W+/g, "").normalize().toLowerCase();
@@ -49,24 +49,18 @@ export function removeLocalStorageItem(key: string): void {
   localStorage.removeItem(key);
 }
 
-export function getCurrentFrameUri(video: ReactPlayer): string {
-  const format = "jpeg";
-  const quality = 0.92;
-
-  const canvas = <HTMLCanvasElement>document.createElement("CANVAS");
-
-  const videoPlayer = video.getInternalPlayer() as HTMLVideoElement;
-
-  if (!canvas || !videoPlayer) {
-    return "";
+export function getRegistrationId(): string {
+  const registrationIdFromUrl = new URL(location.href).searchParams.get(
+    "registrationId"
+  );
+  if (!registrationIdFromUrl) {
+    const registrationIdFromStorage = getLocalStorage("registrationId");
+    if (!registrationIdFromStorage) {
+      const registrationId = uuid();
+      setLocalStorage("registrationId", registrationId);
+      return registrationId;
+    }
+    return registrationIdFromStorage;
   }
-
-  canvas.width = videoPlayer.videoWidth;
-  canvas.height = videoPlayer.videoHeight;
-
-  canvas.getContext("2d")?.drawImage(videoPlayer, 0, 0);
-
-  const dataUri = canvas.toDataURL("image/" + format, quality);
-
-  return dataUri;
+  return registrationIdFromUrl;
 }

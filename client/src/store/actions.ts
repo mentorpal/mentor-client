@@ -38,6 +38,7 @@ import {
   TopicQuestions,
 } from "../types";
 import * as uuid from "uuid";
+import { getRegistrationId } from "utils";
 
 const RESPONSE_CUTOFF = -100;
 export const REPLAY_VIDEO = "REPLAY_VIDEO";
@@ -444,7 +445,10 @@ function sendCmi5Statement(statement: any) {
   }
   try {
     Cmi5.instance
-      .sendCmi5AllowedStatement(statement)
+      .sendCmi5AllowedStatement({
+        ...statement,
+        context: { registration: getRegistrationId() },
+      })
       .catch((err: Error) => console.error(JSON.stringify(err, null, " ")));
   } catch (err2) {
     console.error(JSON.stringify(err2));
@@ -605,6 +609,9 @@ export const sendQuestion =
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
   ) => {
+    const localData = localStorage.getItem("userData");
+    const userEmail = JSON.parse(localData ? localData : "{}").userEmail;
+
     sendCmi5Statement({
       verb: {
         id: "https://mentorpal.org/xapi/verb/asked",
@@ -618,6 +625,7 @@ export const sendQuestion =
             questionIndex: currentQuestionIndex(getState()) + 1,
             text: q.question,
             source: q.source,
+            userEmail: userEmail,
           },
         },
       },

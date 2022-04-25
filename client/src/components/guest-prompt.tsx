@@ -11,6 +11,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import addCmi from "cmiutils";
 import { useSelector } from "react-redux";
 import { Config, State } from "types";
+import { getRegistrationId } from "utils";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -54,6 +55,8 @@ export default function GuestPrompt(): JSX.Element {
     }
     const urlRoot = `${window.location.protocol}//${window.location.host}`;
     const userId = uuidv1();
+    const localData = localStorage.getItem("userData");
+    const userEmail = JSON.parse(localData ? localData : "{}").userEmail;
     window.location.href = addCmi(
       window.location.href,
       {
@@ -70,9 +73,10 @@ export default function GuestPrompt(): JSX.Element {
         fetch: `${absUrl(config.cmi5Fetch)}${
           config.cmi5Fetch.includes("?") ? "" : "?"
         }&username=${encodeURIComponent(name)}&userid=${userId}`,
-        registration: uuidv1(),
+        registration: getRegistrationId(),
       },
-      ""
+      "",
+      userEmail
     );
   }
 
