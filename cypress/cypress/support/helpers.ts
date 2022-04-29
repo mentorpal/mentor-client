@@ -108,6 +108,7 @@ export interface Config {
   cmi5Fetch: string;
   mentorsDefault: string[];
   urlClassifier: string;
+  classifierLambdaEndpoint: string;
   urlGraphql: string;
   urlVideo: string;
   styleHeaderLogo: string;
@@ -199,6 +200,7 @@ export const CONFIG_DEFAULT: Config = {
   cmi5Fetch: "",
   mentorsDefault: ["clint", "carlos", "julianne"],
   urlClassifier: "/classifier",
+  classifierLambdaEndpoint: "",
   urlGraphql: "/graphql",
   urlVideo: "/video",
   styleHeaderLogo: "",
