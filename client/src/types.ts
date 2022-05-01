@@ -76,10 +76,10 @@ export interface Media {
   url: string;
 }
 
-interface AnswerMediaClassifier{
-  web_media: Media,
-  mobile_media: Media,
-  vtt_media: Media
+interface AnswerMediaClassifier {
+  web_media: Media;
+  mobile_media: Media;
+  vtt_media: Media;
 }
 
 export interface QuestionApiData {
