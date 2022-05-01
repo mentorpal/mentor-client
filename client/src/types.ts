@@ -76,11 +76,17 @@ export interface Media {
   url: string;
 }
 
+interface AnswerMediaClassifier{
+  web_media: Media,
+  mobile_media: Media,
+  vtt_media: Media
+}
+
 export interface QuestionApiData {
   query: string;
   answer_id: string;
   answer_text: string;
-  answer_media: Media[];
+  answer_media: AnswerMediaClassifier;
   confidence: number;
   feedback_id: string;
   classifier: string;

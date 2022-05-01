@@ -644,10 +644,11 @@ export const sendQuestion =
         queryMentor(mentor, q.question, q.config)
           .then((r) => {
             const { data } = r;
+            const answer_media = [data.answer_media.web_media, data.answer_media.mobile_media, data.answer_media.vtt_media]
             const response: QuestionResponse = {
               answerId: data.answer_id,
               answerText: data.answer_text,
-              answerMedia: data.answer_media,
+              answerMedia: answer_media,
               answerClassifier: data.classifier,
               answerConfidence: data.confidence,
               answerIsOffTopic: data.confidence <= RESPONSE_CUTOFF,
