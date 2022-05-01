@@ -36,6 +36,7 @@ import {
   MentorDataResult,
   Feedback,
   TopicQuestions,
+  Media,
 } from "../types";
 import * as uuid from "uuid";
 import { getRegistrationId } from "utils";
@@ -644,11 +645,17 @@ export const sendQuestion =
         queryMentor(mentor, q.question, q.config)
           .then((r) => {
             const { data } = r;
-            const answer_media = [
-              data.answer_media.web_media,
-              data.answer_media.mobile_media,
-              data.answer_media.vtt_media,
-            ];
+            const answer_media: Media[] = [];
+            const { web_media, mobile_media, vtt_media } = data.answer_media;
+            if (web_media) {
+              answer_media.push(web_media);
+            }
+            if (mobile_media) {
+              answer_media.push(mobile_media);
+            }
+            if (vtt_media) {
+              answer_media.push(vtt_media);
+            }
             const response: QuestionResponse = {
               answerId: data.answer_id,
               answerText: data.answer_text,
