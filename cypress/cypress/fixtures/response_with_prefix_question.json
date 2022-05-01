@@ -2,18 +2,18 @@
   "query": "how old are you",
   "answer_id": "answer_id_6",
   "answer_text": "How old are you? [ask](https://www.google.com)",
-  "answer_media": [
-    {
+  "answer_media": {
+    "web_media": {
       "type": "video",
       "tag": "web",
       "url": "http://videos.org/answer_id6.mp4"
     },
-    {
+    "mobile_media": {
       "type": "video",
       "tag": "mobile",
       "url": "http://videos.org/answer_id6.mp4"
     }
-  ],
+  },
   "confidence": -0.5140574318328217,
   "feedback_id": "",
   "classifier": ""
