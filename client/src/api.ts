@@ -30,6 +30,7 @@ export async function fetchConfig(
           cmi5Fetch
           mentorsDefault
           urlClassifier
+          classifierLambdaEndpoint
           urlGraphql
           urlVideo
           filterEmailMentorAddress
@@ -191,8 +192,6 @@ export async function fetchMentor(
     );
   }
   const mentorClientData = gqlRes.data.data.mentorClientData;
-  console.log("mentor data before reshaping");
-  console.log(mentorClientData);
   return convertMentorClientDataGQL(mentorClientData);
 }
 
@@ -227,10 +226,13 @@ export async function queryMentor(
   question: string,
   config: Config
 ): Promise<AxiosResponse<QuestionApiData>> {
-  return await axios.get(`${config.urlClassifier}/questions/`, {
-    params: {
-      mentor: mentorId,
-      query: question,
-    },
-  });
+  return await axios.get(
+    `${config.classifierLambdaEndpoint || config.urlClassifier}/questions/`,
+    {
+      params: {
+        mentor: mentorId,
+        query: question,
+      },
+    }
+  );
 }
