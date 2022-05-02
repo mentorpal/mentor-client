@@ -51,12 +51,12 @@
       "webMedia": {
         "type": "video",
         "tag": "web",
-        "url": "http://videos.org/answer_id.mp4"
+        "url": "http://videos.org/off_topic_answer_id.mp4"
       },
       "mobileMedia": {
         "type": "video",
         "tag": "mobile",
-        "url": "http://videos.org/answer_id.mp4"
+        "url": "http://videos.org/off_topic_answer_id.mp4"
       }
     }
   ]

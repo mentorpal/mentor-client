@@ -233,4 +233,42 @@ describe("Video Mentor", () => {
     // display card over a corner of the video
     cy.get("[data-cy=mentor-name-card]").should("exist");
   });
+
+  it("If classifier errors occurs, then show off topic response", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["carlos_subject_selected"] },
+      mentorData: [carlos_subject_selected],
+      apiResponse: "response_with_feedback.json",
+    });
+    cy.intercept("**/questions/?mentor=carlos_subject_selected&query=*", {
+      fixture: "response_with_feedback.json",
+      statusCode: 400,
+    });
+    // video intercept
+    cy.intercept("http://videos.org/off_topic_answer_id.mp4", {
+      fixture: "video_off_topic.mp4",
+    });
+
+    cy.visit("/");
+    cy.get("[data-cy=input-field]").type("is the food good");
+    // have to wait until the intro video is done to send a question
+    // to truly check if we are recieving a response to the question
+    cy.get("[data-cy=video-container]", { timeout: 8000 }).should(
+      "have.attr",
+      "data-video-type",
+      "idle"
+    );
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=video-container]").within(($vc) => {
+      cy.get("video").should("exist");
+      cy.get("video")
+        .should("have.attr", "src")
+        .and("match", /.*off_topic_answer_id.mp4$/);
+    });
+
+    cy.get("[data-cy=chat-msg-2]").should(
+      "contain.text",
+      "That is a great question, but unfortunately I never recorded an answer to that."
+    );
+  });
 });

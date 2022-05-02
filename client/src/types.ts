@@ -40,6 +40,7 @@ export interface ChatMsg {
   feedback: Feedback;
   feedbackId: string;
   isFeedbackSendInProgress: boolean;
+  utterances?: Utterance[];
   questionId: string;
   askLinks?: AskLink[];
   webLinks?: WebLink[];
@@ -204,6 +205,7 @@ export interface MentorState {
   answer_id?: string;
   answer_text?: string;
   answer_media: Media[];
+  utterances: Utterance[];
   answerReceivedAt?: Date;
   answerFeedbackId?: string;
   classifier?: string;

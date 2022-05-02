@@ -391,6 +391,7 @@ export const loadMentors: ActionCreator<
           status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
           answer_id: intro?._id,
           answer_media: intro?.media || [],
+          utterances: mentor.utterances,
           answerDuration: Number.NaN,
         };
         mentorLoadResult.mentorsById[mentorId] = {
@@ -695,8 +696,27 @@ export const sendQuestion =
             resolve(response);
           })
           .catch((err: any) => {
-            dispatch(onQuestionError(mentor, q.question));
-            reject(err);
+            const mentorState = state.mentorsById[mentor];
+            const offTopicUtterance = mentorState.utterances.find(
+              (u) => u.name === UtteranceName.OFF_TOPIC
+            );
+            const response: QuestionResponse = {
+              answerId: offTopicUtterance?._id || "",
+              answerText: offTopicUtterance?.transcript || "",
+              answerMedia: offTopicUtterance?.media || [],
+              answerClassifier: "",
+              answerConfidence: 0,
+              answerIsOffTopic: false,
+              answerFeedbackId: "",
+              answerResponseTimeSecs: Number(Date.now() - tick) / 1000,
+              mentor,
+              question: q.question,
+              questionId,
+              questionSource: q.source,
+              status: MentorQuestionStatus.ERROR,
+            };
+            dispatch(onQuestionAnswered(response));
+            resolve(response);
           });
       });
     });
