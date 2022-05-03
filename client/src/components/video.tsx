@@ -48,6 +48,7 @@ function Video(args: {
     return Object.keys(state.mentorsById).length;
   });
   const curMentor = useSelector<State, string>((state) => state.curMentor);
+
   const video = useSelector<State, VideoData | null>((state) => {
     if (state.chat.replay) {
       const videoMedia = state.chat.messages.find((m) => {

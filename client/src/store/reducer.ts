@@ -231,6 +231,7 @@ function onMentorsLoadRequested(
         utterances: [],
       },
       topic_questions: [],
+      utterances: [],
       status: MentorQuestionStatus.NONE,
       answerDuration: Number.NaN,
       answer_media: [],
@@ -269,6 +270,7 @@ function onMentorLoadResults(
   const answerMedia = curMentorIntro
     ? getUtterance(curMentorIntro, UtteranceName.INTRO)?.media
     : [];
+  const utterances = curMentorIntro?.utterances || [];
   let s = {
     ...state,
     chat: {
@@ -288,6 +290,7 @@ function onMentorLoadResults(
           answerId,
           answerMedia,
           isFeedbackSendInProgress: false,
+          utterances,
           isVideoInProgress: true,
           askLinks: findAskLinks(curMentorIntroTranscript || ""),
           webLinks: findWebLinks(

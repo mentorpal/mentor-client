@@ -12,6 +12,7 @@ import {
   MentorClientData,
   QuestionApiData,
   UtteranceName,
+  MentorState,
 } from "types";
 import { convertMentorClientDataGQL, MentorQueryDataGQL } from "types-gql";
 
@@ -63,7 +64,7 @@ export async function fetchConfig(
 }
 
 export function getUtterance(
-  mentor: MentorClientData,
+  mentor: MentorClientData | MentorState,
   utterance: UtteranceName
 ): Utterance | undefined {
   if (!(mentor && Array.isArray(mentor.utterances))) {
@@ -87,6 +88,15 @@ export function idleUrl(mentor: MentorClientData, tag?: string): string {
     return videoUrl(idle.media, tag);
   } else {
     return "";
+  }
+}
+
+export function offTopicMedia(mentor: MentorState | MentorClientData): Media[] {
+  const offTopic = getUtterance(mentor, UtteranceName.OFF_TOPIC);
+  if (offTopic) {
+    return offTopic.media;
+  } else {
+    return [];
   }
 }
 
