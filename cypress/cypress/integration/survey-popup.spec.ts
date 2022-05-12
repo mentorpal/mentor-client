@@ -22,7 +22,7 @@ describe("Disclaimer Survey Popup Button", () => {
       .should("be.visible");
   });
 
-  it("If just qualtrics id is set nad nothing else, make sure to display link", () => {
+  it("If just qualtrics id is set and nothing else", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     window.localStorage.setItem("qualtricsuserid", "123");
     cy.get("[data-cy=header-disclimer-btn]").invoke("mouseover").click();
@@ -39,14 +39,14 @@ describe("Disclaimer Survey Popup Button", () => {
     cy.get("[data-cy=survey-link]").should("be.visible");
   });
 
-  it("Does not display link if local storage is setup correctly and time not passed", () => {
+  it("If local storage is setup correctly and time not passed", () => {
     visitAsGuestWithDefaultSetup(cy, "/?postsurveytime=10&userid=123");
     cy.get("[data-cy=header-disclimer-btn]").should("be.visible");
     cy.get("[data-cy=header-disclimer-btn]").invoke("mouseover").click();
     cy.get("[data-cy=header-survey-popup-btn]").invoke("mouseover").click();
     cy.get("[data-cy=survey-dialog]").should("be.visible");
     cy.get("[data-cy=survey-dialog-title]").should("be.visible");
-    cy.get("[data-cy=survey-link]").should("not.exist");
+    cy.get("[data-cy=survey-link]").should("exist");
   });
 });
 
