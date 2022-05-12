@@ -24,13 +24,7 @@ import "styles/history-chat-responsive.css";
 import Desktop from "components/layout/desktop";
 import { isMobile } from "react-device-detect";
 import Mobile from "components/layout/mobile";
-import { SurveyDialog } from "components/survey-dialog";
-import {
-  getLocalStorage,
-  getRegistrationId,
-  removeLocalStorageItem,
-  setLocalStorage,
-} from "utils";
+import { getRegistrationId, setLocalStorage } from "utils";
 
 const useStyles = makeStyles((theme) => ({
   flexRoot: {
@@ -118,37 +112,8 @@ function IndexPage(props: {
   const [chatHeight, setChatHeight] = React.useState<number>(0);
   const curTopic = useSelector<State, string>((state) => state.curTopic);
 
-  const [pollingTimer, setPollingTimer] = React.useState<boolean>(false);
-  const [showSurveyPopup, setShowSurveyPopup] = React.useState<boolean>(false);
-  const surveyPopupTitle = generateSurveyPopupTitle();
-  const surveyLink = `https://fullerton.qualtrics.com/jfe/form/SV_1ZzDYgNPzLE2QPI?userid=${getLocalStorage(
-    "qualtricsuserid"
-  )}`;
-
   const { guest, subject, recommendedQuestions } = props.search;
   let { mentor } = props.search;
-
-  function generateSurveyPopupTitle(): string {
-    const surveyTimeFromLocalStorage = getLocalStorage("postsurveytime");
-    const surveyTime = surveyTimeFromLocalStorage
-      ? Number(surveyTimeFromLocalStorage)
-      : 0;
-    const timerTextFromLocalStorage = getLocalStorage("timertext");
-
-    if (timerTextFromLocalStorage) {
-      return timerTextFromLocalStorage;
-    }
-
-    if (!surveyTime) {
-      return "Please click the link below to take our survey";
-    } else if (surveyTime > 60) {
-      return `You have now spent ${Math.round(
-        surveyTime / 60
-      )} minutes on this site! Please click the link below to continue our survey`;
-    } else {
-      return `You have now spent ${surveyTime} seconds on this site! Please click the link below to continue our survey`;
-    }
-  }
 
   function hasSessionUser(): boolean {
     return Boolean(
@@ -175,68 +140,6 @@ function IndexPage(props: {
     },
   });
 
-  function checkForSurveyPopupVariables() {
-    const searchParams = new URL(location.href).searchParams;
-    const postsurveytime = searchParams.get("postsurveytime");
-    const qualtricsUserId = searchParams.get("userid");
-    if (postsurveytime && qualtricsUserId) {
-      setLocalStorage("postsurveytime", postsurveytime);
-      setLocalStorage("qualtricsuserid", qualtricsUserId);
-      setLocalStorage("timespentonpage", "0");
-      const timertext = searchParams.get("timertext");
-      if (timertext) {
-        setLocalStorage("timertext", timertext);
-      }
-      setPollingTimer(true);
-    } else {
-      const localStorageTimerPopup = getLocalStorage("postsurveytime");
-      const localStorageTimeSpent = getLocalStorage("timespentonpage");
-      if (localStorageTimerPopup && localStorageTimeSpent) {
-        setPollingTimer(true);
-      }
-    }
-  }
-
-  function clearTimerLocalStorage() {
-    removeLocalStorageItem("timespentonpage");
-    removeLocalStorageItem("postsurveytime");
-    removeLocalStorageItem("qualtricsuserid");
-    removeLocalStorageItem("timertext");
-    setPollingTimer(false);
-  }
-
-  function closeSurveyPopup() {
-    setShowSurveyPopup(false);
-    clearTimerLocalStorage();
-  }
-
-  function pollTimer(): void {
-    const timeSpentOnPage = getLocalStorage("timespentonpage");
-    const newTimeSpentOnPage = Number(timeSpentOnPage) + 10;
-
-    const timerDuration = getLocalStorage("postsurveytime");
-    if (!timerDuration || !timeSpentOnPage) {
-      console.error("local storage not set correctly");
-      clearTimerLocalStorage();
-      return;
-    }
-
-    if (newTimeSpentOnPage >= Number(timerDuration) && !showSurveyPopup) {
-      setShowSurveyPopup(true);
-      setPollingTimer(false);
-    } else {
-      setLocalStorage("timespentonpage", String(newTimeSpentOnPage));
-    }
-  }
-
-  useEffect(() => {
-    if (!pollingTimer) {
-      return;
-    }
-    const id = setInterval(() => pollTimer(), pollingTimer ? 10000 : undefined);
-    return () => clearInterval(id);
-  }, [pollingTimer]);
-
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -247,7 +150,6 @@ function IndexPage(props: {
       setLocalStorage("registrationId", registrationIdFromUrl);
     }
 
-    checkForSurveyPopupVariables();
     const handleResize = () => setWindowHeight(window.innerHeight);
     window.addEventListener("resize", handleResize);
     setWindowHeight(window.innerHeight);
@@ -479,12 +381,6 @@ function IndexPage(props: {
           curTopic={curTopic}
         />
       )}
-      <SurveyDialog
-        open={showSurveyPopup}
-        title={surveyPopupTitle}
-        link={surveyLink}
-        closeDialog={() => closeSurveyPopup()}
-      />
     </MuiThemeProvider>
   );
 }

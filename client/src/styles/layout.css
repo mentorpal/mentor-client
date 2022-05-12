@@ -58,6 +58,26 @@ body {
   margin-bottom: 15px;
 }
 
+.modal-animation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  background-color: #eee;
+  text-align: left;
+  padding: 50px;
+  border-radius: 10px;
+  animation: fadeInAnimation 0.3s;
+  animation-fill-mode: forwards;
+}
+.disclaimer-icon {
+  position: absolute;
+  right: 50px;
+}
+.disclaimer-content-container {
+  height: 100%;
+}
 .carousel .slide {
   position: relative;
   display: inline-block;
