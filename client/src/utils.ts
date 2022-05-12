@@ -64,3 +64,18 @@ export function getRegistrationId(): string {
   }
   return registrationIdFromUrl;
 }
+
+export function printLocalStorage(): void {
+  if (typeof window == "undefined") {
+    return;
+  }
+  console.info("local storage");
+  for (let i = 0; i < localStorage.length; i++) {
+    console.info(
+      localStorage.key(i) +
+        "=[" +
+        localStorage.getItem(localStorage.key(i) || "") +
+        "]"
+    );
+  }
+}

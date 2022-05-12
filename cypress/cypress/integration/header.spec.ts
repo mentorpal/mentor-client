@@ -72,24 +72,6 @@ describe("Header", () => {
     cy.get("[data-cy=info-button]").should("not.exist");
   });
 
-  it("shows legal disclaimer if disclaimerDisabled is false", () => {
-    mockDefaultSetup(cy, {
-      config: {
-        cmi5Enabled: false,
-        mentorsDefault: ["clint"],
-        disclaimerTitle: "Privacy Policy",
-        disclaimerText:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Imperdiet sed euismod nisi porta lorem mollis aliquam. Eget dolor morbi non arcu risus quis varius quam. Purus sit amet volutpat consequat mauris. Porttitor eget dolor morbi non arcu risus quis varius quam. Integer quis auctor elit sed vulputate mi. Dictumst vestibulum rhoncus est pellentesque. Sed adipiscing diam donec adipiscing tristique risus nec feugiat in. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Enim blandit volutpat maecenas volutpat blandit aliquam etiam erat. Consectetur libero id faucibus nisl tincidunt. Dis parturient montes nascetur ridiculus mus mauris. Pharetra et ultrices neque ornare aenean euismod. Aliquam etiam erat velit scelerisque in dictum. Odio morbi quis commodo odio aenean sed adipiscing diam. Nunc sed velit dignissim sodales ut eu sem integer. Scelerisque eu ultrices vitae auctor eu. Sagittis id consectetur purus ut faucibus pulvinar elementum integer enim.",
-        disclaimerDisabled: false,
-      },
-    });
-    cy.visit("/");
-    cy.get("[data-cy=alert-dialog-title]").contains("Privacy Policy");
-    cy.get("[data-cy=alert-dialog-description]").contains(
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Imperdiet sed euismod nisi porta lorem mollis aliquam. Eget dolor morbi non arcu risus quis varius quam. Purus sit amet volutpat consequat mauris. Porttitor eget dolor morbi non arcu risus quis varius quam. Integer quis auctor elit sed vulputate mi. Dictumst vestibulum rhoncus est pellentesque. Sed adipiscing diam donec adipiscing tristique risus nec feugiat in. Viverra suspendisse potenti nullam ac tortor vitae purus faucibus ornare. Enim blandit volutpat maecenas volutpat blandit aliquam etiam erat. Consectetur libero id faucibus nisl tincidunt. Dis parturient montes nascetur ridiculus mus mauris. Pharetra et ultrices neque ornare aenean euismod. Aliquam etiam erat velit scelerisque in dictum. Odio morbi quis commodo odio aenean sed adipiscing diam. Nunc sed velit dignissim sodales ut eu sem integer. Scelerisque eu ultrices vitae auctor eu. Sagittis id consectetur purus ut faucibus pulvinar elementum integer enim."
-    );
-  });
-
   it("dismisses legal disclaimer on agree and shows on icon press", () => {
     mockDefaultSetup(cy, {
       config: {
@@ -101,14 +83,16 @@ describe("Header", () => {
       },
     });
     cy.visit("/");
-    cy.get("[data-cy=alert-dialog-title]").should("exist");
-    cy.get("[data-cy=alert-dialog-description]").should("exist");
-    cy.get("[data-cy=agree-button]").click();
-    cy.get("[data-cy=alert-dialog-title]").should("not.exist");
-    cy.get("[data-cy=alert-dialog-description]").should("not.exist");
-    cy.get("[data-cy=info-button]").click();
-    cy.get("[data-cy=alert-dialog-title]").should("exist");
-    cy.get("[data-cy=alert-dialog-description]").should("exist");
+    cy.get("[data-cy=header-disclimer-btn]").invoke("mouseover").click();
+    cy.get("[data-cy=disclaimer-container]").should("exist");
+    cy.get("[data-cy=disclaimer-title]").should("exist");
+    cy.get("[data-cy=disclaimer-text]").should("exist");
+    cy.get("[data-cy=accept-disclaimer]").click();
+    cy.get("[data-cy=disclaimer-container]").should("not.be.visible");
+    cy.get("[data-cy=header-disclimer-btn]").invoke("mouseover").click();
+    cy.get("[data-cy=disclaimer-container]").should("exist");
+    cy.get("[data-cy=disclaimer-title]").should("exist");
+    cy.get("[data-cy=disclaimer-text]").should("exist");
   });
 
   it("shows alternate header with logo and if config.styleHeaderLogo is set", () => {
