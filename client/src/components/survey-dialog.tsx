@@ -153,7 +153,11 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
     const surveyWaitTime = surveyWaitTimeFromLocalStorage
       ? Number(surveyWaitTimeFromLocalStorage)
       : 0;
-    if (timeSpentOnPageFromLocalStorage && surveyWaitTimeFromLocalStorage && (timeSpentOnPage >= surveyWaitTime)) {
+    if (
+      timeSpentOnPageFromLocalStorage &&
+      surveyWaitTimeFromLocalStorage &&
+      timeSpentOnPage >= surveyWaitTime
+    ) {
       clearTimerLocalStorage();
     }
     setShowSurveyPopup(false);
