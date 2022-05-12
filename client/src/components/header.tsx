@@ -9,16 +9,9 @@ import { useSelector } from "react-redux";
 import { Hidden, Typography } from "@material-ui/core";
 import { State } from "types";
 import IconButton from "@material-ui/core/IconButton";
-import InfoIcon from "@material-ui/icons/Info";
 import HomeIcon from "@material-ui/icons/Home";
-import Button from "@material-ui/core/DialogTitle";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import useLocalStorage from "use-local-storage";
 import "styles/layout.css";
+import Disclaimer from "./disclaimer/disclaimer";
 
 interface HeaderMentorData {
   _id: string;
@@ -57,30 +50,9 @@ function Header(): JSX.Element {
     (state) => state.config.styleHeaderTextColor?.trim() || "#000000"
   );
 
-  const disclaimerTitle = useSelector<State, string>(
-    (state) => state.config.disclaimerTitle?.trim() || "Please Configure Title"
-  );
-  const disclaimerText = useSelector<State, string>(
-    (state) => state.config.disclaimerText?.trim() || "Please Configure Text"
-  );
-  const disclaimerDisabled = useSelector<State, boolean>(
-    (state) => state.config.disclaimerDisabled
-  );
-
   if (!mentor) {
     return <></>;
   }
-
-  const [acceptedTerms, setAcceptedTerms] = useLocalStorage(
-    "acceptedTerms",
-    "false"
-  );
-  //Check if user agreed to TOS, if not present dialog by setting default state
-  const [open, setOpen] = React.useState(acceptedTerms !== "true");
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   const handleClickHome = () => {
     const localData = localStorage.getItem("userData");
@@ -89,11 +61,6 @@ function Header(): JSX.Element {
     const referrer = new URL(location.href).searchParams.get("referrer");
 
     window.location.href = `/home/?referrer=${referrer}&userEmail=${userEmail}&userid=${userID}`;
-  };
-
-  const handleAgree = () => {
-    setAcceptedTerms("true");
-    setOpen(false);
   };
 
   const MentorNameTitle = `${mentor.name}: ${mentor.title}`;
@@ -147,53 +114,14 @@ function Header(): JSX.Element {
           </Typography>
         </Hidden>
         {/* Show disclaimer */}
-        {disclaimerDisabled ? (
-          <></>
-        ) : (
-          <>
-            <IconButton
-              aria-label="information"
-              component="span"
-              style={{
-                position: "absolute",
-                right: "20px",
-                color: `${styleHeaderTextColor}`,
-              }}
-              onClick={handleClickOpen}
-              data-cy="info-button"
-            >
-              <InfoIcon />
-            </IconButton>
-            <Dialog
-              disableBackdropClick
-              disableEscapeKeyDown
-              open={open}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title" data-cy="alert-dialog-title">
-                {disclaimerTitle}
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText
-                  id="alert-dialog-description"
-                  data-cy="alert-dialog-description"
-                >
-                  {disclaimerText}
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  onClick={handleAgree}
-                  color="primary"
-                  data-cy="agree-button"
-                >
-                  I Agree
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </>
-        )}
+        <div
+          style={{
+            position: "absolute",
+            right: "50px",
+          }}
+        >
+          <Disclaimer />
+        </div>
       </div>
     );
   }
@@ -232,53 +160,14 @@ function Header(): JSX.Element {
         </Typography>
       </div>
       {/* Show disclaimer */}
-      {disclaimerDisabled ? (
-        <></>
-      ) : (
-        <>
-          <IconButton
-            aria-label="information"
-            component="span"
-            style={{
-              position: "absolute",
-              right: "20px",
-              color: `${styleHeaderTextColor}`,
-            }}
-            onClick={handleClickOpen}
-            data-cy="info-button"
-          >
-            <InfoIcon />
-          </IconButton>
-          <Dialog
-            disableBackdropClick
-            disableEscapeKeyDown
-            open={open}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title" data-cy="alert-dialog-title">
-              {disclaimerTitle}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText
-                id="alert-dialog-description"
-                data-cy="alert-dialog-description"
-              >
-                {disclaimerText}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={handleAgree}
-                color="primary"
-                data-cy="agree-button"
-              >
-                I Agree
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </>
-      )}
+      <div
+        style={{
+          position: "absolute",
+          right: "50px",
+        }}
+      >
+        <Disclaimer />
+      </div>
     </div>
   );
 }
