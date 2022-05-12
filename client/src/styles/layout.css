@@ -63,20 +63,22 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 50%;
+  width: 70%;
   background-color: #eee;
   text-align: left;
-  padding: 50px;
+  padding: 20px;
   border-radius: 10px;
   animation: fadeInAnimation 0.3s;
   animation-fill-mode: forwards;
+  max-height: calc(100vh - 125px);
 }
 .disclaimer-icon {
   position: absolute;
   right: 50px;
 }
 .disclaimer-content-container {
-  height: 100%;
+  overflow: auto;
+  max-height: calc(100vh - 125px);
 }
 .carousel .slide {
   position: relative;

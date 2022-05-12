@@ -194,6 +194,8 @@ export function toGuestUrl(url: string, guestName: string) {
   }, urlBase);
 }
 
+const disclaimerText = require("../fixtures/disclaimer_text.json");
+
 export const CONFIG_DEFAULT: Config = {
   cmi5Enabled: false,
   cmi5Endpoint: "",
@@ -208,7 +210,7 @@ export const CONFIG_DEFAULT: Config = {
   styleHeaderTextColor: "",
   filterEmailMentorAddress: "",
   disclaimerTitle: "",
-  disclaimerText: "",
+  disclaimerText: disclaimerText.disclaimerText,
   disclaimerDisabled: true,
   displayGuestPrompt: false,
 };
