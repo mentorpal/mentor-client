@@ -15,7 +15,6 @@ import {
 
 export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
   const [title, setTitle] = useState<string>("");
-  const [displaySurveyLink, setDisplaySurveyLink] = useState<boolean>(false);
   const [pollingTimer, setPollingTimer] = useState<boolean>(false);
   const [showSurveyPopup, setShowSurveyPopup] = useState<boolean>(false);
   const surveyLink = `https://fullerton.qualtrics.com/jfe/form/SV_1ZzDYgNPzLE2QPI?userid=${getLocalStorage(
@@ -82,8 +81,6 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
         : `${timeSpentOnPage} seconds`;
     let surveyPopupTitleText = "";
     if (!surveyWaitTimeFromLocalStorage || !timeSpentOnPageFromLocalStorage) {
-      // local storage is not setup correctly, just display the survey to take at any time
-      setDisplaySurveyLink(true);
       surveyPopupTitleText +=
         "After spending some time with our site, you may click the link below to take our survey!";
     } else {
@@ -91,12 +88,9 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
       surveyPopupTitleText += `You have spent ${timeSpentOnPageText} on this site.`;
       const shouldDisplaySurveyLink = timeSpentOnPage >= surveyWaitTime;
       if (shouldDisplaySurveyLink) {
-        setDisplaySurveyLink(true);
         surveyPopupTitleText +=
           " Please click the link below to take our survey!";
       } else {
-        setDisplaySurveyLink(false);
-
         const timeLeftToSpendOnPage = surveyWaitTime - timeSpentOnPage;
         const timeLeftToSpendOnPageText =
           timeLeftToSpendOnPage > 60
@@ -186,17 +180,15 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
       >
         <DialogTitle data-cy="survey-dialog-title">{title}</DialogTitle>
 
-        {displaySurveyLink ? (
-          <a
-            href={surveyLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ fontSize: "24px", paddingBottom: "16px" }}
-            data-cy="survey-link"
-          >
-            Careerfair Survey
-          </a>
-        ) : undefined}
+        <a
+          href={surveyLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ fontSize: "24px", paddingBottom: "16px" }}
+          data-cy="survey-link"
+        >
+          Careerfair Survey
+        </a>
         <DialogContent>
           <Button onClick={onClose}>Close</Button>
         </DialogContent>

@@ -61,6 +61,7 @@ export default function Disclaimer(): JSX.Element {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
           data-cy="disclaimer-container"
+          disableScrollLock={true}
           style={{ height: "100%", display: open ? "block" : "none" }}
         >
           <Box className="modal-animation">
