@@ -7,10 +7,33 @@ The full terms of this copyright and license should always be found in the root 
 import { visitAsGuestWithDefaultSetup } from "../support/helpers";
 
 describe("Disclaimer Survey Popup Button", () => {
-  it("Displays link if opened while local storage is not setup", () => {
+  it("Only visible is qualtricsuserid exists in local storage", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.get("[data-cy=header-disclimer-btn]").invoke("mouseover").click();
-    cy.get("[data-cy=header-survey-popup-btn]").invoke("mouseover").click();
+    cy.get("[data-cy=header-survey-popup-btn]").should("not.be.visible");
+    visitAsGuestWithDefaultSetup(cy, "/?postsurveytime=10&userid=123");
+    cy.get("[data-cy=header-disclimer-btn]").invoke("mouseover").click();
+    cy.get("[data-cy=disclaimer-text]").should(
+      "contain.text",
+      "Disclaimer: The CareerFair.AI rese"
+    );
+    cy.get("[data-cy=header-survey-popup-btn]")
+      .scrollIntoView()
+      .should("be.visible");
+  });
+
+  it("If just qualtrics id is set nad nothing else, make sure to display link", () => {
+    visitAsGuestWithDefaultSetup(cy, "/");
+    window.localStorage.setItem("qualtricsuserid", "123");
+    cy.get("[data-cy=header-disclimer-btn]").invoke("mouseover").click();
+    cy.get("[data-cy=disclaimer-text]").should(
+      "contain.text",
+      "Disclaimer: The CareerFair.AI rese"
+    );
+    cy.get("[data-cy=header-survey-popup-btn]")
+      .scrollIntoView()
+      .invoke("mouseover")
+      .click();
     cy.get("[data-cy=survey-dialog]").should("be.visible");
     cy.get("[data-cy=survey-dialog-title]").should("be.visible");
     cy.get("[data-cy=survey-link]").should("be.visible");

@@ -63,72 +63,9 @@ function Header(): JSX.Element {
     window.location.href = `/home/?referrer=${referrer}&userEmail=${userEmail}&userid=${userID}`;
   };
 
-  // const handleAgree = () => {
-  //   setAcceptedTerms("true");
-  //   setOpen(false);
-  // };
-
   const MentorNameTitle = `${mentor.name}: ${mentor.title}`;
 
   const subjectTitle = subject ? `Mentor Panel: ${subject}` : "Mentor Panel";
-
-  // function disclaimerDialog() {
-  //   return (
-  //     <>
-  //       <IconButton
-  //         aria-label="information"
-  //         component="span"
-  //         style={{
-  //           position: "absolute",
-  //           right: "20px",
-  //           color: `${styleHeaderTextColor}`,
-  //         }}
-  //         onClick={handleClickOpen}
-  //         data-cy="info-button"
-  //       >
-  //         <InfoIcon />
-  //       </IconButton>
-  //       <Dialog
-  //         disableBackdropClick
-  //         disableEscapeKeyDown
-  //         open={open}
-  //         aria-labelledby="alert-dialog-title"
-  //         aria-describedby="alert-dialog-description"
-  //       >
-  //         <DialogTitle id="alert-dialog-title" data-cy="alert-dialog-title">
-  //           {disclaimerTitle}
-  //         </DialogTitle>
-  //         <DialogContent>
-  //           <DialogContentText
-  //             id="alert-dialog-description"
-  //             data-cy="alert-dialog-description"
-  //           >
-  //             {disclaimerText}
-  //           </DialogContentText>
-  //         </DialogContent>
-  //         <DialogActions>
-  //           <Button
-  //             onClick={handleAgree}
-  //             color="primary"
-  //             data-cy="agree-button"
-  //           >
-  //             I Agree
-  //           </Button>
-  //         </DialogActions>
-  //         <div
-  //           style={{
-  //             margin: "auto",
-  //             marginTop: 10,
-  //             width: "100%",
-  //             textAlign: "center",
-  //           }}
-  //         >
-  //           <SurveyDialog />
-  //         </div>
-  //       </Dialog>
-  //     </>
-  //   );
-  // }
 
   if (styleHeaderLogo) {
     return (

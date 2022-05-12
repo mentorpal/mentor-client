@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
 import Tooltip from "@material-ui/core/Tooltip";
 import { SurveyDialog } from "components/survey-dialog";
+import { getLocalStorage } from "utils";
 
 export default function Disclaimer(): JSX.Element {
   const [open, setOpen] = useState<boolean>(false);
@@ -40,6 +41,8 @@ export default function Disclaimer(): JSX.Element {
   // const handleClickOpen = () => {
   //   setOpen(true);
   // };
+
+  const qualtricsIdExists = Boolean(getLocalStorage("qualtricsuserid"));
 
   return (
     <Tooltip title="Disclaimer">
@@ -97,6 +100,7 @@ export default function Disclaimer(): JSX.Element {
                   marginTop: 10,
                   width: "100%",
                   textAlign: "center",
+                  display: qualtricsIdExists ? "block" : "none",
                 }}
               >
                 <SurveyDialog />
