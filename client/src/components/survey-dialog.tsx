@@ -27,7 +27,12 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
     // Check if we already have local storage setup
     const localStorageTimerPopup = getLocalStorage("postsurveytime");
     const localStorageTimeSpent = getLocalStorage("timespentonpage");
-    if (localStorageTimerPopup && localStorageTimeSpent) {
+    const qualtricsUserIdLocalStorage = getLocalStorage("qualtricsuserid");
+    if (
+      localStorageTimerPopup &&
+      localStorageTimeSpent &&
+      qualtricsUserIdLocalStorage
+    ) {
       setPollingTimer(true);
       return;
     }
