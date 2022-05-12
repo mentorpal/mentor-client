@@ -22,9 +22,9 @@ export default function Disclaimer(): JSX.Element {
     (state) => state.config.disclaimerText
   );
 
-  // const disclaimerTitle = useSelector<State, string>(
-  //   (state) => state.config.disclaimerTitle?.trim() || "Please Configure Title"
-  // );
+  const disclaimerTitle = useSelector<State, string>(
+    (state) => state.config.disclaimerTitle?.trim() || "Please Configure Title"
+  );
   // const disclaimerDisabled = useSelector<State, boolean>(
   //   (state) => state.config.disclaimerDisabled
   // );
@@ -64,14 +64,15 @@ export default function Disclaimer(): JSX.Element {
           <Box className="modal-animation">
             <div className="disclaimer-content-container">
               <Typography
+                data-cy="disclaimer-title"
                 id="modal-modal-title"
                 variant="h4"
                 component="h2"
                 style={{ textAlign: "center" }}
               >
-                Policy
+                {disclaimerTitle}
               </Typography>
-              <div id="modal-modal-description">
+              <div data-cy="disclaimer-text" id="modal-modal-description">
                 <ReactMarkdown>
                   {disclaimerText
                     ? unescape(disclaimerText)
