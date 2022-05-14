@@ -20,5 +20,7 @@ phases:
     commands:
       - echo Deploying to $S3_DEPLOY_BUCKET
       - cd client && npm run build
+      - ls
+      - ls -R public
       - aws s3 sync ./public/chat s3://$S3_DEPLOY_BUCKET/chat
       - aws cloudfront create-invalidation --distribution-id $CDN_ID --paths "/chat*"
