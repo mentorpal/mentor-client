@@ -13,23 +13,26 @@ phases:
       # - n 16 # workaround https://github.com/aws/aws-codebuild-docker-images/issues/490
       # Install top-level deps
       - NODE_ENV=dev npm ci
-      - cd client && npm ci
+      - (cd client && npm ci)
   pre_build:
     on-failure: ABORT # or CONTINUE
     commands:
       - npm run test:format
       - npm run test:license
-      # - cd client && npm run test:audit
-      - cd client && npm run test:lint
-      - cd client && npm run test:types
+      - cd client
+      # - npm run test:audit
+      - npm run test:lint
+      - npm run test:types
       # # cypress tests - we can keep these in github actions?
+      # - cd ..
       # - docker-compose up -d
       # - docker ps
       # - make test-e2e-exec
+      # - cd client
 
   build:
     commands:
-      - cd client && npm run build
+      - npm run build
 
 artifacts:
   files:
