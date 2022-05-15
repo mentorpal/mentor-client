@@ -16,20 +16,12 @@ describe("Video Mentor", () => {
     it("plays a mentor response and displays subtitles", () => {
       mockDefaultSetup(cy, { mentorData: clint });
       cy.visit("/?mentor=clint");
+
       cy.get("[data-cy=input-field]").type("is the food good");
       // have to wait until the intro video is done to send a question
       // to truly check if we are recieving a response to the question
-      cy.get("[data-cy=video-container]", { timeout: 8000 }).should(
-        "have.attr",
-        "data-video-type",
-        "idle"
-      );
+      cy.wait(8000);
       cy.get("[data-cy=input-send]").trigger("mouseover").click();
-      cy.get("[data-cy=video-container]").should(
-        "have.attr",
-        "data-video-type",
-        "answer"
-      );
       cy.get("[data-cy=video-container]").within(($vc) => {
         cy.get("video").should("exist");
         cy.get("video")
@@ -253,11 +245,7 @@ describe("Video Mentor", () => {
     cy.get("[data-cy=input-field]").type("is the food good");
     // have to wait until the intro video is done to send a question
     // to truly check if we are recieving a response to the question
-    cy.get("[data-cy=video-container]", { timeout: 8000 }).should(
-      "have.attr",
-      "data-video-type",
-      "idle"
-    );
+    cy.wait(8000);
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.get("[data-cy=video-container]").within(($vc) => {
       cy.get("video").should("exist");

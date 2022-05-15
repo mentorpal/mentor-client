@@ -49,6 +49,17 @@ function Video(args: {
   });
   const curMentor = useSelector<State, string>((state) => state.curMentor);
 
+  const idleVideo = useSelector<State, VideoData | null>((state) => {
+    const m = state.mentorsById[state.curMentor];
+    if (!m) {
+      return null;
+    }
+    return {
+      src: idleUrl(m.mentor),
+      subtitles: "",
+    };
+  });
+
   const video = useSelector<State, VideoData | null>((state) => {
     if (state.chat.replay) {
       const videoMedia = state.chat.messages.find((m) => {
@@ -69,11 +80,8 @@ function Video(args: {
       return null;
     }
     return {
-      src: state.isIdle ? idleUrl(m.mentor) : videoUrl(m.answer_media || []),
-      subtitles:
-        subtitlesSupported && !state.isIdle
-          ? subtitleUrl(m.answer_media || [])
-          : "",
+      src: videoUrl(m.answer_media || []),
+      subtitles: subtitlesSupported ? subtitleUrl(m.answer_media || []) : "",
     };
   });
 
@@ -168,6 +176,7 @@ function Video(args: {
   }
 
   function onEnded() {
+    setVideoFinishedBuffering(false);
     setHideLinkLabel(true);
     dispatch(playIdleAfterReplay(false));
     dispatch(answerFinished());
@@ -185,7 +194,6 @@ function Video(args: {
     if (isIdle) {
       setHideLinkLabel(true);
       dispatch(answerFinished());
-
       return;
     }
     dispatch(
@@ -202,6 +210,8 @@ function Video(args: {
   };
 
   const [disclaimerOpen, setDisclaimerOpen] = useState<boolean>(false);
+  const [videoFinishedBuffering, setVideoFinishedBuffering] =
+    useState<boolean>(true);
   const disclaimerDisplayed = getLocalStorage("viewedDisclaimer");
   useEffect(() => {
     if (!disclaimerDisplayed || disclaimerDisplayed !== "true") {
@@ -216,81 +226,144 @@ function Video(args: {
     }
   }
 
-  return (
-    <div
-      data-cy="video-container"
-      data-test-playing={Boolean(playing)}
-      data-video-type={isIdle ? "idle" : "answer"}
-      className="video-container"
-      data-test-replay={video.src}
-    >
-      <MemoVideoPlayer
-        isIdle={Boolean(isIdle)}
-        onEnded={onEnded}
-        onPlay={onPlay}
-        playing={Boolean(playing)}
-        setDuration={setDuration}
-        subtitlesOn={Boolean(subtitlesSupported) && Boolean(video.subtitles)}
-        subtitlesUrl={video.subtitles}
-        videoUrl={video.src}
-        webLinks={webLinks}
-        hideLinkLabel={hideLinkLabel}
-        mentorName={mentorData ? mentorData.name : ""}
-        numberMentors={numberMentors}
-      />
-      <LoadingSpinner mentor={curMentor} />
-      <MessageStatus mentor={curMentor} />
-      {mentorData?.name && args.configEmailMentorAddress ? (
-        <Tooltip
-          data-cy="email-disclaimer"
-          open={disclaimerOpen}
-          onClose={onCloseDisclaimer}
-          onOpen={() => setDisclaimerOpen(true)}
-          title={
-            <div
-              style={{
-                fontSize: "15px",
-                pointerEvents: "auto",
-                cursor: !disclaimerDisplayed ? "pointer" : "none",
-              }}
-              onClick={() => onCloseDisclaimer()}
-            >
-              Please only contact mentors through the provided contact email.
-              Messages sent directly to other mentor emails found online may be
-              ignored.
-              {!disclaimerDisplayed ? (
-                <>
-                  <br /> <br /> Click here to close
-                </>
-              ) : (
-                ""
-              )}
-            </div>
-          }
-          arrow
+  function onProgressAnswerVideo(state: {
+    played: number;
+    playedSeconds: number;
+    loaded: number;
+    loadedSeconds: number;
+  }) {
+    if (state.playedSeconds > 0.1 && !videoFinishedBuffering && !isIdle) {
+      setVideoFinishedBuffering(true);
+    }
+  }
+
+  function onProgressIdleVideo() {
+    return;
+  }
+
+  function PlayVideo() {
+    if (!idleVideo || !video) {
+      return <div></div>;
+    }
+    return (
+      <div
+        data-cy="video-container"
+        data-test-playing={true}
+        className="video-container"
+        style={{ display: "block" }}
+        data-test-replay={idleVideo.src}
+      >
+        <div
+          data-cy="answer-idle-video-container"
+          style={{ position: "relative", textAlign: "left" }}
         >
-          <div
-            data-cy="email-mentor-icon"
-            className="email-mentor-button"
-            onClick={() =>
-              sendMail(
-                args.configEmailMentorAddress,
-                `Contacting ${mentorData.name} for more information`
-              )
-            }
+          {/* Answer Video Player, once its onPlay is triggered */}
+          <span
+            className="video-player-wrapper"
+            style={{ zIndex: !isIdle && videoFinishedBuffering ? 2 : 0 }}
           >
-            Email Mentor <MailIcon />
-          </div>
-        </Tooltip>
-      ) : undefined}
-    </div>
-  );
+            <MemoVideoPlayer
+              isIdle={Boolean(isIdle)}
+              onEnded={onEnded}
+              onPlay={onPlay}
+              onProgress={onProgressAnswerVideo}
+              playing={Boolean(playing)}
+              setDuration={setDuration}
+              subtitlesOn={
+                Boolean(subtitlesSupported) && Boolean(video.subtitles)
+              }
+              subtitlesUrl={video.subtitles}
+              videoUrl={isIdle ? "" : video.src}
+              webLinks={webLinks}
+              hideLinkLabel={hideLinkLabel}
+              mentorName={mentorData ? mentorData.name : ""}
+              numberMentors={numberMentors}
+            />
+          </span>
+          {/* Idle video player, always activate, but sits behind answer video player */}
+          <span
+            className="video-player-wrapper"
+            style={{ position: "absolute", top: 0, left: 0, zIndex: 1 }}
+          >
+            <MemoVideoPlayer
+              isIdle={true}
+              onEnded={onEnded}
+              onPlay={onPlay}
+              playing={true}
+              onProgress={onProgressIdleVideo}
+              setDuration={setDuration}
+              subtitlesOn={false}
+              subtitlesUrl={""}
+              videoUrl={idleVideo.src}
+              webLinks={webLinks}
+              hideLinkLabel={hideLinkLabel}
+              mentorName={mentorData ? mentorData.name : ""}
+              numberMentors={numberMentors}
+            />
+          </span>
+        </div>
+        <LoadingSpinner mentor={curMentor} />
+        <MessageStatus mentor={curMentor} />
+        {mentorData?.name && args.configEmailMentorAddress ? (
+          <Tooltip
+            data-cy="email-disclaimer"
+            open={disclaimerOpen}
+            onClose={onCloseDisclaimer}
+            onOpen={() => setDisclaimerOpen(true)}
+            title={
+              <div
+                style={{
+                  fontSize: "15px",
+                  pointerEvents: "auto",
+                  cursor: !disclaimerDisplayed ? "pointer" : "none",
+                }}
+                onClick={() => onCloseDisclaimer()}
+              >
+                Please only contact mentors through the provided contact email.
+                Messages sent directly to other mentor emails found online may
+                be ignored.
+                {!disclaimerDisplayed ? (
+                  <>
+                    <br /> <br /> Click here to close
+                  </>
+                ) : (
+                  ""
+                )}
+              </div>
+            }
+            arrow
+          >
+            <div
+              data-cy="email-mentor-icon"
+              className="email-mentor-button"
+              onClick={() =>
+                sendMail(
+                  args.configEmailMentorAddress,
+                  `Contacting ${mentorData.name} for more information`
+                )
+              }
+            >
+              Email Mentor <MailIcon />
+            </div>
+          </Tooltip>
+        ) : undefined}
+      </div>
+    );
+  }
+
+  return PlayVideo();
 }
 
 interface VideoPlayerParams {
   isIdle: boolean;
   onEnded: () => void;
   onPlay: () => void;
+  onProgress: (state: {
+    played: number;
+    playedSeconds: number;
+    loaded: number;
+    loadedSeconds: number;
+  }) => void;
   playing?: boolean;
   setDuration: (d: number) => void;
   subtitlesOn: boolean;
@@ -307,6 +380,7 @@ function VideoPlayer(args: VideoPlayerParams) {
     isIdle,
     onEnded,
     onPlay,
+    onProgress,
     playing,
     setDuration,
     subtitlesOn,
@@ -381,8 +455,10 @@ function VideoPlayer(args: VideoPlayerParams) {
         onDuration={setDuration}
         onEnded={onEnded}
         onPlay={onPlay}
+        onProgress={onProgress}
         loop={isIdle}
         controls={!isIdle}
+        progressInterval={100}
         playing={Boolean(playing)}
         playsinline
         webkit-playsinline="true"
