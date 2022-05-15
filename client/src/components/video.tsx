@@ -263,7 +263,7 @@ function Video(args: {
             style={{ zIndex: !isIdle && videoFinishedBuffering ? 2 : 0 }}
           >
             <MemoVideoPlayer
-              isIdle={Boolean(isIdle)}
+              isIdle={false}
               onEnded={onEnded}
               onPlay={onPlay}
               onProgress={onProgressAnswerVideo}
@@ -436,6 +436,9 @@ function VideoPlayer(args: VideoPlayerParams) {
   return (
     <div
       className="video-player-wrapper"
+      data-cy={
+        isIdle ? "idle-video-player-wrapper" : "answer-video-player-wrapper"
+      }
       style={numberMentors > 1 ? { marginTop: 0 } : { marginTop: 50 }}
     >
       {!hideLinkLabel && shouldDiplayWebLinks ? answerLinkCard : null}
