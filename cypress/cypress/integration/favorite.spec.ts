@@ -25,10 +25,12 @@ describe("Favorite", () => {
       "data-ready",
       "true"
     );
-    cy.get("[data-cy=fave-button]").trigger("mouseover").click();
-    cy.get("[data-cy=fave-button]")
-      .invoke("attr", "style")
-      .should("contain", "yellow");
+    cy.get("[data-cy=answer-video-player-wrapper]").within(($within) => {
+      cy.get("[data-cy=fave-button]").trigger("mouseover").click();
+      cy.get("[data-cy=fave-button]")
+        .invoke("attr", "style")
+        .should("contain", "yellow");
+    });
   });
 
   it("is hidden if there is only one mentor", () => {
