@@ -250,7 +250,7 @@ function Video(args: {
         data-cy="video-container"
         data-test-playing={true}
         className="video-container"
-        style={{ display: "block" }}
+        style={{ display: "block", marginLeft: "2.5%" }}
         data-test-replay={idleVideo.src}
       >
         <div
