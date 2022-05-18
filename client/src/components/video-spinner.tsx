@@ -16,7 +16,7 @@ function LoadingSpinner(args: { mentor: string }): JSX.Element {
     return Boolean(m && state.curQuestion && state.curQuestion !== m.question);
   });
   return isMentorQuestionDifferent ? (
-    <CircularProgress className="spinner" />
+    <CircularProgress data-cy="loading-answer-spinner" className="spinner" />
   ) : (
     <div />
   );
