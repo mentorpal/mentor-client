@@ -259,6 +259,7 @@ function Video(args: {
         >
           {/* Answer Video Player, once its onPlay is triggered */}
           <span
+            data-cy="answer-memo-video-player-wrapper"
             className="video-player-wrapper"
             style={{ zIndex: !isIdle && videoFinishedBuffering ? 2 : 0 }}
           >

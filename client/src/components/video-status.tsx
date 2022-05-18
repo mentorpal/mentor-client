@@ -42,6 +42,7 @@ function MessageStatus(args: { mentor: string }): JSX.Element {
     case MentorQuestionStatus.READY:
       return (
         <Sms
+          data-cy="answer-recieved-icon"
           className={`message-notice ${
             mentor === msgStatusState.mentorNext ? "blink" : ""
           }`}

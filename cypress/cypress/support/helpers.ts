@@ -168,7 +168,11 @@ export function mockMentorVtt(cy) {
 }
 
 export function mockApiQuestions(cy, response?: string) {
-  cy.intercept("**/questions/?mentor=*&query=*", {
+  cy.intercept("**/questions/?mentor=clint&query=*", {
+    fixture: response || "response.json",
+    delay: 3000,
+  });
+  cy.intercept("**/questions/?mentor=carlos&query=*", {
     fixture: response || "response.json",
   });
 }

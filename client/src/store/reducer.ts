@@ -506,6 +506,7 @@ function onQuestionAnswered(
     response_time: action.payload.answerResponseTimeSecs,
     status: MentorQuestionStatus.READY,
   };
+
   const history = mentor.topic_questions.length - 1;
   // TODO: this mutation of history is DEEPLY suspect, we should get rid of it
   // or it needs to copy data before editting
@@ -547,8 +548,6 @@ function onQuestionAnswered(
       ],
       questionSent: false,
     },
-
-    isIdle: false,
     mentorsById: {
       ...state.mentorsById,
       [action.payload.mentor]: mentor,

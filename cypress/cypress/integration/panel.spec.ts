@@ -59,4 +59,31 @@ describe("Mentor panel", () => {
       .get("[data-cy=video-thumbnail-covid]")
       .should("not.exist");
   });
+
+  it("waits for all classifier requests before playing any videos", () => {
+    mockDefaultSetup(cy);
+    cy.visit("/?mentor=clint&mentor=carlos");
+    cy.get("[data-cy=video-panel]");
+    cy.wait(15000);
+    cy.get("[data-cy=input-field]").type("is the food good");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    // carlos answer received
+    cy.get("[data-cy=video-thumbnail-carlos]").within(($within) => {
+      cy.get("[data-cy=answer-recieved-icon]").should("exist");
+      cy.get("[data-cy=answer-recieved-icon]").should("be.visible");
+      cy.get("[data-cy=loading-answer-spinner]").should("not.exist");
+    });
+    // clint answer still loading
+    cy.get("[data-cy=video-thumbnail-clint]").within(($within) => {
+      cy.get("[data-cy=answer-recieved-icon]").should("not.exist");
+      cy.get("[data-cy=loading-answer-spinner]").should("exist");
+      cy.get("[data-cy=loading-answer-spinner]").should("be.visible");
+    });
+    // clint is stil loading their answer, so the answer video player should be hidden via z-index
+    cy.get("[data-cy=answer-memo-video-player-wrapper]").should(
+      "have.css",
+      "z-index",
+      "0"
+    );
+  });
 });
