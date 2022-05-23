@@ -6,7 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React from "react";
 import { useSelector } from "react-redux";
-import { Hidden, Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import { State } from "types";
 import IconButton from "@material-ui/core/IconButton";
 import HomeIcon from "@material-ui/icons/Home";
@@ -35,11 +35,6 @@ function Header(): JSX.Element {
     };
   });
 
-  const numberMentors = useSelector<State, number>(
-    (state) => Object.keys(state.mentorsById).length
-  );
-  const subject = "";
-
   const styleHeaderLogo = useSelector<State, string>(
     (state) => state.config.styleHeaderLogo?.trim() || ""
   );
@@ -65,67 +60,6 @@ function Header(): JSX.Element {
 
   const MentorNameTitle = `${mentor.name}: ${mentor.title}`;
 
-  const subjectTitle = subject ? `Mentor Panel: ${subject}` : "Mentor Panel";
-
-  if (styleHeaderLogo) {
-    return (
-      <div
-        data-cy="header"
-        data-mentor={mentor._id}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          height: 55,
-          backgroundColor: `${styleHeaderColor}`,
-          color: `${styleHeaderTextColor}`,
-        }}
-      >
-        <img
-          src={styleHeaderLogo}
-          style={{
-            position: "absolute",
-            left: "10px",
-            height: 40,
-            paddingTop: 10,
-            paddingBottom: 10,
-          }}
-        />
-        {mentor.name !== "USC" ? (
-          <IconButton
-            aria-label="information"
-            component="span"
-            style={{
-              position: "absolute",
-              left: "50px",
-              color: `${styleHeaderTextColor}`,
-            }}
-            onClick={handleClickHome}
-            data-cy="home-button"
-          >
-            <HomeIcon />
-          </IconButton>
-        ) : (
-          ""
-        )}
-        <Hidden only="xs">
-          <Typography>
-            {numberMentors === 1 ? MentorNameTitle : subjectTitle}
-          </Typography>
-        </Hidden>
-        {/* Show disclaimer */}
-        <div
-          style={{
-            position: "absolute",
-            right: "50px",
-          }}
-        >
-          <Disclaimer />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div
       data-cy="header"
@@ -136,6 +70,18 @@ function Header(): JSX.Element {
       }}
       className="header-container"
     >
+      {styleHeaderLogo ? (
+        <img
+          src={styleHeaderLogo}
+          style={{
+            position: "absolute",
+            left: "10px",
+            height: 40,
+            paddingTop: 10,
+            paddingBottom: 10,
+          }}
+        />
+      ) : undefined}
       <div className="home-btn-wrapper">
         {mentor.name !== "USC" ? (
           <IconButton
@@ -155,17 +101,9 @@ function Header(): JSX.Element {
         )}
       </div>
       <div className="header-mentor-info">
-        <Typography>
-          {mentor.name}: {mentor.title}
-        </Typography>
+        <Typography>{MentorNameTitle}</Typography>
       </div>
-      {/* Show disclaimer */}
-      <div
-        style={{
-          position: "absolute",
-          right: "50px",
-        }}
-      >
+      <div>
         <Disclaimer />
       </div>
     </div>
