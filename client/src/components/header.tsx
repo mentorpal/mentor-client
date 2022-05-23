@@ -35,11 +35,6 @@ function Header(): JSX.Element {
     };
   });
 
-  const numberMentors = useSelector<State, number>(
-    (state) => Object.keys(state.mentorsById).length
-  );
-  const subject = "";
-
   const styleHeaderLogo = useSelector<State, string>(
     (state) => state.config.styleHeaderLogo?.trim() || ""
   );
@@ -64,8 +59,6 @@ function Header(): JSX.Element {
   };
 
   const MentorNameTitle = `${mentor.name}: ${mentor.title}`;
-
-  const subjectTitle = subject ? `Mentor Panel: ${subject}` : "Mentor Panel";
 
   return (
     <div
@@ -108,9 +101,7 @@ function Header(): JSX.Element {
         )}
       </div>
       <div className="header-mentor-info">
-        <Typography>
-          {numberMentors === 1 ? MentorNameTitle : subjectTitle}
-        </Typography>
+        <Typography>{MentorNameTitle}</Typography>
       </div>
       <div>
         <Disclaimer />
