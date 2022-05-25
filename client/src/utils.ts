@@ -6,6 +6,8 @@ The full terms of this copyright and license should always be found in the root 
 */
 import { MentorState, MentorQuestionStatus } from "types";
 import { v4 as uuid } from "uuid";
+import * as Sentry from "@sentry/react";
+import { BrowserTracing } from "@sentry/tracing";
 
 export function normalizeString(s: string): string {
   return s.replace(/\W+/g, "").normalize().toLowerCase();
@@ -78,4 +80,13 @@ export function printLocalStorage(): void {
         "]"
     );
   }
+}
+
+export function loadSentry(): void {
+  Sentry.init({
+    dsn: "https://75accb4ecbef4766ae3bf62ecfb56658@o1081855.ingest.sentry.io/6439056",
+    integrations: [new BrowserTracing()],
+    tracesSampleRate: process.env.STAGE == "cf" ? 0.2 : 0.0,
+    environment: process.env.STAGE,
+  });
 }

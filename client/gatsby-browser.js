@@ -12,4 +12,10 @@ The full terms of this copyright and license should always be found in the root 
 
 import wrapWithProvider from "./wrap-with-provider";
 
+import { loadSentry } from "./src/utils";
+
+if (process.env.IS_SENTRY_ENABLED) {
+  loadSentry();
+}
+
 export const wrapRootElement = wrapWithProvider;
