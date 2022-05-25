@@ -30,7 +30,6 @@ export async function fetchConfig(
           cmi5Endpoint
           cmi5Fetch
           mentorsDefault
-          urlClassifier
           classifierLambdaEndpoint
           urlGraphql
           urlVideo
@@ -236,13 +235,10 @@ export async function queryMentor(
   question: string,
   config: Config
 ): Promise<AxiosResponse<QuestionApiData>> {
-  return await axios.get(
-    `${config.classifierLambdaEndpoint || config.urlClassifier}/questions/`,
-    {
-      params: {
-        mentor: mentorId,
-        query: question,
-      },
-    }
-  );
+  return await axios.get(`${config.classifierLambdaEndpoint}/questions/`, {
+    params: {
+      mentor: mentorId,
+      query: question,
+    },
+  });
 }

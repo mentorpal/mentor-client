@@ -20,8 +20,6 @@ The client receives these config variables from the [graphql server](https://git
 
 - **mentorsDefault**: A list of one or more mentor ids that should be shown by default if no mentor(s) are specified
 
-- **urlClassifier**: The base url for the classifier [mentor-classifier](https://github.com/mentorpal/mentor-classifier), e.g. https://mentorpal.org/classifier
-
 - **urlGraphql**: The base url for the graphql server [mentor-graphql](https://github.com/mentorpal/mentor-classifier), e.g. https://mentorpal.org/graphql
 
 - **urlVideo**: The base url for the mentor videos, e.g. https://mentorpal.org/videos
