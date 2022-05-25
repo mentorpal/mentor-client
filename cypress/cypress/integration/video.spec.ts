@@ -192,7 +192,7 @@ describe("Video Mentor", () => {
         cy.get("p").should("have.css", "color", "rgb(255, 255, 255)");
       })
       .should("have.css", "background-color", "rgb(153, 0, 0)")
-      .contains("Mentor Panel");
+      .contains("Clinton Anderson");
   });
 
   it("If mentor does not have question answer, should still show thumbnail and respond with Don't know answer (no video error)", () => {
