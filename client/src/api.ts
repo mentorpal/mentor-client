@@ -235,13 +235,10 @@ export async function queryMentor(
   question: string,
   config: Config
 ): Promise<AxiosResponse<QuestionApiData>> {
-  return await axios.get(
-    `${config.classifierLambdaEndpoint}/questions/`,
-    {
-      params: {
-        mentor: mentorId,
-        query: question,
-      },
-    }
-  );
+  return await axios.get(`${config.classifierLambdaEndpoint}/questions/`, {
+    params: {
+      mentor: mentorId,
+      query: question,
+    },
+  });
 }
