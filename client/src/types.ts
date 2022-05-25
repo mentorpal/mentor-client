@@ -99,7 +99,6 @@ export interface Config {
   cmi5Fetch: string;
   mentorsDefault: string[];
   classifierLambdaEndpoint: string;
-  urlClassifier: string;
   urlGraphql: string;
   urlVideo: string;
   styleHeaderLogo: string;

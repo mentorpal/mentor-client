@@ -77,7 +77,6 @@ export const initialState: State = {
     cmi5Fetch: process.env.CMI5_FETCH || "/lrs/auth/guesttoken",
     mentorsDefault: [],
     urlGraphql: process.env.MENTOR_GRAPHQL_URL || "/graphql",
-    urlClassifier: process.env.MENTOR_API_URL || "/classifier",
     classifierLambdaEndpoint: process.env.CLASSIFIER_LAMBDA_ENDPOINT || "",
     urlVideo: process.env.MENTOR_VIDEO_URL || "/videos",
     styleHeaderLogo: process.env.HEADER_LOGO || "",
