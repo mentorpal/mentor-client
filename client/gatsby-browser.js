@@ -15,6 +15,7 @@ import wrapWithProvider from "./wrap-with-provider";
 import { loadSentry } from "./src/utils";
 
 if (process.env.IS_SENTRY_ENABLED) {
+  console.log("Loading sentry");
   loadSentry();
 }
 
