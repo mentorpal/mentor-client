@@ -329,7 +329,7 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=selected-good]").should("be.visible");
   });
 
-  it("Show different feedback answers and mentors", () => {
+  it.only("Show different feedback answers and mentors", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],
@@ -353,6 +353,7 @@ describe("Chat History (Video Mentors)", () => {
     cy.visit("/");
     cy.viewport(1200, 800);
 
+    cy.wait(15000);
     cy.get("[data-cy=history-chat]").should("exist");
 
     // write msgs
@@ -427,90 +428,90 @@ describe("Chat History (Video Mentors)", () => {
       });
   });
 
-  it("can give feedback on multiple mentor answers", () => {
-    mockDefaultSetup(cy, {
-      config: { mentorsDefault: ["clint", "carlos"] },
-      mentorData: [clint, carlos],
-      apiResponse: "response_with_feedback.json",
-      gqlQueries: [
-        cyMockGQL("UserQuestionSetFeedback", {
-          userQuestionSetFeedback: null,
-        }),
-      ],
-    });
-    cy.visit("/");
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_feedback3.json",
-    });
-    cy.intercept("**/questions/?mentor=carlos&query=*", {
-      fixture: "response_with_feedback2.json",
-    });
-    // video intercept
-    cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
-    });
+  // it.only("can give feedback on multiple mentor answers", () => {
+  //   mockDefaultSetup(cy, {
+  //     config: { mentorsDefault: ["clint", "carlos"] },
+  //     mentorData: [clint, carlos],
+  //     apiResponse: "response_with_feedback.json",
+  //     gqlQueries: [
+  //       cyMockGQL("UserQuestionSetFeedback", {
+  //         userQuestionSetFeedback: null,
+  //       }),
+  //     ],
+  //   });
+  //   cy.visit("/");
+  //   cy.intercept("**/questions/?mentor=clint&query=*", {
+  //     fixture: "response_with_feedback3.json",
+  //   });
+  //   cy.intercept("**/questions/?mentor=carlos&query=*", {
+  //     fixture: "response_with_feedback2.json",
+  //   });
+  //   // video intercept
+  //   cy.intercept("http://videos.org/answer_id.mp4", {
+  //     fixture: "video_response.mp4",
+  //   });
 
-    cy.get("[data-cy=history-chat]").should("exist");
+  //   cy.get("[data-cy=history-chat]").should("exist");
 
-    // write msgs
-    cy.get("[data-cy=input-field]").type("Good feedback test");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+  //   // write msgs
+  //   cy.get("[data-cy=input-field]").type("Good feedback test");
+  //   cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
-    cy.get("[data-cy=input-field]").type("Bad feedback test");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+  //   cy.get("[data-cy=input-field]").type("Bad feedback test");
+  //   cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
-    // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+  //   // wait for it to finish
+  //   cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
+  //     "have.attr",
+  //     "data-test-replay",
+  //     "http://videos.org/answer_id.mp4"
+  //   );
 
-    cy.get("[data-cy=visibility-switch]").invoke("mouseover").click();
-    cy.get("[data-cy=visibility-switch]").should("have.class", "Mui-checked");
+  //   cy.get("[data-cy=visibility-switch]").invoke("mouseover").click();
+  //   cy.get("[data-cy=visibility-switch]").should("have.class", "Mui-checked");
 
-    // provide feedback
-    cy.get("[data-cy=history-chat").within(($hc) => {
-      cy.get("[data-cy=chat-msg-2]")
-        .scrollIntoView()
-        .contains("Good feedback test");
-      cy.get("[data-cy=chat-msg-3]", {
-        timeout: 8000,
-      })
-        .should("be.visible")
-        .contains("Another feedback (testing parenthesis).");
-      cy.get("[data-cy=chat-msg-6]").within(($cm) => {
-        cy.get("[data-cy=feedback-btn]").should("exist");
-        cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
-      });
-    });
+  //   // provide feedback
+  //   cy.get("[data-cy=history-chat").within(($hc) => {
+  //     cy.get("[data-cy=chat-msg-2]")
+  //       .scrollIntoView()
+  //       .contains("Good feedback test");
+  //     cy.get("[data-cy=chat-msg-3]", {
+  //       timeout: 8000,
+  //     })
+  //       .should("be.visible")
+  //       .contains("Another feedback (testing parenthesis).");
+  //     cy.get("[data-cy=chat-msg-6]").within(($cm) => {
+  //       cy.get("[data-cy=feedback-btn]").should("exist");
+  //       cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
+  //     });
+  //   });
 
-    // good feedback
-    cy.get("[data-cy=click-good]").should("exist");
-    cy.get("[data-cy=click-good]").should(
-      "have.attr",
-      "data-test-in-progress",
-      "false"
-    );
-    cy.get("[data-cy=click-good]").trigger("mouseover").click();
-    cy.get("[data-cy=selected-good]").should("be.visible");
+  //   // good feedback
+  //   cy.get("[data-cy=click-good]").should("exist");
+  //   cy.get("[data-cy=click-good]").should(
+  //     "have.attr",
+  //     "data-test-in-progress",
+  //     "false"
+  //   );
+  //   cy.get("[data-cy=click-good]").trigger("mouseover").click();
+  //   cy.get("[data-cy=selected-good]").should("be.visible");
 
-    // bad feedback
-    cy.get("[data-cy=chat-msg-3] [data-cy=feedback-btn]")
-      .trigger("mouseover")
-      .click();
-    cy.get("[data-cy=click-good]");
-    cy.get("[data-cy=click-neutral]");
-    cy.get("[data-cy=click-bad]").trigger("mouseover").click();
+  //   // bad feedback
+  //   cy.get("[data-cy=chat-msg-3] [data-cy=feedback-btn]")
+  //     .trigger("mouseover")
+  //     .click();
+  //   cy.get("[data-cy=click-good]");
+  //   cy.get("[data-cy=click-neutral]");
+  //   cy.get("[data-cy=click-bad]").trigger("mouseover").click();
 
-    // cancel feedback
-    cy.get("[data-cy=chat-msg-4] [data-cy=feedback-btn]")
-      .trigger("mouseover")
-      .click();
-    cy.get("[data-cy=click-good]");
-    cy.get("[data-cy=click-bad]");
-    cy.get("[data-cy=click-neutral]").trigger("mouseover").click();
-  });
+  //   // cancel feedback
+  //   cy.get("[data-cy=chat-msg-4] [data-cy=feedback-btn]")
+  //     .trigger("mouseover")
+  //     .click();
+  //   cy.get("[data-cy=click-good]");
+  //   cy.get("[data-cy=click-bad]");
+  //   cy.get("[data-cy=click-neutral]").trigger("mouseover").click();
+  // });
 
   it("Compare mentor's bubble colors", () => {
     mockDefaultSetup(cy, {
@@ -687,62 +688,62 @@ describe("Chat History (Video Mentors)", () => {
     });
   });
 
-  it("Question's answers can be toggled individually 2", () => {
-    mockDefaultSetup(cy, {
-      config: { mentorsDefault: ["clint", "carlos"] },
-      mentorData: [clint, carlos],
-      apiResponse: "response_with_feedback.json",
-    });
-    cy.visit("/");
-    cy.viewport(1220, 800);
-    cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response_with_feedback3.json",
-    });
-    cy.intercept("**/questions/?mentor=carlos&query=*", {
-      fixture: "response_with_feedback2.json",
-    });
-    // video intercept
-    cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
-    });
+  // it.only("Question's answers can be toggled individually 2", () => {
+  //   mockDefaultSetup(cy, {
+  //     config: { mentorsDefault: ["clint", "carlos"] },
+  //     mentorData: [clint, carlos],
+  //     apiResponse: "response_with_feedback.json",
+  //   });
+  //   cy.visit("/");
+  //   cy.viewport(1220, 800);
+  //   cy.intercept("**/questions/?mentor=clint&query=*", {
+  //     fixture: "response_with_feedback3.json",
+  //   });
+  //   cy.intercept("**/questions/?mentor=carlos&query=*", {
+  //     fixture: "response_with_feedback2.json",
+  //   });
+  //   // video intercept
+  //   cy.intercept("http://videos.org/answer_id.mp4", {
+  //     fixture: "video_response.mp4",
+  //   });
 
-    cy.get("[data-cy=history-chat]").should("exist");
+  //   cy.get("[data-cy=history-chat]").should("exist");
 
-    // write msgs
-    cy.get("[data-cy=input-field]").type("Question 1");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+  //   // write msgs
+  //   cy.get("[data-cy=input-field]").type("Question 1");
+  //   cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
-    // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+  //   // wait for it to finish
+  //   cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
+  //     "have.attr",
+  //     "data-test-replay",
+  //     "http://videos.org/answer_id.mp4"
+  //   );
 
-    cy.get("[data-cy=input-field]").type("Question 2");
-    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+  //   cy.get("[data-cy=input-field]").type("Question 2");
+  //   cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
-    // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+  //   // wait for it to finish
+  //   cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
+  //     "have.attr",
+  //     "data-test-replay",
+  //     "http://videos.org/answer_id.mp4"
+  //   );
 
-    cy.get("[data-cy=history-chat]").within(($hc) => {
-      cy.get("[data-cy=vsbyIcon-2]").trigger("mouseover").click();
-      cy.get("[data-cy=vsbyIcon-2]").trigger("mouseover").click();
-      cy.get("[data-cy=chat-thread]").within(($hc) => {
-        // hidden answers
-        cy.get("[data-cy=chat-msg-3]").should("not.be.visible");
-        cy.get("[data-cy=chat-msg-4]").should("not.be.visible");
+  //   cy.get("[data-cy=history-chat]").within(($hc) => {
+  //     cy.get("[data-cy=vsbyIcon-2]").trigger("mouseover").click();
+  //     cy.get("[data-cy=vsbyIcon-2]").trigger("mouseover").click();
+  //     cy.get("[data-cy=chat-thread]").within(($hc) => {
+  //       // hidden answers
+  //       cy.get("[data-cy=chat-msg-3]").should("not.be.visible");
+  //       cy.get("[data-cy=chat-msg-4]").should("not.be.visible");
 
-        // hidden answers
-        cy.get("[data-cy=chat-msg-5]").scrollIntoView();
-        cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
-      });
-    });
-  });
+  //       // hidden answers
+  //       cy.get("[data-cy=chat-msg-5]").scrollIntoView();
+  //       cy.get("[data-cy=chat-msg-6]").scrollIntoView().should("be.visible");
+  //     });
+  //   });
+  // });
 
   it("If hide and the prior bottom answer was not manually opened, then it should collapse", () => {
     mockDefaultSetup(cy, {

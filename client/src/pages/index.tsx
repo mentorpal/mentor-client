@@ -313,7 +313,6 @@ function IndexPage(props: {
 
       dispatch(
         loadMentors({
-          config,
           mentors: mentor
             ? Array.isArray(mentor)
               ? mentor

@@ -273,10 +273,7 @@ export const onMentorDisplayAnswer =
 
 export const feedbackSend =
   (feedbackId: string, feedback: Feedback) =>
-  async (
-    dispatch: ThunkDispatch<State, void, FeedbackAction>,
-    getState: () => State
-  ) => {
+  async (dispatch: ThunkDispatch<State, void, FeedbackAction>) => {
     dispatch({
       type: FEEDBACK_SENT,
       payload: {
@@ -285,7 +282,7 @@ export const feedbackSend =
       },
     });
     try {
-      await giveFeedback(feedbackId, feedback, getState().config);
+      await giveFeedback(feedbackId, feedback);
       return dispatch({
         type: FEEDBACK_SEND_SUCCEEDED,
         payload: {
@@ -339,7 +336,6 @@ export const loadMentors: ActionCreator<
   >
 > =
   (args: {
-    config: Config;
     mentors: string[];
     subjectId?: string;
     recommendedQuestions?: string[];
@@ -348,7 +344,7 @@ export const loadMentors: ActionCreator<
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
   ) => {
-    const { config, mentors, subjectId, recommendedQuestions } = args;
+    const { mentors, subjectId, recommendedQuestions } = args;
     dispatch<MentorsLoadRequestedAction>({
       type: MENTORS_LOAD_REQUESTED,
       payload: {
@@ -369,11 +365,7 @@ export const loadMentors: ActionCreator<
     };
     for (const mentorId of mentors) {
       try {
-        const mentor: MentorClientData = await fetchMentor(
-          config,
-          mentorId,
-          subjectId
-        );
+        const mentor: MentorClientData = await fetchMentor(mentorId, subjectId);
         const topicQuestions: TopicQuestions[] = [];
         const recommendedQuestions = getState().recommendedQuestions;
         if (recommendedQuestions.length > 0) {
@@ -643,7 +635,7 @@ export const sendQuestion =
     // query all the mentors without waiting for the answers one by one
     const promises = mentorIds.map((mentor) => {
       return new Promise<QuestionResponse>((resolve, reject) => {
-        queryMentor(mentor, q.question, q.config)
+        queryMentor(mentor, q.question)
           .then((r) => {
             const { data } = r;
             const answer_media: Media[] = [];

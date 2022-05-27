@@ -16,9 +16,11 @@ import {
 } from "types";
 import { convertMentorClientDataGQL, MentorQueryDataGQL } from "types-gql";
 
-export const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT || "/graphql";
+export const GRAPHQL_LAMBDA_ENDPOINT = `https://api-${process.env.STAGE}.mentorpal.org/graphql/`;
+export const CLASSIFIER_LAMBDA_ENDPOINT = `https://api-${process.env.STAGE}.mentorpal.org/classifier/`;
+
 export async function fetchConfig(
-  graphqlUrl = GRAPHQL_ENDPOINT
+  graphqlUrl = GRAPHQL_LAMBDA_ENDPOINT
 ): Promise<Config> {
   const gqlRes = await axios.post<GraphQLResponse<{ config: Config }>>(
     graphqlUrl,
@@ -119,7 +121,7 @@ export async function fetchMentorByAccessToken(
 ): Promise<MentorClientData> {
   const headers = { Authorization: `bearer ${accessToken}` };
   const result = await axios.post(
-    GRAPHQL_ENDPOINT,
+    GRAPHQL_LAMBDA_ENDPOINT,
     {
       query: `
         query {
@@ -138,12 +140,11 @@ export async function fetchMentorByAccessToken(
 
 // Update to convert to mentor
 export async function fetchMentor(
-  config: Config,
   mentorId: string,
   subjectId?: string
 ): Promise<MentorClientData> {
   const gqlRes = await axios.post<GraphQLResponse<MentorQueryDataGQL>>(
-    config.urlGraphql,
+    GRAPHQL_LAMBDA_ENDPOINT,
     {
       query: `
       query FetchMentor($mentor: ID!, $subject: ID) {
@@ -212,10 +213,9 @@ interface GiveFeedbackResult {
 
 export async function giveFeedback(
   feedbackId: string,
-  feedback: string,
-  config: Config
+  feedback: string
 ): Promise<AxiosResponse<GraphQLResponse<GiveFeedbackResult>>> {
-  return await axios.post(config.urlGraphql, {
+  return await axios.post(GRAPHQL_LAMBDA_ENDPOINT, {
     query: `
       mutation UserQuestionSetFeedback($id: ID!, $feedback: String!){
         userQuestionSetFeedback(id: $id, feedback: $feedback) {
@@ -232,10 +232,9 @@ export async function giveFeedback(
 
 export async function queryMentor(
   mentorId: string,
-  question: string,
-  config: Config
+  question: string
 ): Promise<AxiosResponse<QuestionApiData>> {
-  return await axios.get(`${config.classifierLambdaEndpoint}/questions/`, {
+  return await axios.get(`${CLASSIFIER_LAMBDA_ENDPOINT}questions/`, {
     params: {
       mentor: mentorId,
       query: question,
