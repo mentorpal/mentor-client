@@ -16,8 +16,8 @@ import {
 } from "types";
 import { convertMentorClientDataGQL, MentorQueryDataGQL } from "types-gql";
 
-export const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT;
-export const CLASSIFIER_ENDPOINT = process.env.CLASSIFIER_ENDPOINT;
+export const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT || "/graphql";
+export const CLASSIFIER_ENDPOINT = process.env.CLASSIFIER_ENDPOINT || '/classifier';
 
 export async function fetchConfig(
   graphqlUrl = GRAPHQL_ENDPOINT
