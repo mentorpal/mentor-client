@@ -14,10 +14,14 @@ module.exports = {
     {
       resolve: `gatsby-plugin-env-variables`,
       options: {
-        allowlist: ["CMI5_ENDPOINT"],
-        allowlist: ["CMI5_FETCH"],
-        allowlist: ["MENTOR_API_URL"],
-        allowlist: ["MENTOR_VIDEO_URL"],
+        allowlist: [
+          "CMI5_ENDPOINT",
+          "CMI5_FETCH",
+          "MENTOR_API_URL",
+          "MENTOR_VIDEO_URL",
+          "STAGE",
+          "IS_SENTRY_ENABLED",
+        ],
       },
     },
     `gatsby-plugin-typescript`,
