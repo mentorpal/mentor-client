@@ -16,11 +16,11 @@ import {
 } from "types";
 import { convertMentorClientDataGQL, MentorQueryDataGQL } from "types-gql";
 
-export const GRAPHQL_LAMBDA_ENDPOINT = `https://api-${process.env.STAGE}.mentorpal.org/graphql/`;
-export const CLASSIFIER_LAMBDA_ENDPOINT = `https://api-${process.env.STAGE}.mentorpal.org/classifier/`;
+export const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT;
+export const CLASSIFIER_ENDPOINT = process.env.CLASSIFIER_ENDPOINT;
 
 export async function fetchConfig(
-  graphqlUrl = GRAPHQL_LAMBDA_ENDPOINT
+  graphqlUrl = GRAPHQL_ENDPOINT
 ): Promise<Config> {
   const gqlRes = await axios.post<GraphQLResponse<{ config: Config }>>(
     graphqlUrl,
@@ -121,7 +121,7 @@ export async function fetchMentorByAccessToken(
 ): Promise<MentorClientData> {
   const headers = { Authorization: `bearer ${accessToken}` };
   const result = await axios.post(
-    GRAPHQL_LAMBDA_ENDPOINT,
+    GRAPHQL_ENDPOINT,
     {
       query: `
         query {
@@ -144,7 +144,7 @@ export async function fetchMentor(
   subjectId?: string
 ): Promise<MentorClientData> {
   const gqlRes = await axios.post<GraphQLResponse<MentorQueryDataGQL>>(
-    GRAPHQL_LAMBDA_ENDPOINT,
+    GRAPHQL_ENDPOINT,
     {
       query: `
       query FetchMentor($mentor: ID!, $subject: ID) {
@@ -215,7 +215,7 @@ export async function giveFeedback(
   feedbackId: string,
   feedback: string
 ): Promise<AxiosResponse<GraphQLResponse<GiveFeedbackResult>>> {
-  return await axios.post(GRAPHQL_LAMBDA_ENDPOINT, {
+  return await axios.post(GRAPHQL_ENDPOINT, {
     query: `
       mutation UserQuestionSetFeedback($id: ID!, $feedback: String!){
         userQuestionSetFeedback(id: $id, feedback: $feedback) {
@@ -234,7 +234,7 @@ export async function queryMentor(
   mentorId: string,
   question: string
 ): Promise<AxiosResponse<QuestionApiData>> {
-  return await axios.get(`${CLASSIFIER_LAMBDA_ENDPOINT}questions/`, {
+  return await axios.get(`${CLASSIFIER_ENDPOINT}/questions/`, {
     params: {
       mentor: mentorId,
       query: question,
