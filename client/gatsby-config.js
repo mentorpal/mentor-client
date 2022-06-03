@@ -19,8 +19,6 @@ module.exports = {
           "CMI5_FETCH",
           "MENTOR_API_URL",
           "MENTOR_VIDEO_URL",
-          "STAGE",
-          "IS_SENTRY_ENABLED",
         ],
       },
     },

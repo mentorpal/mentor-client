@@ -86,7 +86,7 @@ export function loadSentry(): void {
   Sentry.init({
     dsn: "https://75accb4ecbef4766ae3bf62ecfb56658@o1081855.ingest.sentry.io/6439056",
     integrations: [new BrowserTracing()],
-    tracesSampleRate: process.env.STAGE == "cf" ? 0.2 : 0.0,
-    environment: process.env.STAGE,
+    tracesSampleRate: process.env.GATSBY_STAGE == "cf" ? 0.2 : 0.0,
+    environment: process.env.GATSBY_STAGE,
   });
 }

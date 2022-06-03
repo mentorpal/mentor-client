@@ -16,10 +16,11 @@ import {
 } from "types";
 import { convertMentorClientDataGQL, MentorQueryDataGQL } from "types-gql";
 
-export const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT || "/graphql";
+export const GATSBY_GRAPHQL_ENDPOINT =
+  process.env.GATSBY_GRAPHQL_ENDPOINT || "/graphql";
 export async function fetchConfig(): Promise<Config> {
   const gqlRes = await axios.post<GraphQLResponse<{ config: Config }>>(
-    GRAPHQL_ENDPOINT,
+    GATSBY_GRAPHQL_ENDPOINT,
     {
       query: `
       query FetchConfig {
@@ -117,7 +118,7 @@ export async function fetchMentorByAccessToken(
 ): Promise<MentorClientData> {
   const headers = { Authorization: `bearer ${accessToken}` };
   const result = await axios.post(
-    GRAPHQL_ENDPOINT,
+    GATSBY_GRAPHQL_ENDPOINT,
     {
       query: `
         query {
@@ -136,12 +137,11 @@ export async function fetchMentorByAccessToken(
 
 // Update to convert to mentor
 export async function fetchMentor(
-  config: Config,
   mentorId: string,
   subjectId?: string
 ): Promise<MentorClientData> {
   const gqlRes = await axios.post<GraphQLResponse<MentorQueryDataGQL>>(
-    config.urlGraphql,
+    GATSBY_GRAPHQL_ENDPOINT,
     {
       query: `
       query FetchMentor($mentor: ID!, $subject: ID) {
@@ -210,10 +210,9 @@ interface GiveFeedbackResult {
 
 export async function giveFeedback(
   feedbackId: string,
-  feedback: string,
-  config: Config
+  feedback: string
 ): Promise<AxiosResponse<GraphQLResponse<GiveFeedbackResult>>> {
-  return await axios.post(config.urlGraphql, {
+  return await axios.post(GATSBY_GRAPHQL_ENDPOINT, {
     query: `
       mutation UserQuestionSetFeedback($id: ID!, $feedback: String!){
         userQuestionSetFeedback(id: $id, feedback: $feedback) {
