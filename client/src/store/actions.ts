@@ -285,7 +285,7 @@ export const feedbackSend =
       },
     });
     try {
-      await giveFeedback(feedbackId, feedback, getState().config);
+      await giveFeedback(feedbackId, feedback);
       return dispatch({
         type: FEEDBACK_SEND_SUCCEEDED,
         payload: {
@@ -369,11 +369,7 @@ export const loadMentors: ActionCreator<
     };
     for (const mentorId of mentors) {
       try {
-        const mentor: MentorClientData = await fetchMentor(
-          config,
-          mentorId,
-          subjectId
-        );
+        const mentor: MentorClientData = await fetchMentor(mentorId, subjectId);
         const topicQuestions: TopicQuestions[] = [];
         const recommendedQuestions = getState().recommendedQuestions;
         if (recommendedQuestions.length > 0) {
