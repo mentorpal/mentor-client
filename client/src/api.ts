@@ -17,11 +17,9 @@ import {
 import { convertMentorClientDataGQL, MentorQueryDataGQL } from "types-gql";
 
 export const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT || "/graphql";
-export async function fetchConfig(
-  graphqlUrl = GRAPHQL_ENDPOINT
-): Promise<Config> {
+export async function fetchConfig(): Promise<Config> {
   const gqlRes = await axios.post<GraphQLResponse<{ config: Config }>>(
-    graphqlUrl,
+    GRAPHQL_ENDPOINT,
     {
       query: `
       query FetchConfig {
