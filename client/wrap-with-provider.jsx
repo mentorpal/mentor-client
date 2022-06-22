@@ -5,15 +5,29 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import React from "react";
-import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
 import thunk from "redux-thunk";
 
 import store from "store/reducer";
 import logger from "redux-logger";
+import * as Sentry from "@sentry/react";
 
-const storeObj = createStore(store, applyMiddleware(...[thunk, logger]));
+const sentryEnhancer = Sentry.createReduxEnhancer({
+  actionTransformer: (action) => {
+    if (action.errors) {
+      Sentry.captureException(`${action.type}: ${action.errors}`);
+    }
+    return action;
+  },
+});
 
+const storeObj = configureStore({
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(thunk, logger),
+  reducer: store,
+  enhancers: (defaultEhancers) => defaultEhancers.concat(sentryEnhancer),
+});
 // eslint-disable-next-line react/prop-types , @typescript-eslint/explicit-module-boundary-types
 export default function WrappedWithProvider({ element }) {
   return <Provider store={storeObj}>{element}</Provider>;
