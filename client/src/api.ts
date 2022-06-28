@@ -151,6 +151,7 @@ export async function fetchMentor(
           title
           email
           mentorType
+          allowContact
           topicQuestions {
             topic
             questions

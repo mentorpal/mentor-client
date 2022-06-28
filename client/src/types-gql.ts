@@ -15,6 +15,7 @@ export interface MentorClientDataGQL {
   name: string;
   title: string;
   email: string;
+  allowContact: boolean;
   mentorType: MentorType;
   topicQuestions: TopicQuestions[];
   utterances: UtteranceGQL[];

@@ -228,6 +228,7 @@ function onMentorsLoadRequested(
         mentorType: MentorType.VIDEO,
         topicQuestions: [],
         utterances: [],
+        allowContact: false,
       },
       topic_questions: [],
       utterances: [],

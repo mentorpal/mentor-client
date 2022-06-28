@@ -62,6 +62,7 @@ export interface MentorClientData {
   mentorType: MentorType;
   topicQuestions: TopicQuestions[];
   utterances: Utterance[];
+  allowContact: boolean;
 }
 
 export interface Utterance {

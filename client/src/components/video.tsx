@@ -116,6 +116,7 @@ function Video(args: {
     name: string;
     title: string;
     email: string;
+    allowContact: boolean;
   }
 
   const mentorData = useSelector<State, HeaderMentorData | null>((state) => {
@@ -138,6 +139,7 @@ function Video(args: {
           name: replayedMentor.name,
           title: replayedMentor.title,
           email: replayedMentor.email,
+          allowContact: replayedMentor.allowContact,
         };
       } else {
         return {
@@ -145,6 +147,7 @@ function Video(args: {
           name: "",
           title: "",
           email: "",
+          allowContact: false,
         };
       }
     }
@@ -158,6 +161,7 @@ function Video(args: {
       name: m.mentor.name,
       title: m.mentor.title,
       email: m.mentor.email,
+      allowContact: m.mentor.allowContact,
     };
   });
 
@@ -305,7 +309,9 @@ function Video(args: {
         </div>
         <LoadingSpinner mentor={curMentor} />
         <MessageStatus mentor={curMentor} />
-        {mentorData?.name && args.configEmailMentorAddress ? (
+        {mentorData?.name &&
+        mentorData.allowContact &&
+        args.configEmailMentorAddress ? (
           <Tooltip
             data-cy="email-disclaimer"
             open={disclaimerOpen}
