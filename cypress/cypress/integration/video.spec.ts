@@ -55,8 +55,19 @@ describe("Video Mentor", () => {
     cy.get("[data-cy=mentor-name-card]").should("exist");
   });
 
+  it("does not display email icon if allowContact is false even if email exists", () => {
+    mockDefaultSetup(cy, {
+      mentorData: { ...clint, allowContact: false },
+      config: { filterEmailMentorAddress: "fakeemailaddress@gmail.com" },
+    });
+    cy.visit("/?mentor=clint");
+    cy.get("[data-cy=answer-memo-video-player-wrapper]").should("be.visible");
+    cy.get("[data-cy=email-mentor-icon]").should("not.exist");
+  });
+
   it("displays email icon if email exists", () => {
     mockDefaultSetup(cy, {
+      mentorData: { ...clint, allowContact: true },
       config: { filterEmailMentorAddress: "fakeemailaddress@gmail.com" },
     });
     cy.visit("/?mentor=clint");
@@ -65,6 +76,7 @@ describe("Video Mentor", () => {
 
   it("displays email disclaimer on hover", () => {
     mockDefaultSetup(cy, {
+      mentorData: { ...clint, allowContact: true },
       config: { filterEmailMentorAddress: "fakeemailaddress@gmail.com" },
     });
     cy.visit("/?mentor=clint");
