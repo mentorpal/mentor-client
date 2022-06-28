@@ -105,18 +105,24 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
   function pollTimer(): void {
     const timeSpentOnPage = getLocalStorage("timespentonpage");
     const newTimeSpentOnPage = Number(timeSpentOnPage) + 10;
-    setLocalStorage("timespentonpage", String(newTimeSpentOnPage));
     const timerDuration = getLocalStorage("postsurveytime");
     if (!timerDuration || !timeSpentOnPage) {
       console.error("local storage not set correctly");
       clearTimerLocalStorage();
       return;
     }
-
     if (newTimeSpentOnPage >= Number(timerDuration) && !showSurveyPopup) {
       setShowSurveyPopup(true);
       setPollingTimer(false);
     }
+    const lastUpdateEpoch = getLocalStorage("lastupdateepoch");
+    const currentEpoch = Date.now();
+    if (lastUpdateEpoch && currentEpoch - Number(lastUpdateEpoch) <= 9800) {
+      //if atleast 9.8 seconds has not passed since last update, then don't update
+      return;
+    }
+    setLocalStorage("lastupdateepoch", String(currentEpoch));
+    setLocalStorage("timespentonpage", String(newTimeSpentOnPage));
   }
 
   useEffect(() => {
