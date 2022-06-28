@@ -67,6 +67,7 @@ describe("Video Mentor", () => {
 
   it("displays email icon if email exists", () => {
     mockDefaultSetup(cy, {
+      mentorData: { ...clint, allowContact: true },
       config: { filterEmailMentorAddress: "fakeemailaddress@gmail.com" },
     });
     cy.visit("/?mentor=clint");
@@ -75,6 +76,7 @@ describe("Video Mentor", () => {
 
   it("displays email disclaimer on hover", () => {
     mockDefaultSetup(cy, {
+      mentorData: { ...clint, allowContact: true },
       config: { filterEmailMentorAddress: "fakeemailaddress@gmail.com" },
     });
     cy.visit("/?mentor=clint");
