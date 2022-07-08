@@ -1,5 +1,6 @@
 DOCKER_IMAGE?=mentor-client
 TEST_E2E_DOCKER_COMPOSE=docker-compose
+LICENSE_CONFIG?="license-config.json"
 
 node_modules/license-check-and-add:
 	npm ci
@@ -38,6 +39,10 @@ format:
 .PHONY: license
 license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
 	npm run license:fix
+
+.PHONY: license-deploy
+license-deploy: node_modules/license-check-and-add LICENSE LICENSE_HEADER
+	LICENSE_CONFIG=${LICENSE_CONFIG} npm run license:deploy
 
 .PHONY: pretty
 pretty: node_modules/prettier
