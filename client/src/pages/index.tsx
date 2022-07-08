@@ -18,6 +18,7 @@ import withLocation from "wrap-with-location";
 import "styles/layout.css";
 import { fetchMentorByAccessToken } from "api";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { Helmet } from "react-helmet";
 
 import "styles/history-chat-responsive.css";
 
@@ -344,44 +345,47 @@ function IndexPage(props: {
     }
   }, [guest]);
 
-  //Waiting for config
-  if (!isConfigLoadComplete(configLoadStatus) || !curMentor) {
-    return (
-      <div className={styles.loadingWindow}>
-        <div className={styles.loadingContent}>
-          <CircularProgress
-            data-cy="loading"
-            className={styles.loadingIndicator}
-            style={{ color: config.styleHeaderColor }}
-            size={150}
-          />
-          <div className={styles.loadingIndicatorContent}></div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <MuiThemeProvider theme={brandedTheme}>
-      <Header />
-      {shouldDisplayPortrait() || isMobile ? (
-        <Mobile
-          mentorType={mentorType}
-          chatHeight={chatHeight}
-          windowHeight={windowHeight}
-          hasSessionUser={hasSessionUser}
-          curTopic={curTopic}
-        />
+    <div>
+      <Helmet>
+        <meta name="googlebot" content="noindex" />
+        <meta name="robots" content="noindex" />
+      </Helmet>
+      {!isConfigLoadComplete(configLoadStatus) || !curMentor ? (
+        <div className={styles.loadingWindow}>
+          <div className={styles.loadingContent}>
+            <CircularProgress
+              data-cy="loading"
+              className={styles.loadingIndicator}
+              style={{ color: config.styleHeaderColor }}
+              size={150}
+            />
+            <div className={styles.loadingIndicatorContent}></div>
+          </div>
+        </div>
       ) : (
-        <Desktop
-          mentorType={mentorType}
-          chatHeight={chatHeight}
-          windowHeight={windowHeight}
-          hasSessionUser={hasSessionUser}
-          curTopic={curTopic}
-        />
+        <MuiThemeProvider theme={brandedTheme}>
+          <Header />
+          {shouldDisplayPortrait() || isMobile ? (
+            <Mobile
+              mentorType={mentorType}
+              chatHeight={chatHeight}
+              windowHeight={windowHeight}
+              hasSessionUser={hasSessionUser}
+              curTopic={curTopic}
+            />
+          ) : (
+            <Desktop
+              mentorType={mentorType}
+              chatHeight={chatHeight}
+              windowHeight={windowHeight}
+              hasSessionUser={hasSessionUser}
+              curTopic={curTopic}
+            />
+          )}
+        </MuiThemeProvider>
       )}
-    </MuiThemeProvider>
+    </div>
   );
 }
 
