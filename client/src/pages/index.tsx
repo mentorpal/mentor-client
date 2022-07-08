@@ -18,6 +18,7 @@ import withLocation from "wrap-with-location";
 import "styles/layout.css";
 import { fetchMentorByAccessToken } from "api";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { Helmet } from "react-helmet";
 
 import "styles/history-chat-responsive.css";
 
@@ -363,6 +364,10 @@ function IndexPage(props: {
 
   return (
     <MuiThemeProvider theme={brandedTheme}>
+      <Helmet>
+        <meta name="googlebot" content="noindex" />
+        <meta name="robots" content="noindex" />
+      </Helmet>
       <Header />
       {shouldDisplayPortrait() || isMobile ? (
         <Mobile
