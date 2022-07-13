@@ -655,7 +655,7 @@ export const sendQuestion =
             }
             const response: QuestionResponse = {
               answerId: data.answer_id,
-              answerText: data.answer_text,
+              answerText: data.answer_markdown_text,
               answerMedia: answer_media,
               answerClassifier: data.classifier,
               answerConfidence: data.confidence,
@@ -698,7 +698,7 @@ export const sendQuestion =
             );
             const response: QuestionResponse = {
               answerId: offTopicUtterance?._id || "",
-              answerText: offTopicUtterance?.transcript || "",
+              answerText: offTopicUtterance?.markdownTranscript || offTopicUtterance?.transcript || "",
               answerMedia: offTopicUtterance?.media || [],
               answerClassifier: "",
               answerConfidence: 0,
