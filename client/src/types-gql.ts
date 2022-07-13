@@ -25,7 +25,6 @@ export interface UtteranceGQL {
   _id: string;
   name: string;
   transcript: string;
-  markdownTranscript: string;
   webMedia?: Media;
   mobileMedia?: Media;
   vttMedia?: Media;

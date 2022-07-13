@@ -160,7 +160,6 @@ export async function fetchMentor(
             _id
             name
             transcript
-            markdownTranscript
             webMedia {
               tag
               type

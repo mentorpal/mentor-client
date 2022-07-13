@@ -69,7 +69,6 @@ export interface Utterance {
   _id: string;
   name: string;
   transcript: string;
-  markdownTranscript: string;
   media: Media[];
 }
 
