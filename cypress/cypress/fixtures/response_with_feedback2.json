@@ -2,6 +2,7 @@
   "query": "how old are you",
   "answer_id": "answer_id_feedback_2",
   "answer_text": "Another feedback (testing parenthesis).",
+  "answer_markdown_text": "Another feedback (testing parenthesis).",
   "answer_media": {
     "web_media": {
       "type": "video",

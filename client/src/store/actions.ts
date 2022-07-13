@@ -698,7 +698,10 @@ export const sendQuestion =
             );
             const response: QuestionResponse = {
               answerId: offTopicUtterance?._id || "",
-              answerText: offTopicUtterance?.markdownTranscript || offTopicUtterance?.transcript || "",
+              answerText:
+                offTopicUtterance?.markdownTranscript ||
+                offTopicUtterance?.transcript ||
+                "",
               answerMedia: offTopicUtterance?.media || [],
               answerClassifier: "",
               answerConfidence: 0,
