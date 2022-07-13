@@ -2,6 +2,7 @@
   "query": "how old are you",
   "answer_id": "answer_id_feedback",
   "answer_text": "Give me feedback.",
+  "answer_markdown_text": "Give me feedback.",
   "answer_media": {
     "web_media": {
       "type": "video",

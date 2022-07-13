@@ -1,7 +1,8 @@
 {
   "query": "how old are you",
   "answer_id": "answer_id3",
-  "answer_text": "Click [here](https://www.google.com)",
+  "answer_text": "Click here",
+  "answer_markdown_text": "Click [here](https://www.google.com)",
   "answer_media": {
     "web_media": {
       "type": "video",

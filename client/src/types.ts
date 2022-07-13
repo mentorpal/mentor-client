@@ -69,6 +69,7 @@ export interface Utterance {
   _id: string;
   name: string;
   transcript: string;
+  markdownTranscript: string;
   media: Media[];
 }
 
@@ -88,6 +89,7 @@ export interface QuestionApiData {
   query: string;
   answer_id: string;
   answer_text: string;
+  answer_markdown_text: string;
   answer_media: AnswerMediaClassifier;
   confidence: number;
   feedback_id: string;
