@@ -254,6 +254,7 @@ export function ChatItem(props: {
         <div>
           <ReactMarkdown
             source={message.text}
+            className="markdown-container"
             renderers={{ link: LinkRenderer }}
           />
         </div>
