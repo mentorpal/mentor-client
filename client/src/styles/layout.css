@@ -252,6 +252,20 @@ body {
   height: 60px;
 }
 
+.markdown-container {
+  list-style: disc;
+  list-style-type: circle;
+}
+
+.markdown-container li {
+  display: list-item;
+}
+
+.markdown-container ul {
+  list-style: disc;
+  padding-inline-start: 40px;
+}
+
 .home-btn-wrapper {
   max-width: 15%;
 }

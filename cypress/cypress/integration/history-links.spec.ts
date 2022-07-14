@@ -119,7 +119,7 @@ describe("Chat History (Video Mentors Links)", () => {
 
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=chat-msg-4]").contains("Click here");
+        cy.get("[data-cy=chat-msg-3]").contains("Click here");
       });
     });
     // Compare last answer link with video label
