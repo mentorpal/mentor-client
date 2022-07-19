@@ -692,6 +692,7 @@ export const sendQuestion =
             resolve(response);
           })
           .catch((err: any) => {
+            console.error(err);
             const mentorState = state.mentorsById[mentor];
             const offTopicUtterance = mentorState.utterances.find(
               (u) => u.name === UtteranceName.OFF_TOPIC

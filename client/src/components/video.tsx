@@ -4,7 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import { useSelector, useDispatch } from "react-redux";
 import { Star, StarBorder } from "@material-ui/icons";
@@ -21,7 +21,7 @@ import {
   playIdleAfterReplay,
   onMentorDisplayAnswer,
 } from "store/actions";
-import { State, WebLink } from "types";
+import { ChatData, MentorState, State, WebLink } from "types";
 import "styles/video.css";
 import { Tooltip } from "@material-ui/core";
 
@@ -32,37 +32,84 @@ export interface VideoData {
   subtitles: string;
 }
 
+const defaultVideoData = {
+  src: "",
+  subtitles: "",
+};
+
+interface HeaderMentorData {
+  _id: string;
+  name: string;
+  title: string;
+  email: string;
+  allowContact: boolean;
+}
+
+const defaultHeaderMentorData = {
+  _id: "",
+  name: "",
+  title: "",
+  email: "",
+  allowContact: false,
+};
+
 function Video(args: {
   playing?: boolean;
   configEmailMentorAddress: string;
 }): JSX.Element {
   const { playing = false } = args;
   const dispatch = useDispatch();
-  const isQuestionSent = useSelector<State, boolean>(
-    (s) => s.chat.questionSent
-  );
-  const lastQuestionCounter = useSelector<State, number>(
-    (s) => s.chat.lastQuestionCounter || s.questionsAsked.length + 1
-  );
-  const numberMentors = useSelector<State, number>((state) => {
-    return Object.keys(state.mentorsById).length;
+  interface hookedStateData {
+    chat: ChatData;
+    curMentor: string;
+    mentorsById: Record<string, MentorState>;
+    isQuestionSent: boolean;
+    lastQuestionCounter: number;
+    numberMentors: number;
+  }
+  const {
+    chat,
+    curMentor,
+    mentorsById,
+    isQuestionSent,
+    lastQuestionCounter,
+    numberMentors,
+  } = useSelector<State, hookedStateData>((state) => {
+    return {
+      chat: state.chat,
+      curMentor: state.curMentor,
+      mentorsById: state.mentorsById,
+      isQuestionSent: state.chat.questionSent,
+      lastQuestionCounter:
+        state.chat.lastQuestionCounter || state.questionsAsked.length + 1,
+      numberMentors: Object.keys(state.mentorsById).length,
+    };
   });
-  const curMentor = useSelector<State, string>((state) => state.curMentor);
+  const [video, setVideo] = useState<VideoData>(defaultVideoData);
+  const [idleVideo, setIdleVideo] = useState<VideoData>(defaultVideoData);
+  const [webLinks, setWebLinks] = useState<WebLink[]>([]);
+  const [mentorData, setMentorData] = useState<HeaderMentorData>(
+    defaultHeaderMentorData
+  );
+  const reactPlayerRef = useRef<ReactPlayer>(null);
 
-  const idleVideo = useSelector<State, VideoData | null>((state) => {
-    const m = state.mentorsById[state.curMentor];
+  const getIdleVideoData = (): VideoData => {
+    const m = mentorsById[curMentor];
     if (!m) {
-      return null;
+      return {
+        src: "",
+        subtitles: "",
+      };
     }
     return {
       src: idleUrl(m.mentor),
       subtitles: "",
     };
-  });
+  };
 
-  const video = useSelector<State, VideoData | null>((state) => {
-    if (state.chat.replay) {
-      const videoMedia = state.chat.messages.find((m) => {
+  const getVideoData = (): VideoData => {
+    if (chat.replay) {
+      const videoMedia = chat.messages.find((m) => {
         if (m.replay) {
           return m.answerMedia;
         }
@@ -72,65 +119,63 @@ function Video(args: {
         subtitles: subtitleUrl(videoMedia?.answerMedia || []),
       };
     }
-    if (!state.curMentor) {
-      return null;
+    if (!curMentor) {
+      return {
+        src: "",
+        subtitles: "",
+      };
     }
-    const m = state.mentorsById[state.curMentor];
+    const m = mentorsById[curMentor];
     if (!m) {
-      return null;
+      return {
+        src: "",
+        subtitles: "",
+      };
     }
     return {
       src: videoUrl(m.answer_media || []),
       subtitles: subtitlesSupported ? subtitleUrl(m.answer_media || []) : "",
     };
-  });
+  };
 
   // returns an array of WebLinks
-  const webLinks = useSelector<State, WebLink[] | undefined>((state) => {
-    if (state.chat.replay) {
-      const videoWebLinks = state.chat.messages.find((m) => {
+  const getWebLinkData = () => {
+    if (chat.replay) {
+      const videoWebLinks = chat.messages.find((m) => {
         if (m.replay) {
-          return m.webLinks;
+          return m.webLinks || [];
         }
       });
-      return videoWebLinks?.webLinks;
+      return videoWebLinks?.webLinks || [];
     }
 
-    const chatData = state.chat.messages;
+    const chatData = chat.messages;
     const lastQuestionId = chatData[chatData.length - 1].questionId;
 
     const lastWebLink = chatData.filter((m) => {
       if (m.mentorId === curMentor && m.questionId === lastQuestionId) {
-        return m.webLinks;
+        return m.webLinks || [];
       }
     });
     const mentorWebLink =
       lastWebLink && lastWebLink.length > 0
-        ? lastWebLink[0].webLinks
-        : undefined;
+        ? lastWebLink[0].webLinks || []
+        : [];
     return mentorWebLink;
-  });
+  };
 
-  interface HeaderMentorData {
-    _id: string;
-    name: string;
-    title: string;
-    email: string;
-    allowContact: boolean;
-  }
-
-  const mentorData = useSelector<State, HeaderMentorData | null>((state) => {
-    if (!state.curMentor) {
-      return null;
+  const getMentorData = (): HeaderMentorData => {
+    if (!curMentor) {
+      return defaultHeaderMentorData;
     }
-    if (state.chat.replay) {
-      const replayMentorData = state.chat.messages.find((m) => {
+    if (chat.replay) {
+      const replayMentorData = chat.messages.find((m) => {
         if (m.replay) {
           return m.webLinks;
         }
       });
       const replayedMentor = replayMentorData?.mentorId
-        ? state.mentorsById[replayMentorData.mentorId].mentor
+        ? mentorsById[replayMentorData.mentorId].mentor
         : undefined;
 
       if (replayedMentor) {
@@ -142,19 +187,13 @@ function Video(args: {
           allowContact: replayedMentor.allowContact,
         };
       } else {
-        return {
-          _id: "",
-          name: "",
-          title: "",
-          email: "",
-          allowContact: false,
-        };
+        return defaultHeaderMentorData;
       }
     }
 
-    const m = state.mentorsById[state.curMentor];
+    const m = mentorsById[curMentor];
     if (!(m && m.mentor)) {
-      return null;
+      return defaultHeaderMentorData;
     }
     return {
       _id: m.mentor._id,
@@ -163,7 +202,20 @@ function Video(args: {
       email: m.mentor.email,
       allowContact: m.mentor.allowContact,
     };
-  });
+  };
+
+  useEffect(() => {
+    setVideo(getVideoData());
+    setIdleVideo(getIdleVideoData());
+  }, [curMentor, chat.replay]);
+
+  useEffect(() => {
+    setWebLinks(getWebLinkData());
+  }, [chat]);
+
+  useEffect(() => {
+    setMentorData(getMentorData());
+  }, [curMentor, chat]);
 
   const [hideLinkLabel, setHideLinkLabel] = useState<boolean>(false);
   const isIdle = useSelector<State, boolean>((state) => {
@@ -172,12 +224,6 @@ function Video(args: {
     }
     return state.isIdle;
   });
-
-  const [duration, setDuration] = useState(Number.NaN);
-
-  if (!(curMentor && video)) {
-    return <div />;
-  }
 
   function onEnded() {
     setVideoFinishedBuffering(false);
@@ -203,7 +249,7 @@ function Video(args: {
     dispatch(
       mentorAnswerPlaybackStarted({
         mentor: curMentor,
-        duration: duration,
+        duration: reactPlayerRef.current?.getDuration() || 0,
       })
     );
   }
@@ -273,15 +319,15 @@ function Video(args: {
               onPlay={onPlay}
               onProgress={onProgressAnswerVideo}
               playing={Boolean(playing)}
-              setDuration={setDuration}
               subtitlesOn={
                 Boolean(subtitlesSupported) && Boolean(video.subtitles)
               }
+              reactPlayerRef={reactPlayerRef}
               subtitlesUrl={video.subtitles}
               videoUrl={isIdle ? "" : video.src}
               webLinks={webLinks}
               hideLinkLabel={hideLinkLabel}
-              mentorName={mentorData ? mentorData.name : ""}
+              mentorName={mentorData.name}
               numberMentors={numberMentors}
             />
           </span>
@@ -296,20 +342,20 @@ function Video(args: {
               onPlay={onPlay}
               playing={true}
               onProgress={onProgressIdleVideo}
-              setDuration={setDuration}
               subtitlesOn={false}
               subtitlesUrl={""}
+              reactPlayerRef={reactPlayerRef}
               videoUrl={idleVideo.src}
               webLinks={webLinks}
               hideLinkLabel={hideLinkLabel}
-              mentorName={mentorData ? mentorData.name : ""}
+              mentorName={mentorData.name}
               numberMentors={numberMentors}
             />
           </span>
         </div>
         <LoadingSpinner mentor={curMentor} />
         <MessageStatus mentor={curMentor} />
-        {mentorData?.name &&
+        {mentorData.name &&
         mentorData.allowContact &&
         args.configEmailMentorAddress ? (
           <Tooltip
@@ -358,6 +404,10 @@ function Video(args: {
     );
   }
 
+  if (!(curMentor && video)) {
+    return <div />;
+  }
+
   return PlayVideo();
 }
 
@@ -372,14 +422,14 @@ interface VideoPlayerParams {
     loadedSeconds: number;
   }) => void;
   playing?: boolean;
-  setDuration: (d: number) => void;
   subtitlesOn: boolean;
   subtitlesUrl: string;
   videoUrl: string;
-  webLinks: WebLink[] | undefined;
+  webLinks: WebLink[];
   hideLinkLabel: boolean;
   mentorName: string;
   numberMentors: number;
+  reactPlayerRef: React.RefObject<ReactPlayer>;
 }
 
 function VideoPlayer(args: VideoPlayerParams) {
@@ -389,7 +439,6 @@ function VideoPlayer(args: VideoPlayerParams) {
     onPlay,
     onProgress,
     playing,
-    setDuration,
     subtitlesOn,
     subtitlesUrl,
     videoUrl,
@@ -397,6 +446,7 @@ function VideoPlayer(args: VideoPlayerParams) {
     hideLinkLabel,
     mentorName,
     numberMentors,
+    reactPlayerRef,
   } = args;
 
   const webLinkJSX = webLinks?.map((wl, i) => {
@@ -439,7 +489,7 @@ function VideoPlayer(args: VideoPlayerParams) {
       ? true
       : false
     : false;
-
+  console.log("RERENDERED");
   return (
     <div
       className="video-player-wrapper"
@@ -462,8 +512,8 @@ function VideoPlayer(args: VideoPlayerParams) {
         data-cy="playing-video-mentor"
         url={videoUrl}
         muted={Boolean(isIdle)}
-        onDuration={setDuration}
         onEnded={onEnded}
+        ref={reactPlayerRef}
         onPlay={onPlay}
         onProgress={onProgress}
         loop={isIdle}

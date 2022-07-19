@@ -207,7 +207,7 @@ export interface MentorState {
   answer_text?: string;
   answer_media: Media[];
   utterances: Utterance[];
-  answerReceivedAt?: Date;
+  answerReceivedAt?: number;
   answerFeedbackId?: string;
   classifier?: string;
   confidence?: number;
@@ -246,7 +246,7 @@ export interface State {
   curMentorReason: MentorSelectReason;
   curQuestion: string; // question that was last asked
   curQuestionSource: MentorQuestionSource;
-  curQuestionUpdatedAt?: Date;
+  curQuestionUpdatedAt?: number;
   curTopic: string; // topic to show questions for
   mentorFaved: string; // id of the preferred mentor
   isIdle: boolean;
@@ -312,6 +312,6 @@ export interface XapiResultExt {
   questionIndex: number;
   questionSource: MentorQuestionSource;
   questionsAsked: string[];
-  timestampAsked?: Date;
-  timestampAnswered?: Date;
+  timestampAsked?: number;
+  timestampAnswered?: number;
 }

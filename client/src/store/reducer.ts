@@ -362,7 +362,7 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
         },
         curQuestion: action.payload.question,
         curQuestionSource: action.payload.source,
-        curQuestionUpdatedAt: new Date(Date.now()),
+        curQuestionUpdatedAt: Date.now(),
         questionsAsked: [
           ...state.questionsAsked,
           normalizeString(action.payload.question),
@@ -497,7 +497,7 @@ function onQuestionAnswered(
     answer_id: action.payload.answerId,
     answer_text: action.payload.answerText,
     answer_media: action.payload.answerMedia,
-    answerReceivedAt: new Date(Date.now()),
+    answerReceivedAt: Date.now(),
     answerFeedbackId: action.payload.answerFeedbackId,
     classifier: action.payload.answerClassifier,
     confidence: action.payload.answerConfidence,
@@ -655,7 +655,7 @@ export default function reducer(
           ...state.mentorsById,
           [action.mentor]: {
             ...state.mentorsById[action.mentor],
-            answerReceivedAt: new Date(Date.now()),
+            answerReceivedAt: Date.now(),
             question: action.question,
             status: MentorQuestionStatus.ERROR,
           },

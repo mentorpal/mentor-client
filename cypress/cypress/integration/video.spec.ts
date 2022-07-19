@@ -238,7 +238,7 @@ describe("Video Mentor", () => {
     cy.get("[data-cy=mentor-name-card]").should("exist");
   });
 
-  it("If classifier errors occurs, then show off topic response", () => {
+  it.only("If classifier errors occurs, then show off topic response", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["carlos_subject_selected"] },
       mentorData: [carlos_subject_selected],

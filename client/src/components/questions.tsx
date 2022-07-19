@@ -8,7 +8,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import ScrollingQuestions from "components/scrolling-questions";
-import { State } from "types";
+import { MentorState, State } from "types";
 import withLocation from "wrap-with-location";
 import Chat from "./chat";
 
@@ -36,7 +36,7 @@ function Questions(props: {
     if (!state.curMentor) {
       return [] as string[];
     }
-    const m = state.mentorsById[state.curMentor];
+    const m: MentorState = { ...state.mentorsById[state.curMentor] };
     const qlist =
       (m?.topic_questions || []).find((tq) => tq.topic === curTopic)
         ?.questions || [];
