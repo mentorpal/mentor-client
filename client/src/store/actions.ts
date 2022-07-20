@@ -342,13 +342,14 @@ export const loadMentors: ActionCreator<
     config: Config;
     mentors: string[];
     subjectId?: string;
+    intro?: string;
     recommendedQuestions?: string[];
   }) =>
   async (
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
   ) => {
-    const { config, mentors, subjectId, recommendedQuestions } = args;
+    const { intro, mentors, subjectId, recommendedQuestions } = args;
     dispatch<MentorsLoadRequestedAction>({
       type: MENTORS_LOAD_REQUESTED,
       payload: {
@@ -380,13 +381,16 @@ export const loadMentors: ActionCreator<
         }
         topicQuestions.push(...mentor.topicQuestions);
         topicQuestions.push({ topic: "History", questions: [] });
-        const intro = getUtterance(mentor, UtteranceName.INTRO);
+        const introUtterance = getUtterance(mentor, UtteranceName.INTRO);
+        if (intro && introUtterance) {
+          introUtterance.transcript = intro;
+        }
         const mentorData: MentorState = {
           mentor: mentor,
           topic_questions: topicQuestions,
           status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
-          answer_id: intro?._id,
-          answer_media: intro?.media || [],
+          answer_id: introUtterance?._id,
+          answer_media: introUtterance?.media || [],
           utterances: mentor.utterances,
           answerDuration: Number.NaN,
         };
