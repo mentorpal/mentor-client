@@ -87,6 +87,7 @@ function IndexPage(props: {
     recommendedQuestions?: string | string[];
     guest?: string;
     subject?: string;
+    intro?: string;
   };
 }): JSX.Element {
   const dispatch = useDispatch();
@@ -113,7 +114,7 @@ function IndexPage(props: {
   const [chatHeight, setChatHeight] = React.useState<number>(0);
   const curTopic = useSelector<State, string>((state) => state.curTopic);
 
-  const { guest, subject, recommendedQuestions } = props.search;
+  const { guest, subject, recommendedQuestions, intro } = props.search;
   let { mentor } = props.search;
 
   function hasSessionUser(): boolean {
@@ -321,6 +322,7 @@ function IndexPage(props: {
               : [mentor]
             : config.mentorsDefault,
           subject,
+          intro,
           recommendedQuestions: recommendedQuestions
             ? Array.isArray(recommendedQuestions)
               ? recommendedQuestions
