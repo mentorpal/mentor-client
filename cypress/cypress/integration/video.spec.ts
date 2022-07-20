@@ -26,7 +26,7 @@ describe("Video Mentor", () => {
         cy.get("video").should("exist");
         cy.get("video")
           .should("have.attr", "src")
-          .and("match", /.*answer_id.mp4$/);
+          .and("match", /.*answer_id.mp4*/);
       });
     });
   });
@@ -238,7 +238,7 @@ describe("Video Mentor", () => {
     cy.get("[data-cy=mentor-name-card]").should("exist");
   });
 
-  it.only("If classifier errors occurs, then show off topic response", () => {
+  it("If classifier errors occurs, then show off topic response", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["carlos_subject_selected"] },
       mentorData: [carlos_subject_selected],
@@ -263,7 +263,7 @@ describe("Video Mentor", () => {
       cy.get("video").should("exist");
       cy.get("video")
         .should("have.attr", "src")
-        .and("match", /.*off_topic_answer_id.mp4$/);
+        .and("match", /.*off_topic_answer_id.mp4*/);
     });
 
     cy.get("[data-cy=chat-msg-2]").should(

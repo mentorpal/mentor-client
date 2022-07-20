@@ -21,7 +21,7 @@ import {
   playIdleAfterReplay,
   onMentorDisplayAnswer,
 } from "store/actions";
-import { ChatData, MentorState, State, WebLink } from "types";
+import { ChatMsg, MentorState, State, WebLink } from "types";
 import "styles/video.css";
 import { Tooltip } from "@material-ui/core";
 
@@ -59,57 +59,49 @@ function Video(args: {
 }): JSX.Element {
   const { playing = false } = args;
   const dispatch = useDispatch();
-  interface hookedStateData {
-    chat: ChatData;
-    curMentor: string;
-    mentorsById: Record<string, MentorState>;
-    isQuestionSent: boolean;
-    lastQuestionCounter: number;
-    numberMentors: number;
-  }
-  const {
-    chat,
-    curMentor,
-    mentorsById,
-    isQuestionSent,
-    lastQuestionCounter,
-    numberMentors,
-  } = useSelector<State, hookedStateData>((state) => {
-    return {
-      chat: state.chat,
-      curMentor: state.curMentor,
-      mentorsById: state.mentorsById,
-      isQuestionSent: state.chat.questionSent,
-      lastQuestionCounter:
-        state.chat.lastQuestionCounter || state.questionsAsked.length + 1,
-      numberMentors: Object.keys(state.mentorsById).length,
-    };
+  // Redux store subscriptions
+  const lastQuestionCounter = useSelector<State, number>(
+    (s) => s.chat.lastQuestionCounter || s.questionsAsked.length + 1
+  );
+  const mentorsById = useSelector<State, Record<string, MentorState>>(
+    (state) => {
+      return state.mentorsById;
+    }
+  );
+  const curMentorId = useSelector<State, string>((state) => state.curMentor);
+  const isQuestionSent = useSelector<State, boolean>((s) => {
+    return s.chat.questionSent;
   });
+  const chatReplay = useSelector<State, boolean>((s) => {
+    return s.chat.replay;
+  });
+  const chatMessages = useSelector<State, ChatMsg[]>((s) => {
+    return s.chat.messages;
+  });
+
   const [video, setVideo] = useState<VideoData>(defaultVideoData);
   const [idleVideo, setIdleVideo] = useState<VideoData>(defaultVideoData);
   const [webLinks, setWebLinks] = useState<WebLink[]>([]);
   const [mentorData, setMentorData] = useState<HeaderMentorData>(
     defaultHeaderMentorData
   );
+  const numberMentors = Object.keys(mentorsById).length;
+  const curMentor: MentorState = { ...mentorsById[curMentorId] };
   const reactPlayerRef = useRef<ReactPlayer>(null);
 
   const getIdleVideoData = (): VideoData => {
-    const m = mentorsById[curMentor];
-    if (!m) {
-      return {
-        src: "",
-        subtitles: "",
-      };
+    if (!curMentorId) {
+      return defaultVideoData;
     }
     return {
-      src: idleUrl(m.mentor),
+      src: idleUrl(curMentor.mentor),
       subtitles: "",
     };
   };
 
   const getVideoData = (): VideoData => {
-    if (chat.replay) {
-      const videoMedia = chat.messages.find((m) => {
+    if (chatReplay) {
+      const videoMedia = chatMessages.find((m) => {
         if (m.replay) {
           return m.answerMedia;
         }
@@ -119,29 +111,21 @@ function Video(args: {
         subtitles: subtitleUrl(videoMedia?.answerMedia || []),
       };
     }
-    if (!curMentor) {
-      return {
-        src: "",
-        subtitles: "",
-      };
-    }
-    const m = mentorsById[curMentor];
-    if (!m) {
-      return {
-        src: "",
-        subtitles: "",
-      };
+    if (!curMentorId) {
+      return defaultVideoData;
     }
     return {
-      src: videoUrl(m.answer_media || []),
-      subtitles: subtitlesSupported ? subtitleUrl(m.answer_media || []) : "",
+      src: videoUrl(curMentor.answer_media || []),
+      subtitles: subtitlesSupported
+        ? subtitleUrl(curMentor.answer_media || [])
+        : "",
     };
   };
 
   // returns an array of WebLinks
   const getWebLinkData = () => {
-    if (chat.replay) {
-      const videoWebLinks = chat.messages.find((m) => {
+    if (chatReplay) {
+      const videoWebLinks = chatMessages.find((m) => {
         if (m.replay) {
           return m.webLinks || [];
         }
@@ -149,11 +133,11 @@ function Video(args: {
       return videoWebLinks?.webLinks || [];
     }
 
-    const chatData = chat.messages;
+    const chatData = chatMessages;
     const lastQuestionId = chatData[chatData.length - 1].questionId;
 
     const lastWebLink = chatData.filter((m) => {
-      if (m.mentorId === curMentor && m.questionId === lastQuestionId) {
+      if (m.mentorId === curMentorId && m.questionId === lastQuestionId) {
         return m.webLinks || [];
       }
     });
@@ -165,11 +149,11 @@ function Video(args: {
   };
 
   const getMentorData = (): HeaderMentorData => {
-    if (!curMentor) {
+    if (!curMentorId) {
       return defaultHeaderMentorData;
     }
-    if (chat.replay) {
-      const replayMentorData = chat.messages.find((m) => {
+    if (chatReplay) {
+      const replayMentorData = chatMessages.find((m) => {
         if (m.replay) {
           return m.webLinks;
         }
@@ -191,39 +175,39 @@ function Video(args: {
       }
     }
 
-    const m = mentorsById[curMentor];
-    if (!(m && m.mentor)) {
+    if (!curMentor?.mentor) {
       return defaultHeaderMentorData;
     }
     return {
-      _id: m.mentor._id,
-      name: m.mentor.name,
-      title: m.mentor.title,
-      email: m.mentor.email,
-      allowContact: m.mentor.allowContact,
+      _id: curMentor.mentor._id,
+      name: curMentor.mentor.name,
+      title: curMentor.mentor.title,
+      email: curMentor.mentor.email,
+      allowContact: curMentor.mentor.allowContact,
     };
   };
 
   useEffect(() => {
+    console.log("setting video data to");
+    console.log(getVideoData());
     setVideo(getVideoData());
     setIdleVideo(getIdleVideoData());
-  }, [curMentor, chat.replay]);
+  }, [curMentorId, chatReplay, curMentor.answer_media]);
 
   useEffect(() => {
     setWebLinks(getWebLinkData());
-  }, [chat]);
+  }, [chatReplay, chatMessages]);
 
   useEffect(() => {
     setMentorData(getMentorData());
-  }, [curMentor, chat]);
+  }, [curMentorId, chatReplay, chatMessages]);
 
   const [hideLinkLabel, setHideLinkLabel] = useState<boolean>(false);
-  const isIdle = useSelector<State, boolean>((state) => {
-    if (state.chat.replay) {
-      return false;
-    }
-    return state.isIdle;
-  });
+  const isIdle = chatReplay
+    ? false
+    : useSelector<State, boolean>((state) => {
+        return state.isIdle;
+      });
 
   function onEnded() {
     setVideoFinishedBuffering(false);
@@ -237,7 +221,12 @@ function Video(args: {
 
     if (!isQuestionSent) {
       dispatch(
-        onMentorDisplayAnswer(false, curMentor, lastQuestionCounter, Date.now())
+        onMentorDisplayAnswer(
+          false,
+          curMentorId,
+          lastQuestionCounter,
+          Date.now()
+        )
       );
     }
 
@@ -248,7 +237,7 @@ function Video(args: {
     }
     dispatch(
       mentorAnswerPlaybackStarted({
-        mentor: curMentor,
+        mentor: curMentorId,
         duration: reactPlayerRef.current?.getDuration() || 0,
       })
     );
@@ -353,8 +342,8 @@ function Video(args: {
             />
           </span>
         </div>
-        <LoadingSpinner mentor={curMentor} />
-        <MessageStatus mentor={curMentor} />
+        <LoadingSpinner mentor={curMentorId} />
+        <MessageStatus mentor={curMentorId} />
         {mentorData.name &&
         mentorData.allowContact &&
         args.configEmailMentorAddress ? (
@@ -404,7 +393,7 @@ function Video(args: {
     );
   }
 
-  if (!(curMentor && video)) {
+  if (!(curMentorId && video)) {
     return <div />;
   }
 

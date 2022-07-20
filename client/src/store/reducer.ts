@@ -334,13 +334,13 @@ function onMentorLoadResults(
 }
 
 function onQuestionSent(state: State, action: QuestionSentAction): State {
-  state.chat.replay = false;
   return onMentorNext(
     onQuestionInputChanged(
       {
         ...state,
         chat: {
           ...state.chat,
+          replay: false,
           messages: [
             ...state.chat.messages,
             {
@@ -508,11 +508,14 @@ function onQuestionAnswered(
   };
 
   const history = mentor.topic_questions.length - 1;
-  // TODO: this mutation of history is DEEPLY suspect, we should get rid of it
-  // or it needs to copy data before editting
   if (
     !mentor.topic_questions[history].questions.includes(action.payload.question)
   ) {
+    // We must first deep copy topic_questions to avoid directly mutating redux state
+    // Note: This deep copy approach only works for JSON compatible objects
+    mentor.topic_questions = JSON.parse(
+      JSON.stringify(state.mentorsById[action.payload.mentor].topic_questions)
+    );
     mentor.topic_questions[history].questions.push(action.payload.question);
   }
 
