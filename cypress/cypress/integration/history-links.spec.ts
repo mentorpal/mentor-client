@@ -111,11 +111,9 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
@@ -205,11 +203,9 @@ describe("Chat History (Video Mentors Links)", () => {
     });
     cy.get("[data-cy=visibility-switch]").find("input").check();
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=chat-msg-4]")
       .scrollIntoView()

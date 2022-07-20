@@ -9,7 +9,7 @@ import ReactPlayer from "react-player";
 import { useSelector, useDispatch } from "react-redux";
 import { Star, StarBorder } from "@material-ui/icons";
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
-import { videoUrl, subtitleUrl, idleUrl } from "api";
+import { videoUrl as getVideoUrl, subtitleUrl, idleUrl } from "api";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import MailIcon from "@material-ui/icons/Mail";
@@ -90,7 +90,7 @@ function Video(args: {
   const reactPlayerRef = useRef<ReactPlayer>(null);
 
   const getIdleVideoData = (): VideoData => {
-    if (!curMentorId) {
+    if (!curMentor) {
       return defaultVideoData;
     }
     return {
@@ -98,7 +98,6 @@ function Video(args: {
       subtitles: "",
     };
   };
-
   const getVideoData = (): VideoData => {
     if (chatReplay) {
       const videoMedia = chatMessages.find((m) => {
@@ -107,7 +106,7 @@ function Video(args: {
         }
       });
       return {
-        src: videoUrl(videoMedia?.answerMedia || []),
+        src: getVideoUrl(videoMedia?.answerMedia || []),
         subtitles: subtitleUrl(videoMedia?.answerMedia || []),
       };
     }
@@ -115,7 +114,7 @@ function Video(args: {
       return defaultVideoData;
     }
     return {
-      src: videoUrl(curMentor.answer_media || []),
+      src: getVideoUrl(curMentor.answer_media || []),
       subtitles: subtitlesSupported
         ? subtitleUrl(curMentor.answer_media || [])
         : "",
@@ -133,10 +132,9 @@ function Video(args: {
       return videoWebLinks?.webLinks || [];
     }
 
-    const chatData = chatMessages;
-    const lastQuestionId = chatData[chatData.length - 1].questionId;
+    const lastQuestionId = chatMessages[chatMessages.length - 1].questionId;
 
-    const lastWebLink = chatData.filter((m) => {
+    const lastWebLink = chatMessages.filter((m) => {
       if (m.mentorId === curMentorId && m.questionId === lastQuestionId) {
         return m.webLinks || [];
       }
@@ -175,7 +173,7 @@ function Video(args: {
       }
     }
 
-    if (!curMentor?.mentor) {
+    if (!(curMentor && curMentor.mentor)) {
       return defaultHeaderMentorData;
     }
     return {
@@ -188,24 +186,44 @@ function Video(args: {
   };
 
   useEffect(() => {
-    setVideo(getVideoData());
-    setIdleVideo(getIdleVideoData());
+    const _videoData = getVideoData();
+    if (
+      _videoData.src !== video.src ||
+      _videoData.subtitles !== video.subtitles
+    )
+      setVideo({
+        src: _videoData.src ? `${_videoData.src}?v=${Math.random()}` : "",
+        subtitles: _videoData.subtitles
+          ? `${_videoData.subtitles}?v=${Math.random()}`
+          : "",
+      });
+    const _idleVideoData = getIdleVideoData();
+    if (_idleVideoData.src !== idleVideo.src)
+      setIdleVideo({
+        src: _idleVideoData.src
+          ? `${_idleVideoData.src}?v=${Math.random()}`
+          : "",
+        subtitles: "",
+      });
   }, [curMentorId, chatReplay, curMentor.answer_media]);
 
   useEffect(() => {
+    console.log("here2");
     setWebLinks(getWebLinkData());
   }, [chatReplay, chatMessages]);
 
   useEffect(() => {
+    console.log("here3");
     setMentorData(getMentorData());
   }, [curMentorId, chatReplay, chatMessages]);
 
   const [hideLinkLabel, setHideLinkLabel] = useState<boolean>(false);
-  const isIdle = chatReplay
-    ? false
-    : useSelector<State, boolean>((state) => {
-        return state.isIdle;
-      });
+  const isIdle = useSelector<State, boolean>((state) => {
+    if (state.chat.replay) {
+      return false;
+    }
+    return state.isIdle;
+  });
 
   function onEnded() {
     setVideoFinishedBuffering(false);

@@ -598,15 +598,16 @@ export function onPlayIdleAfterReplay(
   state: State,
   action: PlayIdleAfterReplayVideoAction
 ): State {
-  state.chat.messages.find((m) => {
-    if (m.replay) {
-      m.replay = false;
-    }
-  });
   return {
     ...state,
     chat: {
       ...state.chat,
+      messages: state.chat.messages.map((m) => {
+        if (m.replay) {
+          return { ...m, replay: false };
+        }
+        return m;
+      }),
       replay: action.payload.replay,
     },
   };

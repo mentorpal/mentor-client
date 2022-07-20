@@ -78,7 +78,7 @@ export function videoUrl(media: Media[], tag?: string): string {
   const url = media.find(
     (m) => m.type === "video" && m.tag === (tag || "web")
   )?.url;
-  return url ? `${url}?v=${Math.random()}` : "";
+  return url || "";
 }
 
 export function idleUrl(mentor: MentorClientData, tag?: string): string {
