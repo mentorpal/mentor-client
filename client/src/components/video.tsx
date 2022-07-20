@@ -208,12 +208,10 @@ function Video(args: {
   }, [curMentorId, chatReplay, curMentor.answer_media]);
 
   useEffect(() => {
-    console.log("here2");
     setWebLinks(getWebLinkData());
   }, [chatReplay, chatMessages]);
 
   useEffect(() => {
-    console.log("here3");
     setMentorData(getMentorData());
   }, [curMentorId, chatReplay, chatMessages]);
 
