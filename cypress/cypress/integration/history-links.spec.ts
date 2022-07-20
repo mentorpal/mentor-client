@@ -110,14 +110,18 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
-    // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 })
+    cy.get("[data-cy=video-container]")
       .should("have.attr", "data-test-replay")
       .and("match", /.*answer_id.mp4*/);
 
+    cy.get("[data-cy=mentor-name]").should("contain", "Carlos");
+    cy.wait(6000); //wait for Carlos to finish answering
+    cy.get("[data-cy=mentor-name]").should("contain", "Clint");
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=chat-msg-3]").contains("Click here");
+        cy.get("[data-cy=chat-msg-4]")
+          .should("be.visible")
+          .contains("Click here"); //wait for carlos to finish their answer
       });
     });
     // Compare last answer link with video label

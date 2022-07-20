@@ -200,9 +200,7 @@ function Video(args: {
     const _idleVideoData = getIdleVideoData();
     if (_idleVideoData.src !== idleVideo.src)
       setIdleVideo({
-        src: _idleVideoData.src
-          ? `${_idleVideoData.src}?v=${Math.random()}`
-          : "",
+        src: _idleVideoData.src,
         subtitles: "",
       });
   }, [curMentorId, chatReplay, curMentor.answer_media]);
