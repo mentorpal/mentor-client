@@ -372,7 +372,7 @@ export const loadMentors: ActionCreator<
       try {
         const mentor: MentorClientData = await fetchMentor(mentorId, subjectId);
         const topicQuestions: TopicQuestions[] = [];
-        const recommendedQuestions = getState().recommendedQuestions;
+        const recommendedQuestions = [...getState().recommendedQuestions];
         if (recommendedQuestions.length > 0) {
           topicQuestions.push({
             topic: "Recommended",
@@ -696,6 +696,7 @@ export const sendQuestion =
             resolve(response);
           })
           .catch((err: any) => {
+            console.error(err);
             const mentorState = state.mentorsById[mentor];
             const offTopicUtterance = mentorState.utterances.find(
               (u) => u.name === UtteranceName.OFF_TOPIC
