@@ -78,11 +78,9 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=history-chat]").should("exist");
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
   });
 
   it("Opens up recommended questions by default it they exists", () => {
@@ -155,11 +153,9 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         cy.get("[data-cy=chat-msg-3]").contains("user msg 1");
@@ -196,11 +192,9 @@ describe("Chat History (Video Mentors)", () => {
     // cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
     // cy.get("[data-cy=history-chat").within(($hc) => {
     //   cy.get("[data-cy=chat-thread]").within(($hc) => {
     //     cy.get("[data-cy=chat-msg-3]").contains("user msg 1");
@@ -236,11 +230,9 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
   });
 
   it("Handle multiple linsk and ENTER clicks", () => {
@@ -265,11 +257,9 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
   });
 
   it("can give feedback on mentor answer", () => {
@@ -303,11 +293,9 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=visibility-switch]").find("input").check();
 
@@ -360,21 +348,17 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=input-field]").type("Bad feedback test");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=visibility-switch]").find("input").check();
 
@@ -413,7 +397,9 @@ describe("Chat History (Video Mentors)", () => {
 
           .within(($cm) => {
             cy.get("[data-cy=feedback-btn]").should("exist").should("exist");
-            cy.get("[data-cy=feedback-btn]").trigger("mouseover").click();
+            cy.get("[data-cy=feedback-btn]")
+              .trigger("mouseover", { timeout: 9000 })
+              .click();
           });
       });
     });
@@ -460,11 +446,9 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=visibility-switch]").invoke("mouseover").click();
     cy.get("[data-cy=visibility-switch]").should("have.class", "Mui-checked");
@@ -505,7 +489,7 @@ describe("Chat History (Video Mentors)", () => {
 
     // cancel feedback
     cy.get("[data-cy=chat-msg-4] [data-cy=feedback-btn]")
-      .trigger("mouseover")
+      .trigger("mouseover", { timeout: 9000 })
       .click();
     cy.get("[data-cy=click-good]");
     cy.get("[data-cy=click-bad]");
@@ -582,21 +566,17 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=vsbyIcon-2]").trigger("mouseover").click();
@@ -661,11 +641,9 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=visibility-switch]").find("input").check();
 
@@ -713,21 +691,17 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=vsbyIcon-2]").trigger("mouseover").click();
@@ -769,41 +743,33 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=input-field]").type("Question 3");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=input-field]").type("Question 4");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
@@ -843,40 +809,32 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=input-field]").type("Question 2");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
     cy.get("[data-cy=input-field]").type("Question 3");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=input-field]").type("Question 4");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=vsbyIcon-2]").trigger("mouseover").click();
@@ -961,17 +919,13 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=visibility-switch]").find("input").check();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
-    cy.get("[data-cy=video-container]").should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]")
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
         cy.get("[data-cy=chat-msg-7]").within(() => {
@@ -984,11 +938,9 @@ describe("Chat History (Video Mentors)", () => {
     });
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 }).should(
-      "have.attr",
-      "data-test-replay",
-      "http://videos.org/answer_id.mp4"
-    );
+    cy.get("[data-cy=video-container]", { timeout: 30000 })
+      .should("have.attr", "data-test-replay")
+      .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=history-chat]").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {

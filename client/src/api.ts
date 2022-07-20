@@ -75,9 +75,10 @@ export function videoUrl(media: Media[], tag?: string): string {
   if (!media) {
     return "";
   }
-  return (
-    media.find((m) => m.type === "video" && m.tag === (tag || "web"))?.url || ""
-  );
+  const url = media.find(
+    (m) => m.type === "video" && m.tag === (tag || "web")
+  )?.url;
+  return url || "";
 }
 
 export function idleUrl(mentor: MentorClientData, tag?: string): string {

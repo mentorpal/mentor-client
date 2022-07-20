@@ -41,15 +41,10 @@ function Topics(args: {
     );
   });
 
-  const existRecommendedQuestions = useSelector<State, boolean>((state) => {
-    const curMentor = state.curMentor;
-    const topicQuestions = state.mentorsById[curMentor].topic_questions;
-
-    const recommendedQuestions = topicQuestions.filter((q) => {
+  const existRecommendedQuestions =
+    topicQuestions.filter((q) => {
       return q.topic === "Recommended";
-    });
-    return recommendedQuestions.length > 0;
-  });
+    }).length > 0;
 
   const curTopic = useSelector<State, string>((state) => state.curTopic);
   const questionsAsked = useSelector<State, string[]>(
