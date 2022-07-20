@@ -188,8 +188,6 @@ function Video(args: {
   };
 
   useEffect(() => {
-    console.log("setting video data to");
-    console.log(getVideoData());
     setVideo(getVideoData());
     setIdleVideo(getIdleVideoData());
   }, [curMentorId, chatReplay, curMentor.answer_media]);
@@ -473,12 +471,7 @@ function VideoPlayer(args: VideoPlayerParams) {
     </div>
   );
 
-  const shouldDiplayWebLinks = webLinks
-    ? webLinks.length > 0
-      ? true
-      : false
-    : false;
-  console.log("RERENDERED");
+  const shouldDiplayWebLinks = webLinks.length > 0 ? true : false;
   return (
     <div
       className="video-player-wrapper"
