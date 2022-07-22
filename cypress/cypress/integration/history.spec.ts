@@ -974,4 +974,31 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-field]").type("question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
   });
+
+  it("downloads chat history", () => {
+    visitAsGuestWithDefaultSetup(cy, "/");
+    // send message from input
+    cy.get("[data-cy=input-field]").type("Hello");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    // send message from topic button
+    cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    cy.get("[data-cy=topics-questions-list]").within(() => {
+      cy.get("[data-cy=topic-opt-item-0]").trigger("mouseover").click();
+    });
+    cy.get("[data-cy=scrolling-questions-list]").should(
+      "have.attr",
+      "data-topic",
+      "About Me"
+    );
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=history-tab]").trigger("mouseover").click();
+    // select mentor
+    cy.get("[data-cy=video-panel]")
+      .get("[data-cy=video-thumbnail-carlos]")
+      .trigger("mouseover")
+      .click();
+    // download history
+    cy.get("[data-cy=download-history-btn]").trigger("mouseover").click();
+    cy.verifyDownload("mentorpal_chat_history.txt");
+  });
 });
