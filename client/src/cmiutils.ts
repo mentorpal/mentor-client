@@ -7,6 +7,7 @@ The full terms of this copyright and license should always be found in the root 
 import { LaunchParameters } from "@xapi/cmi5";
 import queryString from "query-string";
 import { Agent } from "@gradiant/xapi-dsl";
+import { XapiResultCustom } from "types";
 
 export interface CmiParams {
   activityId: string;
@@ -61,3 +62,23 @@ export function getParams(urlOrQueryString: string): string | string[] {
 }
 
 export default addCmi;
+
+export function toXapiResultExtCustom(
+  verb: string,
+  userid: string,
+  userEmail: string,
+  referrer: string,
+  postSurveyTime: string,
+  timeSpentOnPage: string,
+  qualtricsUserId: string
+): XapiResultCustom {
+  return {
+    verb,
+    userid,
+    userEmail,
+    referrer,
+    postSurveyTime,
+    timeSpentOnPage,
+    qualtricsUserId,
+  };
+}

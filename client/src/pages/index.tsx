@@ -25,7 +25,7 @@ import "styles/history-chat-responsive.css";
 import Desktop from "components/layout/desktop";
 import { isMobile } from "react-device-detect";
 import Mobile from "components/layout/mobile";
-import { getRegistrationId, setLocalStorage } from "utils";
+import { getRegistrationId, onVisibilityChange, setLocalStorage } from "utils";
 
 const useStyles = makeStyles((theme) => ({
   flexRoot: {
@@ -295,6 +295,10 @@ function IndexPage(props: {
       }
     }
   }, [configLoadStatus]);
+
+  useEffect(() => {
+    document.addEventListener("visibilitychange", onVisibilityChange);
+  }, []);
 
   useEffect(() => {
     if (!isConfigLoadComplete(configLoadStatus)) {
