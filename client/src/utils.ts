@@ -8,6 +8,8 @@ import { MentorState, MentorQuestionStatus } from "types";
 import { v4 as uuid } from "uuid";
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
+import { sendCmi5Statement } from "store/actions";
+import { toXapiResultExtCustom } from "cmiutils";
 
 export function normalizeString(s: string): string {
   return s.replace(/\W+/g, "").normalize().toLowerCase();
@@ -89,4 +91,51 @@ export function loadSentry(): void {
     tracesSampleRate: process.env.GATSBY_STAGE == "cf" ? 0.2 : 0.0,
     environment: process.env.GATSBY_STAGE,
   });
+}
+
+export function onVisibilityChange(): void {
+  if (document.visibilityState !== "visible") {
+    const localData = localStorage.getItem("userData");
+    if (!localData) {
+      return;
+    }
+    const data = JSON.parse(localData);
+    if (!data.userID) {
+      return;
+    }
+    const userData = {
+      verb: "suspended",
+      userid: data.userID,
+      userEmail: data.userEmail,
+      referrer: data.referrer,
+      postSurveyTime: getLocalStorage("postsurveytime"),
+      timeSpentOnPage: getLocalStorage("postsurveytime"),
+      qualtricsUserId: getLocalStorage("qualtricsuserid"),
+    };
+    sendCmi5Statement({
+      verb: {
+        id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
+        display: {
+          "en-US": `${userData.verb}`,
+        },
+      },
+      result: {
+        extensions: {
+          "https://mentorpal.org/xapi/verb/suspended": toXapiResultExtCustom(
+            userData.verb,
+            userData.userid,
+            userData.userEmail,
+            userData.referrer,
+            userData.postSurveyTime,
+            userData.timeSpentOnPage,
+            userData.qualtricsUserId
+          ),
+        },
+      },
+      object: {
+        id: `${window.location.protocol}//${window.location.host}`,
+        objectType: "Activity",
+      },
+    });
+  }
 }

@@ -12,6 +12,8 @@ import {
   removeLocalStorageItem,
   setLocalStorage,
 } from "utils";
+import { sendCmi5Statement } from "store/actions";
+import { toXapiResultExtCustom } from "cmiutils";
 
 export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
   const [title, setTitle] = useState<string>("");
@@ -163,6 +165,52 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
     setShowSurveyPopup(false);
   }
 
+  const sendUserData = () => {
+    const localData = localStorage.getItem("userData");
+    if (!localData) {
+      return;
+    }
+
+    const data = JSON.parse(localData);
+    if (!data.userID) {
+      return;
+    }
+    const userData = {
+      verb: "terminated",
+      userid: data.userID,
+      userEmail: data.userEmail,
+      referrer: data.referrer,
+      postSurveyTime: getLocalStorage("postsurveytime"),
+      timeSpentOnPage: getLocalStorage("postsurveytime"),
+      qualtricsUserId: getLocalStorage("qualtricsuserid"),
+    };
+    sendCmi5Statement({
+      verb: {
+        id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
+        display: {
+          "en-US": `${userData.verb}`,
+        },
+      },
+      result: {
+        extensions: {
+          "https://mentorpal.org/xapi/verb/terminated": toXapiResultExtCustom(
+            userData.verb,
+            userData.userid,
+            userData.userEmail,
+            userData.referrer,
+            userData.postSurveyTime,
+            userData.timeSpentOnPage,
+            userData.qualtricsUserId
+          ),
+        },
+      },
+      object: {
+        id: `${window.location.protocol}//${window.location.host}`,
+        objectType: "Activity",
+      },
+    });
+  };
+
   return (
     <div>
       {noLabel ? undefined : (
@@ -191,6 +239,7 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
           rel="noopener noreferrer"
           style={{ fontSize: "24px", paddingBottom: "16px" }}
           data-cy="survey-link"
+          onClick={sendUserData}
         >
           Careerfair Survey
         </a>

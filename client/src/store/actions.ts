@@ -334,7 +334,7 @@ export const loadMentors: ActionCreator<
   ThunkAction<
     Promise<void>, // The type of the last action to be dispatched - will always be promise<T> for async actions
     State, // The type for the data within the last action
-    string, // The type of the parameter for the nested function
+    void, // The type of the parameter for the nested function
     MentorsLoadResultAction // The type of the last action to be dispatched
   >
 > =
@@ -439,7 +439,7 @@ export const loadMentors: ActionCreator<
     return;
   };
 
-function sendCmi5Statement(statement: any) {
+export function sendCmi5Statement(statement: any) {
   if (!Cmi5.isCmiAvailable) {
     return;
   }
