@@ -54,6 +54,16 @@ export interface ChatMsg {
   questionCounter?: number;
 }
 
+export interface XapiResultCustom {
+  verb: string;
+  userid: string;
+  userEmail: string;
+  referrer: string;
+  postSurveyTime: string;
+  timeSpentOnPage: string;
+  qualtricsUserId: string;
+}
+
 export interface MentorClientData {
   _id: string;
   name: string;
