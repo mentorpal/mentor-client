@@ -36,5 +36,11 @@ module.exports = {
         },
       },
     },
+    {
+      resolve: "gatsby-plugin-manifest",
+      options: {
+        icon: "src/static/favicon-cf.png",
+      },
+    },
   ],
 };
