@@ -50,6 +50,7 @@
     "eslint-plugin-react": "^7.24.0",
     "gatsby-plugin-env-variables": "^2.1.0",
     "gatsby-plugin-eslint": "^3.0.0",
+    "gatsby-plugin-manifest": "^4.19.0",
     "gatsby-plugin-material-ui": "^3.0.1",
     "gatsby-plugin-sitemap": "^4.7.0",
     "gatsby-plugin-typescript": "^3.11.0",
