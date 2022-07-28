@@ -6,10 +6,15 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { List } from "@material-ui/core";
+import {
+  FormGroup,
+  FormControlLabel,
+  List,
+  Switch,
+  Button,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-
-import { FormGroup, FormControlLabel, Switch } from "@material-ui/core";
+import DownloadIcon from "@material-ui/icons/GetApp";
 
 import { ChatData, ChatMsg, State } from "types";
 import "styles/history-chat.css";
@@ -92,6 +97,7 @@ export function Chat(args: {
     setVisibilityShowAllPref,
     mentorNameForChatMsg,
     rePlayQuestionVideo,
+    downloadChatHistory,
     mentorNameById,
   } = useWithChatData();
 
@@ -209,7 +215,22 @@ export function Chat(args: {
         disablePadding={true}
         id="chat-thread"
       >
-        {toggleAnswers}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "right",
+          }}
+        >
+          {toggleAnswers}
+          <Button
+            data-cy="download-history-btn"
+            onClick={downloadChatHistory}
+            startIcon={<DownloadIcon />}
+          >
+            Download History
+          </Button>
+        </div>
         {chatData.messages.map((m: ChatMsg, i: number) => {
           const itemData: ChatItemData = {
             ...m,

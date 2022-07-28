@@ -19,6 +19,8 @@ The full terms of this copyright and license should always be found in the root 
 
 /// <reference types="cypress" />
 
+const { isFileExist, findFiles } = require("cy-verify-downloads");
+
 /**
  * @type {Cypress.PluginConfig}
  */
@@ -27,5 +29,6 @@ const {
 } = require("cypress-image-snapshot/plugin");
 
 module.exports = (on, config) => {
+  on("task", { isFileExist, findFiles });
   addMatchImageSnapshotPlugin(on, config);
 };

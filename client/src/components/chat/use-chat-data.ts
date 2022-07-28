@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { rePlayAnswer } from "store/actions";
 
 import {
+  ChatData,
   ChatLink,
   ChatMsg,
   LINK_TYPE_WEB,
@@ -25,6 +26,7 @@ export interface UseWithChatData {
     answerId: string,
     answerText: string
   ) => void;
+  downloadChatHistory: () => void;
 }
 
 export enum ItemVisibilityPrefs {
@@ -48,6 +50,7 @@ export function hrefToChatLink(href: string, chatMsg: ChatMsg): ChatLink {
 }
 
 export function useWithChatData(): UseWithChatData {
+  const chatData = useSelector<State, ChatData>((s) => s.chat);
   const mentorType = useSelector<State, MentorType>((state) => {
     if (!state.curMentor) {
       return MentorType.VIDEO;
@@ -122,6 +125,32 @@ export function useWithChatData(): UseWithChatData {
     );
   }
 
+  function downloadChatHistory(): void {
+    let chatHistory = "";
+    chatData.messages.forEach((c) => {
+      chatHistory += `${c.isUser ? "((user))" : mentorNameForChatMsg(c)}: ${
+        c.text
+      }\n\n`;
+      if (c.timestampAnswered !== undefined) {
+        chatHistory += `   timestampAnswered: ${new Date(
+          c.timestampAnswered
+        ).toString()}\n`;
+      }
+      if (c.confidence !== undefined) {
+        chatHistory += `   confidence: ${c.confidence}\n`;
+      }
+      if (!c.isUser) {
+        chatHistory += `   feedback: ${c.feedback}\n\n`;
+      }
+    });
+    const element = document.createElement("a");
+    const file = new Blob([chatHistory], { type: "text/plain" });
+    element.href = URL.createObjectURL(file);
+    element.download = "mentorpal_chat_history.txt";
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+  }
+
   return {
     mentorType,
     lastQuestionId,
@@ -131,6 +160,7 @@ export function useWithChatData(): UseWithChatData {
     setVisibilityShowAllPref,
     mentorNameForChatMsg,
     rePlayQuestionVideo,
+    downloadChatHistory,
     mentorNameById,
   };
 }
