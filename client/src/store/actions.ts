@@ -39,7 +39,7 @@ import {
   Media,
 } from "../types";
 import * as uuid from "uuid";
-import { getRegistrationId } from "utils";
+import { getRecommendedTopics, getRegistrationId } from "utils";
 
 const RESPONSE_CUTOFF = -100;
 export const REPLAY_VIDEO = "REPLAY_VIDEO";
@@ -380,7 +380,17 @@ export const loadMentors: ActionCreator<
           });
         }
         topicQuestions.push(...mentor.topicQuestions);
+
+        // get recommended topics from params
+        const recommendedTopics = getRecommendedTopics(topicQuestions);
+        if (recommendedTopics.topic !== "empty") {
+          // add recommended topics with questions to mentor topics
+          topicQuestions.unshift(recommendedTopics);
+        }
+
         topicQuestions.push({ topic: "History", questions: [] });
+        console.log("topicQuestions:", topicQuestions);
+
         const introUtterance = getUtterance(mentor, UtteranceName.INTRO);
         if (intro && introUtterance) {
           introUtterance.transcript = intro;

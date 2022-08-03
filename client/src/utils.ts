@@ -4,12 +4,14 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { MentorState, MentorQuestionStatus } from "types";
+import { MentorState, MentorQuestionStatus, TopicQuestions } from "types";
 import { v4 as uuid } from "uuid";
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 import { sendCmi5Statement } from "store/actions";
 import { toXapiResultExtCustom } from "cmiutils";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const _ = require("lodash");
 
 export function normalizeString(s: string): string {
   return s.replace(/\W+/g, "").normalize().toLowerCase();
@@ -139,3 +141,36 @@ export function onVisibilityChange(): void {
     });
   }
 }
+
+export const getRecommendedTopics = (
+  mentorTopics: TopicQuestions[]
+): TopicQuestions => {
+  // 1. get topics from URL
+  const recommendedTopicsURL = new URL(location.href).searchParams.get(
+    "topicrec"
+  );
+  if (recommendedTopicsURL) {
+    // 2. create array from the topics
+    const recommendedTopicsArray = recommendedTopicsURL?.split("-");
+    //  3. find the topics that match with the mentor's topics
+    const matchedTopics = mentorTopics.filter((topic) => {
+      return recommendedTopicsArray.some((recommendedTopics) => {
+        return recommendedTopics === topic.topic;
+      });
+    });
+
+    // 4. get the questions from the matched mentor's topics
+    const recommendedQuestions = matchedTopics.map((topic) => {
+      return topic.questions;
+    });
+
+    // remove the duplicated questions
+    const uniqueQuestions = _.union(
+      recommendedQuestions.reduce((acc, val) => acc.concat(val), [])
+    );
+    console.log({ topic: "Recommended", questions: uniqueQuestions || [] });
+
+    return { topic: "Recommended Topic", questions: uniqueQuestions };
+  }
+  return { topic: "empty", questions: [] };
+};
