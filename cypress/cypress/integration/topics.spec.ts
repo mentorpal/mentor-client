@@ -104,7 +104,7 @@ describe("Topics list", () => {
       .should("have.length", 4);
   });
 
-  it.only("has default 'recommended' topic selected if URL params is avaliable(web - mentor panel) ", () => {
+  it("has default 'recommended' topic selected if URL params is avaliable(web - mentor panel) ", () => {
     visitAsGuestWithDefaultSetup(cy, "/?topicrec=About%20the%20Job-Education");
     cy.visit("/?topicrec=About%20the%20Job-Education");
 
