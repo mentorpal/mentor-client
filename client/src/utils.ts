@@ -168,7 +168,6 @@ export const getRecommendedTopics = (
     const uniqueQuestions = _.union(
       recommendedQuestions.reduce((acc, val) => acc.concat(val), [])
     );
-    console.log({ topic: "Recommended", questions: uniqueQuestions || [] });
 
     return { topic: "Recommended Topic", questions: uniqueQuestions };
   }

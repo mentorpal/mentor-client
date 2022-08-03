@@ -50,7 +50,6 @@ function TopicTabs(props: {
     existRecommendedQuestions ? 1 : 0
   );
 
-  console.log("existRecommendedQuestions:", existRecommendedQuestions);
   const curTopic = useSelector<State, string>((s) => s.curTopic);
   const curMentor = useSelector<State, string>((state) => state.curMentor);
   const firstTopic = useSelector<State, string>((state) => {

@@ -76,7 +76,7 @@ describe("Topics list", () => {
     });
   });
 
-  it("has default 'recommended' topic selected if URL params is avaliable(web)", () => {
+  it("has default 'recommended' topic selected if URL params is avaliable(web - sinlge mentor) ", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
       mentorData: [clint],
@@ -102,6 +102,31 @@ describe("Topics list", () => {
     cy.get("[data-cy=scrolling-questions-list]")
       .find("li")
       .should("have.length", 4);
+  });
+
+  it.only("has default 'recommended' topic selected if URL params is avaliable(web - mentor panel) ", () => {
+    visitAsGuestWithDefaultSetup(cy, "/?topicrec=About%20the%20Job-Education");
+    cy.visit("/?topicrec=About%20the%20Job-Education");
+
+    cy.viewport(1300, 800);
+
+    cy.get("[data-cy=history-tab]").within(() => {
+      cy.get("[data-cy=history-tab-inner]").should(
+        "have.attr",
+        "data-test",
+        "History"
+      );
+    });
+    cy.get("[data-cy=desktop-tab-0]").trigger("mouseover").click();
+    cy.get("[data-cy=desktop-tab-0]").should(
+      "have.attr",
+      "data-topic-name",
+      "topic-Recommended-Topic"
+    );
+
+    // cy.get("[data-cy=scrolling-questions-list]")
+    //   .find("li")
+    //   .should("have.length", 4);
   });
 
   it("can select a topic", () => {
