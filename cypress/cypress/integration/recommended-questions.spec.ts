@@ -13,7 +13,7 @@ describe("Recommended questions", () => {
     cy.get("[data-cy=topics]").should("not.have.value", "Recommended");
   });
 
-  it("appear in topic list if questions are recommended", () => {
+  it.only("appear in topic list if questions are recommended", () => {
     mockDefaultSetup(cy);
     cy.visit("/", {
       qs: addGuestParams({

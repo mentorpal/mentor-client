@@ -76,12 +76,12 @@ describe("Topics list", () => {
     });
   });
 
-  it("has default 'recommended' topic selected if URL params is avaliable(web - sinlge mentor) ", () => {
+  it.only("has default 'recommended' topic selected if URL params is avaliable(web - sinlge mentor) ", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
       mentorData: [clint],
     });
-    cy.visit("/?topicrec=About%20the%20Job-Education");
+    cy.visit("/?topicrec=About%20the%20Job&topicrec=Education");
 
     cy.viewport(1300, 800);
 
@@ -123,6 +123,7 @@ describe("Topics list", () => {
       "data-topic-name",
       "topic-Recommended-Topic"
     );
+    // topicrec=Background-Development-For%20Fun
 
     // cy.get("[data-cy=scrolling-questions-list]")
     //   .find("li")

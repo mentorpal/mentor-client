@@ -142,20 +142,37 @@ export function onVisibilityChange(): void {
   }
 }
 
+function getTopicsParams(url = location.href) {
+  // Create a params object
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recommendedTopics: any = {};
+
+  new URL(url).searchParams.forEach((val, key) => {
+    if (recommendedTopics[key] !== undefined) {
+      if (!Array.isArray(recommendedTopics[key])) {
+        recommendedTopics[key] = [recommendedTopics[key]];
+      }
+      recommendedTopics[key].push(val);
+    } else {
+      recommendedTopics[key] = val;
+    }
+  });
+
+  return recommendedTopics;
+}
+
 export const getRecommendedTopics = (
   mentorTopics: TopicQuestions[]
 ): TopicQuestions => {
   // 1. get topics from URL
-  const recommendedTopicsURL = new URL(location.href).searchParams.get(
-    "topicrec"
-  );
-  if (recommendedTopicsURL) {
-    // 2. create array from the topics
-    const recommendedTopicsArray = recommendedTopicsURL?.split("-");
+  const recommendedTopicsURL = getTopicsParams();
+
+  if (recommendedTopicsURL["topicrec"] !== undefined) {
     //  3. find the topics that match with the mentor's topics
     const matchedTopics = mentorTopics.filter((topic) => {
-      return recommendedTopicsArray.some((recommendedTopics) => {
-        return recommendedTopics === topic.topic;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return recommendedTopicsURL["topicrec"].some((recommendedTopics: any) => {
+        return recommendedTopics.toUpperCase() === topic.topic.toUpperCase();
       });
     });
 

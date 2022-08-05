@@ -383,11 +383,11 @@ export const loadMentors: ActionCreator<
 
         // get recommended topics from params
         const recommendedTopics = getRecommendedTopics(topicQuestions);
+
         if (
           recommendedTopics.topic !== "empty" &&
           recommendedTopics.questions.length !== 0
         ) {
-          console.log(recommendedTopics);
           // add recommended topics with questions to mentor topics
           topicQuestions.unshift(recommendedTopics);
         }
