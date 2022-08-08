@@ -39,7 +39,11 @@ import {
   Media,
 } from "../types";
 import * as uuid from "uuid";
-import { getRecommendedTopics, getRegistrationId } from "utils";
+import {
+  getRecommendedTopics,
+  getRegistrationId,
+  mergeRecommendedTopicsQuestions,
+} from "utils";
 
 const RESPONSE_CUTOFF = -100;
 export const REPLAY_VIDEO = "REPLAY_VIDEO";
@@ -373,20 +377,40 @@ export const loadMentors: ActionCreator<
         const mentor: MentorClientData = await fetchMentor(mentorId, subjectId);
         const topicQuestions: TopicQuestions[] = [];
         const recommendedQuestions = [...getState().recommendedQuestions];
-        if (recommendedQuestions.length > 0) {
+
+        topicQuestions.push(...mentor.topicQuestions);
+        const recommendedTopics = getRecommendedTopics(topicQuestions);
+
+        // RECOMMENDED QUESTIONS AND TOPICS
+        if (
+          recommendedTopics.topic !== "empty" &&
+          recommendedTopics.questions.length !== 0 &&
+          recommendedQuestions.length > 0
+        ) {
+          const recommendedQuestionsTopics = mergeRecommendedTopicsQuestions(
+            recommendedTopics.questions,
+            recommendedQuestions
+          );
+          console.log(recommendedQuestionsTopics);
+          topicQuestions.unshift(recommendedQuestionsTopics);
+        }
+
+        // RECOMMENDED QUESTIONS ONLY
+        if (
+          recommendedQuestions.length > 0 &&
+          recommendedTopics.questions.length === 0
+        ) {
           topicQuestions.push({
             topic: "Recommended",
             questions: recommendedQuestions,
           });
         }
-        topicQuestions.push(...mentor.topicQuestions);
 
-        // get recommended topics from params
-        const recommendedTopics = getRecommendedTopics(topicQuestions);
-
+        // RECOMMENDED TOPICS ONLY
         if (
           recommendedTopics.topic !== "empty" &&
-          recommendedTopics.questions.length !== 0
+          recommendedTopics.questions.length !== 0 &&
+          recommendedQuestions.length === 0
         ) {
           // add recommended topics with questions to mentor topics
           topicQuestions.unshift(recommendedTopics);

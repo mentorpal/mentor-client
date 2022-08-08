@@ -197,7 +197,27 @@ export const getRecommendedTopics = (
       recommendedQuestions.reduce((acc, val) => acc.concat(val), [])
     );
 
-    return { topic: "Recommended Topic", questions: uniqueQuestions };
+    return { topic: "Recommended", questions: uniqueQuestions };
   }
   return { topic: "empty", questions: [] };
+};
+
+export const mergeRecommendedTopicsQuestions = (
+  recommendedTopics: string[],
+  recommendedQuestions: string[]
+): TopicQuestions => {
+  console.log(recommendedTopics, recommendedQuestions);
+
+  const uniqueQ = Array.from(
+    new Set(recommendedQuestions.map((q) => q.toLowerCase()))
+  );
+  const uniqueT = Array.from(
+    new Set(recommendedTopics.map((t) => t.toLowerCase()))
+  );
+  const uniqueQuestions = _.union(uniqueQ, uniqueT);
+
+  return {
+    topic: "Recommended",
+    questions: uniqueQuestions,
+  };
 };
