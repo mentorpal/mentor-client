@@ -170,10 +170,21 @@ export const getRecommendedTopics = (
   if (recommendedTopicsURL["topicrec"] !== undefined) {
     //  3. find the topics that match with the mentor's topics
     const matchedTopics = mentorTopics.filter((topic) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return recommendedTopicsURL["topicrec"].some((recommendedTopics: any) => {
-        return recommendedTopics.toUpperCase() === topic.topic.toUpperCase();
-      });
+      if (Array.isArray(recommendedTopicsURL["topicrec"])) {
+        return recommendedTopicsURL["topicrec"].some(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (recommendedTopics: any) => {
+            return (
+              recommendedTopics.toUpperCase() === topic.topic.toUpperCase()
+            );
+          }
+        );
+      } else {
+        return (
+          recommendedTopicsURL["topicrec"].toUpperCase() ===
+          topic.topic.toUpperCase()
+        );
+      }
     });
 
     // 4. get the questions from the matched mentor's topics

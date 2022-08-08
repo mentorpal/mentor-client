@@ -5,6 +5,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import {
+  addGuestParams,
   mockDefaultSetup,
   visitAsGuestWithDefaultSetup,
 } from "../support/helpers";
@@ -76,12 +77,12 @@ describe("Topics list", () => {
     });
   });
 
-  it.only("has default 'recommended' topic selected if URL params is avaliable(web - sinlge mentor) ", () => {
+  it("has default 'recommended' topic (web - sinlge mentor - one topic) ", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
       mentorData: [clint],
     });
-    cy.visit("/?topicrec=About%20the%20Job&topicrec=Education");
+    cy.visit("/?topicrec=About%20the%20Job");
 
     cy.viewport(1300, 800);
 
@@ -101,12 +102,15 @@ describe("Topics list", () => {
 
     cy.get("[data-cy=scrolling-questions-list]")
       .find("li")
-      .should("have.length", 4);
+      .should("have.length", 3);
   });
 
-  it("has default 'recommended' topic selected if URL params is avaliable(web - mentor panel) ", () => {
-    visitAsGuestWithDefaultSetup(cy, "/?topicrec=About%20the%20Job-Education");
-    cy.visit("/?topicrec=About%20the%20Job-Education");
+  it("has default 'recommended' topic (web - sinlge mentor - multiple topics) ", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint"] },
+      mentorData: [clint],
+    });
+    cy.visit("/?topicrec=About%20the%20Job&topicrec=About%20me");
 
     cy.viewport(1300, 800);
 
@@ -123,12 +127,74 @@ describe("Topics list", () => {
       "data-topic-name",
       "topic-Recommended-Topic"
     );
-    // topicrec=Background-Development-For%20Fun
 
-    // cy.get("[data-cy=scrolling-questions-list]")
-    //   .find("li")
-    //   .should("have.length", 4);
+    cy.get("[data-cy=scrolling-questions-list]")
+      .find("li")
+      .should("have.length", 7);
   });
+
+  // it("has default 'recommended' topic selected if URL params is avaliable(web - sinlge mentor) ", () => {
+  //   // mockDefaultSetup(cy, {
+  //   //   config: { mentorsDefault: ["clint"] },
+  //   //   mentorData: [clint],
+  //   // });
+  //   // cy.visit("/?topicrec=About%20the%20Job&topicrec=Education", {
+  //   //   qs: addGuestParams({
+  //   //     recommendedQuestions: ["Howdy", "Partner"],
+  //   //   }),
+  //   // });
+
+  //   mockDefaultSetup(cy);
+  //   cy.visit("/?topicrec=About%20the%20Job&topicrec=Education", {
+  //     qs: addGuestParams({
+  //       recommendedQuestions: ["Howdy", "Partner"],
+  //     }),
+  //   });
+  //   cy.viewport(1300, 800);
+
+  //   cy.get("[data-cy=history-tab]").within(() => {
+  //     cy.get("[data-cy=history-tab-inner]").should(
+  //       "have.attr",
+  //       "data-test",
+  //       "History"
+  //     );
+  //   });
+  //   cy.get("[data-cy=desktop-tab-0]").trigger("mouseover").click();
+  //   cy.get("[data-cy=desktop-tab-0]").should(
+  //     "have.attr",
+  //     "data-topic-name",
+  //     "topic-Recommended-Topic"
+  //   );
+
+  //   cy.get("[data-cy=scrolling-questions-list]")
+  //     .find("li")
+  //     .should("have.length", 4);
+  // });
+  // it("has default 'recommended' topic selected if URL params is avaliable(web - mentor panel) ", () => {
+  //   visitAsGuestWithDefaultSetup(cy, "/?topicrec=About%20the%20Job-Education");
+  //   cy.visit("/?topicrec=About%20the%20Job-Education");
+
+  //   cy.viewport(1300, 800);
+
+  //   cy.get("[data-cy=history-tab]").within(() => {
+  //     cy.get("[data-cy=history-tab-inner]").should(
+  //       "have.attr",
+  //       "data-test",
+  //       "History"
+  //     );
+  //   });
+  //   cy.get("[data-cy=desktop-tab-0]").trigger("mouseover").click();
+  //   cy.get("[data-cy=desktop-tab-0]").should(
+  //     "have.attr",
+  //     "data-topic-name",
+  //     "topic-Recommended-Topic"
+  //   );
+  //   // topicrec=Background-Development-For%20Fun
+
+  //   // cy.get("[data-cy=scrolling-questions-list]")
+  //   //   .find("li")
+  //   //   .should("have.length", 4);
+  // });
 
   it("can select a topic", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
