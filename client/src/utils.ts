@@ -143,18 +143,18 @@ export function onVisibilityChange(): void {
 }
 
 function getAllSearchParams(url = location.href) {
-  // Create a params object
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const recommendedTopics: any = {};
+  const recommendedTopics: Record<string, string | string[]> = {};
 
-  new URL(url).searchParams.forEach((val, key) => {
-    if (recommendedTopics[key] !== undefined) {
-      if (!Array.isArray(recommendedTopics[key])) {
-        recommendedTopics[key] = [recommendedTopics[key]];
+  new URL(url).searchParams.forEach((queryVal, queryKey) => {
+    const dictValue = recommendedTopics[queryKey];
+    if (dictValue !== undefined) {
+      if (!Array.isArray(dictValue)) {
+        recommendedTopics[queryKey] = [dictValue, queryVal];
+      } else {
+        recommendedTopics[queryKey] = dictValue.concat(queryVal);
       }
-      recommendedTopics[key].push(val);
     } else {
-      recommendedTopics[key] = val;
+      recommendedTopics[queryKey] = queryVal;
     }
   });
 
