@@ -240,7 +240,10 @@ function IndexPage(props: {
   function warmupMentors(mentors: string | string[]) {
     const mentorIds = Array.isArray(mentors) ? mentors : [mentors];
     mentorIds.forEach((mentorId) => {
-      queryMentor(mentorId, "What is your name?", config);
+      queryMentor(mentorId, "What is your name?", config).catch((err) => {
+        // We don't really care if this query fails, so just catch error
+        console.error(err);
+      });
     });
   }
 
