@@ -16,7 +16,7 @@ import { loadConfig, loadMentors, setGuestName } from "store/actions";
 import { Config, LoadStatus, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
-import { fetchMentorByAccessToken } from "api";
+import { fetchMentorByAccessToken, queryMentor } from "api";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import { Helmet } from "react-helmet";
 
@@ -237,12 +237,26 @@ function IndexPage(props: {
     return [userIdURL, referrerURL, userEmail];
   };
 
+  function warmupMentors(mentors: string | string[]) {
+    const mentorIds = Array.isArray(mentors) ? mentors : [mentors];
+    mentorIds.forEach((mentorId) => {
+      queryMentor(mentorId, "What is your name?", config).catch((err) => {
+        // We don't really care if this query fails, so just catch error
+        console.error(err);
+      });
+    });
+  }
+
   useEffect(() => {
     if (configLoadStatus === LoadStatus.NONE) {
       dispatch(loadConfig());
     }
     if (!isConfigLoadComplete(configLoadStatus)) {
       return;
+    }
+
+    if (mentor) {
+      warmupMentors(mentor);
     }
 
     if (
