@@ -142,7 +142,7 @@ export function onVisibilityChange(): void {
   }
 }
 
-function getTopicsParams(url = location.href) {
+function getAllSearchParams(url = location.href) {
   // Create a params object
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recommendedTopics: any = {};
@@ -163,9 +163,9 @@ function getTopicsParams(url = location.href) {
 
 export const getRecommendedTopics = (
   mentorTopics: TopicQuestions[]
-): TopicQuestions => {
+): TopicQuestions | undefined => {
   // 1. get topics from URL
-  const recommendedTopicsURL = getTopicsParams();
+  const recommendedTopicsURL = getAllSearchParams();
 
   if (recommendedTopicsURL["topicrec"] !== undefined) {
     //  3. find the topics that match with the mentor's topics
@@ -199,19 +199,24 @@ export const getRecommendedTopics = (
 
     return { topic: "Recommended", questions: uniqueQuestions };
   }
-  return { topic: "empty", questions: [] };
+  return undefined;
 };
 
+// MERGE RECOMMENDED TOPICS AND QUESTIONS AND REMOVE DUPLICATES
 export const mergeRecommendedTopicsQuestions = (
   recommendedTopics: string[],
   recommendedQuestions: string[]
 ): TopicQuestions => {
+  // convert questions to uppercase to compare them
   const uniqueQ = Array.from(
-    new Set(recommendedQuestions.map((q) => q.toLowerCase()))
+    new Set(recommendedQuestions.map((q) => q.toUpperCase()))
   );
+  // convert topics to uppercase to compare them
   const uniqueT = Array.from(
-    new Set(recommendedTopics.map((t) => t.toLowerCase()))
+    new Set(recommendedTopics.map((t) => t.toUpperCase()))
   );
+
+  // remove duplicates
   const uniqueQuestions = _.union(uniqueQ, uniqueT);
 
   return {

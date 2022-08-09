@@ -382,11 +382,7 @@ export const loadMentors: ActionCreator<
         const recommendedTopics = getRecommendedTopics(topicQuestions);
 
         // RECOMMENDED QUESTIONS AND TOPICS
-        if (
-          recommendedTopics.topic !== "empty" &&
-          recommendedTopics.questions.length !== 0 &&
-          recommendedQuestions.length > 0
-        ) {
+        if (recommendedTopics && recommendedQuestions.length > 0) {
           const recommendedQuestionsTopics = mergeRecommendedTopicsQuestions(
             recommendedTopics.questions,
             recommendedQuestions
@@ -395,10 +391,7 @@ export const loadMentors: ActionCreator<
         }
 
         // RECOMMENDED QUESTIONS ONLY
-        if (
-          recommendedQuestions.length > 0 &&
-          recommendedTopics.questions.length === 0
-        ) {
+        if (recommendedQuestions.length > 0 && !recommendedTopics) {
           topicQuestions.unshift({
             topic: "Recommended",
             questions: recommendedQuestions,
@@ -406,11 +399,7 @@ export const loadMentors: ActionCreator<
         }
 
         // RECOMMENDED TOPICS ONLY
-        if (
-          recommendedTopics.topic !== "empty" &&
-          recommendedTopics.questions.length !== 0 &&
-          recommendedQuestions.length === 0
-        ) {
+        if (recommendedTopics && recommendedQuestions.length === 0) {
           // add recommended topics with questions to mentor topics
           topicQuestions.unshift(recommendedTopics);
         }
