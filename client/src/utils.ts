@@ -206,8 +206,6 @@ export const mergeRecommendedTopicsQuestions = (
   recommendedTopics: string[],
   recommendedQuestions: string[]
 ): TopicQuestions => {
-  console.log(recommendedTopics, recommendedQuestions);
-
   const uniqueQ = Array.from(
     new Set(recommendedQuestions.map((q) => q.toLowerCase()))
   );

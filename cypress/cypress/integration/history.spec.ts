@@ -83,7 +83,7 @@ describe("Chat History (Video Mentors)", () => {
       .and("match", /.*answer_id.mp4*/);
   });
 
-  it("Opens up recommended questions by default it they exists", () => {
+  it("Opens up Recommended questions by default it they exists", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
       mentorData: [clint],

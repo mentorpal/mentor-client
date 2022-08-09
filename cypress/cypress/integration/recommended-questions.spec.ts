@@ -20,7 +20,10 @@ describe("Recommended questions", () => {
         recommendedQuestions: "Howdy",
       }),
     });
-    cy.get("[data-cy=topics]").contains("Recommended");
+    cy.get("[data-cy=topics]").within(() => {
+      cy.get("[data-cy=topic-tab]").trigger("mouseover").click();
+    });
+    cy.get("[data-cy=topics-questions-list]").contains("Recommended");
   });
 
   it("appear as default topic", () => {

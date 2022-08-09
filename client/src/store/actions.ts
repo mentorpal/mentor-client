@@ -391,7 +391,6 @@ export const loadMentors: ActionCreator<
             recommendedTopics.questions,
             recommendedQuestions
           );
-          console.log(recommendedQuestionsTopics);
           topicQuestions.unshift(recommendedQuestionsTopics);
         }
 
@@ -400,7 +399,7 @@ export const loadMentors: ActionCreator<
           recommendedQuestions.length > 0 &&
           recommendedTopics.questions.length === 0
         ) {
-          topicQuestions.push({
+          topicQuestions.unshift({
             topic: "Recommended",
             questions: recommendedQuestions,
           });
