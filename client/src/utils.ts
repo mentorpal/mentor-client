@@ -207,17 +207,19 @@ export const mergeRecommendedTopicsQuestions = (
   recommendedTopics: string[],
   recommendedQuestions: string[]
 ): TopicQuestions => {
-  // convert questions to uppercase to compare them
-  const uniqueQ = Array.from(
-    new Set(recommendedQuestions.map((q) => q.toUpperCase()))
-  );
-  // convert topics to uppercase to compare them
-  const uniqueT = Array.from(
-    new Set(recommendedTopics.map((t) => t.toUpperCase()))
-  );
-
   // remove duplicates
-  const uniqueQuestions = _.union(uniqueQ, uniqueT);
+  const uniqueQuestions: string[] = [];
+  const allQuestions = recommendedQuestions.concat(recommendedTopics);
+  allQuestions.forEach((question) => {
+    const notRepeated = !(
+      uniqueQuestions.includes(question) ||
+      uniqueQuestions.includes(question.toLowerCase())
+    );
+
+    if (notRepeated) {
+      uniqueQuestions.push(question);
+    }
+  });
 
   return {
     topic: "Recommended",
