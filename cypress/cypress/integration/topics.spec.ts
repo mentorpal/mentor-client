@@ -131,7 +131,7 @@ describe("Topics list", () => {
       .should("have.length", 7);
   });
 
-  it.only("has default 'recommended' topic selected if URL params is avaliable(web - sinlge mentor) ", () => {
+  it("has default 'recommended' topic selected if URL params is avaliable(web - sinlge mentor) ", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
       mentorData: [clint],
