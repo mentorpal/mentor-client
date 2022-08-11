@@ -4,7 +4,12 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { visitAsGuestWithDefaultSetup } from "../support/helpers";
+import {
+  addGuestParams,
+  mockDefaultSetup,
+  visitAsGuestWithDefaultSetup,
+} from "../support/helpers";
+const clint = require("../fixtures/clint_more_questions.json");
 
 describe("Topics list", () => {
   it("shows topics for current mentor", () => {
@@ -70,6 +75,94 @@ describe("Topics list", () => {
         "My name is EMC Clint Anderson. I was born in California and I have lived there most of my life. I graduated from Paramount and a couple of years after I finished high school, I joined the US Navy. I was an Electrician's Mate. I served on an aircraft carrier for eight years and then afterwards, I went to the United States Navy Reserve. During that time I started going to school with some of the abundant benefits that the military reserve has given me and I started working with various companies."
       );
     });
+  });
+
+  it("has default 'recommended' topic (web - sinlge mentor - one topic) ", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint"] },
+      mentorData: [clint],
+    });
+    cy.visit("/?topicrec=About%20the%20Job");
+
+    cy.viewport(1300, 800);
+
+    cy.get("[data-cy=history-tab]").within(() => {
+      cy.get("[data-cy=history-tab-inner]").should(
+        "have.attr",
+        "data-test",
+        "History"
+      );
+    });
+    cy.get("[data-cy=desktop-tab-0]").should(
+      "have.attr",
+      "data-topic-name",
+      "topic-Recommended"
+    );
+
+    cy.get("[data-cy=scrolling-questions-list]")
+      .find("li")
+      .should("have.length", 3);
+  });
+
+  it("has default 'recommended' topic (web - sinlge mentor - multiple topics) ", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint"] },
+      mentorData: [clint],
+    });
+    cy.visit("/?topicrec=About%20the%20Job&topicrec=About%20me");
+
+    cy.viewport(1300, 800);
+
+    cy.get("[data-cy=history-tab]").within(() => {
+      cy.get("[data-cy=history-tab-inner]").should(
+        "have.attr",
+        "data-test",
+        "History"
+      );
+    });
+    cy.get("[data-cy=desktop-tab-0]").should(
+      "have.attr",
+      "data-topic-name",
+      "topic-Recommended"
+    );
+
+    cy.get("[data-cy=scrolling-questions-list]")
+      .find("li")
+      .should("have.length", 7);
+  });
+
+  it("has default 'recommended' topic selected if URL params is avaliable(web - sinlge mentor) ", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["clint"] },
+      mentorData: [clint],
+    });
+    cy.visit("/?topicrec=About%20the%20Job&topicrec=Education", {
+      qs: addGuestParams({
+        recommendedQuestions: [
+          "Recommended question 1?",
+          "Recommended question 2",
+        ],
+      }),
+    });
+
+    cy.viewport(1300, 800);
+
+    cy.get("[data-cy=history-tab]").within(() => {
+      cy.get("[data-cy=history-tab-inner]").should(
+        "have.attr",
+        "data-test",
+        "History"
+      );
+    });
+    cy.get("[data-cy=desktop-tab-0]").should(
+      "have.attr",
+      "data-topic-name",
+      "topic-Recommended"
+    );
+
+    cy.get("[data-cy=scrolling-questions-list]")
+      .find("li")
+      .should("have.length", 4);
   });
 
   it("can select a topic", () => {

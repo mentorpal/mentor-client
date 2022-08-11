@@ -7,7 +7,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import { ArrowDropDown, History } from "@material-ui/icons";
 import { State, TopicQuestions } from "types";
-
 import "styles/layout.css";
 import { useSelector } from "react-redux";
 import { Button, DialogActions, Paper, Tab, Tabs } from "@material-ui/core";
@@ -50,6 +49,7 @@ function TopicTabs(props: {
   const [selectedTabIx, setSelectedTabIx] = React.useState<number>(
     existRecommendedQuestions ? 1 : 0
   );
+
   const curTopic = useSelector<State, string>((s) => s.curTopic);
   const curMentor = useSelector<State, string>((state) => state.curMentor);
   const firstTopic = useSelector<State, string>((state) => {
@@ -193,6 +193,7 @@ function TopicTabs(props: {
                 data-test={curTopic === topic ? topic : null}
                 data-cy={`desktop-tab-${i}`}
                 data-active-tab={selectedTabIx === i + 1 ? "active" : "disable"}
+                data-topic-name={`topic-${topic.replace(" ", "-")}`}
               />
             ) : null
           )}

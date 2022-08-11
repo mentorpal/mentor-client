@@ -4,12 +4,14 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { MentorState, MentorQuestionStatus } from "types";
+import { MentorState, MentorQuestionStatus, TopicQuestions } from "types";
 import { v4 as uuid } from "uuid";
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 import { sendCmi5Statement } from "store/actions";
 import { toXapiResultExtCustom } from "cmiutils";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const _ = require("lodash");
 
 export function normalizeString(s: string): string {
   return s.replace(/\W+/g, "").normalize().toLowerCase();
@@ -139,3 +141,88 @@ export function onVisibilityChange(): void {
     });
   }
 }
+
+function getAllSearchParams(url = location.href) {
+  const recommendedTopics: Record<string, string | string[]> = {};
+
+  new URL(url).searchParams.forEach((queryVal, queryKey) => {
+    const dictValue = recommendedTopics[queryKey];
+    if (dictValue !== undefined) {
+      if (!Array.isArray(dictValue)) {
+        recommendedTopics[queryKey] = [dictValue, queryVal];
+      } else {
+        recommendedTopics[queryKey] = dictValue.concat(queryVal);
+      }
+    } else {
+      recommendedTopics[queryKey] = queryVal;
+    }
+  });
+
+  return recommendedTopics;
+}
+
+export const getRecommendedTopics = (
+  mentorTopics: TopicQuestions[]
+): TopicQuestions | undefined => {
+  // 1. get topics from URL
+  const recommendedTopicsURL = getAllSearchParams();
+
+  if (recommendedTopicsURL["topicrec"] !== undefined) {
+    //  3. find the topics that match with the mentor's topics
+    const matchedTopics = mentorTopics.filter((topic) => {
+      if (Array.isArray(recommendedTopicsURL["topicrec"])) {
+        return recommendedTopicsURL["topicrec"].some(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (recommendedTopics: any) => {
+            return (
+              recommendedTopics.toUpperCase() === topic.topic.toUpperCase()
+            );
+          }
+        );
+      } else {
+        return (
+          recommendedTopicsURL["topicrec"].toUpperCase() ===
+          topic.topic.toUpperCase()
+        );
+      }
+    });
+
+    // 4. get the questions from the matched mentor's topics
+    const recommendedQuestions = matchedTopics.map((topic) => {
+      return topic.questions;
+    });
+
+    // remove the duplicated questions
+    const uniqueQuestions = _.union(
+      recommendedQuestions.reduce((acc, val) => acc.concat(val), [])
+    );
+
+    return { topic: "Recommended", questions: uniqueQuestions };
+  }
+  return undefined;
+};
+
+// MERGE RECOMMENDED TOPICS AND QUESTIONS AND REMOVE DUPLICATES
+export const mergeRecommendedTopicsQuestions = (
+  recommendedTopics: string[],
+  recommendedQuestions: string[]
+): TopicQuestions => {
+  // remove duplicates
+  const uniqueQuestions: string[] = [];
+  const allQuestions = recommendedQuestions.concat(recommendedTopics);
+  allQuestions.forEach((question) => {
+    const notRepeated = !(
+      uniqueQuestions.includes(question) ||
+      uniqueQuestions.includes(question.toLowerCase())
+    );
+
+    if (notRepeated) {
+      uniqueQuestions.push(question);
+    }
+  });
+
+  return {
+    topic: "Recommended",
+    questions: uniqueQuestions,
+  };
+};

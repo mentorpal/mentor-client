@@ -1,0 +1,88 @@
+{
+  "_id": "clint",
+  "name": "Clinton Anderson",
+  "title": "Nuclear Electrician's Mate",
+  "email": "clinton@anderson.com",
+  "mentorType": "VIDEO",
+  "topicQuestions": [
+    {
+      "topic": "About Me",
+      "questions": [
+        "Where were you born?",
+        "What's your favorite movie?",
+        "What's your favorite place?",
+        "Are you fun at parties?"
+      ]
+    },
+    {
+      "topic": "About the Job",
+      "questions": [
+        "What qualifications and experience do recruiters",
+        "What do you enjoy the most about your work?",
+        "Tell me about your journey to this position."
+      ]
+    },
+    {
+      "topic": "Biography",
+      "questions": ["Where were you born?"]
+    },
+    {
+      "topic": "For fun",
+      "questions": ["Where were you born?"]
+    },
+    {
+      "topic": "Education",
+      "questions": [
+        "What are your plans for the next step in your career?",
+        "What do you enjoy the most about your work?"
+      ]
+    }
+  ],
+  "utterances": [
+    {
+      "_id": "idle",
+      "transcript": "",
+      "name": "_IDLE_",
+      "webMedia": {
+        "type": "video",
+        "tag": "web",
+        "url": "http://videos.org/idle.mp4"
+      },
+      "mobileMedia": {
+        "type": "video",
+        "tag": "mobile",
+        "url": "http://videos.org/answer_id.mp4"
+      }
+    },
+    {
+      "_id": "intro_clint",
+      "transcript": "My name is EMC Clint Anderson. I was born in California and I have lived there most of my life. I graduated from Paramount and a couple of years after I finished high school, I joined the US Navy. I was an Electrician's Mate. I served on an aircraft carrier for eight years and then afterwards, I went to the United States Navy Reserve. During that time I started going to school with some of the abundant benefits that the military reserve has given me and I started working with various companies.",
+      "name": "_INTRO_",
+      "webMedia": {
+        "type": "video",
+        "tag": "web",
+        "url": "http://videos.org/answer_id.mp4"
+      },
+      "mobileMedia": {
+        "type": "video",
+        "tag": "mobile",
+        "url": "http://videos.org/answer_id.mp4"
+      }
+    },
+    {
+      "_id": "offtopic",
+      "transcript": "That is a great question, but unfortunately I never recorded an answer to that.",
+      "name": "_OFF_TOPIC_",
+      "webMedia": {
+        "type": "video",
+        "tag": "web",
+        "url": "http://videos.org/answer_id.mp4"
+      },
+      "mobileMedia": {
+        "type": "video",
+        "tag": "mobile",
+        "url": "http://videos.org/answer_id.mp4"
+      }
+    }
+  ]
+}

@@ -39,7 +39,11 @@ import {
   Media,
 } from "../types";
 import * as uuid from "uuid";
-import { getRegistrationId } from "utils";
+import {
+  getRecommendedTopics,
+  getRegistrationId,
+  mergeRecommendedTopicsQuestions,
+} from "utils";
 
 const RESPONSE_CUTOFF = -100;
 export const REPLAY_VIDEO = "REPLAY_VIDEO";
@@ -373,14 +377,35 @@ export const loadMentors: ActionCreator<
         const mentor: MentorClientData = await fetchMentor(mentorId, subjectId);
         const topicQuestions: TopicQuestions[] = [];
         const recommendedQuestions = [...getState().recommendedQuestions];
-        if (recommendedQuestions.length > 0) {
-          topicQuestions.push({
+
+        topicQuestions.push(...mentor.topicQuestions);
+        const recommendedTopics = getRecommendedTopics(topicQuestions);
+
+        // RECOMMENDED QUESTIONS AND TOPICS
+        if (recommendedTopics && recommendedQuestions.length > 0) {
+          const recommendedQuestionsTopics = mergeRecommendedTopicsQuestions(
+            recommendedTopics.questions,
+            recommendedQuestions
+          );
+          topicQuestions.unshift(recommendedQuestionsTopics);
+        }
+
+        // RECOMMENDED QUESTIONS ONLY
+        if (recommendedQuestions.length > 0 && !recommendedTopics) {
+          topicQuestions.unshift({
             topic: "Recommended",
             questions: recommendedQuestions,
           });
         }
-        topicQuestions.push(...mentor.topicQuestions);
+
+        // RECOMMENDED TOPICS ONLY
+        if (recommendedTopics && recommendedQuestions.length === 0) {
+          // add recommended topics with questions to mentor topics
+          topicQuestions.unshift(recommendedTopics);
+        }
+
         topicQuestions.push({ topic: "History", questions: [] });
+
         const introUtterance = getUtterance(mentor, UtteranceName.INTRO);
         if (intro && introUtterance) {
           introUtterance.transcript = intro;
