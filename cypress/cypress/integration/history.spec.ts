@@ -314,7 +314,7 @@ describe("Chat History (Video Mentors)", () => {
       "false"
     );
     cy.get("[data-cy=click-good]").trigger("mouseover").click();
-    cy.get("[data-cy=selected-good]").should("be.visible");
+    cy.get("[data-cy=selected-good]").should("exist");
   });
 
   it("Show different feedback answers and mentors", () => {

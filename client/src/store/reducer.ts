@@ -88,6 +88,7 @@ export const initialState: State = {
     disclaimerDisabled:
       process.env.DISCLAIMER_DISABLED?.toLowerCase() === "true" || true,
     displayGuestPrompt: false,
+    defaultVirtualBackground: "",
   },
   configLoadStatus: LoadStatus.NONE,
   guestName: "",
@@ -229,6 +230,8 @@ function onMentorsLoadRequested(
         topicQuestions: [],
         utterances: [],
         allowContact: false,
+        hasVirtualBackground: false,
+        virtualBackgroundUrl: "",
       },
       topic_questions: [],
       utterances: [],
