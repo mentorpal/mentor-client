@@ -40,6 +40,7 @@ export async function fetchConfig(): Promise<Config> {
           styleHeaderTextColor
           styleHeaderLogo
           displayGuestPrompt
+          defaultVirtualBackground
         }
       }
     `,
@@ -153,6 +154,8 @@ export async function fetchMentor(
           email
           mentorType
           allowContact
+          hasVirtualBackground
+          virtualBackgroundUrl
           topicQuestions {
             topic
             questions

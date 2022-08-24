@@ -73,6 +73,8 @@ export interface MentorClientData {
   topicQuestions: TopicQuestions[];
   utterances: Utterance[];
   allowContact: boolean;
+  hasVirtualBackground: boolean;
+  virtualBackgroundUrl: string;
 }
 
 export interface Utterance {
@@ -121,6 +123,7 @@ export interface Config {
   disclaimerText: string;
   disclaimerDisabled: boolean;
   displayGuestPrompt: boolean;
+  defaultVirtualBackground: string;
 }
 
 export enum QuestionType {

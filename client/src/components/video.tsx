@@ -24,6 +24,7 @@ import {
 import { ChatMsg, MentorState, State, WebLink } from "types";
 import "styles/video.css";
 import { Tooltip } from "@material-ui/core";
+import { useWithWindowSize } from "use-with-window-size";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
@@ -88,6 +89,22 @@ function Video(args: {
   const numberMentors = Object.keys(mentorsById).length;
   const curMentor: MentorState = { ...mentorsById[curMentorId] };
   const reactPlayerRef = useRef<ReactPlayer>(null);
+
+  const defaultVirtualBackground = useSelector<State, string>((s) => {
+    return s.config.defaultVirtualBackground;
+  });
+  const virtualBackgroundUrl: string =
+    curMentor.mentor.virtualBackgroundUrl || defaultVirtualBackground;
+
+  const { width: windowWidth, height: windowHeight } = useWithWindowSize();
+  const height =
+    windowHeight > windowWidth
+      ? windowWidth * (9 / 16)
+      : Math.max(windowHeight - 600, 300);
+  const width =
+    windowHeight > windowWidth
+      ? windowWidth
+      : Math.max(windowHeight - 600, 300) * (16 / 9);
 
   const getIdleVideoData = (): VideoData => {
     if (!curMentor) {
@@ -330,6 +347,10 @@ function Video(args: {
               hideLinkLabel={hideLinkLabel}
               mentorName={mentorData.name}
               numberMentors={numberMentors}
+              useVirtualBackground={curMentor.mentor.hasVirtualBackground}
+              virtualBackgroundUrl={virtualBackgroundUrl}
+              width={width}
+              height={height}
             />
           </span>
           {/* Idle video player, always activate, but sits behind answer video player */}
@@ -351,6 +372,10 @@ function Video(args: {
               hideLinkLabel={hideLinkLabel}
               mentorName={mentorData.name}
               numberMentors={numberMentors}
+              useVirtualBackground={curMentor.mentor.hasVirtualBackground}
+              virtualBackgroundUrl={virtualBackgroundUrl}
+              width={width}
+              height={height}
             />
           </span>
         </div>
@@ -431,6 +456,10 @@ interface VideoPlayerParams {
   mentorName: string;
   numberMentors: number;
   reactPlayerRef: React.RefObject<ReactPlayer>;
+  useVirtualBackground: boolean;
+  virtualBackgroundUrl: string;
+  width: number;
+  height: number;
 }
 
 function VideoPlayer(args: VideoPlayerParams) {
@@ -448,6 +477,10 @@ function VideoPlayer(args: VideoPlayerParams) {
     mentorName,
     numberMentors,
     reactPlayerRef,
+    useVirtualBackground,
+    virtualBackgroundUrl,
+    width,
+    height,
   } = args;
 
   const webLinkJSX = webLinks?.map((wl, i) => {
@@ -486,6 +519,24 @@ function VideoPlayer(args: VideoPlayerParams) {
   );
 
   const shouldDiplayWebLinks = webLinks.length > 0 ? true : false;
+
+  const reactPlayerStyling: React.CSSProperties = useVirtualBackground
+    ? {
+        backgroundImage: `url(${virtualBackgroundUrl})`,
+        backgroundSize: "100% auto",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundColor: "black",
+        position: "relative",
+        margin: "0 auto",
+        zIndex: 0,
+      }
+    : {
+        backgroundColor: "black",
+        position: "relative",
+        margin: "0 auto",
+        zIndex: 0,
+      };
   return (
     <div
       className="video-player-wrapper"
@@ -497,13 +548,7 @@ function VideoPlayer(args: VideoPlayerParams) {
       {!hideLinkLabel && shouldDiplayWebLinks ? answerLinkCard : null}
       {mentorName ? mentorNameCard : null}
       <ReactPlayer
-        style={{
-          backgroundColor: "black",
-          position: "relative",
-          margin: "0 auto",
-          zIndex: 0,
-        }}
-        width="90%"
+        style={reactPlayerStyling}
         className="player-wrapper react-player-wrapper"
         data-cy="playing-video-mentor"
         url={videoUrl}
@@ -514,6 +559,8 @@ function VideoPlayer(args: VideoPlayerParams) {
         onProgress={onProgress}
         loop={isIdle}
         controls={!isIdle}
+        width={width}
+        height={height}
         progressInterval={100}
         playing={Boolean(playing)}
         playsinline

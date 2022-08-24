@@ -19,6 +19,8 @@ export interface MentorClientDataGQL {
   mentorType: MentorType;
   topicQuestions: TopicQuestions[];
   utterances: UtteranceGQL[];
+  hasVirtualBackground: boolean;
+  virtualBackgroundUrl: string;
 }
 
 export interface UtteranceGQL {
