@@ -308,61 +308,26 @@ function Video(args: {
       return <div></div>;
     }
     return (
-      <div
-        data-cy="video-container"
-        data-test-playing={true}
-        className="video-container"
-        data-test-replay={idleVideo.src}
-        style={{
-          minHeight: Math.max(
-            answerVideoRefHeight || 0,
-            idleVideoRefHeight || 0
-          ),
-        }}
-      >
+      <>
         <div
-          data-cy="answer-idle-video-container"
-          style={{ position: "relative", width: "100%", height: "100%" }}
+          data-cy="video-container"
+          data-test-playing={true}
+          className="video-container"
+          data-test-replay={idleVideo.src}
+          style={{
+            minHeight: Math.max(
+              answerVideoRefHeight || 0,
+              idleVideoRefHeight || 0
+            ),
+          }}
         >
-          {/* Answer Video Player, once its onPlay is triggered */}
-          <span
-            data-cy="answer-memo-video-player-wrapper"
-            className="video-player-wrapper"
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              margin: "auto 0",
-              width: "100%",
-              height: "fit-content",
-            }}
-            ref={answerVideoRef}
+          <div
+            data-cy="answer-idle-video-container"
+            style={{ position: "relative", width: "100%", height: "100%" }}
           >
-            <MemoVideoPlayer
-              isIdle={false}
-              onEnded={onEnded}
-              onPlay={onPlay}
-              onProgress={onProgressAnswerVideo}
-              playing={Boolean(playing)}
-              subtitlesOn={
-                Boolean(subtitlesSupported) && Boolean(video.subtitles)
-              }
-              reactPlayerRef={reactPlayerRef}
-              subtitlesUrl={video.subtitles}
-              videoUrl={isIdle ? "" : video.src}
-              webLinks={webLinks}
-              hideLinkLabel={hideLinkLabel}
-              mentorName={mentorData.name}
-              useVirtualBackground={curMentor.mentor.hasVirtualBackground}
-              virtualBackgroundUrl={virtualBackgroundUrl}
-              visible={!isIdle && videoFinishedBuffering}
-              zIndex={2}
-            />
-            {/* Idle video player, always activate, but sits behind answer video player */}
+            {/* Answer Video Player, once its onPlay is triggered */}
             <span
-              data-cy="idle-memo-video-player-wrapper"
+              data-cy="answer-memo-video-player-wrapper"
               className="video-player-wrapper"
               style={{
                 position: "absolute",
@@ -374,77 +339,114 @@ function Video(args: {
                 width: "100%",
                 height: "fit-content",
               }}
-              ref={idleVideoRef}
+              ref={answerVideoRef}
             >
               <MemoVideoPlayer
-                isIdle={true}
+                isIdle={false}
                 onEnded={onEnded}
                 onPlay={onPlay}
-                playing={true}
-                onProgress={onProgressIdleVideo}
-                subtitlesOn={false}
-                subtitlesUrl={""}
+                onProgress={onProgressAnswerVideo}
+                playing={Boolean(playing)}
+                subtitlesOn={
+                  Boolean(subtitlesSupported) && Boolean(video.subtitles)
+                }
                 reactPlayerRef={reactPlayerRef}
-                videoUrl={idleVideo.src}
+                subtitlesUrl={video.subtitles}
+                videoUrl={isIdle ? "" : video.src}
                 webLinks={webLinks}
                 hideLinkLabel={hideLinkLabel}
                 mentorName={mentorData.name}
                 useVirtualBackground={curMentor.mentor.hasVirtualBackground}
                 virtualBackgroundUrl={virtualBackgroundUrl}
-                zIndex={1}
-                visible={!(!isIdle && videoFinishedBuffering)}
+                visible={!isIdle && videoFinishedBuffering}
+                zIndex={2}
               />
-            </span>
-            {mentorData.name &&
-            mentorData.allowContact &&
-            args.configEmailMentorAddress ? (
-              <Tooltip
-                data-cy="email-disclaimer"
-                open={disclaimerOpen}
-                onClose={onCloseDisclaimer}
-                onOpen={() => setDisclaimerOpen(true)}
-                title={
-                  <div
-                    style={{
-                      fontSize: "15px",
-                      pointerEvents: "auto",
-                      cursor: !disclaimerDisplayed ? "pointer" : "none",
-                    }}
-                    onClick={() => onCloseDisclaimer()}
-                  >
-                    Please only contact mentors through the provided contact
-                    email. Messages sent directly to other mentor emails found
-                    online may be ignored.
-                    {!disclaimerDisplayed ? (
-                      <>
-                        <br /> <br /> Click here to close
-                      </>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                }
-                arrow
+              {/* Idle video player, always activate, but sits behind answer video player */}
+              <span
+                data-cy="idle-memo-video-player-wrapper"
+                className="video-player-wrapper"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  margin: "auto 0",
+                  width: "100%",
+                  height: "fit-content",
+                }}
+                ref={idleVideoRef}
               >
-                <div
-                  data-cy="email-mentor-icon"
-                  className="email-mentor-button"
-                  onClick={() =>
-                    sendMail(
-                      args.configEmailMentorAddress,
-                      `Contacting ${mentorData.name} for more information`
-                    )
-                  }
-                >
-                  Email Mentor <MailIcon />
-                </div>
-              </Tooltip>
-            ) : undefined}
-          </span>
+                <MemoVideoPlayer
+                  isIdle={true}
+                  onEnded={onEnded}
+                  onPlay={onPlay}
+                  playing={true}
+                  onProgress={onProgressIdleVideo}
+                  subtitlesOn={false}
+                  subtitlesUrl={""}
+                  reactPlayerRef={reactPlayerRef}
+                  videoUrl={idleVideo.src}
+                  webLinks={webLinks}
+                  hideLinkLabel={hideLinkLabel}
+                  mentorName={mentorData.name}
+                  useVirtualBackground={curMentor.mentor.hasVirtualBackground}
+                  virtualBackgroundUrl={virtualBackgroundUrl}
+                  zIndex={1}
+                  visible={!(!isIdle && videoFinishedBuffering)}
+                />
+              </span>
+            </span>
+          </div>
+          <LoadingSpinner mentor={curMentorId} />
+          <MessageStatus mentor={curMentorId} />
         </div>
-        <LoadingSpinner mentor={curMentorId} />
-        <MessageStatus mentor={curMentorId} />
-      </div>
+        {mentorData.name &&
+        mentorData.allowContact &&
+        args.configEmailMentorAddress ? (
+          <Tooltip
+            data-cy="email-disclaimer"
+            open={disclaimerOpen}
+            onClose={onCloseDisclaimer}
+            onOpen={() => setDisclaimerOpen(true)}
+            title={
+              <div
+                style={{
+                  fontSize: "15px",
+                  pointerEvents: "auto",
+                  cursor: !disclaimerDisplayed ? "pointer" : "none",
+                }}
+                onClick={() => onCloseDisclaimer()}
+              >
+                Please only contact mentors through the provided contact email.
+                Messages sent directly to other mentor emails found online may
+                be ignored.
+                {!disclaimerDisplayed ? (
+                  <>
+                    <br /> <br /> Click here to close
+                  </>
+                ) : (
+                  ""
+                )}
+              </div>
+            }
+            arrow
+          >
+            <div
+              data-cy="email-mentor-icon"
+              className="email-mentor-button"
+              onClick={() =>
+                sendMail(
+                  args.configEmailMentorAddress,
+                  `Contacting ${mentorData.name} for more information`
+                )
+              }
+            >
+              Email Mentor <MailIcon />
+            </div>
+          </Tooltip>
+        ) : undefined}
+      </>
     );
   }
 
