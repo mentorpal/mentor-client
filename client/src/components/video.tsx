@@ -542,7 +542,8 @@ function VideoPlayer(args: VideoPlayerParams) {
       }
     : {
         backgroundColor: "black",
-        position: "relative",
+        position: "absolute",
+        top: 0,
         margin: "0 auto",
         zIndex: !playAnswer ? 2 : 1,
         visibility: !playAnswer ? "visible" : "hidden",
