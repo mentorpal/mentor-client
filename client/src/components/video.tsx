@@ -24,7 +24,6 @@ import {
 import { ChatMsg, MentorState, State, WebLink } from "types";
 import "styles/video.css";
 import { Tooltip } from "@material-ui/core";
-import { useWithWindowSize } from "use-with-window-size";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
@@ -86,7 +85,6 @@ function Video(args: {
   const [mentorData, setMentorData] = useState<HeaderMentorData>(
     defaultHeaderMentorData
   );
-  const numberMentors = Object.keys(mentorsById).length;
   const curMentor: MentorState = { ...mentorsById[curMentorId] };
   const reactPlayerRef = useRef<ReactPlayer>(null);
 
@@ -95,16 +93,6 @@ function Video(args: {
   });
   const virtualBackgroundUrl: string =
     curMentor.mentor.virtualBackgroundUrl || defaultVirtualBackground;
-
-  const { width: windowWidth, height: windowHeight } = useWithWindowSize();
-  const height =
-    windowHeight > windowWidth
-      ? windowWidth * (9 / 16)
-      : Math.max(windowHeight - 600, 300);
-  const width =
-    windowHeight > windowWidth
-      ? windowWidth
-      : Math.max(windowHeight - 600, 300) * (16 / 9);
 
   const getIdleVideoData = (): VideoData => {
     if (!curMentor) {
@@ -280,6 +268,7 @@ function Video(args: {
   const [disclaimerOpen, setDisclaimerOpen] = useState<boolean>(false);
   const [videoFinishedBuffering, setVideoFinishedBuffering] =
     useState<boolean>(true);
+  const videoRef = useRef<HTMLSpanElement>(null);
   const disclaimerDisplayed = getLocalStorage("viewedDisclaimer");
   useEffect(() => {
     if (!disclaimerDisplayed || disclaimerDisplayed !== "true") {
@@ -318,18 +307,27 @@ function Video(args: {
         data-cy="video-container"
         data-test-playing={true}
         className="video-container"
-        style={{ display: "block", marginLeft: "2.5%" }}
         data-test-replay={idleVideo.src}
+        style={{ minHeight: videoRef.current?.clientHeight }}
       >
         <div
           data-cy="answer-idle-video-container"
-          style={{ position: "relative", textAlign: "left" }}
+          style={{ position: "relative", width: "100%", height: "100%" }}
         >
           {/* Answer Video Player, once its onPlay is triggered */}
           <span
             data-cy="answer-memo-video-player-wrapper"
             className="video-player-wrapper"
-            style={{ zIndex: !isIdle && videoFinishedBuffering ? 2 : 0 }}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              margin: "auto 0",
+              width: "100%",
+              height: "fit-content",
+            }}
           >
             <MemoVideoPlayer
               isIdle={false}
@@ -346,37 +344,46 @@ function Video(args: {
               webLinks={webLinks}
               hideLinkLabel={hideLinkLabel}
               mentorName={mentorData.name}
-              numberMentors={numberMentors}
               useVirtualBackground={curMentor.mentor.hasVirtualBackground}
               virtualBackgroundUrl={virtualBackgroundUrl}
-              width={width}
-              height={height}
+              visible={!isIdle && videoFinishedBuffering}
+              zIndex={2}
             />
-          </span>
-          {/* Idle video player, always activate, but sits behind answer video player */}
-          <span
-            className="video-player-wrapper"
-            style={{ position: "absolute", top: 0, left: 0, zIndex: 1 }}
-          >
-            <MemoVideoPlayer
-              isIdle={true}
-              onEnded={onEnded}
-              onPlay={onPlay}
-              playing={true}
-              onProgress={onProgressIdleVideo}
-              subtitlesOn={false}
-              subtitlesUrl={""}
-              reactPlayerRef={reactPlayerRef}
-              videoUrl={idleVideo.src}
-              webLinks={webLinks}
-              hideLinkLabel={hideLinkLabel}
-              mentorName={mentorData.name}
-              numberMentors={numberMentors}
-              useVirtualBackground={curMentor.mentor.hasVirtualBackground}
-              virtualBackgroundUrl={virtualBackgroundUrl}
-              width={width}
-              height={height}
-            />
+            {/* Idle video player, always activate, but sits behind answer video player */}
+            <span
+              data-cy="idle-memo-video-player-wrapper"
+              className="video-player-wrapper"
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                margin: "auto 0",
+                width: "100%",
+                height: "fit-content",
+              }}
+              ref={videoRef}
+            >
+              <MemoVideoPlayer
+                isIdle={true}
+                onEnded={onEnded}
+                onPlay={onPlay}
+                playing={true}
+                onProgress={onProgressIdleVideo}
+                subtitlesOn={false}
+                subtitlesUrl={""}
+                reactPlayerRef={reactPlayerRef}
+                videoUrl={idleVideo.src}
+                webLinks={webLinks}
+                hideLinkLabel={hideLinkLabel}
+                mentorName={mentorData.name}
+                useVirtualBackground={curMentor.mentor.hasVirtualBackground}
+                virtualBackgroundUrl={virtualBackgroundUrl}
+                zIndex={1}
+                visible={!(!isIdle && videoFinishedBuffering)}
+              />
+            </span>
           </span>
         </div>
         <LoadingSpinner mentor={curMentorId} />
@@ -454,12 +461,11 @@ interface VideoPlayerParams {
   webLinks: WebLink[];
   hideLinkLabel: boolean;
   mentorName: string;
-  numberMentors: number;
   reactPlayerRef: React.RefObject<ReactPlayer>;
   useVirtualBackground: boolean;
   virtualBackgroundUrl: string;
-  width: number;
-  height: number;
+  zIndex: number;
+  visible: boolean;
 }
 
 function VideoPlayer(args: VideoPlayerParams) {
@@ -475,12 +481,11 @@ function VideoPlayer(args: VideoPlayerParams) {
     webLinks,
     hideLinkLabel,
     mentorName,
-    numberMentors,
     reactPlayerRef,
     useVirtualBackground,
     virtualBackgroundUrl,
-    width,
-    height,
+    zIndex,
+    visible,
   } = args;
 
   const webLinkJSX = webLinks?.map((wl, i) => {
@@ -529,21 +534,18 @@ function VideoPlayer(args: VideoPlayerParams) {
         backgroundColor: "black",
         position: "relative",
         margin: "0 auto",
-        zIndex: 0,
+        zIndex: zIndex,
       }
     : {
         backgroundColor: "black",
         position: "relative",
         margin: "0 auto",
-        zIndex: 0,
+        zIndex: zIndex,
       };
   return (
     <div
-      className="video-player-wrapper"
-      data-cy={
-        isIdle ? "idle-video-player-wrapper" : "answer-video-player-wrapper"
-      }
-      style={numberMentors > 1 ? { marginTop: 0 } : { marginTop: 50 }}
+      data-cy={"answer-video-player-wrapper"}
+      style={{ visibility: visible ? "visible" : "hidden" }}
     >
       {!hideLinkLabel && shouldDiplayWebLinks ? answerLinkCard : null}
       {mentorName ? mentorNameCard : null}
@@ -559,8 +561,8 @@ function VideoPlayer(args: VideoPlayerParams) {
         onProgress={onProgress}
         loop={isIdle}
         controls={!isIdle}
-        width={width}
-        height={height}
+        width="100%"
+        height="100%"
         progressInterval={100}
         playing={Boolean(playing)}
         playsinline
