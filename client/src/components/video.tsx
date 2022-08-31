@@ -363,6 +363,7 @@ function Video(args: {
           data-test-replay={idleVideo.src}
           style={{
             minHeight: Math.max(answerVideoRefHeight || 0),
+            paddingBottom: "30px",
           }}
         >
           <div
@@ -553,8 +554,8 @@ function VideoPlayer(args: VideoPlayerParams) {
       data-cy={"answer-video-player-wrapper"}
       style={{ width: "100%", height: "100%" }}
     >
-      {/* {!hideLinkLabel && shouldDiplayWebLinks ? answerLinkCard : null}
-      {mentorName ? mentorNameCard : null} */}
+      {!hideLinkLabel && shouldDiplayWebLinks ? answerLinkCard : null}
+      {mentorName ? mentorNameCard : null}
       <ReactPlayer
         style={answerReactPlayerStyling}
         className="player-wrapper react-player-wrapper"
