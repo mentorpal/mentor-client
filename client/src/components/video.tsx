@@ -270,7 +270,9 @@ function Video(args: {
   const [videoFinishedBuffering, setVideoFinishedBuffering] =
     useState<boolean>(true);
 
-  const { height: videoRefHeight, ref: videoRef } = useResizeDetector();
+  const { height: answerVideoRefHeight, ref: answerVideoRef } =
+    useResizeDetector();
+  const { height: idleVideoRefHeight, ref: idleVideoRef } = useResizeDetector();
   const disclaimerDisplayed = getLocalStorage("viewedDisclaimer");
 
   useEffect(() => {
@@ -311,7 +313,12 @@ function Video(args: {
         data-test-playing={true}
         className="video-container"
         data-test-replay={idleVideo.src}
-        style={{ minHeight: videoRefHeight || 300 }}
+        style={{
+          minHeight: Math.max(
+            answerVideoRefHeight || 0,
+            idleVideoRefHeight || 0
+          ),
+        }}
       >
         <div
           data-cy="answer-idle-video-container"
@@ -331,6 +338,7 @@ function Video(args: {
               width: "100%",
               height: "fit-content",
             }}
+            ref={answerVideoRef}
           >
             <MemoVideoPlayer
               isIdle={false}
@@ -366,7 +374,7 @@ function Video(args: {
                 width: "100%",
                 height: "fit-content",
               }}
-              ref={videoRef}
+              ref={idleVideoRef}
             >
               <MemoVideoPlayer
                 isIdle={true}
