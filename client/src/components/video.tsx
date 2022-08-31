@@ -303,110 +303,15 @@ function Video(args: {
     return;
   }
 
-  function PlayVideo() {
-    if (!idleVideo || !video) {
-      return <div></div>;
-    }
+  function emailMentorIcon(visible: boolean) {
     return (
       <>
-        <div
-          data-cy="video-container"
-          data-test-playing={true}
-          className="video-container"
-          data-test-replay={idleVideo.src}
-          style={{
-            minHeight: Math.max(
-              answerVideoRefHeight || 0,
-              idleVideoRefHeight || 0
-            ),
-          }}
-        >
-          <div
-            data-cy="answer-idle-video-container"
-            style={{ position: "relative", width: "100%", height: "100%" }}
-          >
-            {/* Answer Video Player, once its onPlay is triggered */}
-            <span
-              data-cy="answer-memo-video-player-wrapper"
-              className="video-player-wrapper"
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                margin: "auto 0",
-                width: "100%",
-                height: "fit-content",
-              }}
-              ref={answerVideoRef}
-            >
-              <MemoVideoPlayer
-                isIdle={false}
-                onEnded={onEnded}
-                onPlay={onPlay}
-                onProgress={onProgressAnswerVideo}
-                playing={Boolean(playing)}
-                subtitlesOn={
-                  Boolean(subtitlesSupported) && Boolean(video.subtitles)
-                }
-                reactPlayerRef={reactPlayerRef}
-                subtitlesUrl={video.subtitles}
-                videoUrl={isIdle ? "" : video.src}
-                webLinks={webLinks}
-                hideLinkLabel={hideLinkLabel}
-                mentorName={mentorData.name}
-                useVirtualBackground={curMentor.mentor.hasVirtualBackground}
-                virtualBackgroundUrl={virtualBackgroundUrl}
-                visible={!isIdle && videoFinishedBuffering}
-                zIndex={2}
-              />
-              {/* Idle video player, always activate, but sits behind answer video player */}
-              <span
-                data-cy="idle-memo-video-player-wrapper"
-                className="video-player-wrapper"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  margin: "auto 0",
-                  width: "100%",
-                  height: "fit-content",
-                }}
-                ref={idleVideoRef}
-              >
-                <MemoVideoPlayer
-                  isIdle={true}
-                  onEnded={onEnded}
-                  onPlay={onPlay}
-                  playing={true}
-                  onProgress={onProgressIdleVideo}
-                  subtitlesOn={false}
-                  subtitlesUrl={""}
-                  reactPlayerRef={reactPlayerRef}
-                  videoUrl={idleVideo.src}
-                  webLinks={webLinks}
-                  hideLinkLabel={hideLinkLabel}
-                  mentorName={mentorData.name}
-                  useVirtualBackground={curMentor.mentor.hasVirtualBackground}
-                  virtualBackgroundUrl={virtualBackgroundUrl}
-                  zIndex={1}
-                  visible={!(!isIdle && videoFinishedBuffering)}
-                />
-              </span>
-            </span>
-          </div>
-          <LoadingSpinner mentor={curMentorId} />
-          <MessageStatus mentor={curMentorId} />
-        </div>
         {mentorData.name &&
         mentorData.allowContact &&
         args.configEmailMentorAddress ? (
           <Tooltip
             data-cy="email-disclaimer"
-            open={disclaimerOpen}
+            open={disclaimerOpen && visible}
             onClose={onCloseDisclaimer}
             onOpen={() => setDisclaimerOpen(true)}
             title={
@@ -450,6 +355,110 @@ function Video(args: {
     );
   }
 
+  function PlayVideo() {
+    if (!idleVideo || !video) {
+      return <div></div>;
+    }
+    return (
+      <>
+        <div
+          data-cy="video-container"
+          data-test-playing={true}
+          className="video-container"
+          data-test-replay={idleVideo.src}
+          style={{
+            minHeight: Math.max(
+              answerVideoRefHeight || 0,
+              idleVideoRefHeight || 0
+            ),
+          }}
+        >
+          <div
+            data-cy="answer-idle-video-container"
+            style={{ position: "relative", width: "100%", height: "100%" }}
+          >
+            {/* Answer Video Player, once its onPlay is triggered */}
+            <span
+              data-cy="answer-memo-video-player-wrapper"
+              className="video-player-wrapper"
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                margin: "auto 0",
+                width: "100%",
+                height: "fit-content",
+              }}
+              ref={answerVideoRef}
+            >
+              <MemoVideoPlayer
+                emailIcon={emailMentorIcon}
+                isIdle={false}
+                onEnded={onEnded}
+                onPlay={onPlay}
+                onProgress={onProgressAnswerVideo}
+                playing={Boolean(playing)}
+                subtitlesOn={
+                  Boolean(subtitlesSupported) && Boolean(video.subtitles)
+                }
+                reactPlayerRef={reactPlayerRef}
+                subtitlesUrl={video.subtitles}
+                videoUrl={isIdle ? "" : video.src}
+                webLinks={webLinks}
+                hideLinkLabel={hideLinkLabel}
+                mentorName={mentorData.name}
+                useVirtualBackground={curMentor.mentor.hasVirtualBackground}
+                virtualBackgroundUrl={virtualBackgroundUrl}
+                visible={!isIdle && videoFinishedBuffering}
+                zIndex={2}
+              />
+              {/* Idle video player, always activate, but sits behind answer video player */}
+              <span
+                data-cy="idle-memo-video-player-wrapper"
+                className="video-player-wrapper"
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  margin: "auto 0",
+                  width: "100%",
+                  height: "fit-content",
+                }}
+                ref={idleVideoRef}
+              >
+                <MemoVideoPlayer
+                  emailIcon={emailMentorIcon}
+                  isIdle={true}
+                  onEnded={onEnded}
+                  onPlay={onPlay}
+                  playing={true}
+                  onProgress={onProgressIdleVideo}
+                  subtitlesOn={false}
+                  subtitlesUrl={""}
+                  reactPlayerRef={reactPlayerRef}
+                  videoUrl={idleVideo.src}
+                  webLinks={webLinks}
+                  hideLinkLabel={hideLinkLabel}
+                  mentorName={mentorData.name}
+                  useVirtualBackground={curMentor.mentor.hasVirtualBackground}
+                  virtualBackgroundUrl={virtualBackgroundUrl}
+                  zIndex={1}
+                  visible={!(!isIdle && videoFinishedBuffering)}
+                />
+              </span>
+            </span>
+          </div>
+          <LoadingSpinner mentor={curMentorId} />
+          <MessageStatus mentor={curMentorId} />
+        </div>
+      </>
+    );
+  }
+
   if (!(curMentorId && video)) {
     return <div />;
   }
@@ -479,6 +488,7 @@ interface VideoPlayerParams {
   virtualBackgroundUrl: string;
   zIndex: number;
   visible: boolean;
+  emailIcon: (visible: boolean) => JSX.Element;
 }
 
 function VideoPlayer(args: VideoPlayerParams) {
@@ -499,6 +509,7 @@ function VideoPlayer(args: VideoPlayerParams) {
     virtualBackgroundUrl,
     zIndex,
     visible,
+    emailIcon,
   } = args;
 
   const webLinkJSX = webLinks?.map((wl, i) => {
@@ -558,7 +569,7 @@ function VideoPlayer(args: VideoPlayerParams) {
   return (
     <div
       data-cy={"answer-video-player-wrapper"}
-      style={{ visibility: visible ? "visible" : "hidden" }}
+      style={{ display: visible ? "block" : "none" }}
     >
       {!hideLinkLabel && shouldDiplayWebLinks ? answerLinkCard : null}
       {mentorName ? mentorNameCard : null}
@@ -599,6 +610,7 @@ function VideoPlayer(args: VideoPlayerParams) {
           },
         }}
       />
+      {emailIcon(visible)}
     </div>
   );
 }
