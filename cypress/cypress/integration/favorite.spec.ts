@@ -26,8 +26,9 @@ describe("Favorite", () => {
       "true"
     );
     cy.get("[data-cy=answer-video-player-wrapper]").within(($within) => {
-      cy.get("[data-cy=fave-button]").trigger("mouseover").click();
+      cy.get("[data-cy=fave-button]").eq(0).trigger("mouseover").click();
       cy.get("[data-cy=fave-button]")
+        .eq(0)
         .invoke("attr", "style")
         .should("contain", "yellow");
     });

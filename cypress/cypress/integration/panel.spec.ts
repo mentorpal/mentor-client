@@ -80,10 +80,10 @@ describe("Mentor panel", () => {
       cy.get("[data-cy=loading-answer-spinner]").should("be.visible");
     });
     // clint is stil loading their answer, so the answer video player should be hidden via z-index
-    cy.get("[data-cy=answer-memo-video-player-wrapper]").should(
+    cy.get("[data-cy=answer-video-player-wrapper]").should(
       "have.css",
-      "z-index",
-      "0"
+      "visibility",
+      "hidden"
     );
   });
 });

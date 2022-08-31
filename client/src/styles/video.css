@@ -1,7 +1,6 @@
 .player-wrapper {
   height: 100% !important;
   width: 100% !important;
-  border-radius: 10px;
 }
 
 .star-icon {
@@ -70,6 +69,7 @@
   display: flex;
   align-items: center;
 }
+
 .mentor-name-text {
   padding: 0px 10px 0px 10px;
   height: 1rem;
@@ -82,6 +82,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  margin: 10px;
 }
 .email-mentor-button:hover {
   color: blue;

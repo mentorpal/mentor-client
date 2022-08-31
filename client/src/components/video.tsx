@@ -14,6 +14,7 @@ import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import MailIcon from "@material-ui/icons/Mail";
 import { chromeVersion, getLocalStorage, setLocalStorage } from "utils";
+import { useResizeDetector } from "react-resize-detector";
 import {
   answerFinished,
   faveMentor,
@@ -269,18 +270,7 @@ function Video(args: {
   const [videoFinishedBuffering, setVideoFinishedBuffering] =
     useState<boolean>(true);
 
-  const forceRerenderState = useState<number>(0);
-
-  useEffect(() => {
-    const funct = () => forceRerenderState[1]((prevValue) => prevValue + 1);
-    window.addEventListener("resize", funct);
-
-    return () => {
-      window.removeEventListener("resize", funct);
-    };
-  }, []);
-
-  const videoRef = useRef<HTMLSpanElement>(null);
+  const { height: videoRefHeight, ref: videoRef } = useResizeDetector();
   const disclaimerDisplayed = getLocalStorage("viewedDisclaimer");
 
   useEffect(() => {
@@ -321,7 +311,7 @@ function Video(args: {
         data-test-playing={true}
         className="video-container"
         data-test-replay={idleVideo.src}
-        style={{ minHeight: videoRef.current?.clientHeight || 300 }}
+        style={{ minHeight: videoRefHeight || 300 }}
       >
         <div
           data-cy="answer-idle-video-container"
@@ -397,55 +387,55 @@ function Video(args: {
                 visible={!(!isIdle && videoFinishedBuffering)}
               />
             </span>
+            {mentorData.name &&
+            mentorData.allowContact &&
+            args.configEmailMentorAddress ? (
+              <Tooltip
+                data-cy="email-disclaimer"
+                open={disclaimerOpen}
+                onClose={onCloseDisclaimer}
+                onOpen={() => setDisclaimerOpen(true)}
+                title={
+                  <div
+                    style={{
+                      fontSize: "15px",
+                      pointerEvents: "auto",
+                      cursor: !disclaimerDisplayed ? "pointer" : "none",
+                    }}
+                    onClick={() => onCloseDisclaimer()}
+                  >
+                    Please only contact mentors through the provided contact
+                    email. Messages sent directly to other mentor emails found
+                    online may be ignored.
+                    {!disclaimerDisplayed ? (
+                      <>
+                        <br /> <br /> Click here to close
+                      </>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                }
+                arrow
+              >
+                <div
+                  data-cy="email-mentor-icon"
+                  className="email-mentor-button"
+                  onClick={() =>
+                    sendMail(
+                      args.configEmailMentorAddress,
+                      `Contacting ${mentorData.name} for more information`
+                    )
+                  }
+                >
+                  Email Mentor <MailIcon />
+                </div>
+              </Tooltip>
+            ) : undefined}
           </span>
         </div>
         <LoadingSpinner mentor={curMentorId} />
         <MessageStatus mentor={curMentorId} />
-        {mentorData.name &&
-        mentorData.allowContact &&
-        args.configEmailMentorAddress ? (
-          <Tooltip
-            data-cy="email-disclaimer"
-            open={disclaimerOpen}
-            onClose={onCloseDisclaimer}
-            onOpen={() => setDisclaimerOpen(true)}
-            title={
-              <div
-                style={{
-                  fontSize: "15px",
-                  pointerEvents: "auto",
-                  cursor: !disclaimerDisplayed ? "pointer" : "none",
-                }}
-                onClick={() => onCloseDisclaimer()}
-              >
-                Please only contact mentors through the provided contact email.
-                Messages sent directly to other mentor emails found online may
-                be ignored.
-                {!disclaimerDisplayed ? (
-                  <>
-                    <br /> <br /> Click here to close
-                  </>
-                ) : (
-                  ""
-                )}
-              </div>
-            }
-            arrow
-          >
-            <div
-              data-cy="email-mentor-icon"
-              className="email-mentor-button"
-              onClick={() =>
-                sendMail(
-                  args.configEmailMentorAddress,
-                  `Contacting ${mentorData.name} for more information`
-                )
-              }
-            >
-              Email Mentor <MailIcon />
-            </div>
-          </Tooltip>
-        ) : undefined}
       </div>
     );
   }
