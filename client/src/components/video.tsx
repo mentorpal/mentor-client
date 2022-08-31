@@ -268,8 +268,21 @@ function Video(args: {
   const [disclaimerOpen, setDisclaimerOpen] = useState<boolean>(false);
   const [videoFinishedBuffering, setVideoFinishedBuffering] =
     useState<boolean>(true);
+
+  const forceRerenderState = useState<number>(0);
+
+  useEffect(() => {
+    const funct = () => forceRerenderState[1]((prevValue) => prevValue + 1);
+    window.addEventListener("resize", funct);
+
+    return () => {
+      window.removeEventListener("resize", funct);
+    };
+  }, []);
+
   const videoRef = useRef<HTMLSpanElement>(null);
   const disclaimerDisplayed = getLocalStorage("viewedDisclaimer");
+
   useEffect(() => {
     if (!disclaimerDisplayed || disclaimerDisplayed !== "true") {
       setDisclaimerOpen(true);
@@ -308,7 +321,7 @@ function Video(args: {
         data-test-playing={true}
         className="video-container"
         data-test-replay={idleVideo.src}
-        style={{ minHeight: videoRef.current?.clientHeight }}
+        style={{ minHeight: videoRef.current?.clientHeight || 300 }}
       >
         <div
           data-cy="answer-idle-video-container"
