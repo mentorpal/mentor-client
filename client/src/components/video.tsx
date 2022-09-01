@@ -508,7 +508,8 @@ function VideoPlayer(args: VideoPlayerParams) {
   );
 
   const shouldDiplayWebLinks = webLinks.length > 0 ? true : false;
-
+  // Hack: If answer is playing, then the answer player is visible and relative, else its absolute and invisible
+  // opposite goes for the idle player, so only one of the players is taking up space at a time
   const answerReactPlayerStyling: React.CSSProperties = useVirtualBackground
     ? {
         backgroundImage: `url(${virtualBackgroundUrl})`,
@@ -516,15 +517,15 @@ function VideoPlayer(args: VideoPlayerParams) {
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
         backgroundColor: "black",
-        position: "relative",
         margin: "0 auto",
+        position: playAnswer ? "relative" : "absolute",
         visibility: playAnswer ? "visible" : "hidden",
         zIndex: playAnswer ? 2 : 1,
       }
     : {
         backgroundColor: "black",
-        position: "relative",
         margin: "0 auto",
+        position: playAnswer ? "relative" : "absolute",
         visibility: playAnswer ? "visible" : "hidden",
         zIndex: playAnswer ? 2 : 1,
       };
@@ -535,19 +536,19 @@ function VideoPlayer(args: VideoPlayerParams) {
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
         backgroundColor: "black",
-        position: "absolute",
         top: 0,
         margin: "0 auto",
-        zIndex: !playAnswer ? 2 : 1,
+        position: !playAnswer ? "relative" : "absolute",
         visibility: !playAnswer ? "visible" : "hidden",
+        zIndex: !playAnswer ? 2 : 1,
       }
     : {
         backgroundColor: "black",
-        position: "absolute",
         top: 0,
         margin: "0 auto",
-        zIndex: !playAnswer ? 2 : 1,
+        position: !playAnswer ? "relative" : "absolute",
         visibility: !playAnswer ? "visible" : "hidden",
+        zIndex: !playAnswer ? 2 : 1,
       };
   return (
     <div
@@ -560,7 +561,7 @@ function VideoPlayer(args: VideoPlayerParams) {
         style={answerReactPlayerStyling}
         className="player-wrapper react-player-wrapper"
         data-cy="react-player-answer-video"
-        url={playAnswer ? videoUrl : idleUrl}
+        url={videoUrl}
         muted={false}
         onEnded={onEnded}
         ref={reactPlayerRef}
