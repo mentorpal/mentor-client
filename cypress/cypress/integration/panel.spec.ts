@@ -80,7 +80,7 @@ describe("Mentor panel", () => {
       cy.get("[data-cy=loading-answer-spinner]").should("be.visible");
     });
     // clint is stil loading their answer, so the answer video player should be hidden via z-index
-    cy.get("[data-cy=answer-video-player-wrapper]").should(
+    cy.get("[data-cy=react-player-answer-video]").should(
       "have.css",
       "visibility",
       "hidden"
