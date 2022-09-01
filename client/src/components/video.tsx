@@ -292,7 +292,12 @@ function Video(args: {
     playedSeconds: number;
     loaded: number;
     loadedSeconds: number;
-  }) {
+  }, log: boolean) {
+    if(log){
+      console.log(state)
+      console.log(!videoFinishedBuffering)
+      console.log(!isIdle)
+    }
     if (state.playedSeconds > 0.1 && !videoFinishedBuffering && !isIdle) {
       setVideoFinishedBuffering(true);
     }
@@ -433,7 +438,7 @@ interface VideoPlayerParams {
     playedSeconds: number;
     loaded: number;
     loadedSeconds: number;
-  }) => void;
+  }, log: boolean) => void;
   playing?: boolean;
   idleUrl: string;
   subtitlesOn: boolean;
@@ -506,6 +511,7 @@ function VideoPlayer(args: VideoPlayerParams) {
       </div>
     </div>
   );
+  console.log(playAnswer)
 
   const shouldDiplayWebLinks = webLinks.length > 0 ? true : false;
   // Hack: If answer is playing, then the answer player is visible and relative, else its absolute and invisible
@@ -566,7 +572,7 @@ function VideoPlayer(args: VideoPlayerParams) {
         onEnded={onEnded}
         ref={reactPlayerRef}
         onPlay={onPlay}
-        onProgress={onProgress}
+        onProgress={(state)=>{onProgress(state, true)}}
         loop={false}
         controls={true}
         width="fit-content"
@@ -602,7 +608,6 @@ function VideoPlayer(args: VideoPlayerParams) {
         muted={true}
         onEnded={onEnded}
         onPlay={onPlay}
-        onProgress={onProgress}
         loop={true}
         controls={false}
         width="fit-content"
