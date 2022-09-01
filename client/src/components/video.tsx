@@ -292,12 +292,7 @@ function Video(args: {
     playedSeconds: number;
     loaded: number;
     loadedSeconds: number;
-  }, log: boolean) {
-    if(log){
-      console.log(state)
-      console.log(!videoFinishedBuffering)
-      console.log(!isIdle)
-    }
+  }) {
     if (state.playedSeconds > 0.1 && !videoFinishedBuffering && !isIdle) {
       setVideoFinishedBuffering(true);
     }
@@ -393,7 +388,6 @@ function Video(args: {
             >
               <MemoVideoPlayer
                 emailIcon={emailMentorIcon}
-                isIdle={false}
                 onEnded={onEnded}
                 onPlay={onPlay}
                 onProgress={onProgressAnswerVideo}
@@ -411,7 +405,6 @@ function Video(args: {
                 useVirtualBackground={curMentor.mentor.hasVirtualBackground}
                 virtualBackgroundUrl={virtualBackgroundUrl}
                 playAnswer={!isIdle && videoFinishedBuffering}
-                zIndex={2}
               />
             </span>
           </div>
@@ -430,7 +423,6 @@ function Video(args: {
 }
 
 interface VideoPlayerParams {
-  isIdle: boolean;
   onEnded: () => void;
   onPlay: () => void;
   onProgress: (state: {
@@ -438,7 +430,7 @@ interface VideoPlayerParams {
     playedSeconds: number;
     loaded: number;
     loadedSeconds: number;
-  }, log: boolean) => void;
+  }) => void;
   playing?: boolean;
   idleUrl: string;
   subtitlesOn: boolean;
@@ -450,14 +442,12 @@ interface VideoPlayerParams {
   reactPlayerRef: React.RefObject<ReactPlayer>;
   useVirtualBackground: boolean;
   virtualBackgroundUrl: string;
-  zIndex: number;
   playAnswer: boolean;
   emailIcon: () => JSX.Element;
 }
 
 function VideoPlayer(args: VideoPlayerParams) {
   const {
-    isIdle,
     onEnded,
     onPlay,
     onProgress,
@@ -472,7 +462,6 @@ function VideoPlayer(args: VideoPlayerParams) {
     reactPlayerRef,
     useVirtualBackground,
     virtualBackgroundUrl,
-    // zIndex,
     playAnswer,
     emailIcon,
   } = args;
@@ -511,7 +500,6 @@ function VideoPlayer(args: VideoPlayerParams) {
       </div>
     </div>
   );
-  console.log(playAnswer)
 
   const shouldDiplayWebLinks = webLinks.length > 0 ? true : false;
   // Hack: If answer is playing, then the answer player is visible and relative, else its absolute and invisible
@@ -572,7 +560,7 @@ function VideoPlayer(args: VideoPlayerParams) {
         onEnded={onEnded}
         ref={reactPlayerRef}
         onPlay={onPlay}
-        onProgress={(state)=>{onProgress(state, true)}}
+        onProgress={onProgress}
         loop={false}
         controls={true}
         width="fit-content"
@@ -606,14 +594,12 @@ function VideoPlayer(args: VideoPlayerParams) {
         data-cy="react-player-idle-video"
         url={idleUrl}
         muted={true}
-        onEnded={onEnded}
-        onPlay={onPlay}
         loop={true}
         controls={false}
         width="fit-content"
         height="fit-content"
         progressInterval={100}
-        playing={Boolean(playing)}
+        playing={true}
         playsinline
         webkit-playsinline="true"
         config={{
@@ -621,17 +607,6 @@ function VideoPlayer(args: VideoPlayerParams) {
             attributes: {
               crossOrigin: "true",
             },
-            tracks: subtitlesOn
-              ? [
-                  {
-                    kind: "subtitles",
-                    label: "eng",
-                    srcLang: "en",
-                    src: subtitlesUrl,
-                    default: true,
-                  },
-                ]
-              : [],
           },
         }}
       />
