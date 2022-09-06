@@ -25,6 +25,7 @@ import {
 import { ChatMsg, MentorState, State, WebLink } from "types";
 import "styles/video.css";
 import { Tooltip } from "@material-ui/core";
+import { useWithImage } from "use-with-image-url";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
@@ -94,7 +95,7 @@ function Video(args: {
   });
   const virtualBackgroundUrl: string =
     curMentor.mentor.virtualBackgroundUrl || defaultVirtualBackground;
-
+  const { aspectRatio: vbgAspectRatio } = useWithImage(virtualBackgroundUrl);
   const getIdleVideoData = (): VideoData => {
     if (!curMentor) {
       return defaultVideoData;
@@ -405,6 +406,7 @@ function Video(args: {
                 useVirtualBackground={curMentor.mentor.hasVirtualBackground}
                 virtualBackgroundUrl={virtualBackgroundUrl}
                 playAnswer={!isIdle && videoFinishedBuffering}
+                vbgAspectRatio={vbgAspectRatio}
               />
             </span>
           </div>
@@ -444,6 +446,7 @@ interface VideoPlayerParams {
   virtualBackgroundUrl: string;
   playAnswer: boolean;
   emailIcon: () => JSX.Element;
+  vbgAspectRatio: number;
 }
 
 function VideoPlayer(args: VideoPlayerParams) {
@@ -464,6 +467,7 @@ function VideoPlayer(args: VideoPlayerParams) {
     virtualBackgroundUrl,
     playAnswer,
     emailIcon,
+    vbgAspectRatio,
   } = args;
 
   const webLinkJSX = webLinks?.map((wl, i) => {
@@ -507,7 +511,7 @@ function VideoPlayer(args: VideoPlayerParams) {
   const answerReactPlayerStyling: React.CSSProperties = useVirtualBackground
     ? {
         backgroundImage: `url(${virtualBackgroundUrl})`,
-        backgroundSize: "100% auto",
+        backgroundSize: vbgAspectRatio >= 1.77 ? "auto 100%" : "100% auto",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
         backgroundColor: "black",
@@ -526,7 +530,7 @@ function VideoPlayer(args: VideoPlayerParams) {
   const idleReactPlayerStyling: React.CSSProperties = useVirtualBackground
     ? {
         backgroundImage: `url(${virtualBackgroundUrl})`,
-        backgroundSize: "100% auto",
+        backgroundSize: vbgAspectRatio >= 1.77 ? "auto 100%" : "100% auto",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
         backgroundColor: "black",
