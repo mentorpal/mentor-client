@@ -1,17 +1,21 @@
 .player-wrapper {
-  height: 70vh !important;
-  width: 50vw !important;
-  border-radius: 10px;
+  height: 100% !important;
+  width: 100% !important;
 }
 
-.player-wrapper > video {
-  height: 70vh !important;
-  width: 50vw !important;
-}
 .star-icon {
   position: relative;
   top: 15%;
   padding-right: 10px;
+}
+
+.video-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto;
+  width: 90%;
+  height: 90%;
 }
 
 .web-link-a {
@@ -19,13 +23,6 @@
   color: #ffffffd6;
   bottom: 3;
   left: 5;
-}
-
-.video-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .answer-link-card-container {
@@ -61,7 +58,7 @@
   top: 0;
   display: inline-block;
   align-items: center;
-  z-index: 1;
+  z-index: 3;
   color: #fbfbfb94;
   vertical-align: middle;
   border: 0px transparent;
@@ -72,15 +69,11 @@
   display: flex;
   align-items: center;
 }
+
 .mentor-name-text {
   padding: 0px 10px 0px 10px;
   height: 1rem;
   color: #ffffffd6;
-}
-
-.video-player-wrapper {
-  position: relative;
-  display: inline-block;
 }
 
 .email-mentor-button {
@@ -89,6 +82,9 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  margin: 10px;
+  position: absolute;
+  bottom: -50px;
 }
 .email-mentor-button:hover {
   color: blue;
@@ -96,10 +92,6 @@
 }
 
 @media only screen and (max-width: 1200px) {
-  .player-wrapper {
-    width: auto;
-    height: auto;
-  }
   .react-player {
     padding-top: 56.25%;
     position: relative;
@@ -108,29 +100,13 @@
   .react-player > div {
     position: absolute;
   }
-  .player-wrapper {
-    height: 70vh !important;
-    width: 90vw !important;
-    border-radius: 10px;
-  }
-  .player-wrapper > video {
-    height: 100% !important;
-    width: 100% !important;
-  }
+
   .video-container {
     margin-top: 0px;
-  }
-  .video-player-wrapper {
-    position: relative;
-    display: inline-block;
   }
 }
 
 @media (max-width: 600px) {
-  .player-wrapper {
-    width: auto;
-    height: auto;
-  }
   .react-player {
     padding-top: 56.25%;
     position: relative;
@@ -138,20 +114,5 @@
 
   .react-player > div {
     position: absolute;
-  }
-  .player-wrapper {
-    height: 40vh !important;
-    width: 90vw !important;
-    border-radius: 5px;
-  }
-  .player-wrapper > video {
-    height: 100% !important;
-    width: 100% !important;
-  }
-  .video-container {
-    margin-top: 0px;
-  }
-  .video-player-wrapper {
-    margin-top: 0px;
   }
 }

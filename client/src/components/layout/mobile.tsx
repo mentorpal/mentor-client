@@ -36,7 +36,7 @@ function Mobile(props: {
     (state) => state.config.filterEmailMentorAddress
   );
   const topPanel = (
-    <div>
+    <>
       <VideoPanel />
       {mentorType === MentorType.CHAT ? (
         <Chat
@@ -51,11 +51,11 @@ function Mobile(props: {
           configEmailMentorAddress={configEmailMentorAddress}
         />
       )}
-    </div>
+    </>
   );
 
   const bottomPanel = (
-    <div>
+    <>
       <Paper>
         <Input />
         <Topics
@@ -67,7 +67,7 @@ function Mobile(props: {
         </Collapse>
         {!hasSessionUser() && displayGuestPrompt ? <GuestPrompt /> : undefined}
       </Paper>
-    </div>
+    </>
   );
   return (
     <div className="main-container" style={{ height: windowHeight - 60 }}>

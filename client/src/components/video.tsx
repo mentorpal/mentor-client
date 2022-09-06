@@ -14,6 +14,7 @@ import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import MailIcon from "@material-ui/icons/Mail";
 import { chromeVersion, getLocalStorage, setLocalStorage } from "utils";
+import { useResizeDetector } from "react-resize-detector";
 import {
   answerFinished,
   faveMentor,
@@ -24,7 +25,6 @@ import {
 import { ChatMsg, MentorState, State, WebLink } from "types";
 import "styles/video.css";
 import { Tooltip } from "@material-ui/core";
-import { useWithWindowSize } from "use-with-window-size";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
@@ -86,7 +86,6 @@ function Video(args: {
   const [mentorData, setMentorData] = useState<HeaderMentorData>(
     defaultHeaderMentorData
   );
-  const numberMentors = Object.keys(mentorsById).length;
   const curMentor: MentorState = { ...mentorsById[curMentorId] };
   const reactPlayerRef = useRef<ReactPlayer>(null);
 
@@ -95,16 +94,6 @@ function Video(args: {
   });
   const virtualBackgroundUrl: string =
     curMentor.mentor.virtualBackgroundUrl || defaultVirtualBackground;
-
-  const { width: windowWidth, height: windowHeight } = useWithWindowSize();
-  const height =
-    windowHeight > windowWidth
-      ? windowWidth * (9 / 16)
-      : Math.max(windowHeight - 600, 300);
-  const width =
-    windowHeight > windowWidth
-      ? windowWidth
-      : Math.max(windowHeight - 600, 300) * (16 / 9);
 
   const getIdleVideoData = (): VideoData => {
     if (!curMentor) {
@@ -280,7 +269,11 @@ function Video(args: {
   const [disclaimerOpen, setDisclaimerOpen] = useState<boolean>(false);
   const [videoFinishedBuffering, setVideoFinishedBuffering] =
     useState<boolean>(true);
+
+  const { height: answerVideoRefHeight, ref: answerVideoRef } =
+    useResizeDetector();
   const disclaimerDisplayed = getLocalStorage("viewedDisclaimer");
+
   useEffect(() => {
     if (!disclaimerDisplayed || disclaimerDisplayed !== "true") {
       setDisclaimerOpen(true);
@@ -305,82 +298,9 @@ function Video(args: {
     }
   }
 
-  function onProgressIdleVideo() {
-    return;
-  }
-
-  function PlayVideo() {
-    if (!idleVideo || !video) {
-      return <div></div>;
-    }
+  function emailMentorIcon() {
     return (
-      <div
-        data-cy="video-container"
-        data-test-playing={true}
-        className="video-container"
-        style={{ display: "block", marginLeft: "2.5%" }}
-        data-test-replay={idleVideo.src}
-      >
-        <div
-          data-cy="answer-idle-video-container"
-          style={{ position: "relative", textAlign: "left" }}
-        >
-          {/* Answer Video Player, once its onPlay is triggered */}
-          <span
-            data-cy="answer-memo-video-player-wrapper"
-            className="video-player-wrapper"
-            style={{ zIndex: !isIdle && videoFinishedBuffering ? 2 : 0 }}
-          >
-            <MemoVideoPlayer
-              isIdle={false}
-              onEnded={onEnded}
-              onPlay={onPlay}
-              onProgress={onProgressAnswerVideo}
-              playing={Boolean(playing)}
-              subtitlesOn={
-                Boolean(subtitlesSupported) && Boolean(video.subtitles)
-              }
-              reactPlayerRef={reactPlayerRef}
-              subtitlesUrl={video.subtitles}
-              videoUrl={isIdle ? "" : video.src}
-              webLinks={webLinks}
-              hideLinkLabel={hideLinkLabel}
-              mentorName={mentorData.name}
-              numberMentors={numberMentors}
-              useVirtualBackground={curMentor.mentor.hasVirtualBackground}
-              virtualBackgroundUrl={virtualBackgroundUrl}
-              width={width}
-              height={height}
-            />
-          </span>
-          {/* Idle video player, always activate, but sits behind answer video player */}
-          <span
-            className="video-player-wrapper"
-            style={{ position: "absolute", top: 0, left: 0, zIndex: 1 }}
-          >
-            <MemoVideoPlayer
-              isIdle={true}
-              onEnded={onEnded}
-              onPlay={onPlay}
-              playing={true}
-              onProgress={onProgressIdleVideo}
-              subtitlesOn={false}
-              subtitlesUrl={""}
-              reactPlayerRef={reactPlayerRef}
-              videoUrl={idleVideo.src}
-              webLinks={webLinks}
-              hideLinkLabel={hideLinkLabel}
-              mentorName={mentorData.name}
-              numberMentors={numberMentors}
-              useVirtualBackground={curMentor.mentor.hasVirtualBackground}
-              virtualBackgroundUrl={virtualBackgroundUrl}
-              width={width}
-              height={height}
-            />
-          </span>
-        </div>
-        <LoadingSpinner mentor={curMentorId} />
-        <MessageStatus mentor={curMentorId} />
+      <>
         {mentorData.name &&
         mentorData.allowContact &&
         args.configEmailMentorAddress ? (
@@ -426,7 +346,72 @@ function Video(args: {
             </div>
           </Tooltip>
         ) : undefined}
-      </div>
+      </>
+    );
+  }
+
+  function PlayVideo() {
+    if (!idleVideo || !video) {
+      return <div></div>;
+    }
+    return (
+      <>
+        <div
+          data-cy="video-container"
+          data-test-playing={true}
+          className="video-container"
+          data-test-replay={idleVideo.src}
+          style={{
+            minHeight: Math.max(answerVideoRefHeight || 0),
+            paddingBottom: "30px",
+          }}
+        >
+          <div
+            data-cy="answer-idle-video-container"
+            style={{ position: "relative", width: "100%", height: "100%" }}
+          >
+            <span
+              data-cy="answer-memo-video-player-wrapper"
+              className="video-player-wrapper"
+              style={{
+                display: "inline-block",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                margin: "auto 0",
+                width: "100%",
+                height: "fit-content",
+              }}
+              ref={answerVideoRef}
+            >
+              <MemoVideoPlayer
+                emailIcon={emailMentorIcon}
+                onEnded={onEnded}
+                onPlay={onPlay}
+                onProgress={onProgressAnswerVideo}
+                playing={Boolean(playing)}
+                subtitlesOn={
+                  Boolean(subtitlesSupported) && Boolean(video.subtitles)
+                }
+                reactPlayerRef={reactPlayerRef}
+                subtitlesUrl={video.subtitles}
+                videoUrl={isIdle ? "" : video.src}
+                webLinks={webLinks}
+                hideLinkLabel={hideLinkLabel}
+                mentorName={mentorData.name}
+                idleUrl={idleVideo.src}
+                useVirtualBackground={curMentor.mentor.hasVirtualBackground}
+                virtualBackgroundUrl={virtualBackgroundUrl}
+                playAnswer={!isIdle && videoFinishedBuffering}
+              />
+            </span>
+          </div>
+          <LoadingSpinner mentor={curMentorId} />
+          <MessageStatus mentor={curMentorId} />
+        </div>
+      </>
     );
   }
 
@@ -438,7 +423,6 @@ function Video(args: {
 }
 
 interface VideoPlayerParams {
-  isIdle: boolean;
   onEnded: () => void;
   onPlay: () => void;
   onProgress: (state: {
@@ -448,23 +432,22 @@ interface VideoPlayerParams {
     loadedSeconds: number;
   }) => void;
   playing?: boolean;
+  idleUrl: string;
   subtitlesOn: boolean;
   subtitlesUrl: string;
   videoUrl: string;
   webLinks: WebLink[];
   hideLinkLabel: boolean;
   mentorName: string;
-  numberMentors: number;
   reactPlayerRef: React.RefObject<ReactPlayer>;
   useVirtualBackground: boolean;
   virtualBackgroundUrl: string;
-  width: number;
-  height: number;
+  playAnswer: boolean;
+  emailIcon: () => JSX.Element;
 }
 
 function VideoPlayer(args: VideoPlayerParams) {
   const {
-    isIdle,
     onEnded,
     onPlay,
     onProgress,
@@ -472,15 +455,15 @@ function VideoPlayer(args: VideoPlayerParams) {
     subtitlesOn,
     subtitlesUrl,
     videoUrl,
+    idleUrl,
     webLinks,
     hideLinkLabel,
     mentorName,
-    numberMentors,
     reactPlayerRef,
     useVirtualBackground,
     virtualBackgroundUrl,
-    width,
-    height,
+    playAnswer,
+    emailIcon,
   } = args;
 
   const webLinkJSX = webLinks?.map((wl, i) => {
@@ -519,48 +502,69 @@ function VideoPlayer(args: VideoPlayerParams) {
   );
 
   const shouldDiplayWebLinks = webLinks.length > 0 ? true : false;
-
-  const reactPlayerStyling: React.CSSProperties = useVirtualBackground
+  // Hack: If answer is playing, then the answer player is visible and relative, else its absolute and invisible
+  // opposite goes for the idle player, so only one of the players is taking up space at a time
+  const answerReactPlayerStyling: React.CSSProperties = useVirtualBackground
     ? {
         backgroundImage: `url(${virtualBackgroundUrl})`,
         backgroundSize: "100% auto",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
         backgroundColor: "black",
-        position: "relative",
         margin: "0 auto",
-        zIndex: 0,
+        position: playAnswer ? "relative" : "absolute",
+        visibility: playAnswer ? "visible" : "hidden",
+        zIndex: playAnswer ? 2 : 1,
       }
     : {
         backgroundColor: "black",
-        position: "relative",
         margin: "0 auto",
-        zIndex: 0,
+        position: playAnswer ? "relative" : "absolute",
+        visibility: playAnswer ? "visible" : "hidden",
+        zIndex: playAnswer ? 2 : 1,
+      };
+  const idleReactPlayerStyling: React.CSSProperties = useVirtualBackground
+    ? {
+        backgroundImage: `url(${virtualBackgroundUrl})`,
+        backgroundSize: "100% auto",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundColor: "black",
+        top: 0,
+        margin: "0 auto",
+        position: !playAnswer ? "relative" : "absolute",
+        visibility: !playAnswer ? "visible" : "hidden",
+        zIndex: !playAnswer ? 2 : 1,
+      }
+    : {
+        backgroundColor: "black",
+        top: 0,
+        margin: "0 auto",
+        position: !playAnswer ? "relative" : "absolute",
+        visibility: !playAnswer ? "visible" : "hidden",
+        zIndex: !playAnswer ? 2 : 1,
       };
   return (
     <div
-      className="video-player-wrapper"
-      data-cy={
-        isIdle ? "idle-video-player-wrapper" : "answer-video-player-wrapper"
-      }
-      style={numberMentors > 1 ? { marginTop: 0 } : { marginTop: 50 }}
+      data-cy={"answer-video-player-wrapper"}
+      style={{ width: "100%", height: "100%" }}
     >
       {!hideLinkLabel && shouldDiplayWebLinks ? answerLinkCard : null}
       {mentorName ? mentorNameCard : null}
       <ReactPlayer
-        style={reactPlayerStyling}
+        style={answerReactPlayerStyling}
         className="player-wrapper react-player-wrapper"
-        data-cy="playing-video-mentor"
+        data-cy="react-player-answer-video"
         url={videoUrl}
-        muted={Boolean(isIdle)}
+        muted={false}
         onEnded={onEnded}
         ref={reactPlayerRef}
         onPlay={onPlay}
         onProgress={onProgress}
-        loop={isIdle}
-        controls={!isIdle}
-        width={width}
-        height={height}
+        loop={false}
+        controls={true}
+        width="fit-content"
+        height="fit-content"
         progressInterval={100}
         playing={Boolean(playing)}
         playsinline
@@ -584,6 +588,29 @@ function VideoPlayer(args: VideoPlayerParams) {
           },
         }}
       />
+      <ReactPlayer
+        style={idleReactPlayerStyling}
+        className="player-wrapper react-player-wrapper"
+        data-cy="react-player-idle-video"
+        url={idleUrl}
+        muted={true}
+        loop={true}
+        controls={false}
+        width="fit-content"
+        height="fit-content"
+        progressInterval={100}
+        playing={true}
+        playsinline
+        webkit-playsinline="true"
+        config={{
+          file: {
+            attributes: {
+              crossOrigin: "true",
+            },
+          },
+        }}
+      />
+      {emailIcon()}
     </div>
   );
 }

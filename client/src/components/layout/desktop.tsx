@@ -37,7 +37,7 @@ function Desktop(props: {
   );
 
   const leftPanel = (
-    <div>
+    <>
       <VideoPanel />
       {mentorType === MentorType.CHAT ? (
         <Chat
@@ -52,11 +52,11 @@ function Desktop(props: {
           configEmailMentorAddress={configEmailMentorAddress}
         />
       )}
-    </div>
+    </>
   );
 
   const rightPanel = (
-    <div>
+    <>
       <Topics
         onSelected={onTopicSelected}
         showHistoryTab={mentorType === MentorType.CHAT}
@@ -66,7 +66,7 @@ function Desktop(props: {
       </Collapse>
       {!hasSessionUser() && displayGuestPrompt ? <GuestPrompt /> : undefined}
       <Input />
-    </div>
+    </>
   );
   return (
     <div className="main-container" style={{ height: windowHeight - 60 }}>

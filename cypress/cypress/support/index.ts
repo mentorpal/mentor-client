@@ -24,3 +24,9 @@ import "./commands";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+// This error can be safely ignored: https://stackoverflow.com/a/50387233
+Cypress.on(
+  "uncaught:exception",
+  (err) => !err.message.includes("ResizeObserver")
+);
