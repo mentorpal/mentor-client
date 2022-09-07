@@ -588,24 +588,27 @@ export function mentorAnswerPlaybackStarted(video: {
       );
       return;
     }
-    sendCmi5Statement({
-      verb: {
-        id: "https://mentorpal.org/xapi/verb/answer-playback-started",
-        display: {
-          "en-US": "answer-playback-started",
+    sendCmi5Statement(
+      {
+        verb: {
+          id: "https://mentorpal.org/xapi/verb/answer-playback-started",
+          display: {
+            "en-US": "answer-playback-started",
+          },
+        },
+        result: {
+          extensions: {
+            "https://mentorpal.org/xapi/verb/answer-playback-started":
+              toXapiResultExt(mentorData, curState),
+          },
+        },
+        object: {
+          id: `${window.location.protocol}//${window.location.host}`,
+          objectType: "Activity",
         },
       },
-      result: {
-        extensions: {
-          "https://mentorpal.org/xapi/verb/answer-playback-started":
-            toXapiResultExt(mentorData, curState),
-        },
-      },
-      object: {
-        id: `${window.location.protocol}//${window.location.host}`,
-        objectType: "Activity",
-      },
-    });
+      curState.cmi5
+    );
   };
 }
 
@@ -685,29 +688,33 @@ export const sendQuestion =
   ) => {
     const localData = localStorage.getItem("userData");
     const userEmail = JSON.parse(localData ? localData : "{}").userEmail;
+    const curState = getState();
 
-    sendCmi5Statement({
-      verb: {
-        id: "https://mentorpal.org/xapi/verb/asked",
-        display: {
-          "en-US": "asked",
-        },
-      },
-      result: {
-        extensions: {
-          "https://mentorpal.org/xapi/verb/asked": {
-            questionIndex: currentQuestionIndex(getState()) + 1,
-            text: q.question,
-            source: q.source,
-            userEmail: userEmail,
+    sendCmi5Statement(
+      {
+        verb: {
+          id: "https://mentorpal.org/xapi/verb/asked",
+          display: {
+            "en-US": "asked",
           },
         },
+        result: {
+          extensions: {
+            "https://mentorpal.org/xapi/verb/asked": {
+              questionIndex: currentQuestionIndex(getState()) + 1,
+              text: q.question,
+              source: q.source,
+              userEmail: userEmail,
+            },
+          },
+        },
+        object: {
+          id: `${window.location.protocol}//${window.location.host}`,
+          objectType: "Activity",
+        },
       },
-      object: {
-        id: `${window.location.protocol}//${window.location.host}`,
-        objectType: "Activity",
-      },
-    });
+      curState.cmi5
+    );
     const questionId = uuid.v4();
     clearNextMentorTimer();
     dispatch(onQuestionSent({ ...q, questionId }));
@@ -746,26 +753,29 @@ export const sendQuestion =
               questionSource: q.source,
               status: MentorQuestionStatus.ANSWERED,
             };
-            sendCmi5Statement({
-              verb: {
-                id: "https://mentorpal.org/xapi/verb/answered",
-                display: {
-                  "en-US": "answered",
-                },
-              },
-              result: {
-                extensions: {
-                  "https://mentorpal.org/xapi/verb/answered": {
-                    ...response,
-                    questionIndex: currentQuestionIndex(getState()),
+            sendCmi5Statement(
+              {
+                verb: {
+                  id: "https://mentorpal.org/xapi/verb/answered",
+                  display: {
+                    "en-US": "answered",
                   },
                 },
+                result: {
+                  extensions: {
+                    "https://mentorpal.org/xapi/verb/answered": {
+                      ...response,
+                      questionIndex: currentQuestionIndex(getState()),
+                    },
+                  },
+                },
+                object: {
+                  id: `${window.location.protocol}//${window.location.host}`,
+                  objectType: "Activity",
+                },
               },
-              object: {
-                id: `${window.location.protocol}//${window.location.host}`,
-                objectType: "Activity",
-              },
-            });
+              state.cmi5
+            );
             dispatch(onQuestionAnswered(response));
             resolve(response);
           })
