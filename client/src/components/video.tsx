@@ -363,56 +363,46 @@ function Video(args: {
           className="video-container"
           data-test-replay={idleVideo.src}
           style={{
+            height: "100%",
             minHeight: Math.max(answerVideoRefHeight || 0),
             paddingBottom: "30px",
           }}
         >
-          <div
-            data-cy="answer-idle-video-container"
-            style={{ position: "relative", width: "100%", height: "100%" }}
+          <span
+            data-cy="answer-memo-video-player-wrapper"
+            style={{
+              display: "inline-block",
+              position: "relative",
+              width: "100%",
+              height: "fit-content",
+            }}
+            ref={answerVideoRef}
           >
-            <span
-              data-cy="answer-memo-video-player-wrapper"
-              className="video-player-wrapper"
-              style={{
-                display: "inline-block",
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                margin: "auto 0",
-                width: "100%",
-                height: "fit-content",
-              }}
-              ref={answerVideoRef}
-            >
-              <MemoVideoPlayer
-                emailIcon={emailMentorIcon}
-                onEnded={onEnded}
-                onPlay={onPlay}
-                onProgress={onProgressAnswerVideo}
-                playing={Boolean(playing)}
-                subtitlesOn={
-                  Boolean(subtitlesSupported) && Boolean(video.subtitles)
-                }
-                reactPlayerRef={reactPlayerRef}
-                subtitlesUrl={video.subtitles}
-                videoUrl={isIdle ? "" : video.src}
-                webLinks={webLinks}
-                hideLinkLabel={hideLinkLabel}
-                mentorName={mentorData.name}
-                idleUrl={idleVideo.src}
-                useVirtualBackground={curMentor.mentor.hasVirtualBackground}
-                virtualBackgroundUrl={virtualBackgroundUrl}
-                playAnswer={!isIdle && videoFinishedBuffering}
-                vbgAspectRatio={vbgAspectRatio}
-              />
-            </span>
-          </div>
-          <LoadingSpinner mentor={curMentorId} />
-          <MessageStatus mentor={curMentorId} />
+            <MemoVideoPlayer
+              emailIcon={emailMentorIcon}
+              onEnded={onEnded}
+              onPlay={onPlay}
+              onProgress={onProgressAnswerVideo}
+              playing={Boolean(playing)}
+              subtitlesOn={
+                Boolean(subtitlesSupported) && Boolean(video.subtitles)
+              }
+              reactPlayerRef={reactPlayerRef}
+              subtitlesUrl={video.subtitles}
+              videoUrl={isIdle ? "" : video.src}
+              webLinks={webLinks}
+              hideLinkLabel={hideLinkLabel}
+              mentorName={mentorData.name}
+              idleUrl={idleVideo.src}
+              useVirtualBackground={curMentor.mentor.hasVirtualBackground}
+              virtualBackgroundUrl={virtualBackgroundUrl}
+              playAnswer={!isIdle && videoFinishedBuffering}
+              vbgAspectRatio={vbgAspectRatio}
+            />
+          </span>
         </div>
+        <LoadingSpinner mentor={curMentorId} />
+        <MessageStatus mentor={curMentorId} />
       </>
     );
   }
