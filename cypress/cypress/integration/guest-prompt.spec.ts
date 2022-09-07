@@ -35,30 +35,28 @@ describe("Guest Prompt", () => {
     });
   });
 
-  it("reloads with a guest session on submit name via guest prompt", () => {
-    mockDefaultSetup(cy, {
-      config: { cmi5Enabled: true, displayGuestPrompt: true },
-    });
-    cy.visit("/");
-    cy.get("[data-cy=guest-prompt-input]").type("guestuser1");
-    cy.get("[data-cy=guest-prompt-input-send]").trigger("mouseover").click();
-    cy.url().should("include", "actor=");
-    cy.url().should("include", "guestuser1");
-    cy.get("[data-cy=guest-prompt]").should("not.exist");
-    cy.get("[data-cy=video-container]").within(($video) => {
-      cy.get("video").should("have.attr", "autoplay", "autoplay");
-    });
-  });
-
   it("loads a single specific mentor", () => {
+    cy.intercept("https://fake.org/lrs/auth/*", { "auth-token": "token" });
+    cy.intercept("https://fake.org/lrs/xapi/activities/*", {
+      contextTemplate: { registration: "id" },
+      launchMode: "Normal",
+    });
+    cy.intercept("https://fake.org/lrs/xapi/agents/*", {});
+    cy.intercept("https://fake.org/lrs/xapi/statements", [
+      "3bcdfd9f-9901-459b-9cbf-88ed5d3a33ce",
+    ]);
+
     mockDefaultSetup(cy, {
-      config: { cmi5Enabled: true, displayGuestPrompt: true },
+      config: {
+        cmi5Enabled: true,
+        cmi5Endpoint: "https://fake.org/lrs/xapi",
+        cmi5Fetch: `https://fake.org/lrs/auth/guesttoken=guestuser1`,
+        displayGuestPrompt: true,
+      },
     });
     cy.visit("/?mentor=clint");
     cy.get("[data-cy=guest-prompt-input]").type("guestuser1");
     cy.get("[data-cy=guest-prompt-input-send]").trigger("mouseover").click();
-    cy.url().should("include", "actor=");
-    cy.url().should("include", "guestuser1");
     cy.get("[data-cy=guest-prompt]").should("not.exist");
     cy.get("[data-cy=video-container]").within(($video) => {
       cy.get("video").should("have.attr", "autoplay", "autoplay");
@@ -66,13 +64,26 @@ describe("Guest Prompt", () => {
   });
 
   it("accepts enter in guest-name input field as submit", () => {
+    cy.intercept("https://fake.org/lrs/auth/*", { "auth-token": "token" });
+    cy.intercept("https://fake.org/lrs/xapi/activities/*", {
+      contextTemplate: { registration: "id" },
+      launchMode: "Normal",
+    });
+    cy.intercept("https://fake.org/lrs/xapi/agents/*", {});
+    cy.intercept("https://fake.org/lrs/xapi/statements", [
+      "3bcdfd9f-9901-459b-9cbf-88ed5d3a33ce",
+    ]);
+
     mockDefaultSetup(cy, {
-      config: { cmi5Enabled: true, displayGuestPrompt: true },
+      config: {
+        cmi5Enabled: true,
+        cmi5Endpoint: "https://fake.org/lrs/xapi",
+        cmi5Fetch: `https://fake.org/lrs/auth/guesttoken=guestuser2`,
+        displayGuestPrompt: true,
+      },
     });
     cy.visit("/");
     cy.get("[data-cy=guest-prompt-input]").type("guestuser2\n");
-    cy.url().should("include", "actor=");
-    cy.url().should("include", "guestuser2");
     cy.get("[data-cy=guest-prompt]").should("not.exist");
     cy.get("[data-cy=video-container]").within(($video) => {
       cy.get("video").should("have.attr", "autoplay", "autoplay");

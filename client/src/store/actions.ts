@@ -5,9 +5,11 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 /* eslint-disable */
+import Cmi5 from "@kycarr/cmi5";
 import { ActionCreator, AnyAction, Dispatch } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
-import Cmi5 from "@xapi/cmi5";
+import * as uuid from "uuid";
+
 import {
   fetchConfig,
   fetchMentor,
@@ -15,6 +17,7 @@ import {
   giveFeedback,
   queryMentor,
 } from "api";
+import { getCmiParams } from "cmiutils";
 import {
   MentorsLoadRequest,
   MentorsLoadResult,
@@ -38,7 +41,6 @@ import {
   TopicQuestions,
   Media,
 } from "../types";
-import * as uuid from "uuid";
 import {
   getRecommendedTopics,
   getRegistrationId,
@@ -69,6 +71,25 @@ export const QUESTION_RESULT = "QUESTION_RESULT";
 export const QUESTION_SENT = "QUESTION_SENT"; // question input was sent
 export const TOPIC_SELECTED = "TOPIC_SELECTED";
 export const GUEST_NAME_SET = "GUEST_NAME_SET";
+export const CMI5_INIT_STARTED = "CMI5_INIT_STARTED";
+export const CMI5_INIT_SUCCEEDED = "CMI5_INIT_SUCCEEDED";
+export const CMI5_INIT_FAILED = "CMI5_INIT_FAILED";
+
+export interface Cmi5InitStartedAction {
+  type: typeof CMI5_INIT_STARTED;
+}
+export interface Cmi5InitFailedAction {
+  type: typeof CMI5_INIT_FAILED;
+  errors: string[];
+}
+export interface Cmi5InitSucceededAction {
+  type: typeof CMI5_INIT_SUCCEEDED;
+  payload: Cmi5;
+}
+export type Cmi5InitAction =
+  | Cmi5InitStartedAction
+  | Cmi5InitFailedAction
+  | Cmi5InitSucceededAction;
 
 export interface AnswerFinishedAction {
   type: typeof ANSWER_FINISHED;
@@ -242,6 +263,7 @@ export interface QuestionInputChangedAction {
 }
 
 export type MentorClientAction =
+  | Cmi5InitAction
   | ConfigLoadAction
   | FeedbackAction
   | GuestNameSetAction
@@ -255,6 +277,32 @@ export type MentorClientAction =
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
+
+export const initCmi5 =
+  (userID: string, userEmail: string, homePage: string, config: Config) =>
+  async (dispatch: ThunkDispatch<State, void, Cmi5InitAction>) => {
+    dispatch({
+      type: CMI5_INIT_STARTED,
+    });
+    try {
+      const launchParams = getCmiParams(userID, userEmail, homePage, config);
+      console.warn(launchParams);
+      const cmi5 = new Cmi5(launchParams);
+      await cmi5.initialize();
+      return dispatch({
+        type: CMI5_INIT_SUCCEEDED,
+        payload: cmi5,
+      });
+    } catch (err) {
+      console.error(err);
+      if (err instanceof Error) {
+        return dispatch({
+          type: CMI5_INIT_FAILED,
+          errors: [err.message],
+        });
+      }
+    }
+  };
 
 export const onMentorDisplayAnswer =
   (
@@ -464,12 +512,13 @@ export const loadMentors: ActionCreator<
     return;
   };
 
-export function sendCmi5Statement(statement: any) {
-  if (!Cmi5.isCmiAvailable) {
+export function sendCmi5Statement(statement: any, cmi5?: Cmi5): void {
+  if (!cmi5 && !Cmi5.isCmiAvailable) {
     return;
   }
   try {
-    Cmi5.instance
+    const cmi = cmi5 || Cmi5.instance;
+    cmi
       .sendCmi5AllowedStatement({
         ...statement,
         context: { registration: getRegistrationId() },

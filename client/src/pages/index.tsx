@@ -6,26 +6,27 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Helmet } from "react-helmet";
 import { v1 as uuidv1 } from "uuid";
 import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Cmi5 from "@xapi/cmi5";
-import addCmi, { getParams, hasCmi } from "cmiutils";
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import Cmi5 from "@kycarr/cmi5";
+
 import Header from "components/header";
-import { loadConfig, loadMentors, setGuestName } from "store/actions";
+import { loadConfig, loadMentors, setGuestName, initCmi5 } from "store/actions";
 import { Config, LoadStatus, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
 import { fetchMentorByAccessToken, queryMentor } from "api";
-import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-import { Helmet } from "react-helmet";
 
 import "styles/history-chat-responsive.css";
 
 import Desktop from "components/layout/desktop";
 import { isMobile } from "react-device-detect";
 import Mobile from "components/layout/mobile";
-import { getRegistrationId, onVisibilityChange, setLocalStorage } from "utils";
+import { onVisibilityChange, setLocalStorage } from "utils";
+import { getParams } from "cmiutils";
 
 const useStyles = makeStyles((theme) => ({
   flexRoot: {
@@ -92,6 +93,7 @@ function IndexPage(props: {
 }): JSX.Element {
   const dispatch = useDispatch();
   const styles = useStyles();
+  const cmi5 = useSelector<State, Cmi5 | undefined>((state) => state.cmi5);
   const config = useSelector<State, Config>((state) => state.config);
   const configLoadStatus = useSelector<State, LoadStatus>(
     (state) => state.configLoadStatus
@@ -119,9 +121,7 @@ function IndexPage(props: {
 
   function hasSessionUser(): boolean {
     return Boolean(
-      !config.cmi5Enabled ||
-        (typeof window !== "undefined" && hasCmi(window.location.search)) ||
-        guestName
+      !config.cmi5Enabled || (cmi5 && cmi5.isAuthenticated) || guestName
     );
   }
 
@@ -254,64 +254,29 @@ function IndexPage(props: {
     if (!isConfigLoadComplete(configLoadStatus)) {
       return;
     }
-
     if (mentor) {
       warmupMentors(mentor);
     }
-
-    if (
-      config.cmi5Enabled &&
-      !Cmi5.isCmiAvailable &&
-      !config.displayGuestPrompt
-    ) {
-      const urlRoot = `${window.location.protocol}//${window.location.host}`;
-      // TODO: Shouldn't this also check local storage?
-      let userId = getParams(window.location.href);
-      if (!userId || typeof userId !== "string") {
-        userId = uuidv1();
-      }
+    if (config.cmi5Enabled && !config.displayGuestPrompt && !cmi5) {
       const referrer = setupLocalStorage()[1];
       const userEmail = setupLocalStorage()[2];
       const userIdLRS = setupLocalStorage()[0];
-
-      window.location.href = addCmi(
-        window.location.href,
-        {
-          activityId: window.location.href,
-          actor: {
-            objectType: "Agent",
-            account: {
-              homePage: `${urlRoot}/guests-client/${referrer}`,
-              name: userIdLRS,
-            },
-            mbox: userEmail,
-            name: userIdLRS,
-          },
-          endpoint: config.cmi5Endpoint,
-          fetch: `${config.cmi5Fetch}${
-            config.cmi5Fetch.includes("?") ? "" : "?"
-          }&username=${encodeURIComponent(
-            userEmail
-          )}&userid=${userIdLRS}&userID=${userIdLRS}`,
-          registration: getRegistrationId(),
-        },
-        referrer,
-        userEmail
-      );
-    }
-    if (config.cmi5Enabled && Cmi5.isCmiAvailable) {
-      try {
-        Cmi5.instance.initialize().catch((e) => {
-          console.error(e);
-        });
-      } catch (err2) {
-        console.error(err2);
+      if (userIdLRS && userEmail && referrer) {
+        try {
+          dispatch(
+            initCmi5(userIdLRS, userEmail, `guests-client/${referrer}`, config)
+          );
+        } catch (err2) {
+          console.error(err2);
+        }
       }
     }
   }, [configLoadStatus]);
 
   useEffect(() => {
-    document.addEventListener("visibilitychange", onVisibilityChange);
+    document.addEventListener("visibilitychange", () =>
+      onVisibilityChange(cmi5)
+    );
   }, []);
 
   useEffect(() => {

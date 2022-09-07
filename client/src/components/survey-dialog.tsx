@@ -5,6 +5,8 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import Cmi5 from "@kycarr/cmi5";
 import { Dialog, DialogTitle, DialogContent, Button } from "@material-ui/core";
 import {
   getLocalStorage,
@@ -14,6 +16,7 @@ import {
 } from "utils";
 import { sendCmi5Statement } from "store/actions";
 import { toXapiResultExtCustom } from "cmiutils";
+import { State } from "types";
 
 export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
   const [title, setTitle] = useState<string>("");
@@ -23,6 +26,7 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
     "qualtricsuserid"
   )}`;
   const { noLabel } = props;
+  const cmi5 = useSelector<State, Cmi5 | undefined>((state) => state.cmi5);
 
   function checkForSurveyPopupVariables() {
     // Check if we already have local storage setup
@@ -184,31 +188,34 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
       timeSpentOnPage: getLocalStorage("postsurveytime"),
       qualtricsUserId: getLocalStorage("qualtricsuserid"),
     };
-    sendCmi5Statement({
-      verb: {
-        id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
-        display: {
-          "en-US": `${userData.verb}`,
+    sendCmi5Statement(
+      {
+        verb: {
+          id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
+          display: {
+            "en-US": `${userData.verb}`,
+          },
+        },
+        result: {
+          extensions: {
+            "https://mentorpal.org/xapi/verb/terminated": toXapiResultExtCustom(
+              userData.verb,
+              userData.userid,
+              userData.userEmail,
+              userData.referrer,
+              userData.postSurveyTime,
+              userData.timeSpentOnPage,
+              userData.qualtricsUserId
+            ),
+          },
+        },
+        object: {
+          id: `${window.location.protocol}//${window.location.host}`,
+          objectType: "Activity",
         },
       },
-      result: {
-        extensions: {
-          "https://mentorpal.org/xapi/verb/terminated": toXapiResultExtCustom(
-            userData.verb,
-            userData.userid,
-            userData.userEmail,
-            userData.referrer,
-            userData.postSurveyTime,
-            userData.timeSpentOnPage,
-            userData.qualtricsUserId
-          ),
-        },
-      },
-      object: {
-        id: `${window.location.protocol}//${window.location.host}`,
-        objectType: "Activity",
-      },
-    });
+      cmi5
+    );
   };
 
   return (
