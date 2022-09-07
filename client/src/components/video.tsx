@@ -500,6 +500,7 @@ function VideoPlayer(args: VideoPlayerParams) {
   // opposite goes for the idle player, so only one of the players is taking up space at a time
   const answerReactPlayerStyling: React.CSSProperties = useVirtualBackground
     ? {
+        lineHeight: 0, //hack to make inline children of parent not have extra pixels below them https://gaurav5430.medium.com/extra-4px-at-the-bottom-of-html-img-8807a7ab0ca2
         backgroundImage: `url(${virtualBackgroundUrl})`,
         backgroundSize: vbgAspectRatio >= 1.77 ? "auto 100%" : "100% auto",
         backgroundRepeat: "no-repeat",
@@ -511,6 +512,7 @@ function VideoPlayer(args: VideoPlayerParams) {
         zIndex: playAnswer ? 2 : 1,
       }
     : {
+        lineHeight: 0,
         backgroundColor: "black",
         margin: "0 auto",
         position: playAnswer ? "relative" : "absolute",
@@ -519,6 +521,7 @@ function VideoPlayer(args: VideoPlayerParams) {
       };
   const idleReactPlayerStyling: React.CSSProperties = useVirtualBackground
     ? {
+        lineHeight: 0,
         backgroundImage: `url(${virtualBackgroundUrl})`,
         backgroundSize: vbgAspectRatio >= 1.77 ? "auto 100%" : "100% auto",
         backgroundRepeat: "no-repeat",
@@ -531,6 +534,7 @@ function VideoPlayer(args: VideoPlayerParams) {
         zIndex: !playAnswer ? 2 : 1,
       }
     : {
+        lineHeight: 0,
         backgroundColor: "black",
         top: 0,
         margin: "0 auto",
