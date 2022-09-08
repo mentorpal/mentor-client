@@ -14,8 +14,8 @@
   flex-direction: column;
   justify-content: center;
   margin: auto;
-  width: 90%;
-  height: 90%;
+  width: 95%;
+  height: fit-content;
 }
 
 .web-link-a {

@@ -363,56 +363,46 @@ function Video(args: {
           className="video-container"
           data-test-replay={idleVideo.src}
           style={{
+            height: "100%",
             minHeight: Math.max(answerVideoRefHeight || 0),
             paddingBottom: "30px",
           }}
         >
-          <div
-            data-cy="answer-idle-video-container"
-            style={{ position: "relative", width: "100%", height: "100%" }}
+          <span
+            data-cy="answer-memo-video-player-wrapper"
+            style={{
+              display: "inline-block",
+              position: "relative",
+              width: "100%",
+              height: "fit-content",
+            }}
+            ref={answerVideoRef}
           >
-            <span
-              data-cy="answer-memo-video-player-wrapper"
-              className="video-player-wrapper"
-              style={{
-                display: "inline-block",
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                margin: "auto 0",
-                width: "100%",
-                height: "fit-content",
-              }}
-              ref={answerVideoRef}
-            >
-              <MemoVideoPlayer
-                emailIcon={emailMentorIcon}
-                onEnded={onEnded}
-                onPlay={onPlay}
-                onProgress={onProgressAnswerVideo}
-                playing={Boolean(playing)}
-                subtitlesOn={
-                  Boolean(subtitlesSupported) && Boolean(video.subtitles)
-                }
-                reactPlayerRef={reactPlayerRef}
-                subtitlesUrl={video.subtitles}
-                videoUrl={isIdle ? "" : video.src}
-                webLinks={webLinks}
-                hideLinkLabel={hideLinkLabel}
-                mentorName={mentorData.name}
-                idleUrl={idleVideo.src}
-                useVirtualBackground={curMentor.mentor.hasVirtualBackground}
-                virtualBackgroundUrl={virtualBackgroundUrl}
-                playAnswer={!isIdle && videoFinishedBuffering}
-                vbgAspectRatio={vbgAspectRatio}
-              />
-            </span>
-          </div>
-          <LoadingSpinner mentor={curMentorId} />
-          <MessageStatus mentor={curMentorId} />
+            <MemoVideoPlayer
+              emailIcon={emailMentorIcon}
+              onEnded={onEnded}
+              onPlay={onPlay}
+              onProgress={onProgressAnswerVideo}
+              playing={Boolean(playing)}
+              subtitlesOn={
+                Boolean(subtitlesSupported) && Boolean(video.subtitles)
+              }
+              reactPlayerRef={reactPlayerRef}
+              subtitlesUrl={video.subtitles}
+              videoUrl={isIdle ? "" : video.src}
+              webLinks={webLinks}
+              hideLinkLabel={hideLinkLabel}
+              mentorName={mentorData.name}
+              idleUrl={idleVideo.src}
+              useVirtualBackground={curMentor.mentor.hasVirtualBackground}
+              virtualBackgroundUrl={virtualBackgroundUrl}
+              playAnswer={!isIdle && videoFinishedBuffering}
+              vbgAspectRatio={vbgAspectRatio}
+            />
+          </span>
         </div>
+        <LoadingSpinner mentor={curMentorId} />
+        <MessageStatus mentor={curMentorId} />
       </>
     );
   }
@@ -510,6 +500,7 @@ function VideoPlayer(args: VideoPlayerParams) {
   // opposite goes for the idle player, so only one of the players is taking up space at a time
   const answerReactPlayerStyling: React.CSSProperties = useVirtualBackground
     ? {
+        lineHeight: 0, //hack to make inline children of parent not have extra pixels below them https://gaurav5430.medium.com/extra-4px-at-the-bottom-of-html-img-8807a7ab0ca2
         backgroundImage: `url(${virtualBackgroundUrl})`,
         backgroundSize: vbgAspectRatio >= 1.77 ? "auto 100%" : "100% auto",
         backgroundRepeat: "no-repeat",
@@ -521,6 +512,7 @@ function VideoPlayer(args: VideoPlayerParams) {
         zIndex: playAnswer ? 2 : 1,
       }
     : {
+        lineHeight: 0,
         backgroundColor: "black",
         margin: "0 auto",
         position: playAnswer ? "relative" : "absolute",
@@ -529,6 +521,7 @@ function VideoPlayer(args: VideoPlayerParams) {
       };
   const idleReactPlayerStyling: React.CSSProperties = useVirtualBackground
     ? {
+        lineHeight: 0,
         backgroundImage: `url(${virtualBackgroundUrl})`,
         backgroundSize: vbgAspectRatio >= 1.77 ? "auto 100%" : "100% auto",
         backgroundRepeat: "no-repeat",
@@ -541,6 +534,7 @@ function VideoPlayer(args: VideoPlayerParams) {
         zIndex: !playAnswer ? 2 : 1,
       }
     : {
+        lineHeight: 0,
         backgroundColor: "black",
         top: 0,
         margin: "0 auto",
