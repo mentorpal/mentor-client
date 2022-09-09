@@ -15,7 +15,7 @@
     "axios": "^0.21.4",
     "classnames": "^2.3.1",
     "detect-browser": "^5.3.0",
-    "gatsby": "^3.11.1",
+    "gatsby": "^4.22.1",
     "gatsby-plugin-react-helmet": "^5.18.0",
     "query-string": "^7.0.1",
     "react": "^17.0.2",
