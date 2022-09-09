@@ -10,6 +10,7 @@ import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
 import { sendCmi5Statement } from "store/actions";
 import { toXapiResultExtCustom } from "cmiutils";
+import Cmi5 from "@kycarr/cmi5";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const _ = require("lodash");
 
@@ -95,7 +96,7 @@ export function loadSentry(): void {
   });
 }
 
-export function onVisibilityChange(): void {
+export function onVisibilityChange(cmi5?: Cmi5): void {
   if (document.visibilityState !== "visible") {
     const localData = localStorage.getItem("userData");
     if (!localData) {
@@ -114,31 +115,34 @@ export function onVisibilityChange(): void {
       timeSpentOnPage: getLocalStorage("postsurveytime"),
       qualtricsUserId: getLocalStorage("qualtricsuserid"),
     };
-    sendCmi5Statement({
-      verb: {
-        id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
-        display: {
-          "en-US": `${userData.verb}`,
+    sendCmi5Statement(
+      {
+        verb: {
+          id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
+          display: {
+            "en-US": `${userData.verb}`,
+          },
+        },
+        result: {
+          extensions: {
+            "https://mentorpal.org/xapi/verb/suspended": toXapiResultExtCustom(
+              userData.verb,
+              userData.userid,
+              userData.userEmail,
+              userData.referrer,
+              userData.postSurveyTime,
+              userData.timeSpentOnPage,
+              userData.qualtricsUserId
+            ),
+          },
+        },
+        object: {
+          id: `${window.location.protocol}//${window.location.host}`,
+          objectType: "Activity",
         },
       },
-      result: {
-        extensions: {
-          "https://mentorpal.org/xapi/verb/suspended": toXapiResultExtCustom(
-            userData.verb,
-            userData.userid,
-            userData.userEmail,
-            userData.referrer,
-            userData.postSurveyTime,
-            userData.timeSpentOnPage,
-            userData.qualtricsUserId
-          ),
-        },
-      },
-      object: {
-        id: `${window.location.protocol}//${window.location.host}`,
-        objectType: "Activity",
-      },
-    });
+      cmi5
+    );
   }
 }
 

@@ -8,6 +8,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "14.16"
+      - name: Authenticate with private NPM package
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - name: Install
         run:  npm ci
       - name: Run format test
@@ -26,6 +28,8 @@ jobs:
     name: test e2e
     runs-on: ubuntu-latest
     steps:
+      - name: Authenticate with private NPM package
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - uses: actions/checkout@v2
       - name: build + run app in docker-compose
         run: docker-compose up -d

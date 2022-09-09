@@ -4,10 +4,11 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { LaunchParameters } from "@xapi/cmi5";
+import { LaunchParameters } from "@kycarr/cmi5";
 import queryString from "query-string";
 import { Agent } from "@gradiant/xapi-dsl";
-import { XapiResultCustom } from "types";
+import { Config, XapiResultCustom } from "types";
+import { getRegistrationId } from "utils";
 
 export interface CmiParams {
   activityId: string;
@@ -17,7 +18,7 @@ export interface CmiParams {
   registration: string;
 }
 
-export function addCmi(
+export function addCmiUrl(
   url: string,
   cp: LaunchParameters,
   referrer: string,
@@ -34,6 +35,33 @@ export function addCmi(
   )}&referrer=${encodeURIComponent(referrer)}&userEmail=${encodeURIComponent(
     userEmail
   )}`;
+}
+
+export function getCmiParams(
+  userID: string,
+  userEmail: string,
+  homePage: string,
+  config: Config
+): LaunchParameters {
+  const urlRoot = `${window.location.protocol}//${window.location.host}`;
+  const userId = userID;
+  return {
+    activityId: window.location.href,
+    actor: {
+      objectType: "Agent",
+      account: {
+        homePage: `${urlRoot}/${homePage}`,
+        name: userID,
+      },
+      name: userID,
+      mbox: `mailto:${userEmail}`,
+    },
+    endpoint: config.cmi5Endpoint,
+    fetch: `${config.cmi5Fetch}${
+      config.cmi5Fetch.includes("?") ? "" : "?"
+    }&username=${encodeURIComponent(userEmail)}&userid=${userId}`,
+    registration: getRegistrationId(),
+  };
 }
 
 export function hasCmi(urlOrQueryString: string): boolean {
@@ -60,8 +88,6 @@ export function getParams(urlOrQueryString: string): string | string[] {
 
   return userID;
 }
-
-export default addCmi;
 
 export function toXapiResultExtCustom(
   verb: string,

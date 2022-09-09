@@ -4,14 +4,14 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { v1 as uuidv1 } from "uuid";
 import { Modal, Button, Paper, InputBase, Backdrop } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import addCmi from "cmiutils";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Config, State } from "types";
-import { getRegistrationId } from "utils";
+import { initCmi5 } from "store/actions";
+import Cmi5 from "@kycarr/cmi5";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -37,47 +37,31 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function GuestPrompt(): JSX.Element {
+  const dispatch = useDispatch();
   const classes = useStyles();
   const [name, setName] = useState("");
+  const [open, setOpen] = useState(true);
   const config = useSelector<State, Config>((state) => state.config);
+  const cmi5 = useSelector<State, Cmi5 | undefined>((state) => state.cmi5);
 
-  function absUrl(u: string) {
-    return u.startsWith("http")
-      ? u
-      : `${window.location.protocol}//${window.location.host}${
-          u.startsWith("/") ? "" : "/"
-        }${u}`;
-  }
+  useEffect(() => {
+    if (cmi5) {
+      setOpen(false);
+    }
+  }, [cmi5]);
 
   function onGuestNameEntered(name: string) {
     if (!name) {
       name = "guest";
     }
-    const urlRoot = `${window.location.protocol}//${window.location.host}`;
     const userId = uuidv1();
     const localData = localStorage.getItem("userData");
     const userEmail = JSON.parse(localData ? localData : "{}").userEmail;
-    window.location.href = addCmi(
-      window.location.href,
-      {
-        activityId: window.location.href,
-        actor: {
-          objectType: "Agent",
-          account: {
-            name: `${userId}`,
-            homePage: `${urlRoot}/guests`,
-          },
-          name: `${name}`,
-        },
-        endpoint: absUrl(config.cmi5Endpoint),
-        fetch: `${absUrl(config.cmi5Fetch)}${
-          config.cmi5Fetch.includes("?") ? "" : "?"
-        }&username=${encodeURIComponent(name)}&userid=${userId}`,
-        registration: getRegistrationId(),
-      },
-      "",
-      userEmail
-    );
+    try {
+      dispatch(initCmi5(userId, userEmail, `guests`, config));
+    } catch (err2) {
+      console.error(err2);
+    }
   }
 
   function onInput(name: string) {
@@ -91,7 +75,7 @@ export default function GuestPrompt(): JSX.Element {
   return (
     <div data-cy="guest-prompt">
       <Modal
-        open={true}
+        open={open}
         onClose={() => onGuestNameEntered(name)}
         className={classes.modal}
         BackdropComponent={Backdrop}

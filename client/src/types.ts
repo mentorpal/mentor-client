@@ -5,6 +5,8 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 
+import Cmi5 from "@kycarr/cmi5";
+
 export interface ChatData {
   lastQuestionAt?: Date;
   lastAnswerAt?: Date;
@@ -254,6 +256,7 @@ export interface QuestionResult {
 
 export interface State {
   chat: ChatData;
+  cmi5?: Cmi5;
   config: Config;
   configLoadStatus: LoadStatus;
   curMentor: string; // id of selected mentor

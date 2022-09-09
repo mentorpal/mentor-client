@@ -6,6 +6,8 @@ The full terms of this copyright and license should always be found in the root 
 */
 import { normalizeString } from "utils";
 import {
+  Cmi5InitSucceededAction,
+  CMI5_INIT_SUCCEEDED,
   ANSWER_FINISHED,
   VIDEO_FINISHED,
   FEEDBACK_SEND_SUCCEEDED,
@@ -71,6 +73,7 @@ export const initialState: State = {
     questionSent: false,
     lastQuestionCounter: 0,
   },
+  cmi5: undefined,
   config: {
     cmi5Enabled: false,
     cmi5Endpoint: process.env.CMI5_ENDPOINT || "/lrs/xapi",
@@ -108,6 +111,16 @@ export const initialState: State = {
     source: MentorQuestionSource.NONE,
   },
 };
+
+function onCmi5InitSucceeded(
+  state: State,
+  action: Cmi5InitSucceededAction
+): State {
+  return {
+    ...state,
+    cmi5: action.payload,
+  };
+}
 
 function mentorSelected(state: State, action: MentorSelectedAction): State {
   const mentorId = action.payload.id;
@@ -621,6 +634,8 @@ export default function reducer(
   action: MentorClientAction
 ): State {
   switch (action.type) {
+    case CMI5_INIT_SUCCEEDED:
+      return onCmi5InitSucceeded(state, action);
     case CONFIG_LOAD_FAILED:
       return onConfigLoadFailed(state);
     case CONFIG_LOAD_STARTED:
