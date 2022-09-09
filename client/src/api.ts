@@ -72,20 +72,30 @@ export function getUtterance(
   return mentor.utterances.find((a) => a.name === utterance);
 }
 
-export function videoUrl(media: Media[], tag?: string): string {
+export function videoUrl(
+  media: Media[],
+  tag?: string,
+  useVbg?: boolean
+): string {
   if (!media) {
     return "";
   }
-  const url = media.find(
+  const foundMedia = media.find(
     (m) => m.type === "video" && m.tag === (tag || "web")
-  )?.url;
-  return url || "";
+  );
+  return useVbg && foundMedia?.transparentVideoUrl
+    ? foundMedia.transparentVideoUrl
+    : foundMedia?.url || "";
 }
 
-export function idleUrl(mentor: MentorClientData, tag?: string): string {
+export function idleUrl(
+  mentor: MentorClientData,
+  tag?: string,
+  useVbg?: boolean
+): string {
   const idle = getUtterance(mentor, UtteranceName.IDLE);
   if (idle) {
-    return videoUrl(idle.media, tag);
+    return videoUrl(idle.media, tag, useVbg);
   } else {
     return "";
   }
@@ -168,11 +178,13 @@ export async function fetchMentor(
               tag
               type
               url
+              transparentVideoUrl
             }
             mobileMedia {
               tag
               type
               url
+              transparentVideoUrl
             }
             vttMedia {
               tag

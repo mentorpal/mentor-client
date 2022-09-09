@@ -26,6 +26,7 @@ import { ChatMsg, MentorState, State, WebLink } from "types";
 import "styles/video.css";
 import { Tooltip } from "@material-ui/core";
 import { useWithImage } from "use-with-image-url";
+import { useWithBrowser } from "use-with-browser";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
@@ -61,6 +62,7 @@ function Video(args: {
 }): JSX.Element {
   const { playing = false } = args;
   const dispatch = useDispatch();
+  const { browserSupportsViewingVbg } = useWithBrowser();
   // Redux store subscriptions
   const lastQuestionCounter = useSelector<State, number>(
     (s) => s.chat.lastQuestionCounter || s.questionsAsked.length + 1
@@ -87,24 +89,34 @@ function Video(args: {
   const [mentorData, setMentorData] = useState<HeaderMentorData>(
     defaultHeaderMentorData
   );
+  const [useVirtualBackground, setUseVirtualBackground] =
+    useState<boolean>(false);
   const curMentor: MentorState = { ...mentorsById[curMentorId] };
   const reactPlayerRef = useRef<ReactPlayer>(null);
-
   const defaultVirtualBackground = useSelector<State, string>((s) => {
     return s.config.defaultVirtualBackground;
   });
   const virtualBackgroundUrl: string =
     curMentor.mentor.virtualBackgroundUrl || defaultVirtualBackground;
+
+  const useVbg =
+    curMentor.mentor.hasVirtualBackground && browserSupportsViewingVbg();
   const { aspectRatio: vbgAspectRatio } = useWithImage(virtualBackgroundUrl);
   const getIdleVideoData = (): VideoData => {
     if (!curMentor) {
       return defaultVideoData;
     }
     return {
-      src: idleUrl(curMentor.mentor),
+      src: idleUrl(curMentor.mentor, undefined, useVbg),
       subtitles: "",
     };
   };
+
+  useEffect(() => {
+    setUseVirtualBackground(
+      curMentor.mentor.hasVirtualBackground && browserSupportsViewingVbg()
+    );
+  }, [curMentor.mentor.hasVirtualBackground, browserSupportsViewingVbg()]);
   const getVideoData = (): VideoData => {
     if (chatReplay) {
       const videoMedia = chatMessages.find((m) => {
@@ -113,7 +125,11 @@ function Video(args: {
         }
       });
       return {
-        src: getVideoUrl(videoMedia?.answerMedia || []),
+        src: getVideoUrl(
+          videoMedia?.answerMedia || [],
+          undefined,
+          useVirtualBackground
+        ),
         subtitles: subtitleUrl(videoMedia?.answerMedia || []),
       };
     }
@@ -121,7 +137,11 @@ function Video(args: {
       return defaultVideoData;
     }
     return {
-      src: getVideoUrl(curMentor.answer_media || []),
+      src: getVideoUrl(
+        curMentor.answer_media || [],
+        undefined,
+        useVirtualBackground
+      ),
       subtitles: subtitlesSupported
         ? subtitleUrl(curMentor.answer_media || [])
         : "",
@@ -210,7 +230,7 @@ function Video(args: {
         src: _idleVideoData.src,
         subtitles: "",
       });
-  }, [curMentorId, chatReplay, curMentor.answer_media]);
+  }, [curMentorId, chatReplay, curMentor.answer_media, useVirtualBackground]);
 
   useEffect(() => {
     setWebLinks(getWebLinkData());
@@ -394,7 +414,7 @@ function Video(args: {
               hideLinkLabel={hideLinkLabel}
               mentorName={mentorData.name}
               idleUrl={idleVideo.src}
-              useVirtualBackground={curMentor.mentor.hasVirtualBackground}
+              useVirtualBackground={useVirtualBackground}
               virtualBackgroundUrl={virtualBackgroundUrl}
               playAnswer={!isIdle && videoFinishedBuffering}
               vbgAspectRatio={vbgAspectRatio}
