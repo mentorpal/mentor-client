@@ -295,7 +295,6 @@ function IndexPage(props: {
           mentor = tokenResponse._id;
         }
       }
-
       dispatch(
         loadMentors({
           config,
@@ -304,7 +303,7 @@ function IndexPage(props: {
               ? mentor
               : [mentor]
             : config.mentorsDefault,
-          subject,
+          subject: subject,
           intro,
           recommendedQuestions: recommendedQuestions
             ? Array.isArray(recommendedQuestions)

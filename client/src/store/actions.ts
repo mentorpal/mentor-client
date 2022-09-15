@@ -393,7 +393,7 @@ export const loadMentors: ActionCreator<
   (args: {
     config: Config;
     mentors: string[];
-    subjectId?: string;
+    subject?: string;
     intro?: string;
     recommendedQuestions?: string[];
   }) =>
@@ -401,7 +401,7 @@ export const loadMentors: ActionCreator<
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
   ) => {
-    const { intro, mentors, subjectId, recommendedQuestions } = args;
+    const { intro, mentors, subject, recommendedQuestions } = args;
     dispatch<MentorsLoadRequestedAction>({
       type: MENTORS_LOAD_REQUESTED,
       payload: {
@@ -422,10 +422,9 @@ export const loadMentors: ActionCreator<
     };
     for (const mentorId of mentors) {
       try {
-        const mentor: MentorClientData = await fetchMentor(mentorId, subjectId);
+        const mentor: MentorClientData = await fetchMentor(mentorId, subject);
         const topicQuestions: TopicQuestions[] = [];
         const recommendedQuestions = [...getState().recommendedQuestions];
-
         topicQuestions.push(...mentor.topicQuestions);
         const recommendedTopics = getRecommendedTopics(topicQuestions);
 

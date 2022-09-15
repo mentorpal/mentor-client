@@ -14,7 +14,7 @@ clean:
 
 .PHONY: develop
 develop: .env.development node_modules/gatsby
-	npx gatsby develop
+	npx gatsby develop -p 80
 
 .PHONY: format
 format:
