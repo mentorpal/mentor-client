@@ -24,7 +24,7 @@ import "styles/history-chat-responsive.css";
 
 import { isMobile } from "react-device-detect";
 import { onVisibilityChange, setLocalStorage } from "utils";
-import { getParams } from "cmiutils";
+import { getParamUserId } from "cmiutils";
 import VideoSection from "components/layout/video-section";
 import ChatSection from "components/layout/chat-section";
 
@@ -120,9 +120,7 @@ function IndexPage(props: {
   let { mentor } = props.search;
 
   function hasSessionUser(): boolean {
-    return Boolean(
-      !config.cmi5Enabled || (cmi5 && cmi5.isAuthenticated) || guestName
-    );
+    return Boolean(!config.cmi5Enabled || cmi5 || guestName);
   }
 
   function isConfigLoadComplete(s: LoadStatus): boolean {
@@ -317,7 +315,7 @@ function IndexPage(props: {
   }, [configLoadStatus, mentor, subject, recommendedQuestions]);
 
   useEffect(() => {
-    let userId = getParams(window.location.href);
+    let userId = getParamUserId(window.location.href);
     if (!userId || typeof userId !== "string") {
       userId = uuidv1();
     }
