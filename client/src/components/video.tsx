@@ -257,7 +257,6 @@ function Video(args: {
 
   function onPlay() {
     setHideLinkLabel(false);
-
     if (!isQuestionSent) {
       dispatch(
         onMentorDisplayAnswer(
@@ -479,7 +478,10 @@ function VideoPlayer(args: VideoPlayerParams) {
     emailIcon,
     vbgAspectRatio,
   } = args;
-
+  const [readied, setReadied] = useState<boolean>(false);
+  useEffect(() => {
+    setReadied(false);
+  }, [videoUrl]);
   const webLinkJSX = webLinks?.map((wl, i) => {
     return (
       <a
@@ -579,6 +581,32 @@ function VideoPlayer(args: VideoPlayerParams) {
         ref={reactPlayerRef}
         onPlay={onPlay}
         onProgress={onProgress}
+        onReady={(player: ReactPlayer) => {
+          if (readied) {
+            return;
+          }
+          setReadied(true);
+          const internalPlayer = player.getInternalPlayer();
+          const tracks = internalPlayer["textTracks"];
+          if (tracks) {
+            tracks.addEventListener("change", () => {
+              const internalPlayer2 = player.getInternalPlayer();
+              const tracks = internalPlayer2["textTracks"];
+              if (!tracks || !tracks.length) {
+                return;
+              }
+              const track = tracks[0];
+              setLocalStorage("captionMode", track["mode"]);
+            });
+            if (!tracks.length) {
+              return;
+            }
+            const track = tracks[0];
+            const localStorageMode = getLocalStorage("captionMode");
+            const showCaptions = localStorageMode === "showing";
+            track["mode"] = showCaptions ? "showing" : "hidden";
+          }
+        }}
         loop={false}
         controls={true}
         width="fit-content"
@@ -591,6 +619,7 @@ function VideoPlayer(args: VideoPlayerParams) {
           file: {
             attributes: {
               crossOrigin: "true",
+              controlsList: "nodownload",
             },
             tracks: subtitlesOn
               ? [
@@ -625,6 +654,7 @@ function VideoPlayer(args: VideoPlayerParams) {
             attributes: {
               crossOrigin: "true",
             },
+            tracks: [],
           },
         }}
       />
