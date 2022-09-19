@@ -588,17 +588,24 @@ function VideoPlayer(args: VideoPlayerParams) {
           setReadied(true);
           const internalPlayer = player.getInternalPlayer();
           const tracks = internalPlayer["textTracks"];
-          tracks.addEventListener("change", () => {
-            const internalPlayer2 = player.getInternalPlayer();
-            const track = internalPlayer2["textTracks"][0];
-            console.log("track change detected");
-            console.log(track["mode"]);
-            setLocalStorage("captionMode", track["mode"]);
-          });
-          const track = tracks[0];
-          const localStorageMode = getLocalStorage("captionMode");
-          const showCaptions = localStorageMode === "showing";
-          track["mode"] = showCaptions ? "showing" : "hidden";
+          if (tracks) {
+            tracks.addEventListener("change", () => {
+              const internalPlayer2 = player.getInternalPlayer();
+              const tracks = internalPlayer2["textTracks"];
+              if (!tracks || !tracks.length) {
+                return;
+              }
+              const track = tracks[0];
+              setLocalStorage("captionMode", track["mode"]);
+            });
+            if (!tracks.length) {
+              return;
+            }
+            const track = tracks[0];
+            const localStorageMode = getLocalStorage("captionMode");
+            const showCaptions = localStorageMode === "showing";
+            track["mode"] = showCaptions ? "showing" : "hidden";
+          }
         }}
         loop={false}
         controls={true}
