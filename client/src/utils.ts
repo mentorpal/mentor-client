@@ -117,6 +117,11 @@ export function onVisibilityChange(cmi5?: Cmi5): void {
     };
     sendCmi5Statement(
       {
+        actor: {
+          objectType: "Agent",
+          mbox: userData.userEmail,
+          name: userData.qualtricsUserId || "",
+        },
         verb: {
           id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
           display: {

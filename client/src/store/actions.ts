@@ -43,6 +43,7 @@ import {
   Media,
 } from "../types";
 import {
+  getLocalStorage,
   getRecommendedTopics,
   getRegistrationId,
   mergeRecommendedTopicsQuestions,
@@ -521,14 +522,23 @@ export function sendCmi5Statement(
   }
   try {
     const cmi = cmi5 || Cmi5.instance;
-    cmi
-      .sendCmi5AllowedStatement({
-        ...statement,
-        context: { registration: getRegistrationId() },
-      })
-      .catch((err: Error) => {
-        console.error(JSON.stringify(err, null, " "));
-      });
+    const statementData = {
+      ...statement,
+      context: { registration: getRegistrationId() },
+    };
+    cmi.sendCmi5AllowedStatement(statementData).catch((err: Error) => {
+      console.error("Failed to send CMI5 statement, sending without actor");
+      cmi
+        .sendCmi5AllowedStatement({ ...statementData, actor: undefined })
+        .catch((error: Error) => {
+          console.error(
+            error,
+            "Failed to send cmi5 statement even without actor, here is the statement data:",
+            JSON.stringify(statementData)
+          );
+        });
+      console.error(JSON.stringify(err, null, " "));
+    });
   } catch (err2) {
     console.error(JSON.stringify(err2));
   }
@@ -593,8 +603,16 @@ export function mentorAnswerPlaybackStarted(video: {
       );
       return;
     }
+    const localData = getLocalStorage("userData");
+    const userEmail = JSON.parse(localData ? localData : "{}").userEmail;
+    const qualtricsUserId = getLocalStorage("qualtricsuserid");
     sendCmi5Statement(
       {
+        actor: {
+          objectType: "Agent",
+          mbox: userEmail,
+          name: qualtricsUserId || "",
+        },
         verb: {
           id: "https://mentorpal.org/xapi/verb/answer-playback-started",
           display: {
@@ -691,12 +709,18 @@ export const sendQuestion =
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
   ) => {
-    const localData = localStorage.getItem("userData");
+    const localData = getLocalStorage("userData");
+    const qualtricsUserId = getLocalStorage("qualtricsuserid");
     const userEmail = JSON.parse(localData ? localData : "{}").userEmail;
     const curState = getState();
 
     sendCmi5Statement(
       {
+        actor: {
+          objectType: "Agent",
+          mbox: userEmail,
+          name: qualtricsUserId,
+        },
         verb: {
           id: "https://mentorpal.org/xapi/verb/asked",
           display: {
@@ -760,6 +784,11 @@ export const sendQuestion =
             };
             sendCmi5Statement(
               {
+                actor: {
+                  objectType: "Agent",
+                  mbox: userEmail,
+                  name: qualtricsUserId,
+                },
                 verb: {
                   id: "https://mentorpal.org/xapi/verb/answered",
                   display: {
