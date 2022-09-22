@@ -22,11 +22,11 @@ import { fetchMentorByAccessToken, queryMentor } from "api";
 
 import "styles/history-chat-responsive.css";
 
-import Desktop from "components/layout/desktop";
 import { isMobile } from "react-device-detect";
-import Mobile from "components/layout/mobile";
 import { onVisibilityChange, setLocalStorage } from "utils";
 import { getParams } from "cmiutils";
+import VideoSection from "components/layout/video-section";
+import ChatSection from "components/layout/chat-section";
 
 const useStyles = makeStyles((theme) => ({
   flexRoot: {
@@ -350,23 +350,25 @@ function IndexPage(props: {
       ) : (
         <MuiThemeProvider theme={brandedTheme}>
           <Header />
-          {shouldDisplayPortrait() || isMobile ? (
-            <Mobile
-              mentorType={mentorType}
-              chatHeight={chatHeight}
-              windowHeight={windowHeight}
-              hasSessionUser={hasSessionUser}
-              curTopic={curTopic}
-            />
-          ) : (
-            <Desktop
-              mentorType={mentorType}
-              chatHeight={chatHeight}
-              windowHeight={windowHeight}
-              hasSessionUser={hasSessionUser}
-              curTopic={curTopic}
-            />
-          )}
+          <div className="main-container" style={{ height: windowHeight - 60 }}>
+            <div className="video-section">
+              <VideoSection
+                mentorType={mentorType}
+                chatHeight={chatHeight}
+                windowHeight={windowHeight}
+                hasSessionUser={hasSessionUser}
+                isMobile={shouldDisplayPortrait() || isMobile}
+              />
+            </div>
+            <div className="chat-section">
+              <ChatSection
+                mentorType={mentorType}
+                hasSessionUser={hasSessionUser}
+                curTopic={curTopic}
+                isMobile={shouldDisplayPortrait() || isMobile}
+              />
+            </div>
+          </div>
         </MuiThemeProvider>
       )}
     </div>

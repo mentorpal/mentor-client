@@ -4,9 +4,6 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import Chat from "components/chat";
-import Video from "components/video";
-import VideoPanel from "components/video-panel";
 import Topics from "components/topics/topics";
 import Questions from "components/questions";
 
@@ -19,45 +16,39 @@ import Input from "components/input";
 import "styles/history-chat-responsive.css";
 import { useSelector } from "react-redux";
 
-function Mobile(props: {
+function ChatSection(props: {
   mentorType: MentorType;
-  chatHeight: number;
-  windowHeight: number;
   hasSessionUser: () => boolean;
   curTopic: string;
+  isMobile: boolean;
 }): JSX.Element {
-  const { mentorType, chatHeight, windowHeight, hasSessionUser, curTopic } =
-    props;
+  const { mentorType, hasSessionUser, curTopic, isMobile } = props;
   const { onTopicSelected, onQuestionSelected } = UseWitInputtData();
   const displayGuestPrompt = useSelector<State, boolean>(
     (state) => state.config.displayGuestPrompt
   );
-  const configEmailMentorAddress = useSelector<State, string>(
-    (state) => state.config.filterEmailMentorAddress
-  );
-  const topPanel = (
-    <>
-      <VideoPanel />
-      {mentorType === MentorType.CHAT ? (
-        <Chat
-          height={chatHeight}
-          windowHeight={windowHeight}
-          width={"60vw"}
-          bubbleColor={"#88929e"}
-        />
-      ) : (
-        <Video
-          playing={hasSessionUser() || !displayGuestPrompt}
-          configEmailMentorAddress={configEmailMentorAddress}
-        />
-      )}
-    </>
-  );
 
-  const bottomPanel = (
-    <>
-      <Paper>
-        <Input />
+  if (isMobile) {
+    return (
+      <>
+        <Paper>
+          <Input />
+          <Topics
+            onSelected={onTopicSelected}
+            showHistoryTab={mentorType === MentorType.CHAT}
+          />
+          <Collapse in={Boolean(curTopic)} timeout="auto" unmountOnExit>
+            <Questions onSelected={onQuestionSelected} />
+          </Collapse>
+          {!hasSessionUser() && displayGuestPrompt ? (
+            <GuestPrompt />
+          ) : undefined}
+        </Paper>
+      </>
+    );
+  } else {
+    return (
+      <>
         <Topics
           onSelected={onTopicSelected}
           showHistoryTab={mentorType === MentorType.CHAT}
@@ -66,15 +57,10 @@ function Mobile(props: {
           <Questions onSelected={onQuestionSelected} />
         </Collapse>
         {!hasSessionUser() && displayGuestPrompt ? <GuestPrompt /> : undefined}
-      </Paper>
-    </>
-  );
-  return (
-    <div className="main-container" style={{ height: windowHeight - 60 }}>
-      <div className="left-panel">{topPanel}</div>
-      <div className="right-panel">{bottomPanel}</div>
-    </div>
-  );
+        <Input />
+      </>
+    );
+  }
 }
 
-export default Mobile;
+export default ChatSection;

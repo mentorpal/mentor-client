@@ -7,28 +7,20 @@ The full terms of this copyright and license should always be found in the root 
 import Chat from "components/chat";
 import Video from "components/video";
 import VideoPanel from "components/video-panel";
-import Topics from "components/topics/topics";
-import Questions from "components/questions";
-
 import React from "react";
-import { Collapse } from "@material-ui/core";
-import GuestPrompt from "components/guest-prompt";
 import { MentorType, State } from "types";
-import { UseWitInputtData } from "components/layout/use-input-data";
-import Input from "components/input";
 import "styles/history-chat-responsive.css";
 import { useSelector } from "react-redux";
 
-function Desktop(props: {
+function VideoSection(props: {
   mentorType: MentorType;
   chatHeight: number;
   windowHeight: number;
   hasSessionUser: () => boolean;
-  curTopic: string;
+  isMobile: boolean;
 }): JSX.Element {
-  const { mentorType, chatHeight, windowHeight, hasSessionUser, curTopic } =
+  const { mentorType, chatHeight, windowHeight, hasSessionUser, isMobile } =
     props;
-  const { onTopicSelected, onQuestionSelected } = UseWitInputtData();
   const displayGuestPrompt = useSelector<State, boolean>(
     (state) => state.config.displayGuestPrompt
   );
@@ -36,14 +28,14 @@ function Desktop(props: {
     (state) => state.config.filterEmailMentorAddress
   );
 
-  const leftPanel = (
+  return (
     <>
       <VideoPanel />
       {mentorType === MentorType.CHAT ? (
         <Chat
           height={chatHeight}
           windowHeight={windowHeight}
-          width={"auto"}
+          width={isMobile ? "60vw" : "auto"}
           bubbleColor={"#88929e"}
         />
       ) : (
@@ -54,26 +46,6 @@ function Desktop(props: {
       )}
     </>
   );
-
-  const rightPanel = (
-    <>
-      <Topics
-        onSelected={onTopicSelected}
-        showHistoryTab={mentorType === MentorType.CHAT}
-      />
-      <Collapse in={Boolean(curTopic)} timeout="auto" unmountOnExit>
-        <Questions onSelected={onQuestionSelected} />
-      </Collapse>
-      {!hasSessionUser() && displayGuestPrompt ? <GuestPrompt /> : undefined}
-      <Input />
-    </>
-  );
-  return (
-    <div className="main-container" style={{ height: windowHeight - 60 }}>
-      <div className="left-panel">{leftPanel}</div>
-      <div className="right-panel">{rightPanel}</div>
-    </div>
-  );
 }
 
-export default Desktop;
+export default VideoSection;

@@ -202,16 +202,16 @@ body {
   margin-bottom: 10px;
 }
 
-.left-panel,
-.right-panel {
+.video-section,
+.chat-section {
   background-color: #fff;
   border-radius: 10px;
 }
-.right-panel {
+.chat-section {
   position: relative;
   margin-right: 1rem;
 }
-.left-panel {
+.video-section {
   background-color: #fff;
 }
 
@@ -354,7 +354,7 @@ textarea:-moz-placeholder {
     margin-top: 0px;
     margin-bottom: 0px;
   }
-  .right-panel {
+  .chat-section {
     margin: 1.5rem 0px 1rem 0px;
   }
   .send-question-btn {
