@@ -82,9 +82,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  margin: 10px;
-  position: absolute;
-  bottom: -50px;
+  margin-top: 10px;
 }
 .email-mentor-button:hover {
   color: blue;
