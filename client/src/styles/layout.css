@@ -47,15 +47,12 @@ body {
 
 .carousel {
   /* max-width: 80%; */
-  height: 80px;
+  height: fit-content;
   overflow-x: visible;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   white-space: nowrap;
-  margin-top: 10px;
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-bottom: 15px;
+  position: relative;
 }
 
 .modal-animation {
@@ -249,7 +246,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 60px;
+  height: 50px;
 }
 
 .markdown-container {
@@ -362,9 +359,6 @@ textarea:-moz-placeholder {
   }
   .send-question-btn {
     background-color: #eee !important;
-  }
-  .header-container {
-    height: 80px;
   }
 
   .header-mentor-info > p {
