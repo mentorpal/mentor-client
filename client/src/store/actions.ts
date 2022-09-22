@@ -6,6 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 /* eslint-disable */
 import Cmi5 from "@kycarr/cmi5";
+import { Statement } from "@kycarr/cmi5/node_modules/@xapi/xapi/dist/types/interfaces/Statement";
 import { ActionCreator, AnyAction, Dispatch } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import * as uuid from "uuid";
@@ -511,7 +512,10 @@ export const loadMentors: ActionCreator<
     return;
   };
 
-export function sendCmi5Statement(statement: any, cmi5?: Cmi5): void {
+export function sendCmi5Statement(
+  statement: Partial<Statement>,
+  cmi5?: Cmi5
+): void {
   if (!cmi5 && !Cmi5.isCmiAvailable) {
     return;
   }
@@ -522,7 +526,9 @@ export function sendCmi5Statement(statement: any, cmi5?: Cmi5): void {
         ...statement,
         context: { registration: getRegistrationId() },
       })
-      .catch((err: Error) => console.error(JSON.stringify(err, null, " ")));
+      .catch((err: Error) => {
+        console.error(JSON.stringify(err, null, " "));
+      });
   } catch (err2) {
     console.error(JSON.stringify(err2));
   }

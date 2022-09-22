@@ -361,10 +361,6 @@ textarea:-moz-placeholder {
     background-color: #eee !important;
   }
 
-  .header-mentor-info > p {
-    font-size: 1.5rem !important;
-  }
-
   .home-btn {
     margin-left: 1.5rem !important;
   }
@@ -390,8 +386,5 @@ textarea:-moz-placeholder {
   }
   .home-btn {
     margin-left: 1.5rem !important;
-  }
-  .header-mentor-info > p {
-    font-size: 1.1rem !important;
   }
 }
