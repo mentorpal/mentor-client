@@ -544,19 +544,9 @@ export function sendCmi5Statement(
       ...statement,
       context: { registration: getRegistrationId() },
     };
-    cmi.sendCmi5AllowedStatement(statementData).catch((err: Error) => {
-      console.error("Failed to send CMI5 statement, sending without actor");
-      cmi
-        .sendCmi5AllowedStatement({ ...statementData, actor: undefined })
-        .catch((error: Error) => {
-          console.error(
-            error,
-            "Failed to send cmi5 statement even without actor, here is the statement data:",
-            JSON.stringify(statementData)
-          );
-        });
-      console.error(JSON.stringify(err, null, " "));
-    });
+    cmi
+      .sendCmi5AllowedStatement(statementData)
+      .catch((err: Error) => console.error(JSON.stringify(err, null, " ")));
   } catch (err2) {
     console.error(JSON.stringify(err2));
   }
