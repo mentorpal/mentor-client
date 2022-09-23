@@ -190,11 +190,6 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
     };
     sendCmi5Statement(
       {
-        actor: {
-          objectType: "Agent",
-          mbox: userData.userEmail,
-          name: userData.qualtricsUserId || "",
-        },
         verb: {
           id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
           display: {
