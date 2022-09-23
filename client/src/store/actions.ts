@@ -299,15 +299,7 @@ export const initCmi5 =
         err,
         `Failed to init cmi5 with params ${launchParams}, initializing with mock actor`
       );
-      launchParams.actor = {
-        objectType: "Agent",
-        mbox: "mailto:mockemail.guest@mentorpal.org",
-        name: userID || "",
-        account: {
-          homePage: "https://mentorpal.org",
-          name: userID,
-        },
-      };
+      launchParams.actor.mbox = "mailto:mockemail.guest@mentorpal.org";
       try {
         const cmi5_recovery = new Cmi5(launchParams);
         await cmi5_recovery.initialize();
