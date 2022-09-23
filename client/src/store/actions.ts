@@ -287,7 +287,6 @@ export const initCmi5 =
       type: CMI5_INIT_STARTED,
     });
     const launchParams = getCmiParams(userID, userEmail, homePage, config);
-    console.warn(launchParams);
     const cmi5 = new Cmi5(launchParams);
     await cmi5
       .initialize()
