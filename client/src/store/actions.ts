@@ -288,39 +288,42 @@ export const initCmi5 =
     });
     const launchParams = getCmiParams(userID, userEmail, homePage, config);
     const cmi5 = new Cmi5(launchParams);
-    await cmi5
-      .initialize()
-      .catch((err: Error) => {
-        console.error(
-          err,
-          `Failed to init cmi5 with params ${launchParams}, initializing with simple actor`
-        );
-        launchParams.actor = {
-          objectType: "Agent",
-          mbox: "mock_email_due_to_error@mentorpal.org",
-        };
-        const cmi5_recover = new Cmi5(launchParams);
-        cmi5_recover
-          .initialize()
-          .then(() => {
-            return dispatch({
-              type: CMI5_INIT_SUCCEEDED,
-              payload: cmi5_recover,
-            });
-          })
-          .catch((err: Error) => {
-            return dispatch({
-              type: CMI5_INIT_FAILED,
-              errors: [err.message],
-            });
-          });
-      })
-      .then(() => {
+    try {
+      await cmi5.initialize();
+      return dispatch({
+        type: CMI5_INIT_SUCCEEDED,
+        payload: cmi5,
+      });
+    } catch (err) {
+      console.error(
+        err,
+        `Failed to init cmi5 with params ${launchParams}, initializing with mock actor`
+      );
+      launchParams.actor = {
+        objectType: "Agent",
+        mbox: "mailto:mockemail.guest@mentorpal.org",
+        name: userID || "",
+        account: {
+          homePage: "https://mentorpal.org",
+          name: userID,
+        },
+      };
+      try {
+        const cmi5_recovery = new Cmi5(launchParams);
+        await cmi5_recovery.initialize();
         return dispatch({
           type: CMI5_INIT_SUCCEEDED,
-          payload: cmi5,
+          payload: cmi5_recovery,
         });
-      });
+      } catch (err) {
+        if (err instanceof Error) {
+          return dispatch({
+            type: CMI5_INIT_FAILED,
+            errors: [err.message],
+          });
+        }
+      }
+    }
   };
 
 export const onMentorDisplayAnswer =
