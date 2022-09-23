@@ -621,16 +621,8 @@ export function mentorAnswerPlaybackStarted(video: {
       );
       return;
     }
-    const localData = getLocalStorage("userData");
-    const userEmail = JSON.parse(localData ? localData : "{}").userEmail;
-    const qualtricsUserId = getLocalStorage("qualtricsuserid");
     sendCmi5Statement(
       {
-        actor: {
-          objectType: "Agent",
-          mbox: userEmail,
-          name: qualtricsUserId || "",
-        },
         verb: {
           id: "https://mentorpal.org/xapi/verb/answer-playback-started",
           display: {
@@ -728,17 +720,11 @@ export const sendQuestion =
     getState: () => State
   ) => {
     const localData = getLocalStorage("userData");
-    const qualtricsUserId = getLocalStorage("qualtricsuserid");
     const userEmail = JSON.parse(localData ? localData : "{}").userEmail;
     const curState = getState();
 
     sendCmi5Statement(
       {
-        actor: {
-          objectType: "Agent",
-          mbox: userEmail,
-          name: qualtricsUserId,
-        },
         verb: {
           id: "https://mentorpal.org/xapi/verb/asked",
           display: {
@@ -802,11 +788,6 @@ export const sendQuestion =
             };
             sendCmi5Statement(
               {
-                actor: {
-                  objectType: "Agent",
-                  mbox: userEmail,
-                  name: qualtricsUserId,
-                },
                 verb: {
                   id: "https://mentorpal.org/xapi/verb/answered",
                   display: {
