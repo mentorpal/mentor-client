@@ -280,15 +280,26 @@ export type MentorClientAction =
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
 
+function stripNonAsciiCharacters(input: string): string {
+  const regex = new RegExp("[^\x00-\x7F]+");
+  return input.replace(regex, "");
+}
+
 export const initCmi5 =
   (userID: string, userEmail: string, homePage: string, config: Config) =>
   async (dispatch: ThunkDispatch<State, void, Cmi5InitAction>) => {
     dispatch({
       type: CMI5_INIT_STARTED,
     });
+    if (!userID && !userEmail) {
+      return dispatch({
+        type: CMI5_INIT_FAILED,
+        errors: ["No user id or user email passed in"],
+      });
+    }
     const launchParams = getCmiParams(userID, userEmail, homePage, config);
-    const cmi5 = new Cmi5(launchParams);
     try {
+      const cmi5 = new Cmi5(launchParams);
       await cmi5.initialize();
       return dispatch({
         type: CMI5_INIT_SUCCEEDED,
@@ -297,22 +308,46 @@ export const initCmi5 =
     } catch (err) {
       console.error(
         err,
-        `Failed to init cmi5 with params ${launchParams}, initializing with mock actor`
+        `Failed to init cmi5 with params ${launchParams}, cleaning email of non-ascii domain if none exists`
       );
-      launchParams.actor.mbox = "mailto:mockemail.guest@mentorpal.org";
+      if (launchParams.actor.mbox) {
+        launchParams.actor.mbox = stripNonAsciiCharacters(
+          launchParams.actor.mbox
+        );
+        // Append email domain if one does not exist
+        if (!launchParams.actor.mbox.includes("@")) {
+          launchParams.actor.mbox += "@mentorpal.org";
+        }
+      }
       try {
-        const cmi5_recovery = new Cmi5(launchParams);
-        await cmi5_recovery.initialize();
+        const cmi5_recovery_1 = new Cmi5(launchParams);
+        await cmi5_recovery_1.initialize();
         return dispatch({
           type: CMI5_INIT_SUCCEEDED,
-          payload: cmi5_recovery,
+          payload: cmi5_recovery_1,
         });
       } catch (err) {
-        if (err instanceof Error) {
+        console.error(
+          err,
+          `Failed to init cmi5 with cleaned mbox ${launchParams.actor.mbox}, going with default`
+        );
+        if (launchParams.actor.mbox) {
+          launchParams.actor.mbox = `${userID}.guest@mentorpal.org`;
+        }
+        try {
+          const cmi5_recovery_2 = new Cmi5(launchParams);
+          await cmi5_recovery_2.initialize();
           return dispatch({
-            type: CMI5_INIT_FAILED,
-            errors: [err.message],
+            type: CMI5_INIT_SUCCEEDED,
+            payload: cmi5_recovery_2,
           });
+        } catch (err) {
+          if (err instanceof Error) {
+            return dispatch({
+              type: CMI5_INIT_FAILED,
+              errors: [err.message],
+            });
+          }
         }
       }
     }
