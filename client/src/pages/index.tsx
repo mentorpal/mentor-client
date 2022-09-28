@@ -18,7 +18,7 @@ import { loadConfig, loadMentors, setGuestName, initCmi5 } from "store/actions";
 import { Config, LoadStatus, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
-import { fetchMentorByAccessToken, queryMentor } from "api";
+import { fetchMentorByAccessToken, pingMentor } from "api";
 
 import "styles/history-chat-responsive.css";
 
@@ -240,7 +240,7 @@ function IndexPage(props: {
   function warmupMentors(mentors: string | string[]) {
     const mentorIds = Array.isArray(mentors) ? mentors : [mentors];
     mentorIds.forEach((mentorId) => {
-      queryMentor(mentorId, "What is your name?", config).catch((err) => {
+      pingMentor(mentorId, config).catch((err) => {
         // We don't really care if this query fails, so just catch error
         console.error(err);
       });
