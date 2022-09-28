@@ -177,6 +177,7 @@ export function mockApiQuestions(cy, response?: string) {
   cy.intercept("**/questions/?mentor=carlos&query=*", {
     fixture: response || "response.json",
   });
+  cy.intercept("**/questions/?mentor=*&query=*&ping=*", {});
 }
 
 export function toGuestUrl(url: string, guestName: string) {

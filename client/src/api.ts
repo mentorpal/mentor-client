@@ -256,3 +256,16 @@ export async function queryMentor(
     },
   });
 }
+
+export async function pingMentor(
+  mentorId: string,
+  config: Config
+): Promise<AxiosResponse<QuestionApiData>> {
+  return await axios.get(`${config.classifierLambdaEndpoint}/questions/`, {
+    params: {
+      mentor: mentorId,
+      query: "Ping",
+      ping: true,
+    },
+  });
+}
