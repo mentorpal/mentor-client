@@ -24,7 +24,7 @@ import "styles/history-chat-responsive.css";
 
 import { isMobile } from "react-device-detect";
 import { onVisibilityChange, setLocalStorage } from "utils";
-import { getParamUserId } from "cmiutils";
+import { getParamUserId, removeQueryParam } from "cmiutils";
 import VideoSection from "components/layout/video-section";
 import ChatSection from "components/layout/chat-section";
 
@@ -148,6 +148,8 @@ function IndexPage(props: {
     );
     if (registrationIdFromUrl) {
       setLocalStorage("registrationId", registrationIdFromUrl);
+      // remove saved query params (no longer needed) to clean up url
+      removeQueryParam("registrationId");
     }
 
     const handleResize = () => setWindowHeight(window.innerHeight);
@@ -232,6 +234,11 @@ function IndexPage(props: {
     // set it in localStorage
     localStorage.setItem("userData", JSON.stringify(userData));
 
+    // remove saved query params (no longer needed) to clean up url
+    removeQueryParam("userID");
+    removeQueryParam("referrer");
+    removeQueryParam("userEmail");
+
     return [userIdURL, referrerURL, userEmail];
   };
 
@@ -256,9 +263,7 @@ function IndexPage(props: {
       warmupMentors(mentor);
     }
     if (config.cmi5Enabled && !config.displayGuestPrompt && !cmi5) {
-      const referrer = setupLocalStorage()[1];
-      const userEmail = setupLocalStorage()[2];
-      const userIdLRS = setupLocalStorage()[0];
+      const [userIdLRS, referrer, userEmail] = setupLocalStorage();
       if (userIdLRS && userEmail && referrer) {
         try {
           dispatch(
