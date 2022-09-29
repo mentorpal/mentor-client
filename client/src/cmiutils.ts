@@ -5,8 +5,8 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import { LaunchParameters } from "@kycarr/cmi5";
-import queryString from "query-string";
 import { Agent } from "@gradiant/xapi-dsl";
+import queryString from "query-string";
 import { Config, XapiResultCustom } from "types";
 import { getRegistrationId } from "utils";
 
@@ -18,25 +18,6 @@ export interface CmiParams {
   registration: string;
 }
 
-export function addCmiUrl(
-  url: string,
-  cp: LaunchParameters,
-  referrer: string,
-  userEmail: string
-): string {
-  return `${url}${url.includes("?") ? "" : "?"}${
-    url.endsWith("&") ? "" : "&"
-  }activityId=${encodeURIComponent(cp.activityId)}&actor=${encodeURIComponent(
-    JSON.stringify(cp.actor)
-  )}&endpoint=${encodeURIComponent(cp.endpoint)}&fetch=${encodeURIComponent(
-    cp.fetch
-  )}&registration=${encodeURIComponent(
-    cp.registration
-  )}&referrer=${encodeURIComponent(referrer)}&userEmail=${encodeURIComponent(
-    userEmail
-  )}`;
-}
-
 export function getCmiParams(
   userID: string,
   userEmail: string,
@@ -45,9 +26,10 @@ export function getCmiParams(
 ): LaunchParameters {
   const urlRoot = `${window.location.protocol}//${window.location.host}`;
   const userId = userID;
+  const lp = getCmiParamsFromUri();
   return {
-    activityId: window.location.href,
-    actor: {
+    activityId: lp?.activityId || window.location.href,
+    actor: lp?.actor || {
       objectType: "Agent",
       account: {
         homePage: `${urlRoot}/${homePage}`,
@@ -56,29 +38,41 @@ export function getCmiParams(
       name: userID,
       mbox: `mailto:${userEmail}`,
     },
-    endpoint: config.cmi5Endpoint,
-    fetch: `${config.cmi5Fetch}${
-      config.cmi5Fetch.includes("?") ? "" : "?"
-    }&username=${encodeURIComponent(userEmail)}&userid=${userId}`,
-    registration: getRegistrationId(),
+    endpoint: lp?.endpoint || config.cmi5Endpoint,
+    fetch:
+      lp?.fetch ||
+      `${config.cmi5Fetch}${
+        config.cmi5Fetch.includes("?") ? "" : "?"
+      }&username=${encodeURIComponent(userEmail)}&userid=${userId}`,
+    registration: lp?.registration || getRegistrationId(),
   };
 }
 
-export function hasCmi(urlOrQueryString: string): boolean {
-  const cutIx = urlOrQueryString.indexOf("?");
-  const urlQs =
-    cutIx !== -1 ? urlOrQueryString.substring(cutIx + 1) : urlOrQueryString;
-  const params = queryString.parse(urlQs);
-  return Boolean(
-    params.endpoint &&
-      params.fetch &&
-      params.actor &&
-      params.registration &&
-      params.activityId
-  );
+export function getCmiParamsFromUri(): LaunchParameters | undefined {
+  const params = queryString.parse(window.location.search);
+  const { activityId, actor, endpoint, fetch, registration } = params;
+  if (!activityId || !actor || !endpoint || !fetch || !registration) {
+    return undefined;
+  }
+  if (
+    Array.isArray(activityId) ||
+    Array.isArray(actor) ||
+    Array.isArray(endpoint) ||
+    Array.isArray(fetch) ||
+    Array.isArray(registration)
+  ) {
+    return undefined;
+  }
+  return {
+    activityId: activityId,
+    actor: JSON.parse(actor),
+    endpoint: endpoint,
+    fetch: fetch,
+    registration: registration,
+  };
 }
 
-export function getParams(urlOrQueryString: string): string | string[] {
+export function getParamUserId(urlOrQueryString: string): string | string[] {
   const cutIx = urlOrQueryString.indexOf("?");
   const urlQs =
     cutIx !== -1 ? urlOrQueryString.substring(cutIx + 1) : urlOrQueryString;
