@@ -19,7 +19,6 @@ export interface UseWithChatData {
   mentorNameById: Record<string, string>;
   getQuestionVisibilityPref: (questionId: string) => ItemVisibilityPrefs;
   setQuestionVisibilityPref: (questionId: string, show: boolean) => void;
-  setVisibilityShowAllPref: (show: boolean) => void;
   mentorNameForChatMsg: (chatMsg: ChatMsg) => string;
   rePlayQuestionVideo: (
     mId: string,
@@ -50,6 +49,9 @@ export function hrefToChatLink(href: string, chatMsg: ChatMsg): ChatLink {
 }
 
 export function useWithChatData(): UseWithChatData {
+  const visibilityShowAllPref = useSelector<State, boolean>(
+    (s) => s.visibilityShowAllPref
+  );
   const chatData = useSelector<State, ChatData>((s) => s.chat);
   const mentorType = useSelector<State, MentorType>((state) => {
     if (!state.curMentor) {
@@ -61,9 +63,6 @@ export function useWithChatData(): UseWithChatData {
   });
   const [visibiltityPrefByQuestionId, setVisibiltityPrefByQuestionId] =
     useState<Record<string, ItemVisibilityPrefs>>({});
-  const [visibilityShowAllPref, setVisibilityShowAllPref] = useState<boolean>(
-    mentorType === "CHAT" ? true : false
-  );
   const dispatch = useDispatch();
 
   const lastQuestionId = useSelector<State, string>((s) => {
@@ -157,7 +156,6 @@ export function useWithChatData(): UseWithChatData {
     visibilityShowAllPref,
     getQuestionVisibilityPref,
     setQuestionVisibilityPref,
-    setVisibilityShowAllPref,
     mentorNameForChatMsg,
     rePlayQuestionVideo,
     downloadChatHistory,

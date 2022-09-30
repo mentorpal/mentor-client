@@ -42,7 +42,8 @@ body {
 .scroll {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  max-height: 500px;
+  max-height: calc(100vh - 250px);
+  /* max-height: 500px; */
 }
 
 .carousel {
@@ -204,6 +205,7 @@ body {
 
 .video-section,
 .chat-section {
+  height: 100vh - 60;
   background-color: #fff;
   border-radius: 10px;
 }
@@ -216,21 +218,32 @@ body {
 }
 
 .input-container {
-  position: absolute;
-  bottom: 10px !important;
+  /* position: absolute; */
+  /* bottom: 10px !important; */
   width: 100%;
 }
 
 .input-wrapper {
-  position: absolute;
+  /* position: absolute; */
+  /* bottom: 0px; */
   width: 95%;
   height: 60px;
   margin: 10px;
-  bottom: 0px;
   box-shadow: none !important;
   background-color: #eeeeee !important;
   border-radius: 1.5rem;
   padding: 6px !important;
+}
+
+.input-history {
+  /* position: absolute; */
+  /* bottom: 80px; */
+  /* right: 10px; */
+  height: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: right;
 }
 
 .send-question-btn {
@@ -339,6 +352,7 @@ textarea:-moz-placeholder {
   }
   .input-container {
     position: relative;
+    /* margin-top: 10px; */
   }
   .input-wrapper {
     position: relative;
@@ -380,7 +394,6 @@ textarea:-moz-placeholder {
     background-color: #fff !important;
     border-radius: 0px;
   }
-
   .home-btn-wrapper {
     max-width: 15%;
   }

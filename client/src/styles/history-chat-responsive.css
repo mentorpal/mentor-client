@@ -3,6 +3,7 @@
   flex-direction: row;
   padding: 10px;
   justify-content: space-around; */
+  height: 100vh - 60;
   display: grid;
   grid-template-columns: 55vw 45vw;
   background-color: #eeeeee;
@@ -42,54 +43,5 @@
   .video-mentor-wrapper {
     padding: 0;
     width: 100%;
-  }
-}
-
-@media screen and (min-height: 1000px) {
-  .chat-thread {
-    height: 72vh;
-  }
-  .scrolling-questions-container {
-    height: 72vh;
-  }
-}
-@media screen and (min-height: 700px) {
-  .chat-thread {
-    height: 64vh;
-  }
-  .scrolling-questions-container {
-    height: 72vh;
-  }
-}
-@media screen and (min-height: 800px) {
-  .chat-thread {
-    height: 65vh;
-  }
-  .scrolling-questions-container {
-    height: 72vh;
-  }
-}
-@media screen and (min-height: 900px) {
-  .chat-thread {
-    height: 70vh;
-  }
-  .scrolling-questions-container {
-    height: 72vh;
-  }
-}
-@media screen and (min-height: 1400px) {
-  .chat-thread {
-    height: 72vh;
-  }
-  .scrolling-questions-container {
-    height: 72vh;
-  }
-}
-@media (min-width: 1650px) {
-  .chat-thread {
-    height: 73vh;
-  }
-  .scrolling-questions-container {
-    height: 72vh;
   }
 }

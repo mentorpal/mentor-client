@@ -4,19 +4,12 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
-import {
-  FormGroup,
-  FormControlLabel,
-  List,
-  Switch,
-  Button,
-} from "@material-ui/core";
+import { List } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import DownloadIcon from "@material-ui/icons/GetApp";
 
-import { ChatData, ChatMsg, State } from "types";
+import { ChatData, ChatMsg, MentorType, State } from "types";
 import "styles/history-chat.css";
 import "styles/history-chat-responsive.css";
 import ChatItem, { ChatItemData } from "./chat-item";
@@ -51,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "30px",
   },
   chat_container: {
-    backgroundColor: "#fff",
     margin: "1rem",
     marginTop: 0,
     borderRadius: 10,
@@ -94,10 +86,8 @@ export function Chat(args: {
     visibilityShowAllPref,
     getQuestionVisibilityPref,
     setQuestionVisibilityPref,
-    setVisibilityShowAllPref,
     mentorNameForChatMsg,
     rePlayQuestionVideo,
-    downloadChatHistory,
     mentorNameById,
   } = useWithChatData();
 
@@ -149,30 +139,6 @@ export function Chat(args: {
         Boolean(userPref === ItemVisibilityPrefs.VISIBLE);
   }
 
-  const toggleAnswers = (
-    <div>
-      <FormGroup className="togglePos">
-        <FormControlLabel
-          control={
-            <Switch
-              size="medium"
-              checked={visibilityShowAllPref}
-              onChange={(_, checked: boolean) => {
-                setVisibilityShowAllPref(checked);
-              }}
-              data-cy="visibility-switch"
-            />
-          }
-          label="Hide/Show answers"
-        />
-      </FormGroup>
-    </div>
-  );
-
-  useEffect(() => {
-    setVisibilityShowAllPref(visibilityShowAllPref);
-  }, [visibilityShowAllPref]);
-
   if (mentorType !== "CHAT") {
     // get last answers
     const lastAnswers = chatData.messages.filter((m) => {
@@ -207,7 +173,11 @@ export function Chat(args: {
     >
       <List
         data-cy="chat-thread"
-        className="chat-thread"
+        className={
+          mentorType === MentorType.CHAT
+            ? ["chat-thread", "chat-only"].join(" ")
+            : "chat-thread"
+        }
         style={{
           width: shouldDisplayPortrait() ? "100%" : width ? width : "40vw",
           padding: shouldDisplayPortrait() ? 0 : 10,
@@ -215,22 +185,6 @@ export function Chat(args: {
         disablePadding={true}
         id="chat-thread"
       >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "right",
-          }}
-        >
-          {toggleAnswers}
-          <Button
-            data-cy="download-history-btn"
-            onClick={downloadChatHistory}
-            startIcon={<DownloadIcon />}
-          >
-            Download History
-          </Button>
-        </div>
         {chatData.messages.map((m: ChatMsg, i: number) => {
           const itemData: ChatItemData = {
             ...m,

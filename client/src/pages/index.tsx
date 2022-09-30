@@ -353,7 +353,7 @@ function IndexPage(props: {
       ) : (
         <MuiThemeProvider theme={brandedTheme}>
           <Header />
-          <div className="main-container" style={{ height: windowHeight - 60 }}>
+          <div className="main-container">
             <div className="video-section">
               <VideoSection
                 mentorType={mentorType}
