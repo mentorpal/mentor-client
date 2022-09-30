@@ -4,17 +4,18 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
+import React from "react";
+import { useSelector } from "react-redux";
+import { Collapse, Paper } from "@material-ui/core";
+
 import Topics from "components/topics/topics";
 import Questions from "components/questions";
-
-import React from "react";
-import { Collapse, Paper } from "@material-ui/core";
 import GuestPrompt from "components/guest-prompt";
-import { MentorType, State } from "types";
 import { UseWitInputtData } from "components/layout/use-input-data";
 import Input from "components/input";
+import History from "components/history";
+import { MentorType, State } from "types";
 import "styles/history-chat-responsive.css";
-import { useSelector } from "react-redux";
 
 function ChatSection(props: {
   mentorType: MentorType;
@@ -37,6 +38,7 @@ function ChatSection(props: {
             onSelected={onTopicSelected}
             showHistoryTab={mentorType === MentorType.CHAT}
           />
+          <History />
           <Collapse in={Boolean(curTopic)} timeout="auto" unmountOnExit>
             <Questions onSelected={onQuestionSelected} />
           </Collapse>
@@ -48,17 +50,20 @@ function ChatSection(props: {
     );
   } else {
     return (
-      <>
+      <div style={{ flexDirection: "column" }}>
         <Topics
           onSelected={onTopicSelected}
           showHistoryTab={mentorType === MentorType.CHAT}
         />
-        <Collapse in={Boolean(curTopic)} timeout="auto" unmountOnExit>
-          <Questions onSelected={onQuestionSelected} />
-        </Collapse>
+        <div style={{ height: "calc(100vh - 240px)" }}>
+          <Collapse in={Boolean(curTopic)} timeout="auto" unmountOnExit>
+            <Questions onSelected={onQuestionSelected} />
+          </Collapse>
+        </div>
         {!hasSessionUser() && displayGuestPrompt ? <GuestPrompt /> : undefined}
+        <History />
         <Input />
-      </>
+      </div>
     );
   }
 }

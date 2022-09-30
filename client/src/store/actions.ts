@@ -76,6 +76,7 @@ export const GUEST_NAME_SET = "GUEST_NAME_SET";
 export const CMI5_INIT_STARTED = "CMI5_INIT_STARTED";
 export const CMI5_INIT_SUCCEEDED = "CMI5_INIT_SUCCEEDED";
 export const CMI5_INIT_FAILED = "CMI5_INIT_FAILED";
+export const HISTORY_TOGGLE_VISIBILITY = "HISTORY_TOGGLE_VISIBILITY";
 
 export interface Cmi5InitStartedAction {
   type: typeof CMI5_INIT_STARTED;
@@ -183,6 +184,10 @@ export interface NextMentorAction {
   mentor: string;
 }
 
+export interface ToggleHistoryVisibilityAction {
+  type: typeof HISTORY_TOGGLE_VISIBILITY;
+}
+
 export type MentorAction =
   | AnswerFinishedAction
   | MentorAnswerPlaybackStartedAction
@@ -275,6 +280,7 @@ export type MentorClientAction =
   | TopicSelectedAction
   | QuestionInputChangedAction
   | ReplayVideoAction
+  | ToggleHistoryVisibilityAction
   | PlayIdleAfterReplayVideoAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
@@ -996,4 +1002,8 @@ const onIdle = () => ({
 const nextMentor = (id: string): NextMentorAction => ({
   mentor: id,
   type: MENTOR_NEXT,
+});
+
+export const toggleHistoryVisibility = (): ToggleHistoryVisibilityAction => ({
+  type: HISTORY_TOGGLE_VISIBILITY,
 });

@@ -102,3 +102,9 @@ export function toXapiResultExtCustom(
     qualtricsUserId,
   };
 }
+
+export function removeQueryParam(param: string): void {
+  const url = new URL(window.location.href);
+  url.searchParams.delete(param);
+  window.history.pushState({ path: url.href }, "", url.href);
+}

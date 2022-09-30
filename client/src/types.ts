@@ -273,6 +273,7 @@ export interface State {
   questionsAsked: string[];
   recommendedQuestions: string[];
   questionInput: QuestionInput;
+  visibilityShowAllPref: boolean;
 }
 
 export interface QuestionInput {
