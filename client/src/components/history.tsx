@@ -5,18 +5,23 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Typography, IconButton, FormGroup, Switch } from "@material-ui/core";
 import DownloadIcon from "@material-ui/icons/GetApp";
 
 import { toggleHistoryVisibility } from "store/actions";
 import { useWithChatData } from "./chat/use-chat-data";
+import { State } from "types";
 
 export default function History(): JSX.Element {
   const dispatch = useDispatch();
+  const curTopic = useSelector<State, string>((state) => state.curTopic);
   const { visibilityShowAllPref, downloadChatHistory } = useWithChatData();
   return (
-    <div className="input-history">
+    <div
+      className="input-history"
+      style={{ visibility: curTopic === "History" ? "visible" : "hidden" }}
+    >
       <Typography>History: </Typography>
       <div>
         <FormGroup className="togglePos">
