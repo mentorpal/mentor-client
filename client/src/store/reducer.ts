@@ -48,6 +48,7 @@ import {
   PLAY_IDLE_AFTER_REPLAY_VIDEO,
   PlayIdleAfterReplayVideoAction,
   VideoFinishedAction,
+  HISTORY_TOGGLE_VISIBILITY,
 } from "./actions";
 import {
   MentorState,
@@ -110,6 +111,7 @@ export const initialState: State = {
     question: "",
     source: MentorQuestionSource.NONE,
   },
+  visibilityShowAllPref: false,
 };
 
 function onCmi5InitSucceeded(
@@ -430,6 +432,13 @@ function onMentorNext(
   };
 }
 
+function onToggleHistoryVisibility(state: State): State {
+  return {
+    ...state,
+    visibilityShowAllPref: !state.visibilityShowAllPref,
+  };
+}
+
 function onQuestionInputChanged(
   state: State,
   action: QuestionInputChangedAction
@@ -660,6 +669,8 @@ export default function reducer(
       return mentorFaved(state, action);
     case MENTOR_NEXT:
       return onMentorNext(state, action);
+    case HISTORY_TOGGLE_VISIBILITY:
+      return onToggleHistoryVisibility(state);
     case QUESTION_SENT:
       return onQuestionSent(state, action);
     case QUESTION_ANSWERED:

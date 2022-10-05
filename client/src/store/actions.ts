@@ -6,6 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 /* eslint-disable */
 import Cmi5 from "@kycarr/cmi5";
+import { Statement } from "@kycarr/cmi5/node_modules/@xapi/xapi/dist/types/interfaces/Statement";
 import { ActionCreator, AnyAction, Dispatch } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import * as uuid from "uuid";
@@ -42,6 +43,7 @@ import {
   Media,
 } from "../types";
 import {
+  getLocalStorage,
   getRecommendedTopics,
   getRegistrationId,
   mergeRecommendedTopicsQuestions,
@@ -74,6 +76,7 @@ export const GUEST_NAME_SET = "GUEST_NAME_SET";
 export const CMI5_INIT_STARTED = "CMI5_INIT_STARTED";
 export const CMI5_INIT_SUCCEEDED = "CMI5_INIT_SUCCEEDED";
 export const CMI5_INIT_FAILED = "CMI5_INIT_FAILED";
+export const HISTORY_TOGGLE_VISIBILITY = "HISTORY_TOGGLE_VISIBILITY";
 
 export interface Cmi5InitStartedAction {
   type: typeof CMI5_INIT_STARTED;
@@ -181,6 +184,10 @@ export interface NextMentorAction {
   mentor: string;
 }
 
+export interface ToggleHistoryVisibilityAction {
+  type: typeof HISTORY_TOGGLE_VISIBILITY;
+}
+
 export type MentorAction =
   | AnswerFinishedAction
   | MentorAnswerPlaybackStartedAction
@@ -273,10 +280,16 @@ export type MentorClientAction =
   | TopicSelectedAction
   | QuestionInputChangedAction
   | ReplayVideoAction
+  | ToggleHistoryVisibilityAction
   | PlayIdleAfterReplayVideoAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
+
+function stripNonAsciiCharacters(input: string): string {
+  const regex = new RegExp("[^\x00-\x7F]+");
+  return input.replace(regex, "");
+}
 
 export const initCmi5 =
   (userID: string, userEmail: string, homePage: string, config: Config) =>
@@ -284,9 +297,14 @@ export const initCmi5 =
     dispatch({
       type: CMI5_INIT_STARTED,
     });
+    if (!userID && !userEmail) {
+      return dispatch({
+        type: CMI5_INIT_FAILED,
+        errors: ["No user id or user email passed in"],
+      });
+    }
+    const launchParams = getCmiParams(userID, userEmail, homePage, config);
     try {
-      const launchParams = getCmiParams(userID, userEmail, homePage, config);
-      console.warn(launchParams);
       const cmi5 = new Cmi5(launchParams);
       await cmi5.initialize();
       return dispatch({
@@ -294,12 +312,49 @@ export const initCmi5 =
         payload: cmi5,
       });
     } catch (err) {
-      console.error(err);
-      if (err instanceof Error) {
+      console.error(
+        err,
+        `Failed to init cmi5 with params ${launchParams}, cleaning email of non-ascii domain if none exists`
+      );
+      if (launchParams.actor.mbox) {
+        launchParams.actor.mbox = stripNonAsciiCharacters(
+          launchParams.actor.mbox
+        );
+        // Append email domain if one does not exist
+        if (!launchParams.actor.mbox.includes("@")) {
+          launchParams.actor.mbox += "@mentorpal.org";
+        }
+      }
+      try {
+        const cmi5_recovery_1 = new Cmi5(launchParams);
+        await cmi5_recovery_1.initialize();
         return dispatch({
-          type: CMI5_INIT_FAILED,
-          errors: [err.message],
+          type: CMI5_INIT_SUCCEEDED,
+          payload: cmi5_recovery_1,
         });
+      } catch (err) {
+        console.error(
+          err,
+          `Failed to init cmi5 with cleaned mbox ${launchParams.actor.mbox}, going with default`
+        );
+        if (launchParams.actor.mbox) {
+          launchParams.actor.mbox = `${userID}.guest@mentorpal.org`;
+        }
+        try {
+          const cmi5_recovery_2 = new Cmi5(launchParams);
+          await cmi5_recovery_2.initialize();
+          return dispatch({
+            type: CMI5_INIT_SUCCEEDED,
+            payload: cmi5_recovery_2,
+          });
+        } catch (err) {
+          if (err instanceof Error) {
+            return dispatch({
+              type: CMI5_INIT_FAILED,
+              errors: [err.message],
+            });
+          }
+        }
       }
     }
   };
@@ -420,7 +475,7 @@ export const loadMentors: ActionCreator<
         {}
       ),
     };
-    for (const mentorId of mentors) {
+    const mentorRequests = mentors.map(async (mentorId) => {
       try {
         const mentor: MentorClientData = await fetchMentor(mentorId, subject);
         const topicQuestions: TopicQuestions[] = [];
@@ -473,7 +528,8 @@ export const loadMentors: ActionCreator<
       } catch (mentorErr) {
         console.error(mentorErr);
       }
-    }
+    });
+    await Promise.all(mentorRequests); //requests all mentors in parallel
     mentorLoadResult.mentor = mentors.find(
       (id) => mentorLoadResult.mentorsById[id].status === ResultStatus.SUCCEEDED
     );
@@ -511,17 +567,21 @@ export const loadMentors: ActionCreator<
     return;
   };
 
-export function sendCmi5Statement(statement: any, cmi5?: Cmi5): void {
+export function sendCmi5Statement(
+  statement: Partial<Statement>,
+  cmi5?: Cmi5
+): void {
   if (!cmi5 && !Cmi5.isCmiAvailable) {
     return;
   }
   try {
     const cmi = cmi5 || Cmi5.instance;
+    const statementData = {
+      ...statement,
+      context: { registration: getRegistrationId() },
+    };
     cmi
-      .sendCmi5AllowedStatement({
-        ...statement,
-        context: { registration: getRegistrationId() },
-      })
+      .sendCmi5AllowedStatement(statementData)
       .catch((err: Error) => console.error(JSON.stringify(err, null, " ")));
   } catch (err2) {
     console.error(JSON.stringify(err2));
@@ -685,7 +745,7 @@ export const sendQuestion =
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
   ) => {
-    const localData = localStorage.getItem("userData");
+    const localData = getLocalStorage("userData");
     const userEmail = JSON.parse(localData ? localData : "{}").userEmail;
     const curState = getState();
 
@@ -943,4 +1003,8 @@ const onIdle = () => ({
 const nextMentor = (id: string): NextMentorAction => ({
   mentor: id,
   type: MENTOR_NEXT,
+});
+
+export const toggleHistoryVisibility = (): ToggleHistoryVisibilityAction => ({
+  type: HISTORY_TOGGLE_VISIBILITY,
 });

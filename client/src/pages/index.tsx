@@ -22,11 +22,11 @@ import { fetchMentorByAccessToken, pingMentor } from "api";
 
 import "styles/history-chat-responsive.css";
 
-import Desktop from "components/layout/desktop";
 import { isMobile } from "react-device-detect";
-import Mobile from "components/layout/mobile";
 import { onVisibilityChange, setLocalStorage } from "utils";
-import { getParams } from "cmiutils";
+import { getParamUserId, removeQueryParam } from "cmiutils";
+import VideoSection from "components/layout/video-section";
+import ChatSection from "components/layout/chat-section";
 
 const useStyles = makeStyles((theme) => ({
   flexRoot: {
@@ -120,9 +120,7 @@ function IndexPage(props: {
   let { mentor } = props.search;
 
   function hasSessionUser(): boolean {
-    return Boolean(
-      !config.cmi5Enabled || (cmi5 && cmi5.isAuthenticated) || guestName
-    );
+    return Boolean(!config.cmi5Enabled || cmi5 || guestName);
   }
 
   function isConfigLoadComplete(s: LoadStatus): boolean {
@@ -150,6 +148,8 @@ function IndexPage(props: {
     );
     if (registrationIdFromUrl) {
       setLocalStorage("registrationId", registrationIdFromUrl);
+      // remove saved query params (no longer needed) to clean up url
+      removeQueryParam("registrationId");
     }
 
     const handleResize = () => setWindowHeight(window.innerHeight);
@@ -234,6 +234,11 @@ function IndexPage(props: {
     // set it in localStorage
     localStorage.setItem("userData", JSON.stringify(userData));
 
+    // remove saved query params (no longer needed) to clean up url
+    removeQueryParam("userID");
+    removeQueryParam("referrer");
+    removeQueryParam("userEmail");
+
     return [userIdURL, referrerURL, userEmail];
   };
 
@@ -258,9 +263,7 @@ function IndexPage(props: {
       warmupMentors(mentor);
     }
     if (config.cmi5Enabled && !config.displayGuestPrompt && !cmi5) {
-      const referrer = setupLocalStorage()[1];
-      const userEmail = setupLocalStorage()[2];
-      const userIdLRS = setupLocalStorage()[0];
+      const [userIdLRS, referrer, userEmail] = setupLocalStorage();
       if (userIdLRS && userEmail && referrer) {
         try {
           dispatch(
@@ -317,7 +320,7 @@ function IndexPage(props: {
   }, [configLoadStatus, mentor, subject, recommendedQuestions]);
 
   useEffect(() => {
-    let userId = getParams(window.location.href);
+    let userId = getParamUserId(window.location.href);
     if (!userId || typeof userId !== "string") {
       userId = uuidv1();
     }
@@ -350,23 +353,25 @@ function IndexPage(props: {
       ) : (
         <MuiThemeProvider theme={brandedTheme}>
           <Header />
-          {shouldDisplayPortrait() || isMobile ? (
-            <Mobile
-              mentorType={mentorType}
-              chatHeight={chatHeight}
-              windowHeight={windowHeight}
-              hasSessionUser={hasSessionUser}
-              curTopic={curTopic}
-            />
-          ) : (
-            <Desktop
-              mentorType={mentorType}
-              chatHeight={chatHeight}
-              windowHeight={windowHeight}
-              hasSessionUser={hasSessionUser}
-              curTopic={curTopic}
-            />
-          )}
+          <div className="main-container">
+            <div className="video-section">
+              <VideoSection
+                mentorType={mentorType}
+                chatHeight={chatHeight}
+                windowHeight={windowHeight}
+                hasSessionUser={hasSessionUser}
+                isMobile={shouldDisplayPortrait() || isMobile}
+              />
+            </div>
+            <div className="chat-section">
+              <ChatSection
+                mentorType={mentorType}
+                hasSessionUser={hasSessionUser}
+                curTopic={curTopic}
+                isMobile={shouldDisplayPortrait() || isMobile}
+              />
+            </div>
+          </div>
         </MuiThemeProvider>
       )}
     </div>

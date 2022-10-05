@@ -81,7 +81,6 @@ function VideoPanel(): JSX.Element {
                   style={{
                     display: "flex",
                     justifyContent: "center",
-                    marginBottom: 15,
                   }}
                 >
                   <Star

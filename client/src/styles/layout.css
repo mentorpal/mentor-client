@@ -42,20 +42,18 @@ body {
 .scroll {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  max-height: 500px;
+  max-height: calc(100vh - 250px);
+  /* max-height: 500px; */
 }
 
 .carousel {
   /* max-width: 80%; */
-  height: 80px;
+  height: fit-content;
   overflow-x: visible;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   white-space: nowrap;
-  margin-top: 10px;
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-bottom: 15px;
+  position: relative;
 }
 
 .modal-animation {
@@ -205,35 +203,47 @@ body {
   margin-bottom: 10px;
 }
 
-.left-panel,
-.right-panel {
+.video-section,
+.chat-section {
+  height: 100vh - 60;
   background-color: #fff;
   border-radius: 10px;
 }
-.right-panel {
+.chat-section {
   position: relative;
   margin-right: 1rem;
 }
-.left-panel {
+.video-section {
   background-color: #fff;
 }
 
 .input-container {
-  position: absolute;
-  bottom: 10px !important;
+  /* position: absolute; */
+  /* bottom: 10px !important; */
   width: 100%;
 }
 
 .input-wrapper {
-  position: absolute;
+  /* position: absolute; */
+  /* bottom: 0px; */
   width: 95%;
   height: 60px;
   margin: 10px;
-  bottom: 0px;
   box-shadow: none !important;
   background-color: #eeeeee !important;
   border-radius: 1.5rem;
   padding: 6px !important;
+}
+
+.input-history {
+  /* position: absolute; */
+  /* bottom: 80px; */
+  /* right: 10px; */
+  height: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: right;
 }
 
 .send-question-btn {
@@ -249,7 +259,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 60px;
+  height: 50px;
 }
 
 .markdown-container {
@@ -342,6 +352,7 @@ textarea:-moz-placeholder {
   }
   .input-container {
     position: relative;
+    /* margin-top: 10px; */
   }
   .input-wrapper {
     position: relative;
@@ -357,18 +368,11 @@ textarea:-moz-placeholder {
     margin-top: 0px;
     margin-bottom: 0px;
   }
-  .right-panel {
+  .chat-section {
     margin: 1.5rem 0px 1rem 0px;
   }
   .send-question-btn {
     background-color: #eee !important;
-  }
-  .header-container {
-    height: 80px;
-  }
-
-  .header-mentor-info > p {
-    font-size: 1.5rem !important;
   }
 
   .home-btn {
@@ -390,14 +394,10 @@ textarea:-moz-placeholder {
     background-color: #fff !important;
     border-radius: 0px;
   }
-
   .home-btn-wrapper {
     max-width: 15%;
   }
   .home-btn {
     margin-left: 1.5rem !important;
-  }
-  .header-mentor-info > p {
-    font-size: 1.1rem !important;
   }
 }

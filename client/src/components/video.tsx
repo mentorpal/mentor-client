@@ -99,6 +99,10 @@ function Video(args: {
   const virtualBackgroundUrl: string =
     curMentor.mentor.virtualBackgroundUrl || defaultVirtualBackground;
 
+  const isMentorPanel = useSelector<State, boolean>((state) => {
+    return Object.getOwnPropertyNames(state.mentorsById).length > 1;
+  });
+
   const useVbg =
     curMentor.mentor.hasVirtualBackground && browserSupportsViewingVbg();
   const { aspectRatio: vbgAspectRatio } = useWithImage(virtualBackgroundUrl);
@@ -382,9 +386,8 @@ function Video(args: {
           className="video-container"
           data-test-replay={idleVideo.src}
           style={{
-            height: "100%",
+            height: isMentorPanel ? "fit-content" : "100%",
             minHeight: Math.max(answerVideoRefHeight || 0),
-            paddingBottom: "30px",
           }}
         >
           <span
