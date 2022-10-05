@@ -475,7 +475,7 @@ export const loadMentors: ActionCreator<
         {}
       ),
     };
-    for (const mentorId of mentors) {
+    const mentorRequests = mentors.map(async (mentorId) => {
       try {
         const mentor: MentorClientData = await fetchMentor(mentorId, subject);
         const topicQuestions: TopicQuestions[] = [];
@@ -528,7 +528,8 @@ export const loadMentors: ActionCreator<
       } catch (mentorErr) {
         console.error(mentorErr);
       }
-    }
+    });
+    await Promise.all(mentorRequests); //requests all mentors in parallel
     mentorLoadResult.mentor = mentors.find(
       (id) => mentorLoadResult.mentorsById[id].status === ResultStatus.SUCCEEDED
     );
