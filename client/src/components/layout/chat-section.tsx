@@ -35,12 +35,13 @@ function ChatSection(props: {
         <Paper>
           <Input />
           <Topics
+            isMobile={isMobile}
             onSelected={onTopicSelected}
             showHistoryTab={mentorType === MentorType.CHAT}
           />
           <History />
           <Collapse in={Boolean(curTopic)} timeout="auto" unmountOnExit>
-            <Questions onSelected={onQuestionSelected} />
+            <Questions isMobile={isMobile} onSelected={onQuestionSelected} />
           </Collapse>
           {!hasSessionUser() && displayGuestPrompt ? (
             <GuestPrompt />
@@ -52,12 +53,13 @@ function ChatSection(props: {
     return (
       <div style={{ flexDirection: "column" }}>
         <Topics
+          isMobile={isMobile}
           onSelected={onTopicSelected}
           showHistoryTab={mentorType === MentorType.CHAT}
         />
         <div style={{ height: "calc(100vh - 240px)" }}>
           <Collapse in={Boolean(curTopic)} timeout="auto" unmountOnExit>
-            <Questions onSelected={onQuestionSelected} />
+            <Questions isMobile={isMobile} onSelected={onQuestionSelected} />
           </Collapse>
         </div>
         {!hasSessionUser() && displayGuestPrompt ? <GuestPrompt /> : undefined}

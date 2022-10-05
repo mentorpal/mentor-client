@@ -4,7 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Helmet } from "react-helmet";
 import { v1 as uuidv1 } from "uuid";
@@ -79,9 +79,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const shouldDisplayPortrait = (): boolean =>
-  window.matchMedia && window.matchMedia("(max-width: 1200px)").matches;
-
 function IndexPage(props: {
   search: {
     mentor?: string | string[];
@@ -114,6 +111,12 @@ function IndexPage(props: {
 
   const [windowHeight, setWindowHeight] = React.useState<number>(0);
   const [chatHeight, setChatHeight] = React.useState<number>(0);
+  const [displayFormat, setDisplayFormat] = useState<string>("desktop");
+  const [shouldDisplayPortrait, setShouldDisplayPortrait] =
+    useState<boolean>(false);
+  const [mainContainerClassName, setMainContainerClassName] = useState<string>(
+    "main-container-responsive"
+  );
   const curTopic = useSelector<State, string>((state) => state.curTopic);
 
   const { guest, subject, recommendedQuestions, intro } = props.search;
@@ -152,13 +155,60 @@ function IndexPage(props: {
       removeQueryParam("registrationId");
     }
 
-    const handleResize = () => setWindowHeight(window.innerHeight);
+    const displaySearchParam = new URL(location.href).searchParams.get(
+      "display"
+    );
+    const displayFormat =
+      displaySearchParam && displaySearchParam == "mobile"
+        ? "mobile"
+        : displaySearchParam && displaySearchParam == "desktop"
+        ? "desktop"
+        : shouldDisplayPortrait || isMobile
+        ? "mobile"
+        : "desktop";
+    setDisplayFormat(displayFormat);
+
+    const mainContainerClassName: string =
+      displaySearchParam && displaySearchParam == "mobile"
+        ? "main-container-mobile"
+        : displaySearchParam && displaySearchParam == "desktop"
+        ? "main-container-desktop"
+        : "main-container-responsive";
+
+    setMainContainerClassName(mainContainerClassName);
+
+    const _shouldDisplayPortrait =
+      window.matchMedia && window.matchMedia("(max-width: 1200px)").matches;
+    setShouldDisplayPortrait(_shouldDisplayPortrait);
+
+    const handleResize = () => {
+      setWindowHeight(window.innerHeight);
+      const _shouldDisplayPortrait =
+        window.matchMedia && window.matchMedia("(max-width: 1200px)").matches;
+      setShouldDisplayPortrait(_shouldDisplayPortrait);
+    };
     window.addEventListener("resize", handleResize);
     setWindowHeight(window.innerHeight);
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const displaySearchParam = new URL(location.href).searchParams.get(
+      "display"
+    );
+    const displayFormat =
+      displaySearchParam && displaySearchParam == "mobile"
+        ? "mobile"
+        : displaySearchParam && displaySearchParam == "desktop"
+        ? "desktop"
+        : shouldDisplayPortrait || isMobile
+        ? "mobile"
+        : "desktop";
+    setDisplayFormat(displayFormat);
+  }, [shouldDisplayPortrait, isMobile]);
 
   useEffect(() => {
     if (!isConfigLoadComplete(configLoadStatus) || !curMentor) {
@@ -331,23 +381,6 @@ function IndexPage(props: {
       dispatch(setGuestName(guest));
     }
   }, [guest]);
-
-  const displaySearchParam = new URL(location.href).searchParams.get("display");
-  const displayFormat =
-    displaySearchParam && displaySearchParam == "mobile"
-      ? "mobile"
-      : displaySearchParam && displaySearchParam == "desktop"
-      ? "desktop"
-      : shouldDisplayPortrait() || isMobile
-      ? "mobile"
-      : "desktop";
-
-  const mainContainerClassName: string =
-    displaySearchParam && displaySearchParam == "mobile"
-      ? "main-container-mobile"
-      : displaySearchParam && displaySearchParam == "desktop"
-      ? "main-container-desktop"
-      : "main-container-responsive";
 
   return (
     <div>

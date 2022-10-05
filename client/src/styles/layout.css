@@ -347,9 +347,7 @@ textarea:-moz-placeholder {
   .divider {
     margin-top: 20px !important;
   }
-  .MuiTabs-flexContainer {
-    justify-content: center;
-  }
+
   .input-container {
     position: relative;
     /* margin-top: 10px; */
