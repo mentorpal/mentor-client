@@ -332,6 +332,23 @@ function IndexPage(props: {
     }
   }, [guest]);
 
+  const displaySearchParam = new URL(location.href).searchParams.get("display");
+  const displayFormat =
+    displaySearchParam && displaySearchParam == "mobile"
+      ? "mobile"
+      : displaySearchParam && displaySearchParam == "desktop"
+      ? "desktop"
+      : shouldDisplayPortrait() || isMobile
+      ? "mobile"
+      : "desktop";
+
+  const mainContainerClassName: string =
+    displaySearchParam && displaySearchParam == "mobile"
+      ? "main-container-mobile"
+      : displaySearchParam && displaySearchParam == "desktop"
+      ? "main-container-desktop"
+      : "main-container-responsive";
+
   return (
     <div>
       <Helmet>
@@ -353,14 +370,14 @@ function IndexPage(props: {
       ) : (
         <MuiThemeProvider theme={brandedTheme}>
           <Header />
-          <div className="main-container">
+          <div className={mainContainerClassName}>
             <div className="video-section">
               <VideoSection
                 mentorType={mentorType}
                 chatHeight={chatHeight}
                 windowHeight={windowHeight}
                 hasSessionUser={hasSessionUser}
-                isMobile={shouldDisplayPortrait() || isMobile}
+                isMobile={displayFormat == "mobile"}
               />
             </div>
             <div className="chat-section">
@@ -368,7 +385,7 @@ function IndexPage(props: {
                 mentorType={mentorType}
                 hasSessionUser={hasSessionUser}
                 curTopic={curTopic}
-                isMobile={shouldDisplayPortrait() || isMobile}
+                isMobile={displayFormat == "mobile"}
               />
             </div>
           </div>

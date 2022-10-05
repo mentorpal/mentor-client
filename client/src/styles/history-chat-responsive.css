@@ -1,12 +1,21 @@
-.main-container {
-  /* display: flex;
-  flex-direction: row;
-  padding: 10px;
-  justify-content: space-around; */
+.main-container-responsive {
   height: 100vh - 60;
   display: grid;
   grid-template-columns: 55vw 45vw;
   background-color: #eeeeee;
+}
+
+.main-container-desktop {
+  height: 100vh - 60;
+  display: grid;
+  grid-template-columns: 55vw 45vw;
+  background-color: #eeeeee;
+}
+
+.main-container-mobile {
+  display: contents;
+  flex-direction: column;
+  padding: 10px;
 }
 
 .history-chat-wrapper {
@@ -35,7 +44,7 @@
 }
 
 @media only screen and (max-width: 1200px) {
-  .main-container {
+  .main-container-responsive {
     display: contents;
     flex-direction: column;
     padding: 10px;
