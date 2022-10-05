@@ -230,3 +230,6 @@ export const mergeRecommendedTopicsQuestions = (
     questions: uniqueQuestions,
   };
 };
+
+export const shouldDisplayPortrait = (): boolean =>
+  window.matchMedia && window.matchMedia("(max-width: 1200px)").matches;

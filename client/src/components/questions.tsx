@@ -20,6 +20,7 @@ const theme = createMuiTheme({
 
 function Questions(props: {
   onSelected: (question: string) => void;
+  isMobile: boolean;
   search: {
     subject?: string;
   };
@@ -63,7 +64,9 @@ function Questions(props: {
     return orderedQuestions;
   });
 
-  const historyComponent = <Chat height={490} windowHeight={490} />;
+  const historyComponent = (
+    <Chat isMobile={props.isMobile} height={490} windowHeight={490} />
+  );
 
   const content =
     curTopic === "History" ? (

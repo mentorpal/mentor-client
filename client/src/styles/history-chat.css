@@ -155,16 +155,3 @@ ul li p {
     transform: scale(1.2);
   }
 }
-/* Round Last Bubble */
-
-@media only screen and (max-width: 1200px) {
-  .main-container {
-    display: contents;
-    flex-direction: column;
-    padding: 10px;
-  }
-  .video-mentor-wrapper {
-    padding: 0;
-    width: 100%;
-  }
-}

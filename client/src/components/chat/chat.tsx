@@ -14,50 +14,6 @@ import "styles/history-chat.css";
 import "styles/history-chat-responsive.css";
 import ChatItem, { ChatItemData } from "./chat-item";
 import { ItemVisibilityPrefs, useWithChatData } from "./use-chat-data";
-import { shouldDisplayPortrait } from "pages";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "auto",
-  },
-  list: {
-    marginTop: 1,
-    padding: shouldDisplayPortrait() ? 0 : 10,
-    borderRadius: 10,
-  },
-  avatar: {
-    width: theme.spacing(4),
-    height: theme.spacing(4),
-    backgroundColor: "#88929e",
-  },
-  GOOD: {
-    backgroundColor: "#00bf00",
-  },
-  BAD: {
-    backgroundColor: "#E63535",
-  },
-  icon: {
-    position: "absolute",
-    right: -40,
-  },
-  feedbackPopup: {
-    borderRadius: "30px",
-  },
-  chat_container: {
-    margin: "1rem",
-    marginTop: 0,
-    borderRadius: 10,
-  },
-  chat_container_mobile: {
-    border: 0,
-  },
-  introMsg: {
-    marginLeft: "0rem !important",
-  },
-  visibilityBtn: {
-    marginLeft: "5px",
-  },
-}));
 
 const MENTOR_COLORS = [
   "#d4e8d9", // light green
@@ -72,13 +28,56 @@ const MENTOR_COLORS = [
   "#ffd8b1", // apricot
 ];
 
-export function Chat(args: {
+function Chat(props: {
+  isMobile: boolean;
   height?: number;
   windowHeight?: number;
   width?: string;
   bubbleColor?: string;
 }): JSX.Element {
-  const { width, bubbleColor } = args;
+  const { width, bubbleColor, isMobile } = props;
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      width: "auto",
+    },
+    list: {
+      marginTop: 1,
+      padding: isMobile ? 0 : 10,
+      borderRadius: 10,
+    },
+    avatar: {
+      width: theme.spacing(4),
+      height: theme.spacing(4),
+      backgroundColor: "#88929e",
+    },
+    GOOD: {
+      backgroundColor: "#00bf00",
+    },
+    BAD: {
+      backgroundColor: "#E63535",
+    },
+    icon: {
+      position: "absolute",
+      right: -40,
+    },
+    feedbackPopup: {
+      borderRadius: "30px",
+    },
+    chat_container: {
+      margin: "1rem",
+      marginTop: 0,
+      borderRadius: 10,
+    },
+    chat_container_mobile: {
+      border: 0,
+    },
+    introMsg: {
+      marginLeft: "0rem !important",
+    },
+    visibilityBtn: {
+      marginLeft: "5px",
+    },
+  }));
   const styles = useStyles();
   const {
     mentorType,
@@ -166,9 +165,7 @@ export function Chat(args: {
       id="history-chat"
       data-topic="History"
       className={
-        !shouldDisplayPortrait()
-          ? styles.chat_container
-          : styles.chat_container_mobile
+        !isMobile ? styles.chat_container : styles.chat_container_mobile
       }
     >
       <List
@@ -179,8 +176,8 @@ export function Chat(args: {
             : "chat-thread"
         }
         style={{
-          width: shouldDisplayPortrait() ? "100%" : width ? width : "40vw",
-          padding: shouldDisplayPortrait() ? 0 : 10,
+          width: isMobile ? "100%" : width ? width : "40vw",
+          padding: isMobile ? 0 : 10,
         }}
         disablePadding={true}
         id="chat-thread"

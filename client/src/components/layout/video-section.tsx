@@ -4,13 +4,13 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import Chat from "components/chat";
 import Video from "components/video";
 import VideoPanel from "components/video-panel";
 import React from "react";
 import { MentorType, State } from "types";
 import "styles/history-chat-responsive.css";
 import { useSelector } from "react-redux";
+import Chat from "components/chat";
 
 function VideoSection(props: {
   mentorType: MentorType;
@@ -27,7 +27,6 @@ function VideoSection(props: {
   const configEmailMentorAddress = useSelector<State, string>(
     (state) => state.config.filterEmailMentorAddress
   );
-
   return (
     <>
       <VideoPanel />
@@ -37,6 +36,7 @@ function VideoSection(props: {
           windowHeight={windowHeight}
           width={isMobile ? "60vw" : "auto"}
           bubbleColor={"#88929e"}
+          isMobile={isMobile}
         />
       ) : (
         <Video

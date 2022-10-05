@@ -10,8 +10,6 @@ import { State, TopicQuestions } from "types";
 import "styles/layout.css";
 import { useSelector } from "react-redux";
 import { Button, DialogActions, Paper, Tab, Tabs } from "@material-ui/core";
-import { shouldDisplayPortrait } from "pages";
-import { isMobile } from "react-device-detect";
 import { ChangeEvent } from "react";
 import "styles/topic-tabs.css";
 
@@ -37,12 +35,14 @@ function TopicTabs(props: {
   onTopicSelected: (topic: string) => void;
   showHistoryTab: boolean;
   existRecommendedQuestions: boolean;
+  isMobile: boolean;
 }): JSX.Element {
   const {
     topicQuestions,
     onTopicSelected,
     showHistoryTab,
     existRecommendedQuestions,
+    isMobile,
   } = props;
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
@@ -101,6 +101,7 @@ function TopicTabs(props: {
         onChange={onChange}
         aria-label="disabled tabs example"
         data-cy="topics"
+        centered={true}
       >
         {showHistoryTab ? null : (
           <Tab
@@ -205,9 +206,7 @@ function TopicTabs(props: {
   // if mobile -> show history button
   // if not mobile -> hide history button
   return (
-    <div className="tab-wrapper">
-      {shouldDisplayPortrait() || isMobile ? mobileView : desktopView}
-    </div>
+    <div className="tab-wrapper">{isMobile ? mobileView : desktopView}</div>
   );
 }
 

@@ -21,8 +21,9 @@ function Topics(args: {
     subject?: string;
   };
   showHistoryTab: boolean;
+  isMobile: boolean;
 }) {
-  const { onSelected, showHistoryTab } = args;
+  const { onSelected, showHistoryTab, isMobile } = args;
   const dispatch = useDispatch();
 
   const topicQuestions = useSelector<State, TopicQuestions[]>((state) => {
@@ -79,6 +80,7 @@ function Topics(args: {
       onTopicSelected={onTopicSelected}
       showHistoryTab={showHistoryTab}
       existRecommendedQuestions={existRecommendedQuestions}
+      isMobile={isMobile}
     />
   );
 
