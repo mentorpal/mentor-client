@@ -312,15 +312,8 @@ function Video(args: {
     }
   }
 
-  function onProgressAnswerVideo(state: {
-    played: number;
-    playedSeconds: number;
-    loaded: number;
-    loadedSeconds: number;
-  }) {
-    if (state.playedSeconds > 0.1 && !videoFinishedBuffering && !isIdle) {
-      setVideoFinishedBuffering(true);
-    }
+  function onAnswerReady() {
+    setVideoFinishedBuffering(true);
   }
 
   function emailMentorIcon() {
@@ -405,7 +398,6 @@ function Video(args: {
               emailIcon={emailMentorIcon}
               onEnded={onEnded}
               onPlay={onPlay}
-              onProgress={onProgressAnswerVideo}
               playing={Boolean(playing)}
               subtitlesOn={
                 Boolean(subtitlesSupported) && Boolean(video.subtitles)
@@ -421,6 +413,7 @@ function Video(args: {
               virtualBackgroundUrl={virtualBackgroundUrl}
               playAnswer={!isIdle && videoFinishedBuffering}
               vbgAspectRatio={vbgAspectRatio}
+              onAnswerReady={onAnswerReady}
             />
           </span>
         </div>
@@ -440,12 +433,6 @@ function Video(args: {
 interface VideoPlayerParams {
   onEnded: () => void;
   onPlay: () => void;
-  onProgress: (state: {
-    played: number;
-    playedSeconds: number;
-    loaded: number;
-    loadedSeconds: number;
-  }) => void;
   playing?: boolean;
   idleUrl: string;
   subtitlesOn: boolean;
@@ -460,13 +447,13 @@ interface VideoPlayerParams {
   playAnswer: boolean;
   emailIcon: () => JSX.Element;
   vbgAspectRatio: number;
+  onAnswerReady: () => void;
 }
 
 function VideoPlayer(args: VideoPlayerParams) {
   const {
     onEnded,
     onPlay,
-    onProgress,
     playing,
     subtitlesOn,
     subtitlesUrl,
@@ -481,11 +468,14 @@ function VideoPlayer(args: VideoPlayerParams) {
     playAnswer,
     emailIcon,
     vbgAspectRatio,
+    onAnswerReady,
   } = args;
   const [readied, setReadied] = useState<boolean>(false);
+  const [firstVideoLoaded, setFirstVideoLoaded] = useState<boolean>(false);
   useEffect(() => {
     setReadied(false);
   }, [videoUrl]);
+
   const webLinkJSX = webLinks?.map((wl, i) => {
     return (
       <a
@@ -524,6 +514,7 @@ function VideoPlayer(args: VideoPlayerParams) {
   const shouldDiplayWebLinks = webLinks.length > 0 ? true : false;
   // Hack: If answer is playing, then the answer player is visible and relative, else its absolute and invisible
   // opposite goes for the idle player, so only one of the players is taking up space at a time
+  const showAnswer = playAnswer || !firstVideoLoaded;
   const answerReactPlayerStyling: React.CSSProperties = useVirtualBackground
     ? {
         lineHeight: 0, //hack to make inline children of parent not have extra pixels below them https://gaurav5430.medium.com/extra-4px-at-the-bottom-of-html-img-8807a7ab0ca2
@@ -533,17 +524,17 @@ function VideoPlayer(args: VideoPlayerParams) {
         backgroundPosition: "center",
         backgroundColor: "black",
         margin: "0 auto",
-        position: playAnswer ? "relative" : "absolute",
-        visibility: playAnswer ? "visible" : "hidden",
-        zIndex: playAnswer ? 2 : 1,
+        position: showAnswer ? "relative" : "absolute",
+        visibility: showAnswer ? "visible" : "hidden",
+        zIndex: showAnswer ? 2 : 1,
       }
     : {
         lineHeight: 0,
         backgroundColor: "black",
         margin: "0 auto",
-        position: playAnswer ? "relative" : "absolute",
-        visibility: playAnswer ? "visible" : "hidden",
-        zIndex: playAnswer ? 2 : 1,
+        position: showAnswer ? "relative" : "absolute",
+        visibility: showAnswer ? "visible" : "hidden",
+        zIndex: showAnswer ? 2 : 1,
       };
   const idleReactPlayerStyling: React.CSSProperties = useVirtualBackground
     ? {
@@ -555,18 +546,18 @@ function VideoPlayer(args: VideoPlayerParams) {
         backgroundColor: "black",
         top: 0,
         margin: "0 auto",
-        position: !playAnswer ? "relative" : "absolute",
-        visibility: !playAnswer ? "visible" : "hidden",
-        zIndex: !playAnswer ? 2 : 1,
+        position: !showAnswer ? "relative" : "absolute",
+        visibility: !showAnswer ? "visible" : "hidden",
+        zIndex: !showAnswer ? 2 : 1,
       }
     : {
         lineHeight: 0,
         backgroundColor: "black",
         top: 0,
         margin: "0 auto",
-        position: !playAnswer ? "relative" : "absolute",
-        visibility: !playAnswer ? "visible" : "hidden",
-        zIndex: !playAnswer ? 2 : 1,
+        position: !showAnswer ? "relative" : "absolute",
+        visibility: !showAnswer ? "visible" : "hidden",
+        zIndex: !showAnswer ? 2 : 1,
       };
   return (
     <div
@@ -584,8 +575,11 @@ function VideoPlayer(args: VideoPlayerParams) {
         onEnded={onEnded}
         ref={reactPlayerRef}
         onPlay={onPlay}
-        onProgress={onProgress}
         onReady={(player: ReactPlayer) => {
+          onAnswerReady();
+          if (!firstVideoLoaded) {
+            setFirstVideoLoaded(true);
+          }
           if (readied) {
             return;
           }
