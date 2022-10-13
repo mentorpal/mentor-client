@@ -27,6 +27,7 @@ import "styles/video.css";
 import { Tooltip } from "@material-ui/core";
 import { useWithImage } from "use-with-image-url";
 import { useWithBrowser } from "use-with-browser";
+import { useWithVideoPreload } from "use-with-video-preload";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
@@ -106,51 +107,12 @@ function Video(args: {
   const useVbg =
     curMentor.mentor.hasVirtualBackground && browserSupportsViewingVbg();
   const { aspectRatio: vbgAspectRatio } = useWithImage(virtualBackgroundUrl);
-  const getIdleVideoData = (): VideoData => {
-    if (!curMentor) {
-      return defaultVideoData;
-    }
-    return {
-      src: idleUrl(curMentor.mentor, undefined, useVbg),
-      subtitles: "",
-    };
-  };
 
   useEffect(() => {
     setUseVirtualBackground(
       curMentor.mentor.hasVirtualBackground && browserSupportsViewingVbg()
     );
   }, [curMentor.mentor.hasVirtualBackground, browserSupportsViewingVbg()]);
-  const getVideoData = (): VideoData => {
-    if (chatReplay) {
-      const videoMedia = chatMessages.find((m) => {
-        if (m.replay) {
-          return m.answerMedia;
-        }
-      });
-      return {
-        src: getVideoUrl(
-          videoMedia?.answerMedia || [],
-          undefined,
-          useVirtualBackground
-        ),
-        subtitles: subtitleUrl(videoMedia?.answerMedia || []),
-      };
-    }
-    if (!curMentorId) {
-      return defaultVideoData;
-    }
-    return {
-      src: getVideoUrl(
-        curMentor.answer_media || [],
-        undefined,
-        useVirtualBackground
-      ),
-      subtitles: subtitlesSupported
-        ? subtitleUrl(curMentor.answer_media || [])
-        : "",
-    };
-  };
 
   // returns an array of WebLinks
   const getWebLinkData = () => {
@@ -216,25 +178,69 @@ function Video(args: {
     };
   };
 
+  const getVideoData = (): VideoData => {
+    if (chatReplay) {
+      const videoMedia = chatMessages.find((m) => {
+        if (m.replay) {
+          return m.answerMedia;
+        }
+      });
+      return {
+        src: getVideoUrl(
+          videoMedia?.answerMedia || [],
+          undefined,
+          useVirtualBackground
+        ),
+        subtitles: subtitleUrl(videoMedia?.answerMedia || []),
+      };
+    }
+    if (!curMentorId) {
+      return defaultVideoData;
+    }
+    return {
+      src: getVideoUrl(
+        curMentor.answer_media || [],
+        undefined,
+        useVirtualBackground
+      ),
+      subtitles: subtitlesSupported
+        ? subtitleUrl(curMentor.answer_media || [])
+        : "",
+    };
+  };
+
+  const getIdleVideoData = (): VideoData => {
+    if (!curMentor) {
+      return defaultVideoData;
+    }
+    return {
+      src: idleUrl(curMentor.mentor, undefined, useVbg),
+      subtitles: "",
+    };
+  };
+
   useEffect(() => {
     const _videoData = getVideoData();
     if (
       _videoData.src !== video.src ||
       _videoData.subtitles !== video.subtitles
-    )
+    ){
       setVideoFinishedBuffering(false);
-    setVideo({
-      src: _videoData.src ? `${_videoData.src}?v=${Math.random()}` : "",
-      subtitles: _videoData.subtitles
-        ? `${_videoData.subtitles}?v=${Math.random()}`
-        : "",
-    });
+      
+      setVideo({
+        src: _videoData.src ? `${_videoData.src}?v=${Math.random()}` : "",
+        subtitles: _videoData.subtitles
+          ? `${_videoData.subtitles}?v=${Math.random()}`
+          : "",
+      });
+    }
     const _idleVideoData = getIdleVideoData();
-    if (_idleVideoData.src !== idleVideo.src)
+    if (_idleVideoData.src !== idleVideo.src){
       setIdleVideo({
         src: _idleVideoData.src,
         subtitles: "",
       });
+    }
   }, [curMentorId, chatReplay, curMentor.answer_media, useVirtualBackground]);
 
   useEffect(() => {
@@ -319,7 +325,7 @@ function Video(args: {
     loadedSeconds: number;
   }) {
     if (state.playedSeconds > 0.1 && !videoFinishedBuffering && !isIdle) {
-      setVideoFinishedBuffering(true);
+      // setVideoFinishedBuffering(true);
     }
   }
 
@@ -575,6 +581,7 @@ function VideoPlayer(args: VideoPlayerParams) {
     >
       {!hideLinkLabel && shouldDiplayWebLinks ? answerLinkCard : null}
       {mentorName ? mentorNameCard : null}
+      {/* Active video player */}
       <ReactPlayer
         style={answerReactPlayerStyling}
         className="player-wrapper react-player-wrapper"
@@ -639,6 +646,7 @@ function VideoPlayer(args: VideoPlayerParams) {
           },
         }}
       />
+      {/* Idle video player */}
       <ReactPlayer
         style={idleReactPlayerStyling}
         className="player-wrapper react-player-wrapper"
