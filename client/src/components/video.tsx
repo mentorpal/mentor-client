@@ -221,14 +221,15 @@ function Video(args: {
     if (
       _videoData.src !== video.src ||
       _videoData.subtitles !== video.subtitles
-    )
+    ) {
       setVideoFinishedBuffering(false);
-    setVideo({
-      src: _videoData.src ? `${_videoData.src}?v=${Math.random()}` : "",
-      subtitles: _videoData.subtitles
-        ? `${_videoData.subtitles}?v=${Math.random()}`
-        : "",
-    });
+      setVideo({
+        src: _videoData.src ? `${_videoData.src}?v=${Math.random()}` : "",
+        subtitles: _videoData.subtitles
+          ? `${_videoData.subtitles}?v=${Math.random()}`
+          : "",
+      });
+    }
     const _idleVideoData = getIdleVideoData();
     if (_idleVideoData.src !== idleVideo.src)
       setIdleVideo({
