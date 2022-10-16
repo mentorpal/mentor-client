@@ -7,26 +7,22 @@ The full terms of this copyright and license should always be found in the root 
 import React, { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import { useSelector, useDispatch } from "react-redux";
-import { Star, StarBorder } from "@material-ui/icons";
-import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
 import { videoUrl as getVideoUrl, subtitleUrl, idleUrl } from "api";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
-import MailIcon from "@material-ui/icons/Mail";
-import { chromeVersion, getLocalStorage, setLocalStorage } from "utils";
+import { chromeVersion } from "utils";
 import { useResizeDetector } from "react-resize-detector";
 import {
   answerFinished,
-  faveMentor,
   mentorAnswerPlaybackStarted,
   playIdleAfterReplay,
   onMentorDisplayAnswer,
 } from "store/actions";
 import { ChatMsg, MentorState, State, WebLink } from "types";
 import "styles/video.css";
-import { Tooltip } from "@material-ui/core";
 import { useWithImage } from "use-with-image-url";
 import { useWithBrowser } from "use-with-browser";
+import VideoPlayer from "./video-player";
 
 const subtitlesSupported = Boolean(!chromeVersion() || chromeVersion() >= 62);
 
@@ -40,7 +36,7 @@ const defaultVideoData = {
   subtitles: "",
 };
 
-interface HeaderMentorData {
+export interface HeaderMentorData {
   _id: string;
   name: string;
   title: string;
@@ -106,6 +102,13 @@ function Video(args: {
   const useVbg =
     curMentor.mentor.hasVirtualBackground && browserSupportsViewingVbg();
   const { aspectRatio: vbgAspectRatio } = useWithImage(virtualBackgroundUrl);
+
+  useEffect(() => {
+    setUseVirtualBackground(
+      curMentor.mentor.hasVirtualBackground && browserSupportsViewingVbg()
+    );
+  }, [curMentor.mentor.hasVirtualBackground, browserSupportsViewingVbg()]);
+
   const getIdleVideoData = (): VideoData => {
     if (!curMentor) {
       return defaultVideoData;
@@ -116,11 +119,6 @@ function Video(args: {
     };
   };
 
-  useEffect(() => {
-    setUseVirtualBackground(
-      curMentor.mentor.hasVirtualBackground && browserSupportsViewingVbg()
-    );
-  }, [curMentor.mentor.hasVirtualBackground, browserSupportsViewingVbg()]);
   const getVideoData = (): VideoData => {
     if (chatReplay) {
       const videoMedia = chatMessages.find((m) => {
@@ -287,86 +285,14 @@ function Video(args: {
     );
   }
 
-  const sendMail = (email: string, subject: string): void => {
-    const url = `mailto:${email}?subject=${subject}`;
-    window.open(url);
-  };
-
-  const [disclaimerOpen, setDisclaimerOpen] = useState<boolean>(false);
   const [videoFinishedBuffering, setVideoFinishedBuffering] =
     useState<boolean>(true);
 
-  const { height: answerVideoRefHeight, ref: answerVideoRef } =
+  const { height: videoContainerRefHeight, ref: videoContainerRef } =
     useResizeDetector();
-  const disclaimerDisplayed = getLocalStorage("viewedDisclaimer");
-
-  useEffect(() => {
-    if (!disclaimerDisplayed || disclaimerDisplayed !== "true") {
-      setDisclaimerOpen(true);
-    }
-  }, []);
-
-  function onCloseDisclaimer() {
-    setDisclaimerOpen(false);
-    if (!disclaimerDisplayed) {
-      setLocalStorage("viewedDisclaimer", "true");
-    }
-  }
 
   function onAnswerReady() {
     setVideoFinishedBuffering(true);
-  }
-
-  function emailMentorIcon() {
-    return (
-      <>
-        {mentorData.name &&
-        mentorData.allowContact &&
-        args.configEmailMentorAddress ? (
-          <Tooltip
-            data-cy="email-disclaimer"
-            open={disclaimerOpen}
-            onClose={onCloseDisclaimer}
-            onOpen={() => setDisclaimerOpen(true)}
-            title={
-              <div
-                style={{
-                  fontSize: "15px",
-                  pointerEvents: "auto",
-                  cursor: !disclaimerDisplayed ? "pointer" : "none",
-                }}
-                onClick={() => onCloseDisclaimer()}
-              >
-                Please only contact mentors through the provided contact email.
-                Messages sent directly to other mentor emails found online may
-                be ignored.
-                {!disclaimerDisplayed ? (
-                  <>
-                    <br /> <br /> Click here to close
-                  </>
-                ) : (
-                  ""
-                )}
-              </div>
-            }
-            arrow
-          >
-            <div
-              data-cy="email-mentor-icon"
-              className="email-mentor-button"
-              onClick={() =>
-                sendMail(
-                  args.configEmailMentorAddress,
-                  `Contacting ${mentorData.name} for more information`
-                )
-              }
-            >
-              Email Mentor <MailIcon />
-            </div>
-          </Tooltip>
-        ) : undefined}
-      </>
-    );
   }
 
   function PlayVideo() {
@@ -382,33 +308,33 @@ function Video(args: {
           data-test-replay={idleVideo.src}
           style={{
             height: isMentorPanel ? "fit-content" : "100%",
-            minHeight: Math.max(answerVideoRefHeight || 0),
+            minHeight: Math.max(videoContainerRefHeight || 0),
           }}
         >
           <span
-            data-cy="answer-memo-video-player-wrapper"
+            data-cy="memo-video-player-wrapper"
             style={{
               display: "inline-block",
               position: "relative",
               width: "100%",
               height: "fit-content",
             }}
-            ref={answerVideoRef}
+            ref={videoContainerRef}
           >
             <MemoVideoPlayer
-              emailIcon={emailMentorIcon}
               onEnded={onEnded}
               onPlay={onPlay}
               playing={Boolean(playing)}
               subtitlesOn={
                 Boolean(subtitlesSupported) && Boolean(video.subtitles)
               }
+              configEmailMentorAddress={args.configEmailMentorAddress}
               reactPlayerRef={reactPlayerRef}
               subtitlesUrl={video.subtitles}
               videoUrl={isIdle ? "" : video.src}
               webLinks={webLinks}
               hideLinkLabel={hideLinkLabel}
-              mentorName={mentorData.name}
+              mentorData={mentorData}
               idleUrl={idleVideo.src}
               useVirtualBackground={useVirtualBackground}
               virtualBackgroundUrl={virtualBackgroundUrl}
@@ -431,270 +357,6 @@ function Video(args: {
   return PlayVideo();
 }
 
-interface VideoPlayerParams {
-  onEnded: () => void;
-  onPlay: () => void;
-  playing?: boolean;
-  idleUrl: string;
-  subtitlesOn: boolean;
-  subtitlesUrl: string;
-  videoUrl: string;
-  webLinks: WebLink[];
-  hideLinkLabel: boolean;
-  mentorName: string;
-  reactPlayerRef: React.RefObject<ReactPlayer>;
-  useVirtualBackground: boolean;
-  virtualBackgroundUrl: string;
-  playAnswer: boolean;
-  emailIcon: () => JSX.Element;
-  vbgAspectRatio: number;
-  onAnswerReady: () => void;
-}
-
-function VideoPlayer(args: VideoPlayerParams) {
-  const {
-    onEnded,
-    onPlay,
-    playing,
-    subtitlesOn,
-    subtitlesUrl,
-    videoUrl,
-    idleUrl,
-    webLinks,
-    hideLinkLabel,
-    mentorName,
-    reactPlayerRef,
-    useVirtualBackground,
-    virtualBackgroundUrl,
-    playAnswer,
-    emailIcon,
-    vbgAspectRatio,
-    onAnswerReady,
-  } = args;
-  const [readied, setReadied] = useState<boolean>(false);
-  const [firstVideoLoaded, setFirstVideoLoaded] = useState<boolean>(false);
-  useEffect(() => {
-    setReadied(false);
-  }, [videoUrl]);
-
-  const webLinkJSX = webLinks?.map((wl, i) => {
-    return (
-      <a
-        href={wl.href}
-        className="web-link-a"
-        target="_blank"
-        rel="noreferrer"
-        key={i}
-      >
-        {wl.href?.length > 30 ? wl.href.slice(0, 30) : wl.href}
-      </a>
-    );
-  });
-
-  const answerLinkCard = (
-    <div data-cy="answer-link-card" className="answer-link-card-container">
-      <div className="web-links-wrapper">{webLinkJSX}</div>
-      <InfoOutlinedIcon className="web-link-card-icon" />
-    </div>
-  );
-
-  const mentorNameCard = (
-    <div data-cy="mentor-name-card" className="mentor-name-card">
-      <div
-        className="mentor-fav-icon-wrapper"
-        data-cy="mentorname-faveicon-wrapper"
-      >
-        <p className="mentor-name-text" data-cy="mentor-name">
-          {mentorName}
-        </p>
-        <FaveButton />
-      </div>
-    </div>
-  );
-
-  const shouldDiplayWebLinks = webLinks.length > 0 ? true : false;
-  // Hack: If answer is playing, then the answer player is visible and relative, else its absolute and invisible
-  // opposite goes for the idle player, so only one of the players is taking up space at a time
-  const showAnswer = playAnswer || !firstVideoLoaded;
-  const answerReactPlayerStyling: React.CSSProperties = useVirtualBackground
-    ? {
-        lineHeight: 0, //hack to make inline children of parent not have extra pixels below them https://gaurav5430.medium.com/extra-4px-at-the-bottom-of-html-img-8807a7ab0ca2
-        backgroundImage: `url(${virtualBackgroundUrl})`,
-        backgroundSize: vbgAspectRatio >= 1.77 ? "auto 100%" : "100% auto",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-        backgroundColor: "black",
-        margin: "0 auto",
-        position: showAnswer ? "relative" : "absolute",
-        visibility: showAnswer ? "visible" : "hidden",
-        zIndex: showAnswer ? 2 : 1,
-      }
-    : {
-        lineHeight: 0,
-        backgroundColor: "black",
-        margin: "0 auto",
-        position: showAnswer ? "relative" : "absolute",
-        visibility: showAnswer ? "visible" : "hidden",
-        zIndex: showAnswer ? 2 : 1,
-      };
-  const idleReactPlayerStyling: React.CSSProperties = useVirtualBackground
-    ? {
-        lineHeight: 0,
-        backgroundImage: `url(${virtualBackgroundUrl})`,
-        backgroundSize: vbgAspectRatio >= 1.77 ? "auto 100%" : "100% auto",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-        backgroundColor: "black",
-        top: 0,
-        margin: "0 auto",
-        position: !showAnswer ? "relative" : "absolute",
-        visibility: !showAnswer ? "visible" : "hidden",
-        zIndex: !showAnswer ? 2 : 1,
-      }
-    : {
-        lineHeight: 0,
-        backgroundColor: "black",
-        top: 0,
-        margin: "0 auto",
-        position: !showAnswer ? "relative" : "absolute",
-        visibility: !showAnswer ? "visible" : "hidden",
-        zIndex: !showAnswer ? 2 : 1,
-      };
-  return (
-    <div
-      data-cy={"answer-video-player-wrapper"}
-      style={{ width: "100%", height: "auto" }}
-    >
-      {!hideLinkLabel && shouldDiplayWebLinks ? answerLinkCard : null}
-      {mentorName ? mentorNameCard : null}
-      <ReactPlayer
-        style={answerReactPlayerStyling}
-        className="player-wrapper react-player-wrapper"
-        data-cy="react-player-answer-video"
-        url={videoUrl}
-        muted={false}
-        onEnded={onEnded}
-        ref={reactPlayerRef}
-        onPlay={onPlay}
-        onReady={(player: ReactPlayer) => {
-          onAnswerReady();
-          if (!firstVideoLoaded) {
-            setFirstVideoLoaded(true);
-          }
-          if (readied) {
-            return;
-          }
-          setReadied(true);
-          const internalPlayer = player.getInternalPlayer();
-          const tracks = internalPlayer["textTracks"];
-          if (tracks) {
-            tracks.addEventListener("change", () => {
-              const internalPlayer2 = player.getInternalPlayer();
-              const tracks = internalPlayer2["textTracks"];
-              if (!tracks || !tracks.length) {
-                return;
-              }
-              const track = tracks[0];
-              setLocalStorage("captionMode", track["mode"]);
-            });
-            if (!tracks.length) {
-              return;
-            }
-            const track = tracks[0];
-            const localStorageMode = getLocalStorage("captionMode");
-            const showCaptions = localStorageMode === "showing";
-            track["mode"] = showCaptions ? "showing" : "hidden";
-          }
-        }}
-        loop={false}
-        controls={true}
-        width="fit-content"
-        height="fit-content"
-        progressInterval={100}
-        playing={Boolean(playing)}
-        playsinline
-        webkit-playsinline="true"
-        config={{
-          file: {
-            attributes: {
-              crossOrigin: "true",
-              controlsList: "nodownload",
-            },
-            tracks: subtitlesOn
-              ? [
-                  {
-                    kind: "subtitles",
-                    label: "eng",
-                    srcLang: "en",
-                    src: subtitlesUrl,
-                    default: true,
-                  },
-                ]
-              : [],
-          },
-        }}
-      />
-      <ReactPlayer
-        style={idleReactPlayerStyling}
-        className="player-wrapper react-player-wrapper"
-        data-cy="react-player-idle-video"
-        url={idleUrl}
-        muted={true}
-        loop={true}
-        controls={false}
-        width="fit-content"
-        height="fit-content"
-        progressInterval={100}
-        playing={true}
-        playsinline
-        webkit-playsinline="true"
-        config={{
-          file: {
-            attributes: {
-              crossOrigin: "true",
-            },
-            tracks: [],
-          },
-        }}
-      />
-      {emailIcon()}
-    </div>
-  );
-}
-
 const MemoVideoPlayer = React.memo(VideoPlayer);
-
-function FaveButton() {
-  const dispatch = useDispatch();
-  const mentor = useSelector<State, string>((state) => state.curMentor);
-  const numMentors = useSelector<State, number>(
-    (state) => Object.keys(state.mentorsById).length
-  );
-  const mentorFaved = useSelector<State, string>((state) => state.mentorFaved);
-
-  const onClick = () => {
-    dispatch(faveMentor(mentor));
-  };
-
-  if (numMentors < 2) {
-    return <div />;
-  }
-
-  return mentorFaved && mentorFaved === mentor ? (
-    <Star
-      data-cy="fave-button"
-      className="star-icon"
-      onClick={onClick}
-      style={{ color: "yellow" }}
-    />
-  ) : (
-    <StarBorder
-      data-cy="fave-button"
-      className="star-icon"
-      onClick={onClick}
-      style={{ color: "grey" }}
-    />
-  );
-}
 
 export default Video;

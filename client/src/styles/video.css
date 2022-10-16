@@ -84,6 +84,7 @@
   justify-content: center;
   margin-top: 10px;
 }
+
 .email-mentor-button:hover {
   color: blue;
   text-decoration: underline;
@@ -101,16 +102,5 @@
 
   .video-container {
     margin-top: 0px;
-  }
-}
-
-@media (max-width: 600px) {
-  .react-player {
-    padding-top: 56.25%;
-    position: relative;
-  }
-
-  .react-player > div {
-    position: absolute;
   }
 }
