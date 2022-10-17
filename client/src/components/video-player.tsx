@@ -29,9 +29,8 @@ export interface VideoPlayerParams {
   reactPlayerRef: React.RefObject<ReactPlayer>;
   useVirtualBackground: boolean;
   virtualBackgroundUrl: string;
-  playAnswer: boolean;
   vbgAspectRatio: number;
-  onAnswerReady: () => void;
+  isIdle: boolean;
 }
 
 // TODO: Build a reducer that is going to manage the state of the playing videos
@@ -52,15 +51,17 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     reactPlayerRef,
     useVirtualBackground,
     virtualBackgroundUrl,
-    playAnswer,
     vbgAspectRatio,
-    onAnswerReady,
+    isIdle,
   } = args;
   const { name: mentorName } = mentorData;
   const [readied, setReadied] = useState<boolean>(false);
   const [idleSuccessfullyLoaded, setIdleSuccesfullyLoaded] =
     useState<boolean>(false);
   const [firstVideoLoaded, setFirstVideoLoaded] = useState<boolean>(false);
+
+  const [videoFinishedBuffering, setVideoFinishedBuffering] =
+    useState<boolean>(true);
   const [answerReactPlayerStyling, setAnswerReactPlayerStyling] =
     useState<React.CSSProperties>({
       lineHeight: 0,
@@ -68,6 +69,9 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
       margin: "0 auto",
       zIndex: 2, //TODO: remove if we want to fade the
     });
+  const [playAnswer, setPlayAnswer] = useState<boolean>(
+    !isIdle && videoFinishedBuffering
+  );
 
   const [idleReactPlayerStyling, setIdleReactPlayerStyling] =
     useState<React.CSSProperties>({
@@ -77,6 +81,10 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
       margin: "0 auto",
       zIndex: 1,
     });
+
+  useEffect(() => {
+    setPlayAnswer(!isIdle && videoFinishedBuffering);
+  }, [isIdle, videoFinishedBuffering]);
 
   useEffect(() => {
     // Hack: If idle fails to load, answer player takes up space and idle sits on top of it. If idle successfully loads, idle player takes up space, answer player sits on top of it.
@@ -125,8 +133,6 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
 
   useEffect(() => {
     const showAnswer = playAnswer || !firstVideoLoaded;
-    // TODO: If showAnswer, then fade answer player in, and fade out idle player
-    // If !showAnswer, fade out answer player, fade in idle player
     const opacityChangeSpeed = 22; // opacity change 10 times a second
     const opactiyChangeMagnitude = 0.05;
     if (showAnswer && firstVideoLoaded) {
@@ -231,11 +237,14 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         data-cy="react-player-answer-video"
         url={videoUrl}
         muted={false}
-        onEnded={onEnded}
+        onEnded={() => {
+          setVideoFinishedBuffering(false);
+          onEnded();
+        }}
         ref={reactPlayerRef}
         onPlay={onPlay}
         onReady={(player: ReactPlayer) => {
-          onAnswerReady();
+          setVideoFinishedBuffering(true);
           if (!firstVideoLoaded) {
             setFirstVideoLoaded(true);
           }

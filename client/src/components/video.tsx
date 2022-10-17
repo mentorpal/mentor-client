@@ -220,7 +220,7 @@ function Video(args: {
       _videoData.src !== video.src ||
       _videoData.subtitles !== video.subtitles
     ) {
-      setVideoFinishedBuffering(false);
+      // setVideoFinishedBuffering(false); This was put here to switch to idle while loading new answer, now we are back to black screen
       setVideo({
         src: _videoData.src ? `${_videoData.src}?v=${Math.random()}` : "",
         subtitles: _videoData.subtitles
@@ -253,7 +253,6 @@ function Video(args: {
   });
 
   function onEnded() {
-    setVideoFinishedBuffering(false);
     setHideLinkLabel(true);
     dispatch(playIdleAfterReplay(false));
     dispatch(answerFinished());
@@ -285,15 +284,8 @@ function Video(args: {
     );
   }
 
-  const [videoFinishedBuffering, setVideoFinishedBuffering] =
-    useState<boolean>(true);
-
   const { height: videoContainerRefHeight, ref: videoContainerRef } =
     useResizeDetector();
-
-  function onAnswerReady() {
-    setVideoFinishedBuffering(true);
-  }
 
   function PlayVideo() {
     if (!idleVideo || !video) {
@@ -338,9 +330,8 @@ function Video(args: {
               idleUrl={idleVideo.src}
               useVirtualBackground={useVirtualBackground}
               virtualBackgroundUrl={virtualBackgroundUrl}
-              playAnswer={!isIdle && videoFinishedBuffering}
+              isIdle={isIdle}
               vbgAspectRatio={vbgAspectRatio}
-              onAnswerReady={onAnswerReady}
             />
           </span>
         </div>
