@@ -34,6 +34,8 @@ export interface VideoPlayerParams {
   onAnswerReady: () => void;
 }
 
+// TODO: Build a reducer that is going to manage the state of the playing videos
+
 export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
   const {
     onEnded,
@@ -56,11 +58,131 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
   } = args;
   const { name: mentorName } = mentorData;
   const [readied, setReadied] = useState<boolean>(false);
+  const [idleSuccessfullyLoaded, setIdleSuccesfullyLoaded] =
+    useState<boolean>(false);
   const [firstVideoLoaded, setFirstVideoLoaded] = useState<boolean>(false);
+  const [answerReactPlayerStyling, setAnswerReactPlayerStyling] =
+    useState<React.CSSProperties>({
+      lineHeight: 0,
+      backgroundColor: "black",
+      margin: "0 auto",
+      zIndex: 2, //TODO: remove if we want to fade the
+    });
+
+  const [idleReactPlayerStyling, setIdleReactPlayerStyling] =
+    useState<React.CSSProperties>({
+      lineHeight: 0,
+      backgroundColor: "black",
+      top: 0,
+      margin: "0 auto",
+      zIndex: 1,
+    });
+
+  useEffect(() => {
+    // Hack: If idle fails to load, answer player takes up space and idle sits on top of it. If idle successfully loads, idle player takes up space, answer player sits on top of it.
+    setAnswerReactPlayerStyling((prevValue) => {
+      return {
+        ...prevValue,
+        position: idleSuccessfullyLoaded ? "absolute" : "relative",
+      };
+    });
+
+    setIdleReactPlayerStyling((prevValue) => {
+      return {
+        ...prevValue,
+        position: idleSuccessfullyLoaded ? "relative" : "absolute",
+      };
+    });
+  }, [idleSuccessfullyLoaded]);
+
+  useEffect(() => {
+    // Add VBG to both answer and idle players
+    if (useVirtualBackground) {
+      setAnswerReactPlayerStyling((prevValue) => {
+        return {
+          ...prevValue,
+          backgroundImage: `url(${virtualBackgroundUrl})`,
+          backgroundSize: vbgAspectRatio >= 1.77 ? "auto 100%" : "100% auto",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+        };
+      });
+      setIdleReactPlayerStyling((prevValue) => {
+        return {
+          ...prevValue,
+          backgroundImage: `url(${virtualBackgroundUrl})`,
+          backgroundSize: vbgAspectRatio >= 1.77 ? "auto 100%" : "100% auto",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+        };
+      });
+    }
+  }, [useVirtualBackground, vbgAspectRatio]);
+
   useEffect(() => {
     setReadied(false);
   }, [videoUrl]);
 
+  useEffect(() => {
+    const showAnswer = playAnswer || !firstVideoLoaded;
+    // TODO: If showAnswer, then fade answer player in, and fade out idle player
+    // If !showAnswer, fade out answer player, fade in idle player
+    const opacityChangeSpeed = 22; // opacity change 10 times a second
+    const opactiyChangeMagnitude = 0.05;
+    if (showAnswer && firstVideoLoaded) {
+      // Fade from idle to answer
+      let newAnswerOpacity = 0;
+      const intervalId = setInterval(() => {
+        newAnswerOpacity += opactiyChangeMagnitude;
+        const fadeComplete = newAnswerOpacity >= 1;
+        setAnswerReactPlayerStyling((prevValue) => {
+          return {
+            ...prevValue,
+            opacity: newAnswerOpacity,
+            // zIndex: fadeComplete ? 2 : 1
+          };
+        });
+
+        // setIdleReactPlayerStyling(prevValue=>{
+        //     return {
+        //         ...prevValue,
+        //         opacity: 1-newAnswerOpacity,
+        //         zIndex: fadeComplete ? 1 : 2
+        //     }
+        // })
+        if (fadeComplete) {
+          clearInterval(intervalId);
+        }
+      }, opacityChangeSpeed);
+    } else if (!showAnswer && firstVideoLoaded) {
+      // Fade from answer to idle
+      let newAnswerOpacity = 1;
+      const intervalId = setInterval(() => {
+        newAnswerOpacity -= opactiyChangeMagnitude;
+        const fadeComplete = newAnswerOpacity <= 0;
+        setAnswerReactPlayerStyling((prevValue) => {
+          return {
+            ...prevValue,
+            opacity: newAnswerOpacity,
+            // zIndex: fadeComplete ? 1 : 2
+          };
+        });
+
+        // setIdleReactPlayerStyling(prevValue=>{
+        //     return {
+        //         ...prevValue,
+        //         opacity: 1-newAnswerOpacity,
+        //         zIndex: fadeComplete ? 2 : 1
+        //     }
+        // })
+        if (fadeComplete) {
+          clearInterval(intervalId);
+        }
+      }, opacityChangeSpeed);
+    }
+  }, [playAnswer, firstVideoLoaded]);
+
+  const shouldDiplayWebLinks = webLinks.length > 0 ? true : false;
   const webLinkJSX = webLinks?.map((wl, i) => {
     return (
       <a
@@ -96,43 +218,6 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     </div>
   );
 
-  const shouldDiplayWebLinks = webLinks.length > 0 ? true : false;
-  // Hack: If answer is playing, then the answer player is visible and relative, else its absolute and invisible
-  // opposite goes for the idle player, so only one of the players is taking up space at a time
-  const showAnswer = playAnswer || !firstVideoLoaded;
-  const answerReactPlayerStyling: React.CSSProperties = {
-    lineHeight: 0,
-    backgroundColor: "black",
-    margin: "0 auto",
-    position: showAnswer ? "relative" : "absolute",
-    visibility: showAnswer ? "visible" : "hidden",
-    zIndex: showAnswer ? 2 : 1,
-  };
-  const idleReactPlayerStyling: React.CSSProperties = {
-    lineHeight: 0,
-    backgroundColor: "black",
-    top: 0,
-    margin: "0 auto",
-    position: !showAnswer ? "relative" : "absolute",
-    visibility: !showAnswer ? "visible" : "hidden",
-    zIndex: !showAnswer ? 2 : 1,
-  };
-  if (useVirtualBackground) {
-    // Add VBG to answer player
-    answerReactPlayerStyling[
-      "backgroundImage"
-    ] = `url(${virtualBackgroundUrl})`;
-    answerReactPlayerStyling["backgroundSize"] =
-      vbgAspectRatio >= 1.77 ? "auto 100%" : "100% auto";
-    answerReactPlayerStyling["backgroundRepeat"] = "no-repeat";
-    answerReactPlayerStyling["backgroundPosition"] = "center";
-    // Add VBG to idle player
-    idleReactPlayerStyling["backgroundImage"] = `url(${virtualBackgroundUrl})`;
-    idleReactPlayerStyling["backgroundSize"] =
-      vbgAspectRatio >= 1.77 ? "auto 100%" : "100% auto";
-    idleReactPlayerStyling["backgroundRepeat"] = "no-repeat";
-    idleReactPlayerStyling["backgroundPosition"] = "center";
-  }
   return (
     <div
       data-cy={"answer-video-player-wrapper"}
@@ -215,6 +300,9 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         muted={true}
         loop={true}
         controls={false}
+        onReady={() => {
+          setIdleSuccesfullyLoaded(true);
+        }}
         width="fit-content"
         height="fit-content"
         progressInterval={100}

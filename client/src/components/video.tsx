@@ -331,7 +331,7 @@ function Video(args: {
               configEmailMentorAddress={args.configEmailMentorAddress}
               reactPlayerRef={reactPlayerRef}
               subtitlesUrl={video.subtitles}
-              videoUrl={isIdle ? "" : video.src}
+              videoUrl={video.src}
               webLinks={webLinks}
               hideLinkLabel={hideLinkLabel}
               mentorData={mentorData}
