@@ -5,7 +5,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import InfoOutlinedIcon from "@material-ui/icons/InfoOutlined";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import ReactPlayer from "react-player";
 import { getLocalStorage, setLocalStorage } from "utils";
 import { WebLink } from "types";
@@ -13,6 +13,11 @@ import "styles/video.css";
 import FaveButton from "./fave-button";
 import EmailMentorIcon from "./email-mentor-icon";
 import { HeaderMentorData } from "./video";
+import {
+  PlayerActionType,
+  PlayerReducer,
+  PlayerStatus,
+} from "video-player-reducer";
 
 export interface VideoPlayerParams {
   onEnded: () => void;
@@ -31,6 +36,7 @@ export interface VideoPlayerParams {
   virtualBackgroundUrl: string;
   vbgAspectRatio: number;
   isIdle: boolean;
+  isIntro: boolean;
 }
 
 // TODO: Build a reducer that is going to manage the state of the playing videos
@@ -53,25 +59,42 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     virtualBackgroundUrl,
     vbgAspectRatio,
     isIdle,
+    isIntro,
   } = args;
   const { name: mentorName } = mentorData;
   const [readied, setReadied] = useState<boolean>(false);
   const [idleSuccessfullyLoaded, setIdleSuccesfullyLoaded] =
     useState<boolean>(false);
   const [firstVideoLoaded, setFirstVideoLoaded] = useState<boolean>(false);
-
-  const [videoFinishedBuffering, setVideoFinishedBuffering] =
-    useState<boolean>(true);
+  const [state, dispatch] = useReducer(PlayerReducer, {
+    status: PlayerStatus.INTRO_LOADING,
+  });
+  // const [videoFinishedBuffering, setVideoFinishedBuffering] =
+  //   useState<boolean>(true);
   const [answerReactPlayerStyling, setAnswerReactPlayerStyling] =
     useState<React.CSSProperties>({
       lineHeight: 0,
       backgroundColor: "black",
+      top: 0,
       margin: "0 auto",
-      zIndex: 2, //TODO: remove if we want to fade the
+      zIndex: 2,
     });
-  const [playAnswer, setPlayAnswer] = useState<boolean>(
-    !isIdle && videoFinishedBuffering
-  );
+
+  useEffect(() => {
+    if (isIntro && videoUrl) {
+      console.log("intro url arrived");
+      dispatch({
+        type: PlayerActionType.INTRO_URL_ARRIVED,
+        payload: { introUrl: videoUrl },
+      });
+    } else if (videoUrl) {
+      console.log(`new url arrived: ${videoUrl}`);
+      dispatch({
+        type: PlayerActionType.NEW_URL_ARRIVED,
+        payload: { newUrl: videoUrl },
+      });
+    }
+  }, [videoUrl]);
 
   const [idleReactPlayerStyling, setIdleReactPlayerStyling] =
     useState<React.CSSProperties>({
@@ -80,11 +103,8 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
       top: 0,
       margin: "0 auto",
       zIndex: 1,
+      opacity: 0,
     });
-
-  useEffect(() => {
-    setPlayAnswer(!isIdle && videoFinishedBuffering);
-  }, [isIdle, videoFinishedBuffering]);
 
   useEffect(() => {
     // Hack: If idle fails to load, answer player takes up space and idle sits on top of it. If idle successfully loads, idle player takes up space, answer player sits on top of it.
@@ -127,15 +147,57 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     }
   }, [useVirtualBackground, vbgAspectRatio]);
 
+  function idleVideoTakeSpace() {
+    setAnswerReactPlayerStyling((prevValue) => {
+      return {
+        ...prevValue,
+        position: "absolute",
+        opacity: 0,
+      };
+    });
+
+    setIdleReactPlayerStyling((prevValue) => {
+      return {
+        ...prevValue,
+        opacity: 1,
+        position: "relative",
+      };
+    });
+  }
+
+  function answerVideoTakeSpace() {
+    setAnswerReactPlayerStyling((prevValue) => {
+      return {
+        ...prevValue,
+        opacity: 1,
+        position: "relative",
+      };
+    });
+
+    setIdleReactPlayerStyling((prevValue) => {
+      return {
+        ...prevValue,
+        position: "absolute",
+        opacity: 0,
+      };
+    });
+  }
+
   useEffect(() => {
     setReadied(false);
+    // setVideoFinishedBuffering(false);
   }, [videoUrl]);
 
   useEffect(() => {
-    const showAnswer = playAnswer || !firstVideoLoaded;
-    const opacityChangeSpeed = 22; // opacity change 10 times a second
+    if (state.status === PlayerStatus.INTRO_PLAYING) {
+      answerVideoTakeSpace();
+      return;
+    }
+
+    const opacityChangeSpeed = 11;
     const opactiyChangeMagnitude = 0.05;
-    if (showAnswer && firstVideoLoaded) {
+    if (state.status === PlayerStatus.FADING_TO_ANSWER) {
+      //playAnswer
       // Fade from idle to answer
       let newAnswerOpacity = 0;
       const intervalId = setInterval(() => {
@@ -145,23 +207,24 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
           return {
             ...prevValue,
             opacity: newAnswerOpacity,
-            // zIndex: fadeComplete ? 2 : 1
           };
         });
-
-        // setIdleReactPlayerStyling(prevValue=>{
-        //     return {
-        //         ...prevValue,
-        //         opacity: 1-newAnswerOpacity,
-        //         zIndex: fadeComplete ? 1 : 2
-        //     }
-        // })
         if (fadeComplete) {
           clearInterval(intervalId);
+          answerVideoTakeSpace();
+          console.log("finished fading to answer");
+          dispatch({ type: PlayerActionType.FINISHED_FADING_TO_ANSWER });
         }
       }, opacityChangeSpeed);
-    } else if (!showAnswer && firstVideoLoaded) {
+    } else if (state.status === PlayerStatus.FADING_TO_IDLE) {
+      //!playAnswer
       // Fade from answer to idle
+      setIdleReactPlayerStyling((prevValue) => {
+        return {
+          ...prevValue,
+          opacity: 1,
+        };
+      });
       let newAnswerOpacity = 1;
       const intervalId = setInterval(() => {
         newAnswerOpacity -= opactiyChangeMagnitude;
@@ -170,23 +233,18 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
           return {
             ...prevValue,
             opacity: newAnswerOpacity,
-            // zIndex: fadeComplete ? 1 : 2
           };
         });
 
-        // setIdleReactPlayerStyling(prevValue=>{
-        //     return {
-        //         ...prevValue,
-        //         opacity: 1-newAnswerOpacity,
-        //         zIndex: fadeComplete ? 2 : 1
-        //     }
-        // })
         if (fadeComplete) {
           clearInterval(intervalId);
+          idleVideoTakeSpace();
+          console.log("finished fading to idle");
+          dispatch({ type: PlayerActionType.FINISHED_FADING_TO_IDLE });
         }
       }, opacityChangeSpeed);
     }
-  }, [playAnswer, firstVideoLoaded]);
+  }, [state.status]);
 
   const shouldDiplayWebLinks = webLinks.length > 0 ? true : false;
   const webLinkJSX = webLinks?.map((wl, i) => {
@@ -224,6 +282,8 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     </div>
   );
 
+  console.log(state.urlToPlay);
+
   return (
     <div
       data-cy={"answer-video-player-wrapper"}
@@ -235,16 +295,30 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         style={answerReactPlayerStyling}
         className="player-wrapper react-player-wrapper"
         data-cy="react-player-answer-video"
-        url={videoUrl}
+        url={state.urlToPlay}
         muted={false}
         onEnded={() => {
-          setVideoFinishedBuffering(false);
+          // setVideoFinishedBuffering(false);
+          if (isIntro) {
+            console.log("intro finished");
+            dispatch({ type: PlayerActionType.INTRO_FINISHED });
+          } else {
+            console.log("answer finished");
+            dispatch({ type: PlayerActionType.ANSWER_FINISHED });
+          }
           onEnded();
         }}
         ref={reactPlayerRef}
         onPlay={onPlay}
         onReady={(player: ReactPlayer) => {
-          setVideoFinishedBuffering(true);
+          if (isIntro) {
+            console.log("intro ready");
+            dispatch({ type: PlayerActionType.INTRO_FINISHED_LOADING });
+          } else {
+            console.log("answer ready");
+            dispatch({ type: PlayerActionType.ANSWER_FINISHED_LOADING });
+          }
+          // setVideoFinishedBuffering(true);
           if (!firstVideoLoaded) {
             setFirstVideoLoaded(true);
           }
@@ -253,6 +327,9 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
           }
           setReadied(true);
           const internalPlayer = player.getInternalPlayer();
+          if (!internalPlayer) {
+            return;
+          }
           const tracks = internalPlayer["textTracks"];
           if (tracks) {
             tracks.addEventListener("change", () => {

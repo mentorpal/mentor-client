@@ -7,6 +7,8 @@ The full terms of this copyright and license should always be found in the root 
 
 export interface PlayerState {
   status: PlayerStatus;
+  urlToPlay?: string;
+  newUrl?: string;
   // error?: LoadingError;
 }
 
@@ -16,42 +18,89 @@ export enum PlayerStatus {
   INTRO_PLAYING = "INTRO_PLAYING",
   INTRO_COMPLETE = "INTRO_COMPLETE",
   FADING_TO_IDLE = "FADING_TO_IDLE",
-  SHOWING_IDLE = "SHOWING_IDLE",
+  IDLING_FOR_NEXT_READY_ANSWER = "IDLING_FOR_NEXT_READY_ANSWER",
   FADING_TO_ANSWER = "FADING_TO_ANSWER",
-  SHOWING_ANSWER = "SHOWING_ANSWER",
+  ANSWER_PLAYING = "ANSWER_PLAYING",
 }
 
 export interface PlayerAction {
   type: PlayerActionType;
-  // payload?: LoadingError;
+  payload?: any;
 }
 
 export enum PlayerActionType {
+  INTRO_URL_ARRIVED = "INTRO_URL_ARRIVED",
   INTRO_FINISHED_LOADING = "INTRO_FINISHED_LOADING",
   INTRO_FINISHED = "INTRO_FINISHED",
+  FINISHED_FADING_TO_IDLE = "FINISHED_FADING_TO_IDLE",
+  FINISHED_FADING_TO_ANSWER = "FINISHED_FADING_TO_ANSWER",
   ANSWER_FINISHED_LOADING = "ANSWER_FINISHED_LOADING",
   ANSWER_FINISHED = "ANSWER_FINISHED",
-  QUESTION_ASKED = "QUESTION_ASKED",
+  NEW_QUESTION_DURING_ANSWER = "NEW_QUESTION_DURING_ANSWER",
+  NEW_URL_ARRIVED = "NEW_URL_ARRIVED",
 }
 
-//   TODO: need to move necessary video-player state into here, I think really just the stylings, so this will mainly be a video-player-styling-reducer to help manage the fadings and what player is visible
-// export function PlayerReducer(
-//   state: PlayerState,
-//   action: PlayerAction
-// ): PlayerState {
-//   const { type } = action; // , payload
-//   switch (type) {
-//     case LoadingActionType.LOADING_STARTED:
-//       return { status: LoadingStatusType.LOADING };
-//     case LoadingActionType.SAVING_STARTED:
-//       return { status: LoadingStatusType.SAVING };
-//     case LoadingActionType.LOADING_SUCCEEDED:
-//     case LoadingActionType.SAVING_SUCCEEDED:
-//       return { status: LoadingStatusType.SUCCESS };
-//     case LoadingActionType.LOADING_FAILED:
-//     case LoadingActionType.SAVING_FAILED:
-//       return { status: LoadingStatusType.ERROR, error: payload };
-//     default:
-//       return { status: LoadingStatusType.NONE };
-//   }
-// }
+export function PlayerReducer(
+  state: PlayerState,
+  action: PlayerAction
+): PlayerState {
+  const { type, payload } = action;
+  switch (type) {
+    case PlayerActionType.INTRO_URL_ARRIVED:
+      return {
+        ...state,
+        status: PlayerStatus.INTRO_LOADING,
+        urlToPlay: payload.introUrl,
+      };
+
+    case PlayerActionType.INTRO_FINISHED_LOADING:
+      return { ...state, status: PlayerStatus.INTRO_PLAYING };
+
+    case PlayerActionType.ANSWER_FINISHED_LOADING:
+      if (state.status !== PlayerStatus.ANSWER_PLAYING)
+        return { ...state, status: PlayerStatus.FADING_TO_ANSWER };
+      else return state;
+    case PlayerActionType.INTRO_FINISHED:
+    case PlayerActionType.ANSWER_FINISHED:
+      return { ...state, status: PlayerStatus.FADING_TO_IDLE };
+
+    case PlayerActionType.NEW_URL_ARRIVED:
+      console.log(state.status);
+      if (
+        state.status === PlayerStatus.ANSWER_PLAYING ||
+        state.status === PlayerStatus.INTRO_PLAYING
+      ) {
+        console.log("answer arrived while answer playing");
+        return {
+          ...state,
+          status: PlayerStatus.FADING_TO_IDLE,
+          newUrl: payload.newUrl,
+        };
+      } else {
+        console.log("answer arrived, updating urlToPlay");
+        return {
+          ...state,
+          status: PlayerStatus.IDLING_FOR_NEXT_READY_ANSWER,
+          urlToPlay: payload.newUrl,
+        };
+      }
+
+    case PlayerActionType.FINISHED_FADING_TO_IDLE:
+      if (state.newUrl) {
+        const urlCopy = JSON.parse(JSON.stringify(state.newUrl));
+        return {
+          status: PlayerStatus.IDLING_FOR_NEXT_READY_ANSWER,
+          urlToPlay: urlCopy,
+          newUrl: "",
+        };
+      } else {
+        return { ...state, status: PlayerStatus.IDLING_FOR_NEXT_READY_ANSWER };
+      }
+
+    case PlayerActionType.FINISHED_FADING_TO_ANSWER:
+      return { ...state, status: PlayerStatus.ANSWER_PLAYING };
+
+    default:
+      return { ...state, status: PlayerStatus.IDLING_FOR_NEXT_READY_ANSWER };
+  }
+}

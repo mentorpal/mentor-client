@@ -222,6 +222,7 @@ export interface MentorState {
   answer_id?: string;
   answer_text?: string;
   answer_media: Media[];
+  answer_utterance_type: string;
   utterances: Utterance[];
   answerReceivedAt?: number;
   answerFeedbackId?: string;
@@ -288,6 +289,7 @@ export interface QuestionResponse {
   answerClassifier: string;
   answerConfidence: number;
   answerIsOffTopic: boolean;
+  answerUtteranceType: string;
   answerResponseTimeSecs: number;
   answerFeedbackId: string;
   mentor: string;

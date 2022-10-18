@@ -18,7 +18,7 @@ import {
   playIdleAfterReplay,
   onMentorDisplayAnswer,
 } from "store/actions";
-import { ChatMsg, MentorState, State, WebLink } from "types";
+import { ChatMsg, MentorState, State, UtteranceName, WebLink } from "types";
 import "styles/video.css";
 import { useWithImage } from "use-with-image-url";
 import { useWithBrowser } from "use-with-browser";
@@ -220,7 +220,7 @@ function Video(args: {
       _videoData.src !== video.src ||
       _videoData.subtitles !== video.subtitles
     ) {
-      // setVideoFinishedBuffering(false); This was put here to switch to idle while loading new answer, now we are back to black screen
+      // setVideoFinishedBuffering(false); //This was put here to switch to idle while loading new answer, now we are back to black screen
       setVideo({
         src: _videoData.src ? `${_videoData.src}?v=${Math.random()}` : "",
         subtitles: _videoData.subtitles
@@ -332,6 +332,7 @@ function Video(args: {
               virtualBackgroundUrl={virtualBackgroundUrl}
               isIdle={isIdle}
               vbgAspectRatio={vbgAspectRatio}
+              isIntro={curMentor.answer_utterance_type === UtteranceName.INTRO}
             />
           </span>
         </div>

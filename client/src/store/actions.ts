@@ -518,6 +518,7 @@ export const loadMentors: ActionCreator<
           status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
           answer_id: introUtterance?._id,
           answer_media: introUtterance?.media || [],
+          answer_utterance_type: UtteranceName.INTRO,
           utterances: mentor.utterances,
           answerDuration: Number.NaN,
         };
@@ -805,6 +806,7 @@ export const sendQuestion =
               answerConfidence: data.confidence,
               answerIsOffTopic: data.confidence <= RESPONSE_CUTOFF,
               answerFeedbackId: data.feedback_id,
+              answerUtteranceType: "", //TODO: need to update classifier to also respond with utterance type
               answerResponseTimeSecs: Number(Date.now() - tick) / 1000,
               mentor,
               question: q.question,
@@ -852,6 +854,7 @@ export const sendQuestion =
               answerConfidence: 0,
               answerIsOffTopic: false,
               answerFeedbackId: "",
+              answerUtteranceType: "",
               answerResponseTimeSecs: Number(Date.now() - tick) / 1000,
               mentor,
               question: q.question,

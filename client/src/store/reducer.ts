@@ -253,6 +253,7 @@ function onMentorsLoadRequested(
       status: MentorQuestionStatus.NONE,
       answerDuration: Number.NaN,
       answer_media: [],
+      answer_utterance_type: "",
     };
     return mentorsByIdAcc;
   }, {});
@@ -522,6 +523,7 @@ function onQuestionAnswered(
     answer_id: action.payload.answerId,
     answer_text: action.payload.answerText,
     answer_media: action.payload.answerMedia,
+    answer_utterance_type: action.payload.answerUtteranceType,
     answerReceivedAt: Date.now(),
     answerFeedbackId: action.payload.answerFeedbackId,
     classifier: action.payload.answerClassifier,
