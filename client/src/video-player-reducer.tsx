@@ -65,19 +65,19 @@ export function PlayerReducer(
       return { ...state, status: PlayerStatus.FADING_TO_IDLE };
 
     case PlayerActionType.NEW_URL_ARRIVED:
-      console.log(state.status);
+      // console.log(state.status);
       if (
         state.status === PlayerStatus.ANSWER_PLAYING ||
         state.status === PlayerStatus.INTRO_PLAYING
       ) {
-        console.log("answer arrived while answer playing");
+        // console.log("answer arrived while answer playing");
         return {
           ...state,
           status: PlayerStatus.FADING_TO_IDLE,
           newUrl: payload.newUrl,
         };
       } else {
-        console.log("answer arrived, updating urlToPlay");
+        // console.log("answer arrived, updating urlToPlay");
         return {
           ...state,
           status: PlayerStatus.IDLING_FOR_NEXT_READY_ANSWER,

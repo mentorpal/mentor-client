@@ -271,26 +271,26 @@ function onMentorLoadResults(
   state: State,
   action: MentorsLoadResultAction
 ): State {
-  const mentor = action?.payload?.mentor;
-  const curMentorIntro =
-    action?.payload?.mentorsById[action.payload.curMentor || ""]?.data?.mentor;
-  const mentorId = action?.payload?.mentorsById[mentor || ""]?.data?.answer_id;
+  const firstActiveMentorId = action?.payload?.firstActiveMentorId;
+  const mentorToAddToState = action?.payload?.mentorToAddToState;
+  const curMentorData =
+    action?.payload?.mentorsById[mentorToAddToState || ""]?.data?.mentor;
   const mentorName =
-    action?.payload?.mentorsById[action.payload.curMentor || ""]?.data?.mentor
+    action?.payload?.mentorsById[mentorToAddToState || ""]?.data?.mentor
       .name;
-  const curMentorIntroTranscript = curMentorIntro
-    ? getUtterance(curMentorIntro, UtteranceName.INTRO)?.transcript
+  const curMentorIntroTranscript = curMentorData
+    ? getUtterance(curMentorData, UtteranceName.INTRO)?.transcript
     : "";
 
-  const answerId = curMentorIntro
-    ? getUtterance(curMentorIntro, UtteranceName.INTRO)?._id
+  const curMentorIntroAnswerId = curMentorData
+    ? getUtterance(curMentorData, UtteranceName.INTRO)?._id
     : "";
 
-  const answerMedia = curMentorIntro
-    ? getUtterance(curMentorIntro, UtteranceName.INTRO)?.media
+  const curMentorIntroAnswerMedia = curMentorData
+    ? getUtterance(curMentorData, UtteranceName.INTRO)?.media
     : [];
-  const utterances = curMentorIntro?.utterances || [];
-  let s = {
+  const utterances = curMentorData?.utterances || [];
+  let s: State = {
     ...state,
     chat: {
       ...state.chat,
@@ -299,22 +299,22 @@ function onMentorLoadResults(
         {
           name: mentorName || "name",
           color: "#fff",
-          mentorId: action.payload.curMentor || "",
+          mentorId: mentorToAddToState || "",
           isIntro: true,
           isUser: false,
           text: curMentorIntroTranscript || "",
           questionId: "",
           feedback: Feedback.NONE,
           feedbackId: "",
-          answerId,
-          answerMedia,
+          answerId: curMentorIntroAnswerId,
+          answerMedia: curMentorIntroAnswerMedia,
           isFeedbackSendInProgress: false,
           utterances,
           isVideoInProgress: true,
           askLinks: findAskLinks(curMentorIntroTranscript || ""),
           webLinks: findWebLinks(
             curMentorIntroTranscript || "",
-            mentorId || ""
+            curMentorIntroAnswerId || ""
           ),
           // timestampAnswered: Date.now()
         },
@@ -333,11 +333,11 @@ function onMentorLoadResults(
     ),
   };
 
-  if (action.payload.mentor) {
+  if (firstActiveMentorId) {
     s = mentorSelected(s, {
       type: MENTOR_SELECTED,
       payload: {
-        id: action.payload.mentor,
+        id: firstActiveMentorId,
         reason: MentorSelectReason.NEXT_READY,
       },
     });

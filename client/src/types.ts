@@ -246,9 +246,9 @@ export interface MentorsLoadRequest {
 
 export interface MentorsLoadResult {
   mentorsById: Record<string, MentorDataResult>;
-  mentor?: string;
+  firstActiveMentorId?: string;
+  mentorToAddToState?: string;
   topic?: string;
-  curMentor?: string;
 }
 
 export interface QuestionResult {

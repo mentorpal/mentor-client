@@ -82,13 +82,13 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
 
   useEffect(() => {
     if (isIntro && videoUrl) {
-      console.log("intro url arrived");
+      // console.log("intro url arrived");
       dispatch({
         type: PlayerActionType.INTRO_URL_ARRIVED,
         payload: { introUrl: videoUrl },
       });
     } else if (videoUrl) {
-      console.log(`new url arrived: ${videoUrl}`);
+      // console.log(`new url arrived: ${videoUrl}`);
       dispatch({
         type: PlayerActionType.NEW_URL_ARRIVED,
         payload: { newUrl: videoUrl },
@@ -212,7 +212,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         if (fadeComplete) {
           clearInterval(intervalId);
           answerVideoTakeSpace();
-          console.log("finished fading to answer");
+          // console.log("finished fading to answer");
           dispatch({ type: PlayerActionType.FINISHED_FADING_TO_ANSWER });
         }
       }, opacityChangeSpeed);
@@ -239,7 +239,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         if (fadeComplete) {
           clearInterval(intervalId);
           idleVideoTakeSpace();
-          console.log("finished fading to idle");
+          // console.log("finished fading to idle");
           dispatch({ type: PlayerActionType.FINISHED_FADING_TO_IDLE });
         }
       }, opacityChangeSpeed);
@@ -282,7 +282,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     </div>
   );
 
-  console.log(state.urlToPlay);
+  // console.log(state.urlToPlay);
 
   return (
     <div
@@ -300,10 +300,10 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         onEnded={() => {
           // setVideoFinishedBuffering(false);
           if (isIntro) {
-            console.log("intro finished");
+            // console.log("intro finished");
             dispatch({ type: PlayerActionType.INTRO_FINISHED });
           } else {
-            console.log("answer finished");
+            // console.log("answer finished");
             dispatch({ type: PlayerActionType.ANSWER_FINISHED });
           }
           onEnded();
@@ -312,10 +312,10 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         onPlay={onPlay}
         onReady={(player: ReactPlayer) => {
           if (isIntro) {
-            console.log("intro ready");
+            // console.log("intro ready");
             dispatch({ type: PlayerActionType.INTRO_FINISHED_LOADING });
           } else {
-            console.log("answer ready");
+            // console.log("answer ready");
             dispatch({ type: PlayerActionType.ANSWER_FINISHED_LOADING });
           }
           // setVideoFinishedBuffering(true);

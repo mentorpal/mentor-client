@@ -531,12 +531,12 @@ export const loadMentors: ActionCreator<
       }
     });
     await Promise.all(mentorRequests); //requests all mentors in parallel
-    mentorLoadResult.mentor = mentors.find(
+    mentorLoadResult.firstActiveMentorId = mentors.find(
       (id) => mentorLoadResult.mentorsById[id].status === ResultStatus.SUCCEEDED
     );
-    if (mentorLoadResult.mentor) {
+    if (mentorLoadResult.firstActiveMentorId) {
       const tqs =
-        mentorLoadResult.mentorsById[mentorLoadResult.mentor]?.data
+        mentorLoadResult.mentorsById[mentorLoadResult.firstActiveMentorId]?.data
           ?.topic_questions;
       if (tqs && tqs.length > 0) {
         const recommendedQuestions = getState().recommendedQuestions;
@@ -557,7 +557,7 @@ export const loadMentors: ActionCreator<
       Object.keys(mentorLoadResult.mentorsById).length
     ) {
       for (const mentor in mentorLoadResult.mentorsById) {
-        mentorLoadResult.curMentor = mentor;
+        mentorLoadResult.mentorToAddToState = mentor;
         dispatch<MentorsLoadResultAction>({
           type: MENTORS_LOAD_RESULT,
           payload: mentorLoadResult,
