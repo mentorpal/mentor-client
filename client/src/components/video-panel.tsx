@@ -11,11 +11,18 @@ import VideoThumbnail from "components/video-thumbnail";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import { selectMentor } from "store/actions";
-import { MentorState, MentorSelectReason, MentorType, State } from "types";
+import {
+  MentorState,
+  MentorSelectReason,
+  MentorType,
+  State,
+  MentorQuestionStatus,
+} from "types";
 import { isMentorReady } from "utils";
 
 interface MentorVideoStatus {
   isReady: boolean;
+  answeredQuestion: boolean;
   isOffTopic: boolean;
   mentorType: MentorType;
 }
@@ -23,6 +30,7 @@ interface MentorVideoStatus {
 function toMentorVideoStatus(m: MentorState): MentorVideoStatus {
   return {
     isOffTopic: Boolean(m.is_off_topic),
+    answeredQuestion: m.status === MentorQuestionStatus.ANSWERED,
     isReady: isMentorReady(m),
     mentorType: m?.mentor?.mentorType || MentorType.VIDEO,
   };
@@ -69,6 +77,7 @@ function VideoPanel(): JSX.Element {
               className={`slide video-slide ${
                 id === curMentor ? "selected" : ""
               }`}
+              disabled={m.answeredQuestion}
               data-ready={m.isReady}
               key={`${id}-${i}`}
               onClick={() => onClick(id)}

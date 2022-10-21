@@ -35,7 +35,6 @@ export interface VideoPlayerParams {
   useVirtualBackground: boolean;
   virtualBackgroundUrl: string;
   vbgAspectRatio: number;
-  isIdle: boolean;
   isIntro: boolean;
 }
 
@@ -58,7 +57,6 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     useVirtualBackground,
     virtualBackgroundUrl,
     vbgAspectRatio,
-    isIdle,
     isIntro,
   } = args;
   const { name: mentorName } = mentorData;

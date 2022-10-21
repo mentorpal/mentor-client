@@ -15,7 +15,6 @@ import { useResizeDetector } from "react-resize-detector";
 import {
   answerFinished,
   mentorAnswerPlaybackStarted,
-  playIdleAfterReplay,
   onMentorDisplayAnswer,
 } from "store/actions";
 import { ChatMsg, MentorState, State, UtteranceName, WebLink } from "types";
@@ -72,9 +71,6 @@ function Video(args: {
   const isQuestionSent = useSelector<State, boolean>((s) => {
     return s.chat.questionSent;
   });
-  const chatReplay = useSelector<State, boolean>((s) => {
-    return s.chat.replay;
-  });
   const chatMessages = useSelector<State, ChatMsg[]>((s) => {
     return s.chat.messages;
   });
@@ -120,21 +116,6 @@ function Video(args: {
   };
 
   const getVideoData = (): VideoData => {
-    if (chatReplay) {
-      const videoMedia = chatMessages.find((m) => {
-        if (m.replay) {
-          return m.answerMedia;
-        }
-      });
-      return {
-        src: getVideoUrl(
-          videoMedia?.answerMedia || [],
-          undefined,
-          useVirtualBackground
-        ),
-        subtitles: subtitleUrl(videoMedia?.answerMedia || []),
-      };
-    }
     if (!curMentorId) {
       return defaultVideoData;
     }
@@ -152,15 +133,6 @@ function Video(args: {
 
   // returns an array of WebLinks
   const getWebLinkData = () => {
-    if (chatReplay) {
-      const videoWebLinks = chatMessages.find((m) => {
-        if (m.replay) {
-          return m.webLinks || [];
-        }
-      });
-      return videoWebLinks?.webLinks || [];
-    }
-
     const lastQuestionId = chatMessages[chatMessages.length - 1].questionId;
 
     const lastWebLink = chatMessages.filter((m) => {
@@ -178,28 +150,6 @@ function Video(args: {
   const getMentorData = (): HeaderMentorData => {
     if (!curMentorId) {
       return defaultHeaderMentorData;
-    }
-    if (chatReplay) {
-      const replayMentorData = chatMessages.find((m) => {
-        if (m.replay) {
-          return m.webLinks;
-        }
-      });
-      const replayedMentor = replayMentorData?.mentorId
-        ? mentorsById[replayMentorData.mentorId].mentor
-        : undefined;
-
-      if (replayedMentor) {
-        return {
-          _id: replayedMentor._id,
-          name: replayedMentor.name,
-          title: replayedMentor.title,
-          email: replayedMentor.email,
-          allowContact: replayedMentor.allowContact,
-        };
-      } else {
-        return defaultHeaderMentorData;
-      }
     }
 
     if (!(curMentor && curMentor.mentor)) {
@@ -234,27 +184,23 @@ function Video(args: {
         src: _idleVideoData.src,
         subtitles: "",
       });
-  }, [curMentorId, chatReplay, curMentor.answer_media, useVirtualBackground]);
+  }, [curMentorId, curMentor.answer_media, useVirtualBackground]);
 
   useEffect(() => {
     setWebLinks(getWebLinkData());
-  }, [chatReplay, chatMessages]);
+  }, [chatMessages]);
 
   useEffect(() => {
     setMentorData(getMentorData());
-  }, [curMentorId, chatReplay, chatMessages]);
+  }, [curMentorId, chatMessages]);
 
   const [hideLinkLabel, setHideLinkLabel] = useState<boolean>(false);
   const isIdle = useSelector<State, boolean>((state) => {
-    if (state.chat.replay) {
-      return false;
-    }
     return state.isIdle;
   });
 
   function onEnded() {
     setHideLinkLabel(true);
-    dispatch(playIdleAfterReplay(false));
     dispatch(answerFinished());
   }
 
@@ -330,7 +276,6 @@ function Video(args: {
               idleUrl={idleVideo.src}
               useVirtualBackground={useVirtualBackground}
               virtualBackgroundUrl={virtualBackgroundUrl}
-              isIdle={isIdle}
               vbgAspectRatio={vbgAspectRatio}
               isIntro={curMentor.answer_utterance_type === UtteranceName.INTRO}
             />

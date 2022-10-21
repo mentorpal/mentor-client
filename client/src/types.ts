@@ -11,7 +11,6 @@ export interface ChatData {
   lastQuestionAt?: Date;
   lastAnswerAt?: Date;
   messages: ChatMsg[];
-  replay: boolean;
   questionSent: boolean;
   lastQuestionCounter?: number;
 }
@@ -33,6 +32,7 @@ export type ChatLink = AskLink | WebLink;
 
 export interface ChatMsg {
   // we should change name, color, and isUser to just mentorIds
+  id: string;
   name: string;
   color: string;
   mentorId: string;
@@ -48,7 +48,6 @@ export interface ChatMsg {
   webLinks?: WebLink[];
   answerMedia?: Media[];
   answerId?: string;
-  replay?: boolean;
   isVideoInProgress?: boolean;
   confidence?: number;
   curMentor?: string;

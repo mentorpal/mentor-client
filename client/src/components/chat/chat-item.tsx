@@ -63,11 +63,7 @@ export function ChatItem(props: {
   setAnswerVisibility: (show: boolean) => void;
   visibility: boolean;
   mentorType: string;
-  rePlayQuestionVideo: (
-    mId: string,
-    answerId: string,
-    answerText: string
-  ) => void;
+  rePlayQuestionVideo: (messageId: string) => void;
   mostRecentMsg: boolean;
 }): JSX.Element {
   const {
@@ -196,18 +192,12 @@ export function ChatItem(props: {
       }}
     />
   ) : null;
-
+  console.log(message);
   const rePlayBtn =
-    !isUser && isVisible ? (
+    !isUser && isVisible && message.answerMedia ? (
       <PlayCircleOutlineIcon
         style={{ marginRight: 10, cursor: "pointer", color: "#0000008a" }}
-        onClick={() =>
-          rePlayQuestionVideo(
-            message.mentorId,
-            message.answerId || "",
-            message.text
-          )
-        }
+        onClick={() => rePlayQuestionVideo(message.id)}
         data-cy={`replay-icon-${i}`}
       />
     ) : null;

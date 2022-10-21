@@ -233,17 +233,7 @@ export interface QuestionSentAction {
 export interface ReplayVideoAction {
   type: typeof REPLAY_VIDEO;
   payload: {
-    mentorId: string;
-    answerId: string;
-    reason: MentorSelectReason;
-    answerText: string;
-  };
-}
-
-export interface PlayIdleAfterReplayVideoAction {
-  type: typeof PLAY_IDLE_AFTER_REPLAY_VIDEO;
-  payload: {
-    replay: boolean;
+    messageId: string;
   };
 }
 
@@ -280,8 +270,7 @@ export type MentorClientAction =
   | TopicSelectedAction
   | QuestionInputChangedAction
   | ReplayVideoAction
-  | ToggleHistoryVisibilityAction
-  | PlayIdleAfterReplayVideoAction;
+  | ToggleHistoryVisibilityAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
@@ -673,38 +662,16 @@ export function mentorAnswerPlaybackStarted(video: {
 }
 
 export const rePlayAnswer =
-  (
-    mentorId: string,
-    answerId: string,
-    reason: MentorSelectReason,
-    answerText: string
-  ) =>
+  (messageId: string) =>
   async (
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
   ) => {
     return dispatch({
       payload: {
-        mentorId,
-        answerId,
-        reason,
-        answerText,
+        messageId,
       },
       type: REPLAY_VIDEO,
-    });
-  };
-
-export const playIdleAfterReplay =
-  (replay: boolean) =>
-  async (
-    dispatch: ThunkDispatch<State, void, AnyAction>,
-    getState: () => State
-  ) => {
-    return dispatch({
-      payload: {
-        replay,
-      },
-      type: PLAY_IDLE_AFTER_REPLAY_VIDEO,
     });
   };
 
