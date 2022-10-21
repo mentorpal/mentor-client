@@ -55,7 +55,6 @@ import {
   State,
   MentorSelectReason,
   LoadStatus,
-  MentorType,
   Feedback,
   AskLink,
   LINK_TYPE_ASK,
@@ -330,48 +329,50 @@ function onMentorLoadResults(
 }
 
 function onQuestionSent(state: State, action: QuestionSentAction): State {
-  return onMentorNext(
-    onQuestionInputChanged(
-      {
-        ...state,
-        mentorAnswersLoadStatus: LoadStatus.LOAD_IN_PROGRESS,
-        chat: {
-          ...state.chat,
-          messages: [
-            ...state.chat.messages,
-            {
-              id: uuid(),
-              name: "",
-              color: "",
-              mentorId: "",
-              isIntro: false,
-              isUser: true,
-              text: action.payload.question,
-              questionId: action.payload.questionId,
-              feedback: Feedback.NONE,
-              feedbackId: "",
-              isFeedbackSendInProgress: false,
-              questionCounter: state.questionsAsked.length + 1,
-            },
+  return scrapCurrentAnswers(
+    onMentorNext(
+      onQuestionInputChanged(
+        {
+          ...state,
+          mentorAnswersLoadStatus: LoadStatus.LOAD_IN_PROGRESS,
+          chat: {
+            ...state.chat,
+            messages: [
+              ...state.chat.messages,
+              {
+                id: uuid(),
+                name: "",
+                color: "",
+                mentorId: "",
+                isIntro: false,
+                isUser: true,
+                text: action.payload.question,
+                questionId: action.payload.questionId,
+                feedback: Feedback.NONE,
+                feedbackId: "",
+                isFeedbackSendInProgress: false,
+                questionCounter: state.questionsAsked.length + 1,
+              },
+            ],
+            questionSent: true,
+            lastQuestionCounter: state.questionsAsked.length + 1,
+          },
+          curQuestion: action.payload.question,
+          curQuestionSource: action.payload.source,
+          curQuestionUpdatedAt: Date.now(),
+          questionsAsked: [
+            ...state.questionsAsked,
+            normalizeString(action.payload.question),
           ],
-          questionSent: true,
-          lastQuestionCounter: state.questionsAsked.length + 1,
         },
-        curQuestion: action.payload.question,
-        curQuestionSource: action.payload.source,
-        curQuestionUpdatedAt: Date.now(),
-        questionsAsked: [
-          ...state.questionsAsked,
-          normalizeString(action.payload.question),
-        ],
-      },
-      {
-        type: QUESTION_INPUT_CHANGED,
-        payload: {
-          question: "",
-          source: MentorQuestionSource.NONE,
-        },
-      }
+        {
+          type: QUESTION_INPUT_CHANGED,
+          payload: {
+            question: "",
+            source: MentorQuestionSource.NONE,
+          },
+        }
+      )
     )
   );
 }
@@ -409,6 +410,18 @@ function onMentorNext(
     ...state,
     mentorNext: action ? action.mentor : "",
   };
+}
+
+function scrapCurrentAnswers(state: State): State {
+  const mentorIds = Object.keys(state.mentorsById);
+  const stateCopy: State = JSON.parse(JSON.stringify(state));
+  for (const mentorId of mentorIds) {
+    stateCopy.mentorsById[mentorId] = {
+      ...stateCopy.mentorsById[mentorId],
+      status: MentorQuestionStatus.ANSWERED,
+    };
+  }
+  return stateCopy;
 }
 
 function onToggleHistoryVisibility(state: State): State {

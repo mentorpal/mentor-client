@@ -9,7 +9,7 @@ import MailIcon from "@material-ui/icons/Mail";
 import { getLocalStorage, setLocalStorage } from "utils";
 import "styles/video.css";
 import { Tooltip } from "@material-ui/core";
-import { HeaderMentorData } from "./video";
+import { HeaderMentorData } from "./video-player-wrapper";
 
 export default function EmailMentorIcon(props: {
   configEmailAddress: string;

@@ -12,7 +12,7 @@ import { WebLink } from "types";
 import "styles/video.css";
 import FaveButton from "./fave-button";
 import EmailMentorIcon from "./email-mentor-icon";
-import { HeaderMentorData } from "./video";
+import { HeaderMentorData } from "./video-player-wrapper";
 import {
   PlayerActionType,
   PlayerReducer,
@@ -28,7 +28,6 @@ export interface VideoPlayerParams {
   subtitlesUrl: string;
   videoUrl: string;
   webLinks: WebLink[];
-  hideLinkLabel: boolean;
   mentorData: HeaderMentorData;
   configEmailMentorAddress: string;
   reactPlayerRef: React.RefObject<ReactPlayer>;
@@ -50,7 +49,6 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     videoUrl,
     idleUrl,
     webLinks,
-    hideLinkLabel,
     configEmailMentorAddress,
     mentorData,
     reactPlayerRef,
@@ -280,14 +278,13 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     </div>
   );
 
-  // console.log(state.urlToPlay);
-
   return (
     <div
       data-cy={"answer-video-player-wrapper"}
       style={{ width: "100%", height: "auto" }}
     >
-      {!hideLinkLabel && shouldDiplayWebLinks ? answerLinkCard : null}
+      {/* TODO: shouldDisplayWebLinks && !isIdle */}
+      {shouldDiplayWebLinks ? answerLinkCard : null}
       {mentorName ? mentorNameCard : null}
       <ReactPlayer
         style={answerReactPlayerStyling}
