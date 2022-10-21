@@ -922,7 +922,6 @@ function clearNextMentorTimer(): void {
 export const userInputChanged: ActionCreator<
   ThunkAction<AnyAction, State, void, QuestionInputChangedAction>
 > = (userInput: String) => (dispatch: Dispatch) => {
-  clearNextMentorTimer();
   return dispatch({
     type: QUESTION_INPUT_CHANGED,
     payload: userInput,

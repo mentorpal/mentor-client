@@ -65,8 +65,6 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
   const [state, dispatch] = useReducer(PlayerReducer, {
     status: PlayerStatus.INTRO_LOADING,
   });
-  // const [videoFinishedBuffering, setVideoFinishedBuffering] =
-  //   useState<boolean>(true);
   const [answerReactPlayerStyling, setAnswerReactPlayerStyling] =
     useState<React.CSSProperties>({
       lineHeight: 0,
