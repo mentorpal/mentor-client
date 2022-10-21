@@ -197,7 +197,7 @@ export type MentorAction =
 
 export interface QuestionAnsweredAction {
   type: typeof QUESTION_ANSWERED;
-  payload: QuestionResponse;
+  payload: QuestionResponse[];
 }
 
 export interface VideoFinishedAction {
@@ -545,13 +545,10 @@ export const loadMentors: ActionCreator<
       curState.chat.messages.length <
       Object.keys(mentorLoadResult.mentorsById).length
     ) {
-      for (const mentor in mentorLoadResult.mentorsById) {
-        mentorLoadResult.mentorToAddToState = mentor;
-        dispatch<MentorsLoadResultAction>({
-          type: MENTORS_LOAD_RESULT,
-          payload: mentorLoadResult,
-        });
-      }
+      dispatch<MentorsLoadResultAction>({
+        type: MENTORS_LOAD_RESULT,
+        payload: mentorLoadResult,
+      });
     }
 
     return;
@@ -804,7 +801,6 @@ export const sendQuestion =
               },
               state.cmi5
             );
-            dispatch(onQuestionAnswered(response));
             resolve(response);
           })
           .catch((err: any) => {
@@ -829,7 +825,6 @@ export const sendQuestion =
               questionSource: q.source,
               status: MentorQuestionStatus.ERROR,
             };
-            dispatch(onQuestionAnswered(response));
             resolve(response);
           });
       });
@@ -841,6 +836,7 @@ export const sendQuestion =
         promises.map((p) => p.catch((e) => e))
       )
     ).filter((r) => !(r instanceof Error));
+    dispatch(onQuestionAnswered(responses));
     if (responses.length === 0) {
       return;
     }
@@ -953,9 +949,9 @@ export const onQuestionSent = (payload: {
   type: QUESTION_SENT,
 });
 
-export function onQuestionAnswered(response: QuestionResponse) {
+export function onQuestionAnswered(responses: QuestionResponse[]) {
   return {
-    payload: response,
+    payload: responses,
     type: QUESTION_ANSWERED,
   };
 }

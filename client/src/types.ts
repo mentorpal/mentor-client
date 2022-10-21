@@ -268,6 +268,8 @@ export interface State {
   mentorFaved: string; // id of the preferred mentor
   isIdle: boolean;
   mentorsById: Record<string, MentorState>;
+  mentorsInitialLoadStatus: LoadStatus;
+  mentorAnswersLoadStatus: LoadStatus;
   mentorNext: string; // id of the next mentor to speak after the current finishes
   guestName: string;
   questionsAsked: string[];

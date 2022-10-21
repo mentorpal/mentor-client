@@ -92,6 +92,8 @@ export const initialState: State = {
     displayGuestPrompt: false,
     defaultVirtualBackground: "",
   },
+  mentorAnswersLoadStatus: LoadStatus.NONE,
+  mentorsInitialLoadStatus: LoadStatus.NONE,
   configLoadStatus: LoadStatus.NONE,
   guestName: "",
   curMentor: "", // id of selected mentor
@@ -230,37 +232,9 @@ function onMentorsLoadRequested(
   state: State,
   action: MentorsLoadRequestedAction
 ): State {
-  const mentorsById = action.payload.mentors.reduce<{
-    [mentorId: string]: MentorState;
-  }>((mentorsByIdAcc, mentorId) => {
-    mentorsByIdAcc[mentorId] = {
-      mentor: {
-        _id: mentorId,
-        name: "",
-        title: "",
-        email: "",
-        mentorType: MentorType.VIDEO,
-        topicQuestions: [],
-        utterances: [],
-        allowContact: false,
-        hasVirtualBackground: false,
-        virtualBackgroundUrl: "",
-      },
-      topic_questions: [],
-      utterances: [],
-      status: MentorQuestionStatus.NONE,
-      answerDuration: Number.NaN,
-      answer_media: [],
-      answer_utterance_type: "",
-    };
-    return mentorsByIdAcc;
-  }, {});
-  Object.getOwnPropertyNames(state.mentorsById).forEach((id) => {
-    mentorsById[id] = state.mentorsById[id];
-  });
   return {
     ...state,
-    mentorsById: mentorsById,
+    mentorsInitialLoadStatus: LoadStatus.LOAD_IN_PROGRESS,
     recommendedQuestions: action.payload.recommendedQuestions || [],
   };
 }
@@ -270,69 +244,74 @@ function onMentorLoadResults(
   action: MentorsLoadResultAction
 ): State {
   const firstActiveMentorId = action?.payload?.firstActiveMentorId;
-  const mentorToAddToState = action?.payload?.mentorToAddToState;
-  const curMentorData =
-    action?.payload?.mentorsById[mentorToAddToState || ""]?.data?.mentor;
-  const mentorName =
-    action?.payload?.mentorsById[mentorToAddToState || ""]?.data?.mentor.name;
-  const curMentorIntroTranscript = curMentorData
-    ? getUtterance(curMentorData, UtteranceName.INTRO)?.transcript
-    : "";
+  const mentorsToAddToState = Object.keys(action.payload.mentorsById);
 
-  const curMentorIntroAnswerId = curMentorData
-    ? getUtterance(curMentorData, UtteranceName.INTRO)?._id
-    : "";
+  let stateCopy: State = JSON.parse(JSON.stringify(state));
 
-  const curMentorIntroAnswerMedia = curMentorData
-    ? getUtterance(curMentorData, UtteranceName.INTRO)?.media
-    : [];
-  const utterances = curMentorData?.utterances || [];
-  let s: State = {
-    ...state,
-    chat: {
-      ...state.chat,
-      messages: [
-        ...state.chat.messages,
-        {
-          id: uuid(),
-          name: mentorName || "name",
-          color: "#fff",
-          mentorId: mentorToAddToState || "",
-          isIntro: true,
-          isUser: false,
-          text: curMentorIntroTranscript || "",
-          questionId: "",
-          feedback: Feedback.NONE,
-          feedbackId: "",
-          answerId: curMentorIntroAnswerId,
-          answerMedia: curMentorIntroAnswerMedia,
-          isFeedbackSendInProgress: false,
-          utterances,
-          isVideoInProgress: true,
-          askLinks: findAskLinks(curMentorIntroTranscript || ""),
-          webLinks: findWebLinks(
-            curMentorIntroTranscript || "",
-            curMentorIntroAnswerId || ""
-          ),
-          // timestampAnswered: Date.now()
-        },
-      ],
-    },
-    mentorsById: Object.getOwnPropertyNames(action.payload.mentorsById).reduce(
-      (acc: Record<string, MentorState>, mid: string) => {
-        acc[mid] = {
-          ...state.mentorsById[mid],
-          ...(action.payload.mentorsById[mid]?.data || {}),
-          status: MentorQuestionStatus.READY,
-        };
-        return acc;
+  for (const mentor of mentorsToAddToState) {
+    const mentorToAddToState = mentor;
+    const curMentorData =
+      action?.payload?.mentorsById[mentorToAddToState || ""]?.data?.mentor;
+    const mentorName =
+      action?.payload?.mentorsById[mentorToAddToState || ""]?.data?.mentor.name;
+    const curMentorIntroTranscript = curMentorData
+      ? getUtterance(curMentorData, UtteranceName.INTRO)?.transcript
+      : "";
+
+    const curMentorIntroAnswerId = curMentorData
+      ? getUtterance(curMentorData, UtteranceName.INTRO)?._id
+      : "";
+
+    const curMentorIntroAnswerMedia = curMentorData
+      ? getUtterance(curMentorData, UtteranceName.INTRO)?.media
+      : [];
+    const utterances = curMentorData?.utterances || [];
+    stateCopy = {
+      ...stateCopy,
+      chat: {
+        ...stateCopy.chat,
+        messages: [
+          ...stateCopy.chat.messages,
+          {
+            id: uuid(),
+            name: mentorName || "name",
+            color: "#fff",
+            mentorId: mentorToAddToState || "",
+            isIntro: true,
+            isUser: false,
+            text: curMentorIntroTranscript || "",
+            questionId: "",
+            feedback: Feedback.NONE,
+            feedbackId: "",
+            answerId: curMentorIntroAnswerId,
+            answerMedia: curMentorIntroAnswerMedia,
+            isFeedbackSendInProgress: false,
+            utterances,
+            isVideoInProgress: true,
+            askLinks: findAskLinks(curMentorIntroTranscript || ""),
+            webLinks: findWebLinks(
+              curMentorIntroTranscript || "",
+              curMentorIntroAnswerId || ""
+            ),
+          },
+        ],
       },
-      {} as Record<string, MentorState>
-    ),
-  };
+    };
+  }
+
+  stateCopy.mentorsById = Object.getOwnPropertyNames(
+    action.payload.mentorsById
+  ).reduce((acc: Record<string, MentorState>, mid: string) => {
+    acc[mid] = {
+      ...stateCopy.mentorsById[mid],
+      ...(action.payload.mentorsById[mid]?.data || {}),
+      status: MentorQuestionStatus.READY,
+    };
+    return acc;
+  }, {} as Record<string, MentorState>);
 
   if (firstActiveMentorId) {
-    s = mentorSelected(s, {
+    stateCopy = mentorSelected(stateCopy, {
       type: MENTOR_SELECTED,
       payload: {
         id: firstActiveMentorId,
@@ -341,13 +320,13 @@ function onMentorLoadResults(
     });
   }
   if (action.payload.topic) {
-    s = topicSelected(s, {
+    stateCopy = topicSelected(stateCopy, {
       type: TOPIC_SELECTED,
       topic: action.payload.topic,
     });
   }
 
-  return s;
+  return { ...stateCopy, mentorsInitialLoadStatus: LoadStatus.LOADED };
 }
 
 function onQuestionSent(state: State, action: QuestionSentAction): State {
@@ -355,6 +334,7 @@ function onQuestionSent(state: State, action: QuestionSentAction): State {
     onQuestionInputChanged(
       {
         ...state,
+        mentorAnswersLoadStatus: LoadStatus.LOAD_IN_PROGRESS,
         chat: {
           ...state.chat,
           messages: [
@@ -514,73 +494,74 @@ function onQuestionAnswered(
   // NOTE: about answerFeedbackId
   // It seems like the answerFeedbackId should be
   // associated to the chat message
+  let stateCopy: State = JSON.parse(JSON.stringify(state));
 
-  const mentor: MentorState = {
-    ...state.mentorsById[action.payload.mentor],
-    // we need chat messages to live up here
-    answer_id: action.payload.answerId,
-    answer_text: action.payload.answerText,
-    answer_media: action.payload.answerMedia,
-    answer_utterance_type: action.payload.answerUtteranceType,
-    answerReceivedAt: Date.now(),
-    answerFeedbackId: action.payload.answerFeedbackId,
-    classifier: action.payload.answerClassifier,
-    confidence: action.payload.answerConfidence,
-    is_off_topic: action.payload.answerIsOffTopic,
-    question: action.payload.question,
-    response_time: action.payload.answerResponseTimeSecs,
-    status: MentorQuestionStatus.READY,
-  };
+  const responses = action.payload;
+  for (const response of responses) {
+    const mentor: MentorState = {
+      ...stateCopy.mentorsById[response.mentor],
+      // we need chat messages to live up here
+      answer_id: response.answerId,
+      answer_text: response.answerText,
+      answer_media: response.answerMedia,
+      answer_utterance_type: response.answerUtteranceType,
+      answerReceivedAt: Date.now(),
+      answerFeedbackId: response.answerFeedbackId,
+      classifier: response.answerClassifier,
+      confidence: response.answerConfidence,
+      is_off_topic: response.answerIsOffTopic,
+      question: response.question,
+      response_time: response.answerResponseTimeSecs,
+      status: MentorQuestionStatus.READY,
+    };
 
-  const history = mentor.topic_questions.length - 1;
-  if (
-    !mentor.topic_questions[history].questions.includes(action.payload.question)
-  ) {
-    // We must first deep copy topic_questions to avoid directly mutating redux state
-    // Note: This deep copy approach only works for JSON compatible objects
-    mentor.topic_questions = JSON.parse(
-      JSON.stringify(state.mentorsById[action.payload.mentor].topic_questions)
-    );
-    mentor.topic_questions[history].questions.push(action.payload.question);
+    const history = mentor.topic_questions.length - 1;
+    if (
+      !mentor.topic_questions[history].questions.includes(response.question)
+    ) {
+      mentor.topic_questions[history].questions.push(response.question);
+    }
+
+    stateCopy = {
+      ...stateCopy,
+      chat: {
+        ...stateCopy.chat,
+        messages: [
+          ...stateCopy.chat.messages,
+          {
+            id: uuid(),
+            name: "",
+            color: "",
+            mentorId: response.mentor,
+            isIntro: false,
+            isUser: false,
+            questionId: response.questionId,
+            text: response.answerText,
+            feedback: Feedback.NONE,
+            feedbackId: response.answerFeedbackId,
+            isFeedbackSendInProgress: false,
+            isVideoInProgress: true,
+            askLinks: findAskLinks(response.answerText),
+            webLinks: findWebLinks(
+              response.answerText,
+              mentor?.answer_id || ""
+            ),
+            answerMedia: mentor.answer_media,
+            answerId: mentor.answer_id,
+            confidence: mentor.confidence,
+            questionCounter: stateCopy.questionsAsked.length,
+          },
+        ],
+        questionSent: false,
+      },
+      mentorsById: {
+        ...stateCopy.mentorsById,
+        [response.mentor]: mentor,
+      },
+    };
   }
 
-  return {
-    ...state,
-    chat: {
-      ...state.chat,
-      messages: [
-        ...state.chat.messages,
-        {
-          id: uuid(),
-          name: "",
-          color: "",
-          mentorId: action.payload.mentor,
-          isIntro: false,
-          isUser: false,
-          questionId: action.payload.questionId,
-          text: action.payload.answerText,
-          feedback: Feedback.NONE,
-          feedbackId: action.payload.answerFeedbackId,
-          isFeedbackSendInProgress: false,
-          isVideoInProgress: true,
-          askLinks: findAskLinks(action.payload.answerText),
-          webLinks: findWebLinks(
-            action.payload.answerText,
-            mentor?.answer_id || ""
-          ),
-          answerMedia: mentor.answer_media,
-          answerId: mentor.answer_id,
-          confidence: mentor.confidence,
-          questionCounter: state.questionsAsked.length,
-        },
-      ],
-      questionSent: false,
-    },
-    mentorsById: {
-      ...state.mentorsById,
-      [action.payload.mentor]: mentor,
-    },
-  };
+  return { ...stateCopy, mentorAnswersLoadStatus: LoadStatus.LOADED };
 }
 
 function topicSelected(state: State, action: TopicSelectedAction): State {

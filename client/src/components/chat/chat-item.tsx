@@ -192,7 +192,7 @@ export function ChatItem(props: {
       }}
     />
   ) : null;
-  console.log(message);
+
   const rePlayBtn =
     !isUser && isVisible && message.answerMedia ? (
       <PlayCircleOutlineIcon
