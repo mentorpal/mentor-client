@@ -122,8 +122,6 @@ function Video(args: {
     return <div />;
   }
 
-  console.log(video.src);
-
   return (
     <>
       <div

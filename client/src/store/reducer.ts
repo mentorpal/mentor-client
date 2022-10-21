@@ -436,10 +436,11 @@ function onQuestionInputChanged(
   state: State,
   action: QuestionInputChangedAction
 ): State {
-  return onMentorNext({
+  // TODO: This used to be wrapped in nextMentor, why?
+  return {
     ...state,
     questionInput: action.payload,
-  });
+  };
 }
 
 function findWebLinks(text: string, answerId: string): WebLink[] {
