@@ -111,6 +111,7 @@ export const initialState: State = {
     source: MentorQuestionSource.NONE,
   },
   visibilityShowAllPref: false,
+  replayMessageCount: 0,
 };
 
 function onCmi5InitSucceeded(
@@ -631,6 +632,8 @@ function onReplayVideo(state: State, action: ReplayVideoAction): State {
         }
       : message;
   });
+
+  stateCopy.replayMessageCount += 1;
 
   return mentorSelected(stateCopy, {
     type: MENTOR_SELECTED,

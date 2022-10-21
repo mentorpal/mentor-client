@@ -47,11 +47,15 @@ export function useWithCurMentorData(): UseWithCurMentorData {
       return state.mentorsById;
     }
   );
+  const curMentorInState = mentorsById[curMentorId];
   const mentorsLoadStatus = useSelector<State, string>(
     (state) => state.mentorsInitialLoadStatus
   );
   const mentorAnswersLoadStatus = useSelector<State, string>(
     (state) => state.mentorAnswersLoadStatus
+  );
+  const replayMessageCount = useSelector<State, number>(
+    (state) => state.replayMessageCount
   );
 
   function updateCurrentMentor() {
@@ -83,7 +87,7 @@ export function useWithCurMentorData(): UseWithCurMentorData {
     if (curMentorId) {
       updateCurrentMentor();
     }
-  }, [curMentorId]);
+  }, [curMentorId, curMentorInState.answer_id]);
 
   useEffect(() => {
     if (mentorsLoadStatus === LoadStatus.LOADED && curMentorId) {
@@ -120,7 +124,7 @@ export function useWithCurMentorData(): UseWithCurMentorData {
         src: _idleVideoData.src,
         subtitles: "",
       });
-  }, [curMentor?.answer_media]);
+  }, [curMentor?.answer_media, replayMessageCount]);
 
   return {
     video,

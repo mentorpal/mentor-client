@@ -181,7 +181,6 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
 
   useEffect(() => {
     setReadied(false);
-    // setVideoFinishedBuffering(false);
   }, [videoUrl]);
 
   useEffect(() => {

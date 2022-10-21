@@ -276,6 +276,7 @@ export interface State {
   recommendedQuestions: string[];
   questionInput: QuestionInput;
   visibilityShowAllPref: boolean;
+  replayMessageCount: number;
 }
 
 export interface QuestionInput {
