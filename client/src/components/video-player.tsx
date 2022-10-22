@@ -305,6 +305,11 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     </div>
   );
 
+  const videoPlayerHtmlStyle: React.CSSProperties = {
+    width: "100%",
+    height: "auto",
+  };
+
   return (
     <div
       data-cy={"answer-video-player-wrapper"}
@@ -318,6 +323,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         className="player-wrapper react-player-wrapper"
         data-cy="react-player-answer-video"
         url={state.urlToPlay}
+        pip={false}
         muted={false}
         onEnded={() => {
           // setVideoFinishedBuffering(false);
@@ -385,6 +391,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
             attributes: {
               crossOrigin: "true",
               controlsList: "nodownload",
+              style: videoPlayerHtmlStyle,
             },
             tracks: subtitlesOn
               ? [
@@ -405,6 +412,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         className="player-wrapper react-player-wrapper"
         data-cy="react-player-idle-video"
         url={idleUrl}
+        pip={false}
         muted={true}
         loop={true}
         controls={false}
@@ -421,6 +429,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
           file: {
             attributes: {
               crossOrigin: "true",
+              style: videoPlayerHtmlStyle,
             },
             tracks: [],
           },
