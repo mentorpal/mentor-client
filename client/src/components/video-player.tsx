@@ -300,7 +300,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         <p className="mentor-name-text" data-cy="mentor-name">
           {mentorName}
         </p>
-        <FaveButton />
+        <FaveButton mentor={mentorData._id} />
       </div>
     </div>
   );

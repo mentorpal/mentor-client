@@ -6,7 +6,13 @@ The full terms of this copyright and license should always be found in the root 
 */
 import { useState } from "react";
 
-export function useWithIntervalManagement() {
+export interface UseWithIntervalManagement {
+  intervalStarted: (inputInterval: NodeJS.Timeout) => void;
+  intervalEnded: (inputInterval: NodeJS.Timeout) => void;
+  clearAllIntervals: () => void;
+}
+
+export function useWithIntervalManagement(): UseWithIntervalManagement {
   const [intervalsInProgress, setIntervalsInProgress] = useState<
     NodeJS.Timeout[]
   >([]);

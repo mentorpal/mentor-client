@@ -4,16 +4,16 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { Star, StarBorder } from "@material-ui/icons";
+import { StarBorder, Star } from "@material-ui/icons";
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { faveMentor } from "store/actions";
 import { State } from "types";
 import "styles/video.css";
 
-export default function FaveButton(): JSX.Element {
+export default function FaveButton(props: { mentor: string }): JSX.Element {
+  const { mentor } = props;
   const dispatch = useDispatch();
-  const mentor = useSelector<State, string>((state) => state.curMentor);
   const numMentors = useSelector<State, number>(
     (state) => Object.keys(state.mentorsById).length
   );
