@@ -19,6 +19,7 @@ import {
   PlayerStatus,
 } from "video-player-reducer";
 import { useWithIntervalManagement } from "use-with-interval-management";
+import { useWithVideoPlayerHeight } from "use-with-video-player-height";
 
 export interface VideoPlayerData {
   videoUrl: string;
@@ -70,6 +71,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     status: PlayerStatus.INTRO_LOADING,
   });
   const [curMentorId, setCurMentorId] = useState<string>(mentorData._id);
+  const { newVideo } = useWithVideoPlayerHeight(reactPlayerRef);
   const { intervalStarted, intervalEnded, clearAllIntervals } =
     useWithIntervalManagement();
   const [answerReactPlayerStyling, setAnswerReactPlayerStyling] =
@@ -326,7 +328,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         pip={false}
         muted={false}
         onEnded={() => {
-          // setVideoFinishedBuffering(false);
+          newVideo();
           if (isIntro) {
             console.log("intro finished");
             dispatch({ type: PlayerActionType.INTRO_FINISHED });
@@ -339,6 +341,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         ref={reactPlayerRef}
         onPlay={onPlay}
         onReady={(player: ReactPlayer) => {
+          newVideo();
           if (isIntro) {
             console.log("intro ready");
             dispatch({ type: PlayerActionType.INTRO_FINISHED_LOADING });
