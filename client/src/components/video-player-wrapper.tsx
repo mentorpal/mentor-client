@@ -154,10 +154,12 @@ function Video(args: {
             configEmailMentorAddress={args.configEmailMentorAddress}
             reactPlayerRef={reactPlayerRef}
             subtitlesUrl={video.subtitles}
-            videoUrl={video.src}
             webLinks={webLinks}
-            mentorData={mentorData}
-            idleUrl={idleVideo.src}
+            videoPlayerData={{
+              videoUrl: video.src,
+              idleUrl: idleVideo.src,
+              mentorData: mentorData,
+            }}
             useVirtualBackground={Boolean(
               browserSupportsViewingVbg() &&
                 curMentor?.mentor.hasVirtualBackground

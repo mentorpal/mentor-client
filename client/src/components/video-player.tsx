@@ -18,17 +18,22 @@ import {
   PlayerReducer,
   PlayerStatus,
 } from "video-player-reducer";
+import { useWithIntervalManagement } from "use-with-interval-management";
+
+export interface VideoPlayerData {
+  videoUrl: string;
+  idleUrl: string;
+  mentorData: HeaderMentorData;
+}
 
 export interface VideoPlayerParams {
   onEnded: () => void;
   onPlay: () => void;
   playing?: boolean;
-  idleUrl: string;
+  videoPlayerData: VideoPlayerData;
   subtitlesOn: boolean;
   subtitlesUrl: string;
-  videoUrl: string;
   webLinks: WebLink[];
-  mentorData: HeaderMentorData;
   configEmailMentorAddress: string;
   reactPlayerRef: React.RefObject<ReactPlayer>;
   useVirtualBackground: boolean;
@@ -46,17 +51,16 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     playing,
     subtitlesOn,
     subtitlesUrl,
-    videoUrl,
-    idleUrl,
+    videoPlayerData,
     webLinks,
     configEmailMentorAddress,
-    mentorData,
     reactPlayerRef,
     useVirtualBackground,
     virtualBackgroundUrl,
     vbgAspectRatio,
     isIntro,
   } = args;
+  const { mentorData, idleUrl, videoUrl } = videoPlayerData;
   const { name: mentorName } = mentorData;
   const [readied, setReadied] = useState<boolean>(false);
   const [idleSuccessfullyLoaded, setIdleSuccesfullyLoaded] =
@@ -65,6 +69,9 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
   const [state, dispatch] = useReducer(PlayerReducer, {
     status: PlayerStatus.INTRO_LOADING,
   });
+  const [curMentorId, setCurMentorId] = useState<string>(mentorData._id);
+  const { intervalStarted, intervalEnded, clearAllIntervals } =
+    useWithIntervalManagement();
   const [answerReactPlayerStyling, setAnswerReactPlayerStyling] =
     useState<React.CSSProperties>({
       lineHeight: 0,
@@ -81,6 +88,13 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         type: PlayerActionType.INTRO_URL_ARRIVED,
         payload: { introUrl: videoUrl },
       });
+    } else if (mentorData._id !== curMentorId) {
+      // Not intro, and new mentor data, so switch right to idling.
+      console.log("new mentor id");
+      dispatch({
+        type: PlayerActionType.NEW_MENTOR,
+        payload: { newUrl: videoUrl },
+      });
     } else if (videoUrl) {
       console.log(`new url arrived: ${videoUrl}`);
       dispatch({
@@ -88,6 +102,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         payload: { newUrl: videoUrl },
       });
     }
+    setCurMentorId(mentorData._id);
   }, [videoUrl]);
 
   const [idleReactPlayerStyling, setIdleReactPlayerStyling] =
@@ -194,6 +209,12 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
       return;
     }
 
+    if (state.status === PlayerStatus.IDLING_FOR_NEXT_READY_ANSWER) {
+      clearAllIntervals();
+      idleVideoTakeSpace();
+      return;
+    }
+
     const opacityChangeSpeed = 11;
     const opactiyChangeMagnitude = 0.05;
     if (state.status === PlayerStatus.FADING_TO_ANSWER) {
@@ -210,12 +231,13 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
           };
         });
         if (fadeComplete) {
-          clearInterval(intervalId);
           answerVideoTakeSpace();
+          intervalEnded(intervalId);
           console.log("finished fading to answer");
           dispatch({ type: PlayerActionType.FINISHED_FADING_TO_ANSWER });
         }
       }, opacityChangeSpeed);
+      intervalStarted(intervalId);
     } else if (state.status === PlayerStatus.FADING_TO_IDLE) {
       //!playAnswer
       // Fade from answer to idle
@@ -237,12 +259,13 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         });
 
         if (fadeComplete) {
-          clearInterval(intervalId);
+          intervalEnded(intervalId);
           idleVideoTakeSpace();
           console.log("finished fading to idle");
           dispatch({ type: PlayerActionType.FINISHED_FADING_TO_IDLE });
         }
       }, opacityChangeSpeed);
+      intervalStarted(intervalId);
     }
   }, [state.status]);
 

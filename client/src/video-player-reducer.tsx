@@ -39,6 +39,7 @@ export enum PlayerActionType {
   ANSWER_FINISHED = "ANSWER_FINISHED",
   NEW_QUESTION_DURING_ANSWER = "NEW_QUESTION_DURING_ANSWER",
   NEW_URL_ARRIVED = "NEW_URL_ARRIVED",
+  NEW_MENTOR = "NEW_MENTOR",
 }
 
 export function PlayerReducer(
@@ -47,11 +48,19 @@ export function PlayerReducer(
 ): PlayerState {
   const { type, payload } = action;
   switch (type) {
+    case PlayerActionType.NEW_MENTOR:
+      return {
+        ...state,
+        status: PlayerStatus.IDLING_FOR_NEXT_READY_ANSWER,
+        urlToPlay: payload.newUrl,
+        newUrl: "",
+      };
     case PlayerActionType.INTRO_URL_ARRIVED:
       return {
         ...state,
         status: PlayerStatus.INTRO_LOADING,
         urlToPlay: payload.introUrl,
+        newUrl: "",
       };
 
     case PlayerActionType.INTRO_FINISHED_LOADING:
@@ -68,7 +77,8 @@ export function PlayerReducer(
     case PlayerActionType.NEW_URL_ARRIVED:
       if (
         state.status === PlayerStatus.ANSWER_PLAYING ||
-        state.status === PlayerStatus.INTRO_PLAYING
+        state.status === PlayerStatus.INTRO_PLAYING ||
+        state.status === PlayerStatus.FADING_TO_IDLE
       ) {
         console.log("answer arrived while answer playing");
         return {
