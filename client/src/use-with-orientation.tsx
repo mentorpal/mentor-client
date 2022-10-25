@@ -7,24 +7,20 @@ The full terms of this copyright and license should always be found in the root 
 import { useEffect, useState } from "react";
 import { isMobile } from "react-device-detect";
 
+type DisplayFormat = "mobile" | "desktop";
+
 export interface UseWithScreenOrientation {
-  displayFormat: string;
-  mainContainerClassName: string;
+  displayFormat: DisplayFormat;
   windowHeight: number;
 }
 
 export function useWithScreenOrientation(): UseWithScreenOrientation {
   const [shouldDisplayPortrait, setShouldDisplayPortrait] =
     useState<boolean>(false);
-  const [displayFormat, setDisplayFormat] = useState<string>("desktop");
-  const [mainContainerClassName, setMainContainerClassName] = useState<string>(
-    "main-container-responsive"
-  );
+  const [displayFormat, setDisplayFormat] = useState<DisplayFormat>("desktop");
   const [windowHeight, setWindowHeight] = useState<number>(0);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
+  function displayCheckAndSet() {
     const displaySearchParam = new URL(location.href).searchParams.get(
       "display"
     );
@@ -37,15 +33,11 @@ export function useWithScreenOrientation(): UseWithScreenOrientation {
         ? "mobile"
         : "desktop";
     setDisplayFormat(displayFormat);
+  }
 
-    const mainContainerClassName: string =
-      displaySearchParam && displaySearchParam == "mobile"
-        ? "main-container-mobile"
-        : displaySearchParam && displaySearchParam == "desktop"
-        ? "main-container-desktop"
-        : "main-container-responsive";
-
-    setMainContainerClassName(mainContainerClassName);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    displayCheckAndSet();
 
     const _shouldDisplayPortrait =
       window.matchMedia && window.matchMedia("(max-width: 1200px)").matches;
@@ -66,23 +58,12 @@ export function useWithScreenOrientation(): UseWithScreenOrientation {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const displaySearchParam = new URL(location.href).searchParams.get(
-      "display"
-    );
-    const displayFormat =
-      displaySearchParam && displaySearchParam == "mobile"
-        ? "mobile"
-        : displaySearchParam && displaySearchParam == "desktop"
-        ? "desktop"
-        : shouldDisplayPortrait || isMobile
-        ? "mobile"
-        : "desktop";
-    setDisplayFormat(displayFormat);
+    displayCheckAndSet();
   }, [shouldDisplayPortrait, isMobile]);
 
+  console.log(displayFormat);
   return {
     displayFormat,
-    mainContainerClassName,
     windowHeight,
   };
 }

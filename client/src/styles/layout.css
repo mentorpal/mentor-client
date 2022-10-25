@@ -139,23 +139,9 @@ body {
   justify-content: space-between;
 }
 
-.history-btn {
-  min-width: 72px !important;
-  max-height: 35px !important;
-  margin: 10px !important;
-  /* font-size: 12px !important; */
-}
-
 .history-btn-wrapper {
   display: flex;
   margin-right: 10px;
-}
-
-.divider {
-  width: 1px;
-  height: 28px !important;
-  margin-left: 10px !important;
-  margin-top: 10px !important;
 }
 
 .topic-tab {
@@ -205,28 +191,29 @@ body {
 }
 
 .video-section,
-.chat-section {
+.chat-section-desktop {
   height: 100vh - 60;
   background-color: #fff;
   border-radius: 10px;
 }
-.chat-section {
+.chat-section-desktop {
   position: relative;
   margin-right: 1rem;
 }
+
+.chat-section-mobile {
+  margin: 1rem 0px 1rem 0px;
+}
+
 .video-section {
   background-color: #fff;
 }
 
 .input-container {
-  /* position: absolute; */
-  /* bottom: 10px !important; */
   width: 100%;
 }
 
-.input-wrapper {
-  /* position: absolute; */
-  /* bottom: 0px; */
+.input-wrapper-desktop {
   width: 95%;
   height: 60px;
   margin: 10px;
@@ -237,9 +224,6 @@ body {
 }
 
 .input-history {
-  /* position: absolute; */
-  /* bottom: 80px; */
-  /* right: 10px; */
   height: 20px;
   display: flex;
   flex-direction: row;
@@ -247,13 +231,22 @@ body {
   justify-content: right;
 }
 
-.send-question-btn {
+.send-question-btn-desktop {
   color: #7d7d7d !important;
   margin: 10px !important;
   height: 50px;
   width: 20px;
   border-radius: 50% !important;
   background-color: #fff !important;
+}
+
+.send-question-btn-mobile {
+  color: #7d7d7d !important;
+  margin: 10px !important;
+  height: 50px;
+  width: 20px;
+  border-radius: 50% !important;
+  background-color: #eee !important;
 }
 
 .header-container {
@@ -339,64 +332,12 @@ textarea:-moz-placeholder {
   }
 }
 
-@media only screen and (max-width: 1200px) {
-  .history-btn {
-    margin-top: 20px !important;
-    /* font-size: 12px !important; */
-  }
-
-  .divider {
-    margin-top: 20px !important;
-  }
-
-  .input-container {
-    position: relative;
-    /* margin-top: 10px; */
-  }
-  .input-wrapper {
-    position: relative;
-    width: 100%;
-    height: 60px;
-    margin: 0px;
-    margin-top: 1rem;
-    box-shadow: 0px -9px 12px 0px rgba(0, 0, 0, 0.15) !important;
-    background-color: #fff !important;
-    border-radius: 0px;
-  }
-  .carousel {
-    margin-top: 0px;
-    margin-bottom: 0px;
-  }
-  .chat-section {
-    margin: 1rem 0px 1rem 0px;
-  }
-  .send-question-btn {
-    background-color: #eee !important;
-  }
-
-  .home-btn {
-    margin-left: 1.5rem !important;
-  }
-}
-
-@media (max-width: 600px) {
-  .MuiTab-root {
-    max-width: 130px !important;
-  }
-  .input-wrapper {
-    position: relative;
-    width: 95%;
-    height: 60px;
-    margin: 0px;
-    margin-top: 1rem;
-    box-shadow: 0px -9px 12px 0px rgba(0, 0, 0, 0.15) !important;
-    background-color: #fff !important;
-    border-radius: 0px;
-  }
-  .home-btn-wrapper {
-    max-width: 15%;
-  }
-  .home-btn {
-    margin-left: 1.5rem !important;
-  }
+.input-wrapper-mobile {
+  position: relative;
+  width: 100%;
+  margin: 0px;
+  margin-top: 1rem;
+  box-shadow: 0px -9px 12px 0px rgba(0, 0, 0, 0.15) !important;
+  background-color: #fff !important;
+  border-radius: 0px;
 }

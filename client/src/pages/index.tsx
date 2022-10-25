@@ -110,8 +110,7 @@ function IndexPage(props: {
   });
   const [chatHeight, setChatHeight] = React.useState<number>(0);
 
-  const { displayFormat, mainContainerClassName, windowHeight } =
-    useWithScreenOrientation();
+  const { displayFormat, windowHeight } = useWithScreenOrientation();
   const curTopic = useSelector<State, string>((state) => state.curTopic);
 
   const { guest, subject, recommendedQuestions, intro } = props.search;
@@ -331,7 +330,7 @@ function IndexPage(props: {
       ) : (
         <MuiThemeProvider theme={brandedTheme}>
           <Header />
-          <div className={mainContainerClassName}>
+          <div className={`main-container-${displayFormat}`}>
             <div className="video-section">
               <VideoSection
                 mentorType={mentorType}
@@ -341,7 +340,7 @@ function IndexPage(props: {
                 isMobile={displayFormat == "mobile"}
               />
             </div>
-            <div className="chat-section">
+            <div className={`chat-section-${displayFormat}`}>
               <ChatSection
                 mentorType={mentorType}
                 hasSessionUser={hasSessionUser}
