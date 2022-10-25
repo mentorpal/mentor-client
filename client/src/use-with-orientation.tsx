@@ -1,78 +1,88 @@
+/*
+This software is Copyright ©️ 2020 The University of Southern California. All Rights Reserved. 
+Permission to use, copy, modify, and distribute this software and its documentation for educational, research and non-profit purposes, without fee, and without a written agreement is hereby granted, provided that the above copyright notice and subject to the full license file found in the root of this software deliverable. Permission to make commercial use of this software may be obtained by contacting:  USC Stevens Center for Innovation University of Southern California 1150 S. Olive Street, Suite 2300, Los Angeles, CA 90115, USA Email: accounting@stevens.usc.edu
+
+The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
+*/
 import { useEffect, useState } from "react";
 import { isMobile } from "react-device-detect";
 
-export function useWithScreenOrientation(){
+export interface UseWithScreenOrientation {
+  displayFormat: string;
+  mainContainerClassName: string;
+  windowHeight: number;
+}
 
-    const [shouldDisplayPortrait, setShouldDisplayPortrait] =
+export function useWithScreenOrientation(): UseWithScreenOrientation {
+  const [shouldDisplayPortrait, setShouldDisplayPortrait] =
     useState<boolean>(false);
-    const [displayFormat, setDisplayFormat] = useState<string>("desktop");
-    const [mainContainerClassName, setMainContainerClassName] = useState<string>(
-        "main-container-responsive"
-      );
-    const [windowHeight, setWindowHeight] = useState<number>(0);
+  const [displayFormat, setDisplayFormat] = useState<string>("desktop");
+  const [mainContainerClassName, setMainContainerClassName] = useState<string>(
+    "main-container-responsive"
+  );
+  const [windowHeight, setWindowHeight] = useState<number>(0);
 
-      useEffect(() => {
-        if (typeof window === "undefined") return;
+  useEffect(() => {
+    if (typeof window === "undefined") return;
 
-        const displaySearchParam = new URL(location.href).searchParams.get(
-          "display"
-        );
-        const displayFormat =
-          displaySearchParam && displaySearchParam == "mobile"
-            ? "mobile"
-            : displaySearchParam && displaySearchParam == "desktop"
-            ? "desktop"
-            : shouldDisplayPortrait || isMobile
-            ? "mobile"
-            : "desktop";
-        setDisplayFormat(displayFormat);
-    
-        const mainContainerClassName: string =
-          displaySearchParam && displaySearchParam == "mobile"
-            ? "main-container-mobile"
-            : displaySearchParam && displaySearchParam == "desktop"
-            ? "main-container-desktop"
-            : "main-container-responsive";
-    
-        setMainContainerClassName(mainContainerClassName);
-    
-        const _shouldDisplayPortrait =
-          window.matchMedia && window.matchMedia("(max-width: 1200px)").matches;
-        setShouldDisplayPortrait(_shouldDisplayPortrait);
-    
-        const handleResize = () => {
-          setWindowHeight(window.innerHeight);
-          const _shouldDisplayPortrait =
-            window.matchMedia && window.matchMedia("(max-width: 1200px)").matches;
-          setShouldDisplayPortrait(_shouldDisplayPortrait);
-        };
-        window.addEventListener("resize", handleResize);
-        setWindowHeight(window.innerHeight);
-        return () => {
-          window.removeEventListener("resize", handleResize);
-        };
-      }, []);
+    const displaySearchParam = new URL(location.href).searchParams.get(
+      "display"
+    );
+    const displayFormat =
+      displaySearchParam && displaySearchParam == "mobile"
+        ? "mobile"
+        : displaySearchParam && displaySearchParam == "desktop"
+        ? "desktop"
+        : shouldDisplayPortrait || isMobile
+        ? "mobile"
+        : "desktop";
+    setDisplayFormat(displayFormat);
 
-      useEffect(() => {
-        if (typeof window === "undefined") return;
-        const displaySearchParam = new URL(location.href).searchParams.get(
-          "display"
-        );
-        const displayFormat =
-          displaySearchParam && displaySearchParam == "mobile"
-            ? "mobile"
-            : displaySearchParam && displaySearchParam == "desktop"
-            ? "desktop"
-            : shouldDisplayPortrait || isMobile
-            ? "mobile"
-            : "desktop";
-        setDisplayFormat(displayFormat);
-      }, [shouldDisplayPortrait, isMobile]);
+    const mainContainerClassName: string =
+      displaySearchParam && displaySearchParam == "mobile"
+        ? "main-container-mobile"
+        : displaySearchParam && displaySearchParam == "desktop"
+        ? "main-container-desktop"
+        : "main-container-responsive";
 
+    setMainContainerClassName(mainContainerClassName);
 
-      return{
-        displayFormat,
-        mainContainerClassName,
-        windowHeight
-      }
+    const _shouldDisplayPortrait =
+      window.matchMedia && window.matchMedia("(max-width: 1200px)").matches;
+    setShouldDisplayPortrait(_shouldDisplayPortrait);
+
+    const handleResize = () => {
+      setWindowHeight(window.innerHeight);
+      const _shouldDisplayPortrait =
+        window.matchMedia && window.matchMedia("(max-width: 1200px)").matches;
+      setShouldDisplayPortrait(_shouldDisplayPortrait);
+    };
+    window.addEventListener("resize", handleResize);
+    setWindowHeight(window.innerHeight);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const displaySearchParam = new URL(location.href).searchParams.get(
+      "display"
+    );
+    const displayFormat =
+      displaySearchParam && displaySearchParam == "mobile"
+        ? "mobile"
+        : displaySearchParam && displaySearchParam == "desktop"
+        ? "desktop"
+        : shouldDisplayPortrait || isMobile
+        ? "mobile"
+        : "desktop";
+    setDisplayFormat(displayFormat);
+  }, [shouldDisplayPortrait, isMobile]);
+
+  return {
+    displayFormat,
+    mainContainerClassName,
+    windowHeight,
+  };
 }

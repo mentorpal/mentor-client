@@ -42,10 +42,7 @@ const defaultHeaderMentorData = {
   allowContact: false,
 };
 
-function Video(args: {
-  playing?: boolean;
-  configEmailMentorAddress: string;
-}): JSX.Element {
+function Video(args: { playing?: boolean }): JSX.Element {
   const { playing = false } = args;
   const dispatch = useDispatch();
   // Redux store subscriptions
@@ -151,7 +148,6 @@ function Video(args: {
             subtitlesOn={
               Boolean(subtitlesSupported) && Boolean(video.subtitles)
             }
-            configEmailMentorAddress={args.configEmailMentorAddress}
             reactPlayerRef={reactPlayerRef}
             subtitlesUrl={video.subtitles}
             webLinks={webLinks}

@@ -4,7 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Helmet } from "react-helmet";
 import { v1 as uuidv1 } from "uuid";
@@ -22,8 +22,7 @@ import { fetchMentorByAccessToken, pingMentor } from "api";
 
 import "styles/history-chat-responsive.css";
 
-import { isMobile } from "react-device-detect";
-import { onVisibilityChange, setLocalStorage } from "utils";
+import { onVisibilityChange } from "utils";
 import { getParamUserId, removeQueryParam } from "cmiutils";
 import VideoSection from "components/layout/video-section";
 import ChatSection from "components/layout/chat-section";
@@ -111,8 +110,8 @@ function IndexPage(props: {
   });
   const [chatHeight, setChatHeight] = React.useState<number>(0);
 
-
-  const {displayFormat, mainContainerClassName, windowHeight} = useWithScreenOrientation();
+  const { displayFormat, mainContainerClassName, windowHeight } =
+    useWithScreenOrientation();
   const curTopic = useSelector<State, string>((state) => state.curTopic);
 
   const { guest, subject, recommendedQuestions, intro } = props.search;
@@ -138,7 +137,6 @@ function IndexPage(props: {
       },
     },
   });
-
 
   useEffect(() => {
     if (!isConfigLoadComplete(configLoadStatus) || !curMentor) {

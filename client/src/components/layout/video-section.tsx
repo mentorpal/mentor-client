@@ -24,9 +24,7 @@ function VideoSection(props: {
   const displayGuestPrompt = useSelector<State, boolean>(
     (state) => state.config.displayGuestPrompt
   );
-  const configEmailMentorAddress = useSelector<State, string>(
-    (state) => state.config.filterEmailMentorAddress
-  );
+
   return (
     <>
       <VideoPanel />
@@ -39,10 +37,7 @@ function VideoSection(props: {
           isMobile={isMobile}
         />
       ) : (
-        <Video
-          playing={hasSessionUser() || !displayGuestPrompt}
-          configEmailMentorAddress={configEmailMentorAddress}
-        />
+        <Video playing={hasSessionUser() || !displayGuestPrompt} />
       )}
     </>
   );

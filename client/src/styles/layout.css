@@ -160,6 +160,7 @@ body {
 
 .topic-tab {
   width: auto;
+  padding: 0;
 }
 
 .MuiTab-wrapper {
@@ -367,7 +368,7 @@ textarea:-moz-placeholder {
     margin-bottom: 0px;
   }
   .chat-section {
-    margin: 1.5rem 0px 1rem 0px;
+    margin: 1rem 0px 1rem 0px;
   }
   .send-question-btn {
     background-color: #eee !important;
