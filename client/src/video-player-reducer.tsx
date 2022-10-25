@@ -80,14 +80,12 @@ export function PlayerReducer(
         state.status === PlayerStatus.INTRO_PLAYING ||
         state.status === PlayerStatus.FADING_TO_IDLE
       ) {
-        console.log("answer arrived while answer playing");
         return {
           ...state,
           status: PlayerStatus.FADING_TO_IDLE,
           newUrl: payload.newUrl,
         };
       } else {
-        console.log("answer arrived, updating urlToPlay");
         return {
           ...state,
           status: PlayerStatus.IDLING_FOR_NEXT_READY_ANSWER,

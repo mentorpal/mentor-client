@@ -87,20 +87,17 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
 
   useEffect(() => {
     if (isIntro && videoUrl) {
-      console.log("intro url arrived");
       dispatch({
         type: PlayerActionType.INTRO_URL_ARRIVED,
         payload: { introUrl: videoUrl },
       });
     } else if (mentorData._id !== curMentorId) {
       // Not intro, and new mentor data, so switch right to idling.
-      console.log("new mentor id");
       dispatch({
         type: PlayerActionType.NEW_MENTOR,
         payload: { newUrl: videoUrl },
       });
     } else if (videoUrl) {
-      console.log(`new url arrived: ${videoUrl}`);
       dispatch({
         type: PlayerActionType.NEW_URL_ARRIVED,
         payload: { newUrl: videoUrl },
@@ -237,7 +234,6 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         if (fadeComplete) {
           answerVideoTakeSpace();
           intervalEnded(intervalId);
-          console.log("finished fading to answer");
           dispatch({ type: PlayerActionType.FINISHED_FADING_TO_ANSWER });
         }
       }, opacityChangeSpeed);
@@ -265,7 +261,6 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         if (fadeComplete) {
           intervalEnded(intervalId);
           idleVideoTakeSpace();
-          console.log("finished fading to idle");
           dispatch({ type: PlayerActionType.FINISHED_FADING_TO_IDLE });
         }
       }, opacityChangeSpeed);
@@ -314,8 +309,6 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     height: "auto",
   };
 
-  console.log(videoPlayerHtmlStyle);
-
   return (
     <div
       data-cy={"answer-video-player-wrapper"}
@@ -334,10 +327,8 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         onEnded={() => {
           newVideo();
           if (isIntro) {
-            console.log("intro finished");
             dispatch({ type: PlayerActionType.INTRO_FINISHED });
           } else {
-            console.log("answer finished");
             dispatch({ type: PlayerActionType.ANSWER_FINISHED });
           }
           onEnded();
@@ -347,13 +338,10 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         onReady={(player: ReactPlayer) => {
           newVideo();
           if (isIntro) {
-            console.log("intro ready");
             dispatch({ type: PlayerActionType.INTRO_FINISHED_LOADING });
           } else {
-            console.log("answer ready");
             dispatch({ type: PlayerActionType.ANSWER_FINISHED_LOADING });
           }
-          // setVideoFinishedBuffering(true);
           if (!firstVideoLoaded) {
             setFirstVideoLoaded(true);
           }

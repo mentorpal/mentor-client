@@ -70,6 +70,7 @@ function VideoPanel(): JSX.Element {
           const m = mentorsById[id];
           return (
             <div
+              data-cy={`video-thumbnail-container-${id}`}
               key={`${id}-${i}`}
               style={{ display: "inline-block", position: "relative" }}
             >
