@@ -5,7 +5,6 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import { useEffect, useState } from "react";
-import { isMobile } from "react-device-detect";
 
 type DisplayFormat = "mobile" | "desktop";
 
@@ -29,7 +28,7 @@ export function useWithScreenOrientation(): UseWithScreenOrientation {
         ? "mobile"
         : displaySearchParam && displaySearchParam == "desktop"
         ? "desktop"
-        : shouldDisplayPortrait || isMobile
+        : shouldDisplayPortrait
         ? "mobile"
         : "desktop";
     setDisplayFormat(displayFormat);
@@ -39,18 +38,15 @@ export function useWithScreenOrientation(): UseWithScreenOrientation {
     if (typeof window === "undefined") return;
     displayCheckAndSet();
 
-    const _shouldDisplayPortrait =
-      window.matchMedia && window.matchMedia("(max-width: 1200px)").matches;
-    setShouldDisplayPortrait(_shouldDisplayPortrait);
-
     const handleResize = () => {
+      const windowRatio = window.innerWidth / window.innerHeight;
+      const minBreakPointReached =
+        window.matchMedia && window.matchMedia("(max-width: 1000px)").matches;
+      setShouldDisplayPortrait(minBreakPointReached || windowRatio <= 0.75); // || windowRatio
       setWindowHeight(window.innerHeight);
-      const _shouldDisplayPortrait =
-        window.matchMedia && window.matchMedia("(max-width: 1200px)").matches;
-      setShouldDisplayPortrait(_shouldDisplayPortrait);
     };
+    handleResize();
     window.addEventListener("resize", handleResize);
-    setWindowHeight(window.innerHeight);
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -59,9 +55,7 @@ export function useWithScreenOrientation(): UseWithScreenOrientation {
   useEffect(() => {
     if (typeof window === "undefined") return;
     displayCheckAndSet();
-  }, [shouldDisplayPortrait, isMobile]);
-
-  console.log(displayFormat);
+  }, [shouldDisplayPortrait]);
   return {
     displayFormat,
     windowHeight,

@@ -134,6 +134,28 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
           backgroundPosition: "center",
         };
       });
+    } else {
+      // Removing background image
+      setAnswerReactPlayerStyling((prevValue) => {
+        const prevValueCopy: React.CSSProperties = JSON.parse(
+          JSON.stringify(prevValue)
+        );
+        delete prevValueCopy["backgroundImage"];
+        delete prevValueCopy["backgroundSize"];
+        delete prevValueCopy["backgroundRepeat"];
+        delete prevValueCopy["backgroundPosition"];
+        return prevValueCopy;
+      });
+      setIdleReactPlayerStyling((prevValue) => {
+        const prevValueCopy: React.CSSProperties = JSON.parse(
+          JSON.stringify(prevValue)
+        );
+        delete prevValueCopy["backgroundImage"];
+        delete prevValueCopy["backgroundSize"];
+        delete prevValueCopy["backgroundRepeat"];
+        delete prevValueCopy["backgroundPosition"];
+        return prevValueCopy;
+      });
     }
   }, [useVirtualBackground, vbgAspectRatio]);
 
