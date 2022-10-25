@@ -6,16 +6,23 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Star } from "@material-ui/icons";
 import VideoThumbnail from "components/video-thumbnail";
 import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import { selectMentor } from "store/actions";
-import { MentorState, MentorSelectReason, MentorType, State } from "types";
+import {
+  MentorState,
+  MentorSelectReason,
+  MentorType,
+  State,
+  MentorQuestionStatus,
+} from "types";
 import { isMentorReady } from "utils";
+import FaveButton from "./fave-button";
 
 interface MentorVideoStatus {
   isReady: boolean;
+  answeredQuestion: boolean;
   isOffTopic: boolean;
   mentorType: MentorType;
 }
@@ -23,6 +30,7 @@ interface MentorVideoStatus {
 function toMentorVideoStatus(m: MentorState): MentorVideoStatus {
   return {
     isOffTopic: Boolean(m.is_off_topic),
+    answeredQuestion: m.status === MentorQuestionStatus.ANSWERED,
     isReady: isMentorReady(m),
     mentorType: m?.mentor?.mentorType || MentorType.VIDEO,
   };
@@ -30,9 +38,7 @@ function toMentorVideoStatus(m: MentorState): MentorVideoStatus {
 
 function VideoPanel(): JSX.Element {
   const dispatch = useDispatch();
-  const isIdle = useSelector<State, boolean>((state) => state.isIdle);
   const curMentor = useSelector<State, string>((state) => state.curMentor);
-  const mentorFaved = useSelector<State, string>((state) => state.mentorFaved);
   const mentorsById = useSelector<State, Record<string, MentorVideoStatus>>(
     (state) => {
       return Object.getOwnPropertyNames(state.mentorsById).reduce(
@@ -53,8 +59,7 @@ function VideoPanel(): JSX.Element {
     if (m.isOffTopic || !m.isReady) {
       return;
     }
-    const setFav = !(isIdle && mentorFaved === mId);
-    dispatch(selectMentor(mId, MentorSelectReason.USER_SELECT, setFav));
+    dispatch(selectMentor(mId, MentorSelectReason.USER_SELECT));
   }
 
   return (
@@ -64,35 +69,31 @@ function VideoPanel(): JSX.Element {
         .map((id, i) => {
           const m = mentorsById[id];
           return (
-            <button
-              data-cy={`video-thumbnail-${id}`}
-              className={`slide video-slide ${
-                id === curMentor ? "selected" : ""
-              }`}
-              data-ready={m.isReady}
+            <div
+              data-cy={`video-thumbnail-container-${id}`}
               key={`${id}-${i}`}
-              onClick={() => onClick(id)}
+              style={{ display: "inline-block", position: "relative" }}
             >
-              <VideoThumbnail mentor={id} />
-              <LoadingSpinner mentor={id} />
-              <MessageStatus mentor={id} />
-              {mentorFaved === id ? (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Star
-                    className="star-icon"
-                    fontSize="small"
-                    style={{ color: "yellow", padding: 0 }}
-                  />
-                </div>
-              ) : (
-                <div />
-              )}
-            </button>
+              <div
+                style={{ position: "absolute", right: 0, top: 5, zIndex: 2 }}
+              >
+                <FaveButton mentor={id} />
+              </div>
+              <button
+                data-cy={`video-thumbnail-${id}`}
+                className={`slide video-slide ${
+                  id === curMentor ? "selected" : ""
+                }`}
+                disabled={m.answeredQuestion}
+                data-ready={m.isReady}
+                key={`${id}-${i}`}
+                onClick={() => onClick(id)}
+              >
+                <VideoThumbnail mentor={id} />
+                <LoadingSpinner mentor={id} />
+                <MessageStatus mentor={id} />
+              </button>
+            </div>
           );
         })}
     </div>

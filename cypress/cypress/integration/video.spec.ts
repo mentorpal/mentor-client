@@ -61,7 +61,7 @@ describe("Video Mentor", () => {
       config: { filterEmailMentorAddress: "fakeemailaddress@gmail.com" },
     });
     cy.visit("/?mentor=clint");
-    cy.get("[data-cy=answer-memo-video-player-wrapper]").should("be.visible");
+    cy.get("[data-cy=memo-video-player-wrapper]").should("be.visible");
     cy.get("[data-cy=email-mentor-icon]").should("not.exist");
   });
 

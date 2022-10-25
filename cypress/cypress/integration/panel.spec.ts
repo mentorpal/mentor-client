@@ -31,23 +31,20 @@ describe("Mentor panel", () => {
     cy.get("[data-cy=video-panel]").get("[data-cy=video-thumbnail-julianne]");
   });
 
-  it("picking a mentor sets them as faved", () => {
+  it("can fave mentor via star", () => {
     mockDefaultSetup(cy);
     cy.visit("/");
-    cy.get("[data-cy=video-panel]")
-      .get("[data-cy=video-thumbnail-clint]")
-      .trigger("mouseover")
-      .click();
-    cy.get("[data-cy=video-panel]")
-      .get("[data-cy=video-thumbnail-clint]")
-      .get(".star-icon");
-    cy.get("[data-cy=video-panel]")
-      .get("[data-cy=video-thumbnail-carlos]")
-      .trigger("mouseover")
-      .click();
-    cy.get("[data-cy=video-panel]")
-      .get("[data-cy=video-thumbnail-carlos]")
-      .get(".star-icon");
+    cy.get("[data-cy=video-thumbnail-container-clint]").within(() => {
+      cy.get("[data-cy=fave-button]")
+        .click()
+        .then(() => {
+          cy.get("[data-cy=fave-button]").should(
+            "have.css",
+            "color",
+            "rgb(255, 255, 0)"
+          );
+        });
+    });
   });
 
   it("does not show chat-only mentors in panel", () => {
@@ -60,30 +57,19 @@ describe("Mentor panel", () => {
       .should("not.exist");
   });
 
-  it("waits for all classifier requests before playing any videos", () => {
+  it("all classifier requests are loaded before proceeding", () => {
     mockDefaultSetup(cy);
     cy.visit("/?mentor=clint&mentor=carlos");
     cy.get("[data-cy=video-panel]");
-    cy.wait(15000);
     cy.get("[data-cy=input-field]").type("is the food good");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
-    // carlos answer received
+    cy.wait("@carlos-query");
+    // Despite recieving a response to carlos, we are still waiting for all responses before continuing
     cy.get("[data-cy=video-thumbnail-carlos]").within(($within) => {
-      cy.get("[data-cy=answer-recieved-icon]").should("exist");
-      cy.get("[data-cy=answer-recieved-icon]").should("be.visible");
-      cy.get("[data-cy=loading-answer-spinner]").should("not.exist");
-    });
-    // clint answer still loading
-    cy.get("[data-cy=video-thumbnail-clint]").within(($within) => {
-      cy.get("[data-cy=answer-recieved-icon]").should("not.exist");
       cy.get("[data-cy=loading-answer-spinner]").should("exist");
-      cy.get("[data-cy=loading-answer-spinner]").should("be.visible");
     });
-    // clint is stil loading their answer, so the answer video player should be hidden via z-index
-    cy.get("[data-cy=react-player-answer-video]").should(
-      "have.css",
-      "visibility",
-      "hidden"
-    );
+    cy.get("[data-cy=video-thumbnail-clint]").within(($within) => {
+      cy.get("[data-cy=loading-answer-spinner]").should("exist");
+    });
   });
 });
