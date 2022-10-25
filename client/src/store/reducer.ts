@@ -45,8 +45,6 @@ import {
   FeedbackSendFailedAction,
   REPLAY_VIDEO,
   ReplayVideoAction,
-  PLAY_IDLE_AFTER_REPLAY_VIDEO,
-  PlayIdleAfterReplayVideoAction,
   VideoFinishedAction,
   HISTORY_TOGGLE_VISIBILITY,
 } from "./actions";
@@ -57,7 +55,6 @@ import {
   State,
   MentorSelectReason,
   LoadStatus,
-  MentorType,
   Feedback,
   AskLink,
   LINK_TYPE_ASK,
@@ -66,11 +63,11 @@ import {
   LINK_TYPE_WEB,
 } from "types";
 import { getUtterance } from "api";
+import { v4 as uuid } from "uuid";
 
 export const initialState: State = {
   chat: {
     messages: [],
-    replay: false,
     questionSent: false,
     lastQuestionCounter: 0,
   },
@@ -94,6 +91,8 @@ export const initialState: State = {
     displayGuestPrompt: false,
     defaultVirtualBackground: "",
   },
+  mentorAnswersLoadStatus: LoadStatus.NONE,
+  mentorsInitialLoadStatus: LoadStatus.NONE,
   configLoadStatus: LoadStatus.NONE,
   guestName: "",
   curMentor: "", // id of selected mentor
@@ -112,6 +111,7 @@ export const initialState: State = {
     source: MentorQuestionSource.NONE,
   },
   visibilityShowAllPref: false,
+  replayMessageCount: 0,
 };
 
 function onCmi5InitSucceeded(
@@ -232,36 +232,9 @@ function onMentorsLoadRequested(
   state: State,
   action: MentorsLoadRequestedAction
 ): State {
-  const mentorsById = action.payload.mentors.reduce<{
-    [mentorId: string]: MentorState;
-  }>((mentorsByIdAcc, mentorId) => {
-    mentorsByIdAcc[mentorId] = {
-      mentor: {
-        _id: mentorId,
-        name: "",
-        title: "",
-        email: "",
-        mentorType: MentorType.VIDEO,
-        topicQuestions: [],
-        utterances: [],
-        allowContact: false,
-        hasVirtualBackground: false,
-        virtualBackgroundUrl: "",
-      },
-      topic_questions: [],
-      utterances: [],
-      status: MentorQuestionStatus.NONE,
-      answerDuration: Number.NaN,
-      answer_media: [],
-    };
-    return mentorsByIdAcc;
-  }, {});
-  Object.getOwnPropertyNames(state.mentorsById).forEach((id) => {
-    mentorsById[id] = state.mentorsById[id];
-  });
   return {
     ...state,
-    mentorsById: mentorsById,
+    mentorsInitialLoadStatus: LoadStatus.LOAD_IN_PROGRESS,
     recommendedQuestions: action.payload.recommendedQuestions || [],
   };
 }
@@ -270,129 +243,137 @@ function onMentorLoadResults(
   state: State,
   action: MentorsLoadResultAction
 ): State {
-  const mentor = action?.payload?.mentor;
-  const curMentorIntro =
-    action?.payload?.mentorsById[action.payload.curMentor || ""]?.data?.mentor;
-  const mentorId = action?.payload?.mentorsById[mentor || ""]?.data?.answer_id;
-  const mentorName =
-    action?.payload?.mentorsById[action.payload.curMentor || ""]?.data?.mentor
-      .name;
-  const curMentorIntroTranscript = curMentorIntro
-    ? getUtterance(curMentorIntro, UtteranceName.INTRO)?.transcript
-    : "";
+  const firstActiveMentorId = action?.payload?.firstActiveMentorId;
+  const mentorsToAddToState = Object.keys(action.payload.mentorsById);
 
-  const answerId = curMentorIntro
-    ? getUtterance(curMentorIntro, UtteranceName.INTRO)?._id
-    : "";
+  let stateCopy: State = JSON.parse(JSON.stringify(state));
 
-  const answerMedia = curMentorIntro
-    ? getUtterance(curMentorIntro, UtteranceName.INTRO)?.media
-    : [];
-  const utterances = curMentorIntro?.utterances || [];
-  let s = {
-    ...state,
-    chat: {
-      ...state.chat,
-      messages: [
-        ...state.chat.messages,
-        {
-          name: mentorName || "name",
-          color: "#fff",
-          mentorId: action.payload.curMentor || "",
-          isIntro: true,
-          isUser: false,
-          text: curMentorIntroTranscript || "",
-          questionId: "",
-          feedback: Feedback.NONE,
-          feedbackId: "",
-          answerId,
-          answerMedia,
-          isFeedbackSendInProgress: false,
-          utterances,
-          isVideoInProgress: true,
-          askLinks: findAskLinks(curMentorIntroTranscript || ""),
-          webLinks: findWebLinks(
-            curMentorIntroTranscript || "",
-            mentorId || ""
-          ),
-          // timestampAnswered: Date.now()
-        },
-      ],
-    },
-    mentorsById: Object.getOwnPropertyNames(action.payload.mentorsById).reduce(
-      (acc: Record<string, MentorState>, mid: string) => {
-        acc[mid] = {
-          ...state.mentorsById[mid],
-          ...(action.payload.mentorsById[mid]?.data || {}),
-          status: MentorQuestionStatus.READY,
-        };
-        return acc;
+  for (const mentor of mentorsToAddToState) {
+    const mentorToAddToState = mentor;
+    const curMentorData =
+      action?.payload?.mentorsById[mentorToAddToState || ""]?.data?.mentor;
+    const mentorName =
+      action?.payload?.mentorsById[mentorToAddToState || ""]?.data?.mentor.name;
+    const curMentorIntroTranscript = curMentorData
+      ? getUtterance(curMentorData, UtteranceName.INTRO)?.transcript
+      : "";
+
+    const curMentorIntroAnswerId = curMentorData
+      ? getUtterance(curMentorData, UtteranceName.INTRO)?._id
+      : "";
+
+    const curMentorIntroAnswerMedia = curMentorData
+      ? getUtterance(curMentorData, UtteranceName.INTRO)?.media
+      : [];
+    const utterances = curMentorData?.utterances || [];
+    stateCopy = {
+      ...stateCopy,
+      chat: {
+        ...stateCopy.chat,
+        messages: [
+          ...stateCopy.chat.messages,
+          {
+            id: uuid(),
+            name: mentorName || "name",
+            color: "#fff",
+            mentorId: mentorToAddToState || "",
+            isIntro: true,
+            isUser: false,
+            text: curMentorIntroTranscript || "",
+            questionId: "",
+            feedback: Feedback.NONE,
+            feedbackId: "",
+            answerId: curMentorIntroAnswerId,
+            answerMedia: curMentorIntroAnswerMedia,
+            isFeedbackSendInProgress: false,
+            utterances,
+            isVideoInProgress: true,
+            askLinks: findAskLinks(curMentorIntroTranscript || ""),
+            webLinks: findWebLinks(
+              curMentorIntroTranscript || "",
+              curMentorIntroAnswerId || ""
+            ),
+          },
+        ],
       },
-      {} as Record<string, MentorState>
-    ),
-  };
+    };
+  }
 
-  if (action.payload.mentor) {
-    s = mentorSelected(s, {
+  stateCopy.mentorsById = Object.getOwnPropertyNames(
+    action.payload.mentorsById
+  ).reduce((acc: Record<string, MentorState>, mid: string) => {
+    acc[mid] = {
+      ...stateCopy.mentorsById[mid],
+      ...(action.payload.mentorsById[mid]?.data || {}),
+      status: MentorQuestionStatus.READY,
+    };
+    return acc;
+  }, {} as Record<string, MentorState>);
+
+  if (firstActiveMentorId) {
+    stateCopy = mentorSelected(stateCopy, {
       type: MENTOR_SELECTED,
       payload: {
-        id: action.payload.mentor,
+        id: firstActiveMentorId,
         reason: MentorSelectReason.NEXT_READY,
       },
     });
   }
   if (action.payload.topic) {
-    s = topicSelected(s, {
+    stateCopy = topicSelected(stateCopy, {
       type: TOPIC_SELECTED,
       topic: action.payload.topic,
     });
   }
 
-  return s;
+  return { ...stateCopy, mentorsInitialLoadStatus: LoadStatus.LOADED };
 }
 
 function onQuestionSent(state: State, action: QuestionSentAction): State {
-  return onMentorNext(
-    onQuestionInputChanged(
-      {
-        ...state,
-        chat: {
-          ...state.chat,
-          replay: false,
-          messages: [
-            ...state.chat.messages,
-            {
-              name: "",
-              color: "",
-              mentorId: "",
-              isIntro: false,
-              isUser: true,
-              text: action.payload.question,
-              questionId: action.payload.questionId,
-              feedback: Feedback.NONE,
-              feedbackId: "",
-              isFeedbackSendInProgress: false,
-              questionCounter: state.questionsAsked.length + 1,
-            },
+  return scrapCurrentAnswers(
+    onMentorNext(
+      onQuestionInputChanged(
+        {
+          ...state,
+          mentorAnswersLoadStatus: LoadStatus.LOAD_IN_PROGRESS,
+          chat: {
+            ...state.chat,
+            messages: [
+              ...state.chat.messages,
+              {
+                id: uuid(),
+                name: "",
+                color: "",
+                mentorId: "",
+                isIntro: false,
+                isUser: true,
+                text: action.payload.question,
+                questionId: action.payload.questionId,
+                feedback: Feedback.NONE,
+                feedbackId: "",
+                isFeedbackSendInProgress: false,
+                questionCounter: state.questionsAsked.length + 1,
+              },
+            ],
+            questionSent: true,
+            lastQuestionCounter: state.questionsAsked.length + 1,
+          },
+          curQuestion: action.payload.question,
+          curQuestionSource: action.payload.source,
+          curQuestionUpdatedAt: Date.now(),
+          questionsAsked: [
+            ...state.questionsAsked,
+            normalizeString(action.payload.question),
           ],
-          questionSent: true,
-          lastQuestionCounter: state.questionsAsked.length + 1,
         },
-        curQuestion: action.payload.question,
-        curQuestionSource: action.payload.source,
-        curQuestionUpdatedAt: Date.now(),
-        questionsAsked: [
-          ...state.questionsAsked,
-          normalizeString(action.payload.question),
-        ],
-      },
-      {
-        type: QUESTION_INPUT_CHANGED,
-        payload: {
-          question: "",
-          source: MentorQuestionSource.NONE,
-        },
-      }
+        {
+          type: QUESTION_INPUT_CHANGED,
+          payload: {
+            question: "",
+            source: MentorQuestionSource.NONE,
+          },
+        }
+      )
     )
   );
 }
@@ -432,6 +413,18 @@ function onMentorNext(
   };
 }
 
+function scrapCurrentAnswers(state: State): State {
+  const mentorIds = Object.keys(state.mentorsById);
+  const stateCopy: State = JSON.parse(JSON.stringify(state));
+  for (const mentorId of mentorIds) {
+    stateCopy.mentorsById[mentorId] = {
+      ...stateCopy.mentorsById[mentorId],
+      status: MentorQuestionStatus.ANSWERED,
+    };
+  }
+  return stateCopy;
+}
+
 function onToggleHistoryVisibility(state: State): State {
   return {
     ...state,
@@ -443,10 +436,11 @@ function onQuestionInputChanged(
   state: State,
   action: QuestionInputChangedAction
 ): State {
-  return onMentorNext({
+  // TODO: This used to be wrapped in nextMentor, why?
+  return {
     ...state,
     questionInput: action.payload,
-  });
+  };
 }
 
 function findWebLinks(text: string, answerId: string): WebLink[] {
@@ -515,72 +509,74 @@ function onQuestionAnswered(
   // NOTE: about answerFeedbackId
   // It seems like the answerFeedbackId should be
   // associated to the chat message
+  let stateCopy: State = JSON.parse(JSON.stringify(state));
 
-  const mentor: MentorState = {
-    ...state.mentorsById[action.payload.mentor],
-    // we need chat messages to live up here
-    answer_id: action.payload.answerId,
-    answer_text: action.payload.answerText,
-    answer_media: action.payload.answerMedia,
-    answerReceivedAt: Date.now(),
-    answerFeedbackId: action.payload.answerFeedbackId,
-    classifier: action.payload.answerClassifier,
-    confidence: action.payload.answerConfidence,
-    is_off_topic: action.payload.answerIsOffTopic,
-    question: action.payload.question,
-    response_time: action.payload.answerResponseTimeSecs,
-    status: MentorQuestionStatus.READY,
-  };
+  const responses = action.payload;
+  for (const response of responses) {
+    const mentor: MentorState = {
+      ...stateCopy.mentorsById[response.mentor],
+      // we need chat messages to live up here
+      answer_id: response.answerId,
+      answer_text: response.answerText,
+      answer_media: response.answerMedia,
+      answer_utterance_type: response.answerUtteranceType,
+      answerReceivedAt: Date.now(),
+      answerFeedbackId: response.answerFeedbackId,
+      classifier: response.answerClassifier,
+      confidence: response.answerConfidence,
+      is_off_topic: response.answerIsOffTopic,
+      question: response.question,
+      response_time: response.answerResponseTimeSecs,
+      status: MentorQuestionStatus.READY,
+    };
 
-  const history = mentor.topic_questions.length - 1;
-  if (
-    !mentor.topic_questions[history].questions.includes(action.payload.question)
-  ) {
-    // We must first deep copy topic_questions to avoid directly mutating redux state
-    // Note: This deep copy approach only works for JSON compatible objects
-    mentor.topic_questions = JSON.parse(
-      JSON.stringify(state.mentorsById[action.payload.mentor].topic_questions)
-    );
-    mentor.topic_questions[history].questions.push(action.payload.question);
+    const history = mentor.topic_questions.length - 1;
+    if (
+      !mentor.topic_questions[history].questions.includes(response.question)
+    ) {
+      mentor.topic_questions[history].questions.push(response.question);
+    }
+
+    stateCopy = {
+      ...stateCopy,
+      chat: {
+        ...stateCopy.chat,
+        messages: [
+          ...stateCopy.chat.messages,
+          {
+            id: uuid(),
+            name: "",
+            color: "",
+            mentorId: response.mentor,
+            isIntro: false,
+            isUser: false,
+            questionId: response.questionId,
+            text: response.answerText,
+            feedback: Feedback.NONE,
+            feedbackId: response.answerFeedbackId,
+            isFeedbackSendInProgress: false,
+            isVideoInProgress: true,
+            askLinks: findAskLinks(response.answerText),
+            webLinks: findWebLinks(
+              response.answerText,
+              mentor?.answer_id || ""
+            ),
+            answerMedia: mentor.answer_media,
+            answerId: mentor.answer_id,
+            confidence: mentor.confidence,
+            questionCounter: stateCopy.questionsAsked.length,
+          },
+        ],
+        questionSent: false,
+      },
+      mentorsById: {
+        ...stateCopy.mentorsById,
+        [response.mentor]: mentor,
+      },
+    };
   }
 
-  return {
-    ...state,
-    chat: {
-      ...state.chat,
-      messages: [
-        ...state.chat.messages,
-        {
-          name: "",
-          color: "",
-          mentorId: action.payload.mentor,
-          isIntro: false,
-          isUser: false,
-          questionId: action.payload.questionId,
-          text: action.payload.answerText,
-          feedback: Feedback.NONE,
-          feedbackId: action.payload.answerFeedbackId,
-          isFeedbackSendInProgress: false,
-          isVideoInProgress: true,
-          askLinks: findAskLinks(action.payload.answerText),
-          webLinks: findWebLinks(
-            action.payload.answerText,
-            mentor?.answer_id || ""
-          ),
-          answerMedia: mentor.answer_media,
-          answerId: mentor.answer_id,
-          replay: false,
-          confidence: mentor.confidence,
-          questionCounter: state.questionsAsked.length,
-        },
-      ],
-      questionSent: false,
-    },
-    mentorsById: {
-      ...state.mentorsById,
-      [action.payload.mentor]: mentor,
-    },
-  };
+  return { ...stateCopy, mentorAnswersLoadStatus: LoadStatus.LOADED };
 }
 
 function topicSelected(state: State, action: TopicSelectedAction): State {
@@ -591,51 +587,62 @@ function topicSelected(state: State, action: TopicSelectedAction): State {
 }
 
 function onReplayVideo(state: State, action: ReplayVideoAction): State {
-  state.chat.messages.find((m) => {
-    if (m.replay) {
-      m.replay = false;
-    }
+  const messageId = action.payload.messageId;
+  const messageToReplay = state.chat.messages.find(
+    (message) => message.id === messageId
+  );
+  if (!messageToReplay) {
+    console.error(`could not find message with id ${messageId} to replay`);
+    return state;
+  }
+  const mentorToReplay = messageToReplay.mentorId;
+  const mediaToReplay = messageToReplay.answerMedia;
+  if (!mediaToReplay) {
+    console.error("No media to replay for message:", messageToReplay);
+    return state;
+  }
+
+  // set all mentors answer status to NONE, to effectively cancel all other messages
+  const stateCopy: State = JSON.parse(JSON.stringify(state));
+  const mentorIds = Object.keys(stateCopy.mentorsById);
+  mentorIds.forEach((mentorId) => {
+    stateCopy.mentorsById[mentorId] = {
+      ...stateCopy.mentorsById[mentorId],
+      status: MentorQuestionStatus.ANSWERED,
+    };
   });
 
-  return {
-    ...state,
-    chat: {
-      ...state.chat,
-      messages: state.chat.messages.map((m) => {
-        return m.answerId === action.payload.answerId
-          ? {
-              ...m,
-              askLinks: findAskLinks(action.payload.answerText),
-              webLinks: findWebLinks(
-                action.payload.answerText,
-                action.payload.answerId
-              ),
-              replay: true,
-            }
-          : m;
-      }),
-      replay: true,
-    },
+  // update new curMentor with answer media
+  stateCopy.mentorsById[mentorToReplay] = {
+    ...stateCopy.mentorsById[mentorToReplay],
+    answer_media: mediaToReplay,
+    answer_text: messageToReplay.text,
+    answer_id: messageToReplay.answerId,
   };
-}
 
-export function onPlayIdleAfterReplay(
-  state: State,
-  action: PlayIdleAfterReplayVideoAction
-): State {
-  return {
-    ...state,
-    chat: {
-      ...state.chat,
-      messages: state.chat.messages.map((m) => {
-        if (m.replay) {
-          return { ...m, replay: false };
+  // add web links
+  stateCopy.chat.messages = stateCopy.chat.messages.map((message) => {
+    return message.id === messageToReplay.id
+      ? {
+          ...message,
+          askLinks: findAskLinks(messageToReplay.text),
+          webLinks: findWebLinks(
+            messageToReplay.text,
+            messageToReplay.answerId || ""
+          ),
         }
-        return m;
-      }),
-      replay: action.payload.replay,
+      : message;
+  });
+
+  stateCopy.replayMessageCount += 1;
+
+  return mentorSelected(stateCopy, {
+    type: MENTOR_SELECTED,
+    payload: {
+      id: messageToReplay.mentorId,
+      reason: MentorSelectReason.REPLAY,
     },
-  };
+  });
 }
 
 export default function reducer(
@@ -677,8 +684,6 @@ export default function reducer(
       return onQuestionAnswered(state, action);
     case REPLAY_VIDEO:
       return onReplayVideo(state, action);
-    case PLAY_IDLE_AFTER_REPLAY_VIDEO:
-      return onPlayIdleAfterReplay(state, action);
     case VIDEO_FINISHED:
       return onMentorDisplayAnswer(state, action);
     case QUESTION_ERROR:

@@ -296,6 +296,11 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.get("[data-cy=input-field]").type("Question 1");
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
+    // EXPECT: displays link for '/mentor1/more-info' over video
+    cy.get("[data-cy=video-container]").within(() => {
+      cy.get("[data-cy=answer-link-card]").contains("https://www.google.com");
+    });
+
     // click thumbnail for mentor 2
     cy.get("[data-cy=video-thumbnail-carlos]").trigger("mouseover").click();
     // EXPECT: displays link for '/mentor2/something-else'' over video
@@ -303,13 +308,6 @@ describe("Chat History (Video Mentors Links)", () => {
       cy.get("[data-cy=answer-link-card]").contains(
         "https://www.amazon.com/-/es/VA"
       );
-    });
-
-    // click thumbnail for mentor 1
-    cy.get("[data-cy=video-thumbnail-clint]").trigger("mouseover").click();
-    // EXPECT: displays link for '/mentor1/more-info' over video
-    cy.get("[data-cy=video-container]").within(() => {
-      cy.get("[data-cy=answer-link-card]").contains("https://www.google.com");
     });
   });
 
@@ -338,7 +336,6 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // click thumbnail for mentor 2
-    cy.get("[data-cy=video-thumbnail-julianne]").trigger("mouseover").click();
     // EXPECT: no web link over video (if there's no web link, no link card should display)
     cy.get("[data-cy=video-container]").within(() => {
       cy.get("[data-cy=answer-link-card]").should("not.exist");
