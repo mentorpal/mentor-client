@@ -1001,4 +1001,16 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=download-history-btn]").trigger("mouseover").click();
     cy.verifyDownload("mentorpal_chat_history.txt");
   });
+
+  it("hides download chat history button in query params", () => {
+    mockDefaultSetup(cy);
+    cy.visit("/", {
+      qs: addGuestParams({
+        noHistoryDownload: "true",
+      }),
+    });
+    cy.get("[data-cy=download-history-btn]").should("not.exist");
+    cy.visit("/");
+    cy.get("[data-cy=download-history-btn]").should("exist");
+  });
 });

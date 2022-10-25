@@ -86,6 +86,7 @@ function IndexPage(props: {
     guest?: string;
     subject?: string;
     intro?: string;
+    noHistoryDownload?: string;
   };
 }): JSX.Element {
   const dispatch = useDispatch();
@@ -419,6 +420,7 @@ function IndexPage(props: {
                 hasSessionUser={hasSessionUser}
                 curTopic={curTopic}
                 isMobile={displayFormat == "mobile"}
+                noHistoryDownload={props.search.noHistoryDownload}
               />
             </div>
           </div>
