@@ -53,7 +53,7 @@ export default function Disclaimer(): JSX.Element {
             onClick={() => setOpen(true)}
             data-cy="header-disclimer-btn"
           >
-            <InfoIcon style={{ color: "black" }} />
+            <InfoIcon style={{ color: "white" }} />
           </IconButton>
         </label>
         <Modal

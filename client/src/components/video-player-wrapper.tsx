@@ -7,7 +7,6 @@ The full terms of this copyright and license should always be found in the root 
 import React, { useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import { useSelector, useDispatch } from "react-redux";
-import LoadingSpinner from "components/video-spinner";
 import MessageStatus from "components/video-status";
 import { chromeVersion } from "utils";
 import { useResizeDetector } from "react-resize-detector";
@@ -42,10 +41,7 @@ const defaultHeaderMentorData = {
   allowContact: false,
 };
 
-function Video(args: {
-  playing?: boolean;
-  configEmailMentorAddress: string;
-}): JSX.Element {
+function Video(args: { playing?: boolean }): JSX.Element {
   const { playing = false } = args;
   const dispatch = useDispatch();
   // Redux store subscriptions
@@ -132,6 +128,7 @@ function Video(args: {
         style={{
           height: isMentorPanel ? "fit-content" : "100%",
           minHeight: Math.max(videoContainerRefHeight || 0),
+          marginTop: "5px",
         }}
       >
         <span
@@ -151,7 +148,6 @@ function Video(args: {
             subtitlesOn={
               Boolean(subtitlesSupported) && Boolean(video.subtitles)
             }
-            configEmailMentorAddress={args.configEmailMentorAddress}
             reactPlayerRef={reactPlayerRef}
             subtitlesUrl={video.subtitles}
             webLinks={webLinks}
@@ -170,7 +166,6 @@ function Video(args: {
           />
         </span>
       </div>
-      <LoadingSpinner mentor={curMentor.mentor._id} />
       <MessageStatus mentor={curMentor.mentor._id} />
     </>
   );

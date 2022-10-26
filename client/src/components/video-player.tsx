@@ -20,6 +20,7 @@ import {
 } from "video-player-reducer";
 import { useWithIntervalManagement } from "use-with-interval-management";
 import { useWithVideoPlayerHeight } from "use-with-video-player-height";
+import { useWithScreenOrientation } from "use-with-orientation";
 
 export interface VideoPlayerData {
   videoUrl: string;
@@ -35,15 +36,12 @@ export interface VideoPlayerParams {
   subtitlesOn: boolean;
   subtitlesUrl: string;
   webLinks: WebLink[];
-  configEmailMentorAddress: string;
   reactPlayerRef: React.RefObject<ReactPlayer>;
   useVirtualBackground: boolean;
   virtualBackgroundUrl: string;
   vbgAspectRatio: number;
   isIntro: boolean;
 }
-
-// TODO: Build a reducer that is going to manage the state of the playing videos
 
 export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
   const {
@@ -54,7 +52,6 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     subtitlesUrl,
     videoPlayerData,
     webLinks,
-    configEmailMentorAddress,
     reactPlayerRef,
     useVirtualBackground,
     virtualBackgroundUrl,
@@ -64,8 +61,6 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
   const { mentorData, idleUrl, videoUrl } = videoPlayerData;
   const { name: mentorName } = mentorData;
   const [readied, setReadied] = useState<boolean>(false);
-  const [idleSuccessfullyLoaded, setIdleSuccesfullyLoaded] =
-    useState<boolean>(false);
   const [firstVideoLoaded, setFirstVideoLoaded] = useState<boolean>(false);
   const [state, dispatch] = useReducer(PlayerReducer, {
     status: PlayerStatus.INTRO_LOADING,
@@ -73,6 +68,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
   const [curMentorId, setCurMentorId] = useState<string>(mentorData._id);
   const { newVideo } = useWithVideoPlayerHeight(reactPlayerRef);
   const idlePlayerRef = useRef<ReactPlayer>(null);
+  const { displayFormat } = useWithScreenOrientation();
   const { newVideo: newIdleVideo } = useWithVideoPlayerHeight(idlePlayerRef);
   const { intervalStarted, intervalEnded, clearAllIntervals } =
     useWithIntervalManagement();
@@ -84,6 +80,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
       margin: "0 auto",
       zIndex: 2,
     });
+  const isMobile = displayFormat == "mobile";
 
   useEffect(() => {
     if (isIntro && videoUrl) {
@@ -117,23 +114,6 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     });
 
   useEffect(() => {
-    // Hack: If idle fails to load, answer player takes up space and idle sits on top of it. If idle successfully loads, idle player takes up space, answer player sits on top of it.
-    setAnswerReactPlayerStyling((prevValue) => {
-      return {
-        ...prevValue,
-        position: idleSuccessfullyLoaded ? "absolute" : "relative",
-      };
-    });
-
-    setIdleReactPlayerStyling((prevValue) => {
-      return {
-        ...prevValue,
-        position: idleSuccessfullyLoaded ? "relative" : "absolute",
-      };
-    });
-  }, [idleSuccessfullyLoaded]);
-
-  useEffect(() => {
     // Add VBG to both answer and idle players
     if (useVirtualBackground) {
       setAnswerReactPlayerStyling((prevValue) => {
@@ -153,6 +133,28 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
         };
+      });
+    } else {
+      // Removing background image
+      setAnswerReactPlayerStyling((prevValue) => {
+        const prevValueCopy: React.CSSProperties = JSON.parse(
+          JSON.stringify(prevValue)
+        );
+        delete prevValueCopy["backgroundImage"];
+        delete prevValueCopy["backgroundSize"];
+        delete prevValueCopy["backgroundRepeat"];
+        delete prevValueCopy["backgroundPosition"];
+        return prevValueCopy;
+      });
+      setIdleReactPlayerStyling((prevValue) => {
+        const prevValueCopy: React.CSSProperties = JSON.parse(
+          JSON.stringify(prevValue)
+        );
+        delete prevValueCopy["backgroundImage"];
+        delete prevValueCopy["backgroundSize"];
+        delete prevValueCopy["backgroundRepeat"];
+        delete prevValueCopy["backgroundPosition"];
+        return prevValueCopy;
       });
     }
   }, [useVirtualBackground, vbgAspectRatio]);
@@ -312,7 +314,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
   return (
     <div
       data-cy={"answer-video-player-wrapper"}
-      style={{ width: "100%", height: "auto" }}
+      style={{ width: "100%", height: "auto", justifyContent: "center" }}
     >
       {/* TODO: shouldDisplayWebLinks && !isIdle */}
       {shouldDiplayWebLinks ? answerLinkCard : null}
@@ -415,7 +417,6 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         ref={idlePlayerRef}
         onReady={() => {
           newIdleVideo();
-          setIdleSuccesfullyLoaded(true);
         }}
         width="fit-content"
         height="fit-content"
@@ -433,10 +434,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
           },
         }}
       />
-      <EmailMentorIcon
-        mentorData={mentorData}
-        configEmailAddress={configEmailMentorAddress}
-      />
+      {isMobile ? undefined : <EmailMentorIcon />}
     </div>
   );
 }

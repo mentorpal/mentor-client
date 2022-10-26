@@ -116,20 +116,12 @@ export function useWithChatData(): UseWithChatData {
   function downloadChatHistory(): void {
     let chatHistory = "";
     chatData.messages.forEach((c) => {
-      chatHistory += `${c.isUser ? "((user))" : mentorNameForChatMsg(c)}: ${
-        c.text
-      }\n\n`;
-      if (c.timestampAnswered !== undefined) {
-        chatHistory += `   timestampAnswered: ${new Date(
-          c.timestampAnswered
-        ).toString()}\n`;
-      }
-      if (c.confidence !== undefined) {
-        chatHistory += `   confidence: ${c.confidence}\n`;
-      }
-      if (!c.isUser) {
-        chatHistory += `   feedback: ${c.feedback}\n\n`;
-      }
+      const name = c.isUser ? "((user))" : mentorNameForChatMsg(c);
+      const time =
+        c.timestampAnswered !== undefined
+          ? new Date(c.timestampAnswered).toLocaleString()
+          : "";
+      chatHistory += `${name}${time ? ` (${time}) ` : ""}: ${c.text}\n\n`;
     });
     const element = document.createElement("a");
     const file = new Blob([chatHistory], { type: "text/plain" });

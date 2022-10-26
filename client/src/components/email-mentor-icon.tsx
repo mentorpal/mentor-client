@@ -9,20 +9,48 @@ import MailIcon from "@material-ui/icons/Mail";
 import { getLocalStorage, setLocalStorage } from "utils";
 import "styles/video.css";
 import { Tooltip } from "@material-ui/core";
-import { HeaderMentorData } from "./video-player-wrapper";
+import { useSelector } from "react-redux";
+import { MentorState, State } from "types";
+import { useWithScreenOrientation } from "use-with-orientation";
 
-export default function EmailMentorIcon(props: {
-  configEmailAddress: string;
-  mentorData: HeaderMentorData;
-}): JSX.Element {
-  const { configEmailAddress, mentorData } = props;
+interface MentorData {
+  name: string;
+  allowContact: boolean;
+}
+
+export default function EmailMentorIcon(): JSX.Element {
   const disclaimerDisplayed = getLocalStorage("viewedDisclaimer");
   const [disclaimerOpen, setDisclaimerOpen] = useState<boolean>(false);
+  const [mentorData, setMentorData] = useState<MentorData>();
+  const { displayFormat } = useWithScreenOrientation();
 
   const sendMail = (email: string, subject: string): void => {
     const url = `mailto:${email}?subject=${subject}`;
     window.open(url);
   };
+
+  const configEmailMentorAddress = useSelector<State, string>(
+    (state) => state.config.filterEmailMentorAddress
+  );
+
+  const curMentor = useSelector<State, string>((state) => state.curMentor);
+
+  const mentorsById = useSelector<State, Record<string, MentorState>>(
+    (state) => state.mentorsById
+  );
+
+  useEffect(() => {
+    if (!curMentor || !mentorsById) {
+      return;
+    }
+    const curMentorData = mentorsById[curMentor];
+    setMentorData({
+      name: curMentorData.mentor.name,
+      allowContact: curMentorData.mentor.allowContact,
+    });
+  }, [curMentor, mentorsById]);
+
+  // TODO: fetch mentor data here from redux, no need to rely on the data being passed in
 
   useEffect(() => {
     if (!disclaimerDisplayed || disclaimerDisplayed !== "true") {
@@ -39,7 +67,9 @@ export default function EmailMentorIcon(props: {
 
   return (
     <>
-      {mentorData.name && mentorData.allowContact && configEmailAddress ? (
+      {mentorData?.name &&
+      mentorData?.allowContact &&
+      configEmailMentorAddress ? (
         <Tooltip
           data-cy="email-disclaimer"
           open={disclaimerOpen}
@@ -71,9 +101,12 @@ export default function EmailMentorIcon(props: {
           <div
             data-cy="email-mentor-icon"
             className="email-mentor-button"
+            style={{
+              width: displayFormat == "mobile" ? "fit-content" : "100%",
+            }}
             onClick={() =>
               sendMail(
-                configEmailAddress,
+                configEmailMentorAddress,
                 `Contacting ${mentorData.name} for more information`
               )
             }
