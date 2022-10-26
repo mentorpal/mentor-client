@@ -13,7 +13,9 @@ import { toggleHistoryVisibility } from "store/actions";
 import { useWithChatData } from "./chat/use-chat-data";
 import { State } from "types";
 
-export default function History(): JSX.Element {
+export default function History(props: {
+  noHistoryDownload?: string;
+}): JSX.Element {
   const dispatch = useDispatch();
   const curTopic = useSelector<State, string>((state) => state.curTopic);
   const { visibilityShowAllPref, downloadChatHistory } = useWithChatData();
@@ -35,9 +37,14 @@ export default function History(): JSX.Element {
           />
         </FormGroup>
       </div>
-      <IconButton data-cy="download-history-btn" onClick={downloadChatHistory}>
-        <DownloadIcon />
-      </IconButton>
+      {props.noHistoryDownload ? undefined : (
+        <IconButton
+          data-cy="download-history-btn"
+          onClick={downloadChatHistory}
+        >
+          <DownloadIcon />
+        </IconButton>
+      )}
     </div>
   );
 }

@@ -22,6 +22,7 @@ function ChatSection(props: {
   hasSessionUser: () => boolean;
   curTopic: string;
   isMobile: boolean;
+  noHistoryDownload?: string;
 }): JSX.Element {
   const { mentorType, hasSessionUser, curTopic, isMobile } = props;
   const { onTopicSelected, onQuestionSelected } = UseWitInputtData();
@@ -39,7 +40,7 @@ function ChatSection(props: {
             onSelected={onTopicSelected}
             showHistoryTab={mentorType === MentorType.CHAT}
           />
-          <History />
+          <History noHistoryDownload={props.noHistoryDownload} />
           <Collapse in={Boolean(curTopic)} timeout="auto" unmountOnExit>
             <Questions isMobile={isMobile} onSelected={onQuestionSelected} />
           </Collapse>
@@ -63,7 +64,7 @@ function ChatSection(props: {
           </Collapse>
         </div>
         {!hasSessionUser() && displayGuestPrompt ? <GuestPrompt /> : undefined}
-        <History />
+        <History noHistoryDownload={props.noHistoryDownload} />
         <Input />
       </div>
     );
