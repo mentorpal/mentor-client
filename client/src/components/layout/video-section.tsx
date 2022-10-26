@@ -4,7 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import Video from "components/video";
+import Video from "components/video-player-wrapper";
 import VideoPanel from "components/video-panel";
 import React from "react";
 import { MentorType, State } from "types";
@@ -24,9 +24,7 @@ function VideoSection(props: {
   const displayGuestPrompt = useSelector<State, boolean>(
     (state) => state.config.displayGuestPrompt
   );
-  const configEmailMentorAddress = useSelector<State, string>(
-    (state) => state.config.filterEmailMentorAddress
-  );
+
   return (
     <>
       <VideoPanel />
@@ -39,10 +37,7 @@ function VideoSection(props: {
           isMobile={isMobile}
         />
       ) : (
-        <Video
-          playing={hasSessionUser() || !displayGuestPrompt}
-          configEmailMentorAddress={configEmailMentorAddress}
-        />
+        <Video playing={hasSessionUser() || !displayGuestPrompt} />
       )}
     </>
   );

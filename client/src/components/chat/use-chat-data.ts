@@ -7,7 +7,6 @@ import {
   ChatLink,
   ChatMsg,
   LINK_TYPE_WEB,
-  MentorSelectReason,
   MentorType,
   State,
 } from "types";
@@ -20,11 +19,7 @@ export interface UseWithChatData {
   getQuestionVisibilityPref: (questionId: string) => ItemVisibilityPrefs;
   setQuestionVisibilityPref: (questionId: string, show: boolean) => void;
   mentorNameForChatMsg: (chatMsg: ChatMsg) => string;
-  rePlayQuestionVideo: (
-    mId: string,
-    answerId: string,
-    answerText: string
-  ) => void;
+  rePlayQuestionVideo: (messageId: string) => void;
   downloadChatHistory: () => void;
 }
 
@@ -114,14 +109,8 @@ export function useWithChatData(): UseWithChatData {
     return mentorNameById[chatMsg.mentorId] || "";
   }
 
-  function rePlayQuestionVideo(
-    mId: string,
-    answerId: string,
-    answerText: string
-  ) {
-    dispatch(
-      rePlayAnswer(mId, answerId, MentorSelectReason.REPLAY, answerText)
-    );
+  function rePlayQuestionVideo(messageId: string) {
+    dispatch(rePlayAnswer(messageId));
   }
 
   function downloadChatHistory(): void {

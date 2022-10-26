@@ -18,39 +18,10 @@
   padding: 10px;
 }
 
-.history-chat-wrapper {
-  width: 40vw;
-  border-radius: 10px;
-  background-color: #fff;
-}
-
-.video-mentor-wrapper {
-  background-color: #fff;
-  padding: 1rem;
-  border-radius: 10px;
-}
-.history-chat-title {
-  color: #444c54;
-  font-size: 1.7rem;
-  margin-bottom: 0;
-}
-
 .listed-question {
   cursor: pointer;
 }
 
 .listed-question:hover {
   background: rgb(196, 239, 255);
-}
-
-@media only screen and (max-width: 1200px) {
-  .main-container-responsive {
-    display: contents;
-    flex-direction: column;
-    padding: 10px;
-  }
-  .video-mentor-wrapper {
-    padding: 0;
-    width: 100%;
-  }
 }

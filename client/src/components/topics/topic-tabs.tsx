@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { Button, DialogActions, Paper, Tab, Tabs } from "@material-ui/core";
 import { ChangeEvent } from "react";
 import "styles/topic-tabs.css";
+import EmailMentorIcon from "components/email-mentor-icon";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -95,8 +96,9 @@ function TopicTabs(props: {
       <Tabs
         value={selectedTabIx}
         TabIndicatorProps={{
-          style: { background: "#808080", height: "10px" },
+          style: { background: "#808080", height: "5px" },
         }}
+        style={{ alignItems: "center" }}
         textColor="primary"
         onChange={onChange}
         aria-label="disabled tabs example"
@@ -109,13 +111,25 @@ function TopicTabs(props: {
             data-cy="history-tab"
             onClick={() => onTopicSelected("History")}
             className="topic-tab"
+            style={{
+              padding: 0,
+              height: "fit-content",
+              minHeight: 0,
+              width: "fit-content",
+              minWidth: 0,
+              verticalAlign: "bottom",
+              margin: 5,
+            }}
+            disableRipple
             icon={
               <History
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  marginLeft: 8,
                   marginBottom: 0,
+                  marginLeft: 8,
+                  width: "20",
+                  height: "auto",
                 }}
               />
             }
@@ -126,9 +140,28 @@ function TopicTabs(props: {
           data-cy="topic-tab"
           onClick={onClickOpen}
           className="topic-tab"
+          disableRipple
+          style={{
+            padding: 0,
+            height: "fit-content",
+            minHeight: 0,
+            width: "fit-content",
+            minWidth: 0,
+            verticalAlign: "bottom",
+            margin: 5,
+          }}
           data-test={curTopic !== "History" ? curTopic : null}
-          icon={<ArrowDropDown />}
+          icon={
+            <ArrowDropDown
+              style={{
+                width: "20",
+                height: "auto",
+                marginLeft: 8,
+              }}
+            />
+          }
         />
+        {isMobile ? <EmailMentorIcon /> : undefined}
       </Tabs>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Topics</DialogTitle>
