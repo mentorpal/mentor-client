@@ -15,6 +15,7 @@ import { isMobile } from "react-device-detect";
 import SendRoundedIcon from "@material-ui/icons/SendRounded";
 
 import "styles/layout.css";
+import { useWithScreenOrientation } from "use-with-orientation";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -63,6 +64,7 @@ function Input(): JSX.Element {
   const questionInput = useSelector<State, QuestionInput>(
     (s) => s.questionInput
   );
+  const { displayFormat } = useWithScreenOrientation();
 
   const [animatingInputField, setAnimatingInputField] =
     useState<boolean>(false);
@@ -121,7 +123,10 @@ function Input(): JSX.Element {
   };
 
   const inputCard = (
-    <Paper className={[classes.root, "input-wrapper"].join(" ")} square>
+    <Paper
+      className={[classes.root, `input-wrapper-${displayFormat}`].join(" ")}
+      square
+    >
       <InputBase
         data-cy="input-field"
         className={[
@@ -146,7 +151,7 @@ function Input(): JSX.Element {
       <Divider className={classes.divider} />
       <Button
         data-cy="input-send"
-        className="send-question-btn"
+        className={`send-question-btn-${displayFormat}`}
         onClick={() => onQuestionInputSend()}
         disabled={!questionInput.question}
         variant="contained"

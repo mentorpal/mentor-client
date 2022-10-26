@@ -11,7 +11,6 @@ export interface ChatData {
   lastQuestionAt?: Date;
   lastAnswerAt?: Date;
   messages: ChatMsg[];
-  replay: boolean;
   questionSent: boolean;
   lastQuestionCounter?: number;
 }
@@ -33,6 +32,7 @@ export type ChatLink = AskLink | WebLink;
 
 export interface ChatMsg {
   // we should change name, color, and isUser to just mentorIds
+  id: string;
   name: string;
   color: string;
   mentorId: string;
@@ -48,7 +48,6 @@ export interface ChatMsg {
   webLinks?: WebLink[];
   answerMedia?: Media[];
   answerId?: string;
-  replay?: boolean;
   isVideoInProgress?: boolean;
   confidence?: number;
   curMentor?: string;
@@ -222,6 +221,7 @@ export interface MentorState {
   answer_id?: string;
   answer_text?: string;
   answer_media: Media[];
+  answer_utterance_type: string;
   utterances: Utterance[];
   answerReceivedAt?: number;
   answerFeedbackId?: string;
@@ -245,9 +245,9 @@ export interface MentorsLoadRequest {
 
 export interface MentorsLoadResult {
   mentorsById: Record<string, MentorDataResult>;
-  mentor?: string;
+  firstActiveMentorId?: string;
+  mentorToAddToState?: string;
   topic?: string;
-  curMentor?: string;
 }
 
 export interface QuestionResult {
@@ -268,12 +268,15 @@ export interface State {
   mentorFaved: string; // id of the preferred mentor
   isIdle: boolean;
   mentorsById: Record<string, MentorState>;
+  mentorsInitialLoadStatus: LoadStatus;
+  mentorAnswersLoadStatus: LoadStatus;
   mentorNext: string; // id of the next mentor to speak after the current finishes
   guestName: string;
   questionsAsked: string[];
   recommendedQuestions: string[];
   questionInput: QuestionInput;
   visibilityShowAllPref: boolean;
+  replayMessageCount: number;
 }
 
 export interface QuestionInput {
@@ -288,6 +291,7 @@ export interface QuestionResponse {
   answerClassifier: string;
   answerConfidence: number;
   answerIsOffTopic: boolean;
+  answerUtteranceType: string;
   answerResponseTimeSecs: number;
   answerFeedbackId: string;
   mentor: string;
