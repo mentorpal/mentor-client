@@ -16,6 +16,7 @@ import {
   MentorType,
   State,
   MentorQuestionStatus,
+  LoadStatus,
 } from "types";
 import { isMentorReady } from "utils";
 import FaveButton from "./fave-button";
@@ -50,13 +51,16 @@ function VideoPanel(): JSX.Element {
       );
     }
   );
+  const mentorQuestionLoadStatus: LoadStatus = useSelector<State, LoadStatus>(
+    (state) => state.mentorAnswersLoadStatus
+  );
   if (!curMentor || Object.getOwnPropertyNames(mentorsById).length < 2) {
     return <div />;
   }
 
   function onClick(mId: string) {
     const m = mentorsById[mId];
-    if (m.isOffTopic || !m.isReady) {
+    if (!m.isReady) {
       return;
     }
     dispatch(selectMentor(mId, MentorSelectReason.USER_SELECT));
@@ -84,7 +88,15 @@ function VideoPanel(): JSX.Element {
                 className={`slide video-slide ${
                   id === curMentor ? "selected" : ""
                 }`}
-                disabled={m.answeredQuestion}
+                style={{
+                  opacity:
+                    mentorQuestionLoadStatus !== LoadStatus.LOADED
+                      ? 0.6
+                      : m.isOffTopic
+                      ? 0.8
+                      : 1,
+                }}
+                disabled={mentorQuestionLoadStatus !== LoadStatus.LOADED}
                 data-ready={m.isReady}
                 key={`${id}-${i}`}
                 onClick={() => onClick(id)}

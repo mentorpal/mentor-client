@@ -43,4 +43,28 @@ describe("Favorite", () => {
     });
     cy.get("[data-cy=fave-button]").should("not.exist");
   });
+
+  it("answers first", () => {
+    mockDefaultSetup(cy, { noMockApi: true });
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_perfect_confidence.json", // this one is also off topic, but different value
+      delay: 3000,
+    }).as("clint-query");
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
+      fixture: "response_perfect_confidence.json",
+    }).as("carlos-query");
+    cy.visit("/?mentor=clint&mentor=carlos");
+    cy.get("[data-cy=video-thumbnail-container-clint]").within(() => {
+      cy.get("[data-cy=fave-button]").click();
+    });
+    cy.get("[data-cy=video-thumbnail-carlos]").click();
+    cy.get("[data-cy=input-field]").type("is the food good");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.wait("@carlos-query");
+    cy.wait("@clint-query");
+    cy.get("[data-cy=video-thumbnail-clint]").should("have.class", "selected");
+    cy.get("[data-cy=video-thumbnail-carlos]").within(() => {
+      cy.get("[data-cy=answer-recieved-icon]").should("exist");
+    });
+  });
 });

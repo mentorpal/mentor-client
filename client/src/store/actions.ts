@@ -41,6 +41,7 @@ import {
   Feedback,
   TopicQuestions,
   Media,
+  QuestionApiData,
 } from "../types";
 import {
   getLocalStorage,
@@ -49,7 +50,7 @@ import {
   mergeRecommendedTopicsQuestions,
 } from "utils";
 
-const RESPONSE_CUTOFF = -100;
+const OFF_TOPIC_THRESHOLD = -0.45;
 export const REPLAY_VIDEO = "REPLAY_VIDEO";
 export const PLAY_IDLE_AFTER_REPLAY_VIDEO = "PLAY_IDLE_AFTER_REPLAY_VIDEO";
 export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished playing
@@ -504,7 +505,7 @@ export const loadMentors: ActionCreator<
         const mentorData: MentorState = {
           mentor: mentor,
           topic_questions: topicQuestions,
-          status: MentorQuestionStatus.ANSWERED, // move this out of mentor data
+          status: MentorQuestionStatus.READY, // move this out of mentor data
           answer_id: introUtterance?._id,
           answer_media: introUtterance?.media || [],
           answer_utterance_type: UtteranceName.INTRO,
@@ -704,8 +705,75 @@ export const setGuestName = (name: string) => ({
 const currentQuestionIndex = (state: { questionsAsked: { length: any } }) =>
   Array.isArray(state.questionsAsked) ? state.questionsAsked.length : -1;
 
+const getResponseObject = (
+  state: State,
+  data: QuestionApiData,
+  tick: number,
+  mentor: string,
+  q: SendQuestionParam,
+  questionId: string
+): [QuestionResponse, QuestionResponse] => {
+  const answer_media: Media[] = [];
+  const { web_media, mobile_media, vtt_media } = data.answer_media;
+  if (web_media) {
+    answer_media.push(web_media);
+  }
+  if (mobile_media) {
+    answer_media.push(mobile_media);
+  }
+  if (vtt_media) {
+    answer_media.push(vtt_media);
+  }
+
+  const mentorState = state.mentorsById[mentor];
+  const offTopicUtterance = mentorState.utterances.find(
+    (u) => u.name === UtteranceName.OFF_TOPIC
+  );
+  // replace answer with off topic
+  const offTopicResponse: QuestionResponse = {
+    answerId: offTopicUtterance?._id || "",
+    answerText: offTopicUtterance?.transcript || "",
+    answerMedia: offTopicUtterance?.media || [],
+    answerClassifier: "",
+    answerConfidence: data.confidence,
+    answerIsOffTopic: true,
+    answerFeedbackId: "",
+    answerUtteranceType: "",
+    answerResponseTimeSecs: Number(Date.now() - tick) / 1000,
+    mentor,
+    question: q.question,
+    questionId,
+    questionSource: q.source,
+    status: MentorQuestionStatus.READY,
+  };
+  // regular return
+  const response = {
+    answerId: data.answer_id,
+    answerText: data.answer_markdown_text,
+    answerMedia: answer_media,
+    answerClassifier: data.classifier,
+    answerConfidence: data.confidence,
+    answerIsOffTopic: data.confidence <= OFF_TOPIC_THRESHOLD,
+    answerFeedbackId: data.feedback_id,
+    answerUtteranceType: "", //TODO: need to update classifier to also respond with utterance type
+    answerResponseTimeSecs: Number(Date.now() - tick) / 1000,
+    mentor,
+    question: q.question,
+    questionId,
+    questionSource: q.source,
+    status: MentorQuestionStatus.READY,
+  };
+  return [response, offTopicResponse];
+};
+
+interface SendQuestionParam {
+  question: string;
+  source: MentorQuestionSource;
+  config: Config;
+}
+
 export const sendQuestion =
-  (q: { question: string; source: MentorQuestionSource; config: Config }) =>
+  (q: SendQuestionParam) =>
   async (
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
@@ -751,33 +819,14 @@ export const sendQuestion =
         queryMentor(mentor, q.question, q.config)
           .then((r) => {
             const { data } = r;
-            const answer_media: Media[] = [];
-            const { web_media, mobile_media, vtt_media } = data.answer_media;
-            if (web_media) {
-              answer_media.push(web_media);
-            }
-            if (mobile_media) {
-              answer_media.push(mobile_media);
-            }
-            if (vtt_media) {
-              answer_media.push(vtt_media);
-            }
-            const response: QuestionResponse = {
-              answerId: data.answer_id,
-              answerText: data.answer_markdown_text,
-              answerMedia: answer_media,
-              answerClassifier: data.classifier,
-              answerConfidence: data.confidence,
-              answerIsOffTopic: data.confidence <= RESPONSE_CUTOFF,
-              answerFeedbackId: data.feedback_id,
-              answerUtteranceType: "", //TODO: need to update classifier to also respond with utterance type
-              answerResponseTimeSecs: Number(Date.now() - tick) / 1000,
+            const [response, offTopicResponse] = getResponseObject(
+              state,
+              data,
+              tick,
               mentor,
-              question: q.question,
-              questionId,
-              questionSource: q.source,
-              status: MentorQuestionStatus.ANSWERED,
-            };
+              q,
+              questionId
+            );
             sendCmi5Statement(
               {
                 verb: {
@@ -801,7 +850,11 @@ export const sendQuestion =
               },
               state.cmi5
             );
-            resolve(response);
+            if (data.confidence < OFF_TOPIC_THRESHOLD) {
+              resolve(offTopicResponse);
+            } else {
+              resolve(response);
+            }
           })
           .catch((err: any) => {
             console.error(err);
@@ -815,7 +868,7 @@ export const sendQuestion =
               answerMedia: offTopicUtterance?.media || [],
               answerClassifier: "",
               answerConfidence: 0,
-              answerIsOffTopic: false,
+              answerIsOffTopic: true,
               answerFeedbackId: "",
               answerUtteranceType: "",
               answerResponseTimeSecs: Number(Date.now() - tick) / 1000,
@@ -831,17 +884,35 @@ export const sendQuestion =
     });
     // ...but still don't move forward till we have all the answers,
     // because we will prefer the user's fav and then highest confidence
-    const responses = (
+    let responses = (
       await Promise.all<QuestionResponse>(
         promises.map((p) => p.catch((e) => e))
       )
     ).filter((r) => !(r instanceof Error));
+
+    const allResponsesOffTopic = !Boolean(
+      responses.find((response) => !response.answerIsOffTopic)
+    );
+    if (state.curMentor && allResponsesOffTopic) {
+      // Cancel all mentor responses besides cur mentor before sending to state
+      responses = responses.reduce((acc: QuestionResponse[], response) => {
+        acc.push({
+          ...response,
+          status:
+            response.mentor != state.curMentor
+              ? MentorQuestionStatus.ANSWERED
+              : response.status,
+        });
+        return acc;
+      }, []);
+    }
+
     dispatch(onQuestionAnswered(responses));
     if (responses.length === 0) {
       return;
     }
-    // Play favored mentor if an answer exists
-    if (state.mentorFaved) {
+
+    if (state.mentorFaved && !allResponsesOffTopic) {
       const favResponse = responses.find((response) => {
         return response.mentor === state.mentorFaved;
       });
@@ -850,6 +921,21 @@ export const sendQuestion =
         return;
       }
     }
+
+    // if all responses are off topic or equal confidence, then start with current mentor
+    const allResponsesEqualConfidence = !Boolean(
+      responses.find(
+        (response) => response.answerConfidence != responses[0].answerConfidence
+      )
+    ); //can't find an answer with confidence that is not equal to first repsonse confidence
+    if (
+      state.curMentor &&
+      (allResponsesEqualConfidence || allResponsesOffTopic)
+    ) {
+      dispatch(selectMentor(state.curMentor, MentorSelectReason.NEXT_READY));
+      return;
+    }
+
     // Otherwise play mentor with highest confidence answer
     responses.sort((a, b) =>
       a.answerConfidence > b.answerConfidence ? -1 : 1

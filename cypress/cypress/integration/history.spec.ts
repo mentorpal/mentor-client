@@ -153,14 +153,17 @@ describe("Chat History (Video Mentors)", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 })
-      .should("have.attr", "data-test-replay")
-      .and("match", /.*answer_id.mp4*/);
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
-        cy.get("[data-cy=chat-msg-3]").contains("user msg 1");
-        cy.get("[data-cy=chat-msg-4]").contains("Give me feedback");
-        cy.get("[data-cy=chat-msg-5]").contains("Give me feedback");
+        cy.get("[data-cy=chat-msg-3]").contains("user msg 1", {
+          timeout: 12000,
+        });
+        cy.get("[data-cy=chat-msg-4]").contains("Give me feedback", {
+          timeout: 12000,
+        });
+        cy.get("[data-cy=chat-msg-5]").contains("Give me feedback", {
+          timeout: 12000,
+        });
       });
     });
   });

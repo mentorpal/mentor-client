@@ -72,4 +72,88 @@ describe("Mentor panel", () => {
       cy.get("[data-cy=loading-answer-spinner]").should("exist");
     });
   });
+
+  it("while answers are loading in (no answer yet), panels are greyed out", () => {
+    mockDefaultSetup(cy);
+    cy.visit("/?mentor=clint&mentor=carlos");
+    cy.get("[data-cy=video-panel]");
+    cy.get("[data-cy=input-field]").type("is the food good");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.get("[data-cy=video-thumbnail-clint]").should(
+      "have.css",
+      "opacity",
+      "0.6"
+    );
+    cy.get("[data-cy=video-thumbnail-carlos]").should(
+      "have.css",
+      "opacity",
+      "0.6"
+    );
+  });
+
+  it("off topic responses are slightly greyed out", () => {
+    mockDefaultSetup(cy, { noMockApi: true });
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_off_topic_2.json",
+      delay: 3000,
+    }).as("clint-query");
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
+      fixture: "response_off_topic.json",
+    }).as("carlos-query");
+    cy.visit("/?mentor=clint&mentor=carlos");
+    cy.get("[data-cy=video-panel]");
+    cy.get("[data-cy=input-field]").type("is the food good");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.wait("@carlos-query");
+    cy.wait("@clint-query");
+    cy.get("[data-cy=video-thumbnail-clint]").should(
+      "have.css",
+      "opacity",
+      "0.8"
+    );
+    cy.get("[data-cy=video-thumbnail-carlos]").should(
+      "have.css",
+      "opacity",
+      "0.8"
+    );
+  });
+
+  it("if all mentors respond off topic, idling mentor answers only, other mentors do not go next", () => {
+    mockDefaultSetup(cy, { noMockApi: true });
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_off_topic_2.json",
+      delay: 3000,
+    }).as("clint-query");
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
+      fixture: "response_off_topic.json",
+    }).as("carlos-query");
+    cy.visit("/?mentor=clint&mentor=carlos");
+    cy.get("[data-cy=video-thumbnail-carlos]").click();
+    cy.get("[data-cy=input-field]").type("is the food good");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.wait("@carlos-query");
+    cy.wait("@clint-query");
+    cy.get("[data-cy=video-thumbnail-carlos]").should("have.class", "selected");
+    cy.get("[data-cy=video-thumbnail-clint]").within(() => {
+      cy.get("[data-cy=answer-recieved-icon]").should("not.exist");
+    });
+  });
+
+  it("if all mentors respond with the same confidence, idling mentor answers first", () => {
+    mockDefaultSetup(cy, { noMockApi: true });
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_perfect_confidence.json", // this one is also off topic, but different value
+      delay: 3000,
+    }).as("clint-query");
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
+      fixture: "response_perfect_confidence.json",
+    }).as("carlos-query");
+    cy.visit("/?mentor=clint&mentor=carlos");
+    cy.get("[data-cy=video-thumbnail-carlos]").click();
+    cy.get("[data-cy=input-field]").type("is the food good");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.wait("@carlos-query");
+    cy.wait("@clint-query");
+    cy.get("[data-cy=video-thumbnail-carlos]").should("have.class", "selected");
+  });
 });
