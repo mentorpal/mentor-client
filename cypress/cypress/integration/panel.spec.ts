@@ -114,7 +114,7 @@ describe("Mentor panel", () => {
   it("if all mentors respond off topic, idling mentor answers only, other mentors do not go next", () => {
     mockDefaultSetup(cy, { noMockApi: true });
     cy.intercept("**/questions/?mentor=clint&query=*", {
-      fixture: "response.json", // this one is also off topic, but different value
+      fixture: "response_off_topic_2.json",
       delay: 3000,
     }).as("clint-query");
     cy.intercept("**/questions/?mentor=carlos&query=*", {
