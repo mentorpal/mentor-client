@@ -173,7 +173,7 @@ export function mockApiQuestions(cy, response?: string) {
   cy.intercept("**/questions/?mentor=clint&query=*", {
     fixture: response || "response.json",
     delay: 3000,
-  });
+  }).as("clint-query");
   cy.intercept("**/questions/?mentor=carlos&query=*", {
     fixture: response || "response.json",
   }).as("carlos-query");

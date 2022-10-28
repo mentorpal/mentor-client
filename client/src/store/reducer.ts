@@ -235,6 +235,7 @@ function onMentorsLoadRequested(
   return {
     ...state,
     mentorsInitialLoadStatus: LoadStatus.LOAD_IN_PROGRESS,
+    mentorAnswersLoadStatus: LoadStatus.LOAD_IN_PROGRESS,
     recommendedQuestions: action.payload.recommendedQuestions || [],
   };
 }
@@ -326,7 +327,11 @@ function onMentorLoadResults(
     });
   }
 
-  return { ...stateCopy, mentorsInitialLoadStatus: LoadStatus.LOADED };
+  return {
+    ...stateCopy,
+    mentorsInitialLoadStatus: LoadStatus.LOADED,
+    mentorAnswersLoadStatus: LoadStatus.LOADED,
+  };
 }
 
 function onQuestionSent(state: State, action: QuestionSentAction): State {
@@ -575,7 +580,6 @@ function onQuestionAnswered(
       },
     };
   }
-
   return { ...stateCopy, mentorAnswersLoadStatus: LoadStatus.LOADED };
 }
 
