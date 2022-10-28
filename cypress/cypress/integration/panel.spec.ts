@@ -92,7 +92,14 @@ describe("Mentor panel", () => {
   });
 
   it("off topic responses are slightly greyed out", () => {
-    mockDefaultSetup(cy);
+    mockDefaultSetup(cy, { noMockApi: true });
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_off_topic_2.json",
+      delay: 3000,
+    }).as("clint-query");
+    cy.intercept("**/questions/?mentor=carlos&query=*", {
+      fixture: "response_off_topic.json",
+    }).as("carlos-query");
     cy.visit("/?mentor=clint&mentor=carlos");
     cy.get("[data-cy=video-panel]");
     cy.get("[data-cy=input-field]").type("is the food good");
