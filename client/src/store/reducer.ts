@@ -6,8 +6,6 @@ The full terms of this copyright and license should always be found in the root 
 */
 import { normalizeString } from "utils";
 import {
-  Cmi5InitSucceededAction,
-  CMI5_INIT_SUCCEEDED,
   ANSWER_FINISHED,
   VIDEO_FINISHED,
   FEEDBACK_SEND_SUCCEEDED,
@@ -47,6 +45,7 @@ import {
   ReplayVideoAction,
   VideoFinishedAction,
   HISTORY_TOGGLE_VISIBILITY,
+  CMI5_INIT,
 } from "./actions";
 import {
   MentorState,
@@ -71,7 +70,6 @@ export const initialState: State = {
     questionSent: false,
     lastQuestionCounter: 0,
   },
-  cmi5: undefined,
   config: {
     cmi5Enabled: false,
     cmi5Endpoint: process.env.CMI5_ENDPOINT || "/lrs/xapi",
@@ -102,6 +100,7 @@ export const initialState: State = {
   curTopic: "", // topic to show questions for
   mentorFaved: "", // id of the preferred mentor
   isIdle: false,
+  isCmi5Init: false,
   mentorsById: {},
   mentorNext: "", // id of the next mentor to speak after the current finishes
   recommendedQuestions: [],
@@ -113,16 +112,6 @@ export const initialState: State = {
   visibilityShowAllPref: false,
   replayMessageCount: 0,
 };
-
-function onCmi5InitSucceeded(
-  state: State,
-  action: Cmi5InitSucceededAction
-): State {
-  return {
-    ...state,
-    cmi5: action.payload,
-  };
-}
 
 function mentorSelected(state: State, action: MentorSelectedAction): State {
   const mentorId = action.payload.id;
@@ -649,13 +638,18 @@ function onReplayVideo(state: State, action: ReplayVideoAction): State {
   });
 }
 
+function onCmi5Init(state: State): State {
+  return {
+    ...state,
+    isCmi5Init: true,
+  };
+}
+
 export default function reducer(
   state = initialState,
   action: MentorClientAction
 ): State {
   switch (action.type) {
-    case CMI5_INIT_SUCCEEDED:
-      return onCmi5InitSucceeded(state, action);
     case CONFIG_LOAD_FAILED:
       return onConfigLoadFailed(state);
     case CONFIG_LOAD_STARTED:
@@ -717,6 +711,8 @@ export default function reducer(
       };
     case QUESTION_INPUT_CHANGED:
       return onQuestionInputChanged(state, action);
+    case CMI5_INIT:
+      return onCmi5Init(state);
     default:
       return state;
   }

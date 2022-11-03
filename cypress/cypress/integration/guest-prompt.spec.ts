@@ -73,7 +73,6 @@ describe("Guest Prompt", () => {
     cy.intercept("https://fake.org/lrs/xapi/statements", [
       "3bcdfd9f-9901-459b-9cbf-88ed5d3a33ce",
     ]);
-
     mockDefaultSetup(cy, {
       config: {
         cmi5Enabled: true,
@@ -83,6 +82,7 @@ describe("Guest Prompt", () => {
       },
     });
     cy.visit("/");
+    cy.get("[data-cy=guest-prompt]").should("exist");
     cy.get("[data-cy=guest-prompt-input]").type("guestuser2\n");
     cy.get("[data-cy=guest-prompt]").should("not.exist");
     cy.get("[data-cy=video-container]").within(($video) => {
