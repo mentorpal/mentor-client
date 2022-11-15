@@ -11,10 +11,9 @@ import { v1 as uuidv1 } from "uuid";
 import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-import Cmi5 from "@kycarr/cmi5";
 
 import Header from "components/header";
-import { loadConfig, loadMentors, setGuestName, initCmi5 } from "store/actions";
+import { loadConfig, loadMentors, setGuestName } from "store/actions";
 import { Config, LoadStatus, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
@@ -22,8 +21,13 @@ import { fetchMentorByAccessToken, pingMentor } from "api";
 
 import "styles/history-chat-responsive.css";
 
-import { onVisibilityChange } from "utils";
-import { getParamUserId, removeQueryParam } from "cmiutils";
+import { getLocalStorage, getParamUserId, removeQueryParam } from "utils";
+import {
+  cmi5_instance,
+  initCmi5,
+  sendCmi5Statement,
+  toXapiResultExtCustom,
+} from "cmiutils";
 import VideoSection from "components/layout/video-section";
 import ChatSection from "components/layout/chat-section";
 import { useWithScreenOrientation } from "use-with-orientation";
@@ -91,7 +95,6 @@ function IndexPage(props: {
 }): JSX.Element {
   const dispatch = useDispatch();
   const styles = useStyles();
-  const cmi5 = useSelector<State, Cmi5 | undefined>((state) => state.cmi5);
   const config = useSelector<State, Config>((state) => state.config);
   const configLoadStatus = useSelector<State, LoadStatus>(
     (state) => state.configLoadStatus
@@ -113,12 +116,13 @@ function IndexPage(props: {
 
   const { displayFormat, windowHeight } = useWithScreenOrientation();
   const curTopic = useSelector<State, string>((state) => state.curTopic);
+  const cmi5init = useSelector<State, boolean>((state) => state.isCmi5Init);
 
   const { guest, subject, recommendedQuestions, intro } = props.search;
   let { mentor } = props.search;
 
   function hasSessionUser(): boolean {
-    return Boolean(!config.cmi5Enabled || cmi5 || guestName);
+    return Boolean(!config.cmi5Enabled || cmi5init || guestName);
   }
 
   function isConfigLoadComplete(s: LoadStatus): boolean {
@@ -240,24 +244,62 @@ function IndexPage(props: {
     if (mentor) {
       warmupMentors(mentor);
     }
-    if (config.cmi5Enabled && !config.displayGuestPrompt && !cmi5) {
+    if (config.cmi5Enabled && !config.displayGuestPrompt && !cmi5_instance) {
       const [userIdLRS, referrer, userEmail] = setupLocalStorage();
       if (userIdLRS && userEmail && referrer) {
-        try {
-          dispatch(
-            initCmi5(userIdLRS, userEmail, `guests-client/${referrer}`, config)
-          );
-        } catch (err2) {
-          console.error(err2);
-        }
+        initCmi5(userIdLRS, userEmail, `guests-client/${referrer}`, config);
       }
     }
   }, [configLoadStatus]);
 
   useEffect(() => {
-    document.addEventListener("visibilitychange", () =>
-      onVisibilityChange(cmi5)
-    );
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState !== "visible") {
+        const localData = localStorage.getItem("userData");
+        if (!localData) {
+          return;
+        }
+        const data = JSON.parse(localData);
+        if (!data.userID) {
+          return;
+        }
+        const userData = {
+          verb: "suspended",
+          userid: data.userID,
+          userEmail: data.userEmail,
+          referrer: data.referrer,
+          postSurveyTime: getLocalStorage("postsurveytime"),
+          timeSpentOnPage: getLocalStorage("postsurveytime"),
+          qualtricsUserId: getLocalStorage("qualtricsuserid"),
+        };
+        sendCmi5Statement({
+          verb: {
+            id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
+            display: {
+              "en-US": `${userData.verb}`,
+            },
+          },
+          result: {
+            extensions: {
+              "https://mentorpal.org/xapi/verb/suspended":
+                toXapiResultExtCustom(
+                  userData.verb,
+                  userData.userid,
+                  userData.userEmail,
+                  userData.referrer,
+                  userData.postSurveyTime,
+                  userData.timeSpentOnPage,
+                  userData.qualtricsUserId
+                ),
+            },
+          },
+          object: {
+            id: `${window.location.protocol}//${window.location.host}`,
+            objectType: "Activity",
+          },
+        });
+      }
+    });
   }, []);
 
   useEffect(() => {

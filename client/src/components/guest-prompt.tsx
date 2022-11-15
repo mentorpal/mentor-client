@@ -4,14 +4,15 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { v1 as uuidv1 } from "uuid";
 import { Modal, Button, Paper, InputBase, Backdrop } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useDispatch, useSelector } from "react-redux";
+
+import { initCmi5 } from "cmiutils";
 import { Config, State } from "types";
-import { initCmi5 } from "store/actions";
-import Cmi5 from "@kycarr/cmi5";
+import { cmi5Init } from "store/actions";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -37,31 +38,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function GuestPrompt(): JSX.Element {
-  const dispatch = useDispatch();
   const classes = useStyles();
   const [name, setName] = useState("");
   const [open, setOpen] = useState(true);
   const config = useSelector<State, Config>((state) => state.config);
-  const cmi5 = useSelector<State, Cmi5 | undefined>((state) => state.cmi5);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (cmi5) {
-      setOpen(false);
-    }
-  }, [cmi5]);
-
-  function onGuestNameEntered(name: string) {
+  async function onGuestNameEntered(name: string) {
     if (!name) {
       name = "guest";
     }
     const userId = uuidv1();
     const localData = localStorage.getItem("userData");
     const userEmail = JSON.parse(localData ? localData : "{}").userEmail;
-    try {
-      dispatch(initCmi5(userId, userEmail, `guests`, config));
-    } catch (err2) {
-      console.error(err2);
-    }
+    await initCmi5(userId, userEmail, `guests`, config);
+    dispatch(cmi5Init());
+    setOpen(false);
   }
 
   function onInput(name: string) {

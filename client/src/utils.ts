@@ -5,12 +5,11 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import { MentorState, MentorQuestionStatus, TopicQuestions } from "types";
+import queryString from "query-string";
 import { v4 as uuid } from "uuid";
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
-import { sendCmi5Statement } from "store/actions";
-import { toXapiResultExtCustom } from "cmiutils";
-import Cmi5 from "@kycarr/cmi5";
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const _ = require("lodash");
 
@@ -94,56 +93,6 @@ export function loadSentry(): void {
     tracesSampleRate: process.env.GATSBY_STAGE == "cf" ? 0.2 : 0.0,
     environment: process.env.GATSBY_STAGE,
   });
-}
-
-export function onVisibilityChange(cmi5?: Cmi5): void {
-  if (document.visibilityState !== "visible") {
-    const localData = localStorage.getItem("userData");
-    if (!localData) {
-      return;
-    }
-    const data = JSON.parse(localData);
-    if (!data.userID) {
-      return;
-    }
-    const userData = {
-      verb: "suspended",
-      userid: data.userID,
-      userEmail: data.userEmail,
-      referrer: data.referrer,
-      postSurveyTime: getLocalStorage("postsurveytime"),
-      timeSpentOnPage: getLocalStorage("postsurveytime"),
-      qualtricsUserId: getLocalStorage("qualtricsuserid"),
-    };
-    sendCmi5Statement(
-      {
-        verb: {
-          id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
-          display: {
-            "en-US": `${userData.verb}`,
-          },
-        },
-        result: {
-          extensions: {
-            "https://mentorpal.org/xapi/verb/suspended": toXapiResultExtCustom(
-              userData.verb,
-              userData.userid,
-              userData.userEmail,
-              userData.referrer,
-              userData.postSurveyTime,
-              userData.timeSpentOnPage,
-              userData.qualtricsUserId
-            ),
-          },
-        },
-        object: {
-          id: `${window.location.protocol}//${window.location.host}`,
-          objectType: "Activity",
-        },
-      },
-      cmi5
-    );
-  }
 }
 
 function getAllSearchParams(url = location.href) {
@@ -233,3 +182,20 @@ export const mergeRecommendedTopicsQuestions = (
 
 export const shouldDisplayPortrait = (): boolean =>
   window.matchMedia && window.matchMedia("(max-width: 1200px)").matches;
+
+export function removeQueryParam(param: string): void {
+  const url = new URL(window.location.href);
+  url.searchParams.delete(param);
+  window.history.pushState({ path: url.href }, "", url.href);
+}
+
+export function getParamUserId(urlOrQueryString: string): string | string[] {
+  const cutIx = urlOrQueryString.indexOf("?");
+  const urlQs =
+    cutIx !== -1 ? urlOrQueryString.substring(cutIx + 1) : urlOrQueryString;
+  const params = queryString.parse(urlQs);
+  const userID =
+    params.userID && !Array.isArray(params.userID) ? params.userID : "";
+
+  return userID;
+}

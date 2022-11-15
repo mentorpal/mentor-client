@@ -4,9 +4,11 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { LaunchParameters } from "@kycarr/cmi5";
-import { Agent } from "@gradiant/xapi-dsl";
 import queryString from "query-string";
+import { Agent } from "@gradiant/xapi-dsl";
+import Cmi5, { LaunchParameters } from "@kycarr/cmi5";
+import { Statement } from "@kycarr/cmi5/node_modules/@xapi/xapi/dist/types/interfaces/Statement";
+
 import { Config, XapiResultCustom } from "types";
 import { getRegistrationId } from "utils";
 
@@ -72,17 +74,6 @@ export function getCmiParamsFromUri(): LaunchParameters | undefined {
   };
 }
 
-export function getParamUserId(urlOrQueryString: string): string | string[] {
-  const cutIx = urlOrQueryString.indexOf("?");
-  const urlQs =
-    cutIx !== -1 ? urlOrQueryString.substring(cutIx + 1) : urlOrQueryString;
-  const params = queryString.parse(urlQs);
-  const userID =
-    params.userID && !Array.isArray(params.userID) ? params.userID : "";
-
-  return userID;
-}
-
 export function toXapiResultExtCustom(
   verb: string,
   userid: string,
@@ -103,8 +94,76 @@ export function toXapiResultExtCustom(
   };
 }
 
-export function removeQueryParam(param: string): void {
-  const url = new URL(window.location.href);
-  url.searchParams.delete(param);
-  window.history.pushState({ path: url.href }, "", url.href);
+function stripNonAsciiCharacters(input: string): string {
+  const regex = new RegExp("[^\x00-\x7F]+");
+  return input.replace(regex, "");
 }
+
+export async function initCmi5(
+  userID: string,
+  userEmail: string,
+  homePage: string,
+  config: Config
+): Promise<void> {
+  if (!userID && !userEmail) {
+    console.error("No user id or user email passed in");
+    return;
+  }
+  const launchParams = getCmiParams(userID, userEmail, homePage, config);
+  try {
+    cmi5_instance = new Cmi5(launchParams);
+    await cmi5_instance.initialize();
+  } catch (err) {
+    console.error(
+      err,
+      `Failed to init cmi5 with params ${launchParams}, cleaning email of non-ascii domain if none exists`
+    );
+    if (launchParams.actor.mbox) {
+      launchParams.actor.mbox = stripNonAsciiCharacters(
+        launchParams.actor.mbox
+      );
+      // Append email domain if one does not exist
+      if (!launchParams.actor.mbox.includes("@")) {
+        launchParams.actor.mbox += "@mentorpal.org";
+      }
+    }
+    try {
+      cmi5_instance = new Cmi5(launchParams);
+      await cmi5_instance.initialize();
+    } catch (err) {
+      console.error(
+        err,
+        `Failed to init cmi5 with cleaned mbox ${launchParams.actor.mbox}, going with default`
+      );
+      if (launchParams.actor.mbox) {
+        launchParams.actor.mbox = `${userID}.guest@mentorpal.org`;
+      }
+      try {
+        cmi5_instance = new Cmi5(launchParams);
+        await cmi5_instance.initialize();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }
+}
+
+export function sendCmi5Statement(statement: Partial<Statement>): void {
+  if (!cmi5_instance) {
+    console.error("cannot send cmi5 statement because it is not available");
+    return;
+  }
+  try {
+    const statementData = {
+      ...statement,
+      context: { registration: getRegistrationId() },
+    };
+    cmi5_instance
+      .sendCmi5AllowedStatement(statementData)
+      .catch((err: Error) => console.error(`failed to send statement ${err}`));
+  } catch (err2) {
+    console.error(`failed to send statement ${err2}`);
+  }
+}
+
+export let cmi5_instance: Cmi5 | undefined = undefined;

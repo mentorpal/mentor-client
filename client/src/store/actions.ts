@@ -5,8 +5,6 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 /* eslint-disable */
-import Cmi5 from "@kycarr/cmi5";
-import { Statement } from "@kycarr/cmi5/node_modules/@xapi/xapi/dist/types/interfaces/Statement";
 import { ActionCreator, AnyAction, Dispatch } from "redux";
 import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import * as uuid from "uuid";
@@ -18,7 +16,12 @@ import {
   giveFeedback,
   queryMentor,
 } from "api";
-import { getCmiParams } from "cmiutils";
+import { sendCmi5Statement } from "cmiutils";
+import {
+  getLocalStorage,
+  getRecommendedTopics,
+  mergeRecommendedTopicsQuestions,
+} from "utils";
 import {
   MentorsLoadRequest,
   MentorsLoadResult,
@@ -43,12 +46,6 @@ import {
   Media,
   QuestionApiData,
 } from "../types";
-import {
-  getLocalStorage,
-  getRecommendedTopics,
-  getRegistrationId,
-  mergeRecommendedTopicsQuestions,
-} from "utils";
 
 const OFF_TOPIC_THRESHOLD = -0.45;
 export const REPLAY_VIDEO = "REPLAY_VIDEO";
@@ -74,26 +71,8 @@ export const QUESTION_RESULT = "QUESTION_RESULT";
 export const QUESTION_SENT = "QUESTION_SENT"; // question input was sent
 export const TOPIC_SELECTED = "TOPIC_SELECTED";
 export const GUEST_NAME_SET = "GUEST_NAME_SET";
-export const CMI5_INIT_STARTED = "CMI5_INIT_STARTED";
-export const CMI5_INIT_SUCCEEDED = "CMI5_INIT_SUCCEEDED";
-export const CMI5_INIT_FAILED = "CMI5_INIT_FAILED";
 export const HISTORY_TOGGLE_VISIBILITY = "HISTORY_TOGGLE_VISIBILITY";
-
-export interface Cmi5InitStartedAction {
-  type: typeof CMI5_INIT_STARTED;
-}
-export interface Cmi5InitFailedAction {
-  type: typeof CMI5_INIT_FAILED;
-  errors: string[];
-}
-export interface Cmi5InitSucceededAction {
-  type: typeof CMI5_INIT_SUCCEEDED;
-  payload: Cmi5;
-}
-export type Cmi5InitAction =
-  | Cmi5InitStartedAction
-  | Cmi5InitFailedAction
-  | Cmi5InitSucceededAction;
+export const CMI5_INIT = "CMI5_INIT";
 
 export interface AnswerFinishedAction {
   type: typeof ANSWER_FINISHED;
@@ -189,6 +168,10 @@ export interface ToggleHistoryVisibilityAction {
   type: typeof HISTORY_TOGGLE_VISIBILITY;
 }
 
+export interface Cmi5InitAction {
+  type: typeof CMI5_INIT;
+}
+
 export type MentorAction =
   | AnswerFinishedAction
   | MentorAnswerPlaybackStartedAction
@@ -261,7 +244,6 @@ export interface QuestionInputChangedAction {
 }
 
 export type MentorClientAction =
-  | Cmi5InitAction
   | ConfigLoadAction
   | FeedbackAction
   | GuestNameSetAction
@@ -271,83 +253,11 @@ export type MentorClientAction =
   | TopicSelectedAction
   | QuestionInputChangedAction
   | ReplayVideoAction
-  | ToggleHistoryVisibilityAction;
+  | ToggleHistoryVisibilityAction
+  | Cmi5InitAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
-
-function stripNonAsciiCharacters(input: string): string {
-  const regex = new RegExp("[^\x00-\x7F]+");
-  return input.replace(regex, "");
-}
-
-export const initCmi5 =
-  (userID: string, userEmail: string, homePage: string, config: Config) =>
-  async (dispatch: ThunkDispatch<State, void, Cmi5InitAction>) => {
-    dispatch({
-      type: CMI5_INIT_STARTED,
-    });
-    if (!userID && !userEmail) {
-      return dispatch({
-        type: CMI5_INIT_FAILED,
-        errors: ["No user id or user email passed in"],
-      });
-    }
-    const launchParams = getCmiParams(userID, userEmail, homePage, config);
-    try {
-      const cmi5 = new Cmi5(launchParams);
-      await cmi5.initialize();
-      return dispatch({
-        type: CMI5_INIT_SUCCEEDED,
-        payload: cmi5,
-      });
-    } catch (err) {
-      console.error(
-        err,
-        `Failed to init cmi5 with params ${launchParams}, cleaning email of non-ascii domain if none exists`
-      );
-      if (launchParams.actor.mbox) {
-        launchParams.actor.mbox = stripNonAsciiCharacters(
-          launchParams.actor.mbox
-        );
-        // Append email domain if one does not exist
-        if (!launchParams.actor.mbox.includes("@")) {
-          launchParams.actor.mbox += "@mentorpal.org";
-        }
-      }
-      try {
-        const cmi5_recovery_1 = new Cmi5(launchParams);
-        await cmi5_recovery_1.initialize();
-        return dispatch({
-          type: CMI5_INIT_SUCCEEDED,
-          payload: cmi5_recovery_1,
-        });
-      } catch (err) {
-        console.error(
-          err,
-          `Failed to init cmi5 with cleaned mbox ${launchParams.actor.mbox}, going with default`
-        );
-        if (launchParams.actor.mbox) {
-          launchParams.actor.mbox = `${userID}.guest@mentorpal.org`;
-        }
-        try {
-          const cmi5_recovery_2 = new Cmi5(launchParams);
-          await cmi5_recovery_2.initialize();
-          return dispatch({
-            type: CMI5_INIT_SUCCEEDED,
-            payload: cmi5_recovery_2,
-          });
-        } catch (err) {
-          if (err instanceof Error) {
-            return dispatch({
-              type: CMI5_INIT_FAILED,
-              errors: [err.message],
-            });
-          }
-        }
-      }
-    }
-  };
 
 export const onMentorDisplayAnswer =
   (
@@ -555,27 +465,6 @@ export const loadMentors: ActionCreator<
     return;
   };
 
-export function sendCmi5Statement(
-  statement: Partial<Statement>,
-  cmi5?: Cmi5
-): void {
-  if (!cmi5 && !Cmi5.isCmiAvailable) {
-    return;
-  }
-  try {
-    const cmi = cmi5 || Cmi5.instance;
-    const statementData = {
-      ...statement,
-      context: { registration: getRegistrationId() },
-    };
-    cmi
-      .sendCmi5AllowedStatement(statementData)
-      .catch((err: Error) => console.error(JSON.stringify(err, null, " ")));
-  } catch (err2) {
-    console.error(JSON.stringify(err2));
-  }
-}
-
 function toXapiResultExt(mentorData: MentorState, state: State): XapiResultExt {
   return {
     answerClassifier: mentorData.classifier || "",
@@ -635,27 +524,24 @@ export function mentorAnswerPlaybackStarted(video: {
       );
       return;
     }
-    sendCmi5Statement(
-      {
-        verb: {
-          id: "https://mentorpal.org/xapi/verb/answer-playback-started",
-          display: {
-            "en-US": "answer-playback-started",
-          },
-        },
-        result: {
-          extensions: {
-            "https://mentorpal.org/xapi/verb/answer-playback-started":
-              toXapiResultExt(mentorData, curState),
-          },
-        },
-        object: {
-          id: `${window.location.protocol}//${window.location.host}`,
-          objectType: "Activity",
+    sendCmi5Statement({
+      verb: {
+        id: "https://mentorpal.org/xapi/verb/answer-playback-started",
+        display: {
+          "en-US": "answer-playback-started",
         },
       },
-      curState.cmi5
-    );
+      result: {
+        extensions: {
+          "https://mentorpal.org/xapi/verb/answer-playback-started":
+            toXapiResultExt(mentorData, curState),
+        },
+      },
+      object: {
+        id: `${window.location.protocol}//${window.location.host}`,
+        objectType: "Activity",
+      },
+    });
   };
 }
 
@@ -780,33 +666,28 @@ export const sendQuestion =
   ) => {
     const localData = getLocalStorage("userData");
     const userEmail = JSON.parse(localData ? localData : "{}").userEmail;
-    const curState = getState();
-
-    sendCmi5Statement(
-      {
-        verb: {
-          id: "https://mentorpal.org/xapi/verb/asked",
-          display: {
-            "en-US": "asked",
-          },
-        },
-        result: {
-          extensions: {
-            "https://mentorpal.org/xapi/verb/asked": {
-              questionIndex: currentQuestionIndex(getState()) + 1,
-              text: q.question,
-              source: q.source,
-              userEmail: userEmail,
-            },
-          },
-        },
-        object: {
-          id: `${window.location.protocol}//${window.location.host}`,
-          objectType: "Activity",
+    sendCmi5Statement({
+      verb: {
+        id: "https://mentorpal.org/xapi/verb/asked",
+        display: {
+          "en-US": "asked",
         },
       },
-      curState.cmi5
-    );
+      result: {
+        extensions: {
+          "https://mentorpal.org/xapi/verb/asked": {
+            questionIndex: currentQuestionIndex(getState()) + 1,
+            text: q.question,
+            source: q.source,
+            userEmail: userEmail,
+          },
+        },
+      },
+      object: {
+        id: `${window.location.protocol}//${window.location.host}`,
+        objectType: "Activity",
+      },
+    });
     const questionId = uuid.v4();
     clearNextMentorTimer();
     dispatch(onQuestionSent({ ...q, questionId }));
@@ -827,29 +708,26 @@ export const sendQuestion =
               q,
               questionId
             );
-            sendCmi5Statement(
-              {
-                verb: {
-                  id: "https://mentorpal.org/xapi/verb/answered",
-                  display: {
-                    "en-US": "answered",
-                  },
-                },
-                result: {
-                  extensions: {
-                    "https://mentorpal.org/xapi/verb/answered": {
-                      ...response,
-                      questionIndex: currentQuestionIndex(getState()),
-                    },
-                  },
-                },
-                object: {
-                  id: `${window.location.protocol}//${window.location.host}`,
-                  objectType: "Activity",
+            sendCmi5Statement({
+              verb: {
+                id: "https://mentorpal.org/xapi/verb/answered",
+                display: {
+                  "en-US": "answered",
                 },
               },
-              state.cmi5
-            );
+              result: {
+                extensions: {
+                  "https://mentorpal.org/xapi/verb/answered": {
+                    ...response,
+                    questionIndex: currentQuestionIndex(getState()),
+                  },
+                },
+              },
+              object: {
+                id: `${window.location.protocol}//${window.location.host}`,
+                objectType: "Activity",
+              },
+            });
             if (data.confidence < OFF_TOPIC_THRESHOLD) {
               resolve(offTopicResponse);
             } else {
@@ -1041,12 +919,6 @@ export function onQuestionAnswered(responses: QuestionResponse[]) {
   };
 }
 
-const onQuestionError = (id: string, question: string) => ({
-  mentor: id,
-  question,
-  type: QUESTION_ERROR,
-});
-
 const onIdle = () => ({
   type: ANSWER_FINISHED,
 });
@@ -1058,4 +930,8 @@ const nextMentor = (id: string): NextMentorAction => ({
 
 export const toggleHistoryVisibility = (): ToggleHistoryVisibilityAction => ({
   type: HISTORY_TOGGLE_VISIBILITY,
+});
+
+export const cmi5Init = (): Cmi5InitAction => ({
+  type: CMI5_INIT,
 });
