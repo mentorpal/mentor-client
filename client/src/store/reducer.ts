@@ -46,6 +46,7 @@ import {
   VideoFinishedAction,
   HISTORY_TOGGLE_VISIBILITY,
   CMI5_INIT,
+  SET_CHAT_SESSION_ID,
 } from "./actions";
 import {
   MentorState,
@@ -111,6 +112,7 @@ export const initialState: State = {
   },
   visibilityShowAllPref: false,
   replayMessageCount: 0,
+  chatSessionId: "",
 };
 
 function mentorSelected(state: State, action: MentorSelectedAction): State {
@@ -708,6 +710,11 @@ export default function reducer(
       return {
         ...state,
         guestName: action.name,
+      };
+    case SET_CHAT_SESSION_ID:
+      return {
+        ...state,
+        chatSessionId: action.id,
       };
     case QUESTION_INPUT_CHANGED:
       return onQuestionInputChanged(state, action);

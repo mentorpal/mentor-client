@@ -7,13 +7,18 @@ The full terms of this copyright and license should always be found in the root 
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Helmet } from "react-helmet";
-import { v1 as uuidv1 } from "uuid";
+import { v1 as uuidv1, v4 as uuid } from "uuid";
 import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
 import Header from "components/header";
-import { loadConfig, loadMentors, setGuestName } from "store/actions";
+import {
+  loadConfig,
+  loadMentors,
+  setChatSessionId,
+  setGuestName,
+} from "store/actions";
 import { Config, LoadStatus, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
 import "styles/layout.css";
@@ -253,6 +258,9 @@ function IndexPage(props: {
   }, [configLoadStatus]);
 
   useEffect(() => {
+    const chatSessionId = uuid();
+    dispatch(setChatSessionId(chatSessionId));
+
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState !== "visible") {
         const localData = localStorage.getItem("userData");
@@ -272,32 +280,35 @@ function IndexPage(props: {
           timeSpentOnPage: getLocalStorage("postsurveytime"),
           qualtricsUserId: getLocalStorage("qualtricsuserid"),
         };
-        sendCmi5Statement({
-          verb: {
-            id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
-            display: {
-              "en-US": `${userData.verb}`,
+        sendCmi5Statement(
+          {
+            verb: {
+              id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
+              display: {
+                "en-US": `${userData.verb}`,
+              },
+            },
+            result: {
+              extensions: {
+                "https://mentorpal.org/xapi/verb/suspended":
+                  toXapiResultExtCustom(
+                    userData.verb,
+                    userData.userid,
+                    userData.userEmail,
+                    userData.referrer,
+                    userData.postSurveyTime,
+                    userData.timeSpentOnPage,
+                    userData.qualtricsUserId
+                  ),
+              },
+            },
+            object: {
+              id: `${window.location.protocol}//${window.location.host}`,
+              objectType: "Activity",
             },
           },
-          result: {
-            extensions: {
-              "https://mentorpal.org/xapi/verb/suspended":
-                toXapiResultExtCustom(
-                  userData.verb,
-                  userData.userid,
-                  userData.userEmail,
-                  userData.referrer,
-                  userData.postSurveyTime,
-                  userData.timeSpentOnPage,
-                  userData.qualtricsUserId
-                ),
-            },
-          },
-          object: {
-            id: `${window.location.protocol}//${window.location.host}`,
-            objectType: "Activity",
-          },
-        });
+          chatSessionId
+        );
       }
     });
   }, []);
