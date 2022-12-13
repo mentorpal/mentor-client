@@ -261,6 +261,7 @@ export async function queryMentor(
 
 export async function pingMentor(
   mentorId: string,
+  chatSessionId: string,
   config: Config
 ): Promise<AxiosResponse<QuestionApiData>> {
   return await axios.get(`${config.classifierLambdaEndpoint}/questions/`, {
@@ -268,6 +269,7 @@ export async function pingMentor(
       mentor: mentorId,
       query: "Ping",
       ping: true,
+      chatsessionid: chatSessionId,
     },
   });
 }

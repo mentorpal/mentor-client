@@ -106,6 +106,9 @@ function IndexPage(props: {
   );
   const guestName = useSelector<State, string>((state) => state.guestName);
   const curMentor = useSelector<State, string>((state) => state.curMentor);
+  const chatSessionId = useSelector<State, string>(
+    (state) => state.chatSessionId
+  );
   const mentorCount = useSelector<State, number>((state) => {
     return Object.getOwnPropertyNames(state.mentorsById).length;
   });
@@ -232,7 +235,7 @@ function IndexPage(props: {
   function warmupMentors(mentors: string | string[]) {
     const mentorIds = Array.isArray(mentors) ? mentors : [mentors];
     mentorIds.forEach((mentorId) => {
-      pingMentor(mentorId, config).catch((err) => {
+      pingMentor(mentorId, chatSessionId, config).catch((err) => {
         // We don't really care if this query fails, so just catch error
         console.error(err);
       });
