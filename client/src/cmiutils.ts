@@ -157,12 +157,15 @@ export function sendCmi5Statement(
     return;
   }
   try {
-    const statementData = {
+    const statementData: Partial<Statement> = {
       ...statement,
       context: {
         ...statement.context,
         registration: getRegistrationId(),
-        chatSessionId,
+        extensions: {
+          ...statement.context?.extensions,
+          chatSessionId,
+        },
       },
     };
     cmi5_instance
