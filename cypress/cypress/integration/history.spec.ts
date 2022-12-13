@@ -549,10 +549,10 @@ describe("Chat History (Video Mentors)", () => {
       apiResponse: "response_with_feedback.json",
     });
     cy.visit("/");
-    cy.intercept("**/questions/?mentor=clint&query=*", {
+    cy.intercept("**/questions/?mentor=clint&query=**", {
       fixture: "response_with_feedback.json",
     });
-    cy.intercept("**/questions/?mentor=carlos&query=*", {
+    cy.intercept("**/questions/?mentor=carlos&query=**", {
       fixture: "response_with_feedback2.json",
     });
     // video intercept
