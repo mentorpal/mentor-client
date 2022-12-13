@@ -885,13 +885,13 @@ describe("Chat History (Video Mentors)", () => {
       mentorData: [clint, carlos],
       apiResponse: "response_with_feedback.json",
     });
-    cy.intercept("**/questions/?mentor=clint&query=question+1", {
+    cy.intercept("**/questions/?mentor=clint&query=question+1**", {
       fixture: "response_with_markdown.json",
     });
-    cy.intercept("**/questions/?mentor=carlos&query=*", {
+    cy.intercept("**/questions/?mentor=carlos&query=**", {
       fixture: "response_with_feedback2.json",
     });
-    cy.intercept("**/questions/?mentor=carlos&query=question+2", {
+    cy.intercept("**/questions/?mentor=carlos&query=question+2**", {
       fixture: "response_with_markdown2.json",
     });
 
