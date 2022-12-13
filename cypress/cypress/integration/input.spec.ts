@@ -74,13 +74,13 @@ describe("Input field", () => {
     visitAsGuestWithDefaultSetup(cy, "/");
     cy.viewport("iphone-x");
 
-    cy.intercept("**/questions/?mentor=clint&query=how+old+are+you", {
+    cy.intercept("**/questions/?mentor=clint&query=**", {
       fixture: "response.json",
     }).as("askClint");
-    cy.intercept("**/questions/?mentor=julianne&query=how+old+are+you", {
+    cy.intercept("**/questions/?mentor=julianne&query=**", {
       fixture: "response.json",
     }).as("askJulianne");
-    cy.intercept("**/questions/?mentor=carlos&query=how+old+are+you", {
+    cy.intercept("**/questions/?mentor=carlos&query=**", {
       fixture: "response.json",
     }).as("askCarlos");
 

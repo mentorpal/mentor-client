@@ -13,6 +13,8 @@ import {
   setLocalStorage,
 } from "utils";
 import { sendCmi5Statement, toXapiResultExtCustom } from "cmiutils";
+import { useSelector } from "react-redux";
+import { State } from "types";
 
 export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
   const [title, setTitle] = useState<string>("");
@@ -22,6 +24,9 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
     "qualtricsuserid"
   )}`;
   const { noLabel } = props;
+  const chatSessionId = useSelector<State, string>(
+    (state) => state.chatSessionId
+  );
 
   function checkForSurveyPopupVariables() {
     // Check if we already have local storage setup
@@ -183,31 +188,34 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
       timeSpentOnPage: getLocalStorage("postsurveytime"),
       qualtricsUserId: getLocalStorage("qualtricsuserid"),
     };
-    sendCmi5Statement({
-      verb: {
-        id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
-        display: {
-          "en-US": `${userData.verb}`,
+    sendCmi5Statement(
+      {
+        verb: {
+          id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
+          display: {
+            "en-US": `${userData.verb}`,
+          },
+        },
+        result: {
+          extensions: {
+            "https://mentorpal.org/xapi/verb/terminated": toXapiResultExtCustom(
+              userData.verb,
+              userData.userid,
+              userData.userEmail,
+              userData.referrer,
+              userData.postSurveyTime,
+              userData.timeSpentOnPage,
+              userData.qualtricsUserId
+            ),
+          },
+        },
+        object: {
+          id: `${window.location.protocol}//${window.location.host}`,
+          objectType: "Activity",
         },
       },
-      result: {
-        extensions: {
-          "https://mentorpal.org/xapi/verb/terminated": toXapiResultExtCustom(
-            userData.verb,
-            userData.userid,
-            userData.userEmail,
-            userData.referrer,
-            userData.postSurveyTime,
-            userData.timeSpentOnPage,
-            userData.qualtricsUserId
-          ),
-        },
-      },
-      object: {
-        id: `${window.location.protocol}//${window.location.host}`,
-        objectType: "Activity",
-      },
-    });
+      chatSessionId
+    );
   };
 
   return (

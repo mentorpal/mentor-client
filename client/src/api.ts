@@ -247,18 +247,21 @@ export async function giveFeedback(
 export async function queryMentor(
   mentorId: string,
   question: string,
+  chatsessionid: string,
   config: Config
 ): Promise<AxiosResponse<QuestionApiData>> {
   return await axios.get(`${config.classifierLambdaEndpoint}/questions/`, {
     params: {
       mentor: mentorId,
       query: question,
+      chatsessionid,
     },
   });
 }
 
 export async function pingMentor(
   mentorId: string,
+  chatSessionId: string,
   config: Config
 ): Promise<AxiosResponse<QuestionApiData>> {
   return await axios.get(`${config.classifierLambdaEndpoint}/questions/`, {
@@ -266,6 +269,7 @@ export async function pingMentor(
       mentor: mentorId,
       query: "Ping",
       ping: true,
+      chatsessionid: chatSessionId,
     },
   });
 }
