@@ -138,14 +138,14 @@ function IndexPage(props: {
   }
 
   //Load Theme
-  const styleHeaderColor = useSelector<State, string>(
-    (state) => state.config.styleHeaderColor?.trim() || "#FFFFFF"
+  const homeHeaderColor = useSelector<State, string>(
+    (state) => state.config.homeHeaderColor?.trim() || "#FFFFFF"
   );
 
   const brandedTheme = createMuiTheme({
     palette: {
       primary: {
-        main: styleHeaderColor,
+        main: homeHeaderColor,
       },
     },
   });
@@ -378,7 +378,7 @@ function IndexPage(props: {
             <CircularProgress
               data-cy="loading"
               className={styles.loadingIndicator}
-              style={{ color: config.styleHeaderColor }}
+              style={{ color: config.homeHeaderColor }}
               size={150}
             />
             <div className={styles.loadingIndicatorContent}></div>

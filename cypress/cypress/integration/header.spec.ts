@@ -95,12 +95,12 @@ describe("Header", () => {
     cy.get("[data-cy=disclaimer-text]").should("exist");
   });
 
-  it("shows alternate header with logo and if config.styleHeaderLogo is set", () => {
+  it("shows alternate header with logo and if config.homeHeaderLogo is set", () => {
     mockDefaultSetup(cy, {
       config: {
         cmi5Enabled: false,
         mentorsDefault: ["clint"],
-        styleHeaderLogo:
+        homeHeaderLogo:
           "https://identity.usc.edu/files/2019/01/PrimShield-Word_SmallUse_CardOnTrans.png",
       },
     });
@@ -117,13 +117,13 @@ describe("Header", () => {
       );
   });
 
-  it("shows alternate color header and text if config.styleHeaderColor and config.styleHeaderTextColor are set", () => {
+  it("shows alternate color header and text if config.homeHeaderColor and config.homeHeaderTextColor are set", () => {
     mockDefaultSetup(cy, {
       config: {
         cmi5Enabled: false,
         mentorsDefault: ["clint"],
-        styleHeaderColor: "#990000",
-        styleHeaderTextColor: "#FFFFFF",
+        homeHeaderColor: "#990000",
+        homeHeaderTextColor: "#FFFFFF",
       },
     });
     cy.visit("/");
@@ -135,14 +135,14 @@ describe("Header", () => {
       .and("have.css", "background-color", "rgb(153, 0, 0)");
   });
 
-  it("shows full branding on mobile if config.styleHeaderColor, config.styleHeaderTextColor, and config.styleHeaderLogo are set", () => {
+  it("shows full branding on mobile if config.homeHeaderColor, config.homeHeaderTextColor, and config.homeHeaderLogo are set", () => {
     mockDefaultSetup(cy, {
       config: {
         cmi5Enabled: false,
         mentorsDefault: ["clint"],
-        styleHeaderColor: "#990000",
-        styleHeaderTextColor: "#FFFFFF",
-        styleHeaderLogo: FAKE_STYLE_HEADER_LOGO,
+        homeHeaderColor: "#990000",
+        homeHeaderTextColor: "#FFFFFF",
+        homeHeaderLogo: FAKE_STYLE_HEADER_LOGO,
       },
     });
     cy.intercept(FAKE_STYLE_HEADER_LOGO, { fixture: "uscheader2.png" });
@@ -157,14 +157,14 @@ describe("Header", () => {
       .and("have.css", "background-color", "rgb(153, 0, 0)");
   });
 
-  it("shows full branding on desktop if config.styleHeaderColor, config.styleHeaderTextColor, and config.styleHeaderLogo are set", () => {
+  it("shows full branding on desktop if config.homeHeaderColor, config.homeHeaderTextColor, and config.homeHeaderLogo are set", () => {
     mockDefaultSetup(cy, {
       config: {
         cmi5Enabled: false,
         mentorsDefault: ["clint", "carlos"],
-        styleHeaderColor: "#990000",
-        styleHeaderTextColor: "#FFFFFF",
-        styleHeaderLogo: FAKE_STYLE_HEADER_LOGO,
+        homeHeaderColor: "#990000",
+        homeHeaderTextColor: "#FFFFFF",
+        homeHeaderLogo: FAKE_STYLE_HEADER_LOGO,
       },
     });
     cy.viewport(700, 500);
@@ -189,9 +189,9 @@ describe("Header", () => {
       config: {
         cmi5Enabled: false,
         mentorsDefault: ["clint"],
-        styleHeaderColor: "#990000",
-        styleHeaderTextColor: "#FFFFFF",
-        styleHeaderLogo: FAKE_STYLE_HEADER_LOGO,
+        homeHeaderColor: "#990000",
+        homeHeaderTextColor: "#FFFFFF",
+        homeHeaderLogo: FAKE_STYLE_HEADER_LOGO,
       },
     });
     cy.viewport(700, 500);

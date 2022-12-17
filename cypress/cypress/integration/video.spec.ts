@@ -154,9 +154,9 @@ describe("Video Mentor", () => {
       config: {
         cmi5Enabled: false,
         mentorsDefault: ["clint"],
-        styleHeaderColor: "#990000",
-        styleHeaderTextColor: "#FFFFFF",
-        styleHeaderLogo: FAKE_STYLE_HEADER_LOGO,
+        homeHeaderColor: "#990000",
+        homeHeaderTextColor: "#FFFFFF",
+        homeHeaderLogo: FAKE_STYLE_HEADER_LOGO,
       },
       mentorData: [clint],
     });
@@ -183,9 +183,9 @@ describe("Video Mentor", () => {
       config: {
         cmi5Enabled: false,
         mentorsDefault: ["clint", "carlos"],
-        styleHeaderColor: "#990000",
-        styleHeaderTextColor: "#FFFFFF",
-        styleHeaderLogo: FAKE_STYLE_HEADER_LOGO,
+        homeHeaderColor: "#990000",
+        homeHeaderTextColor: "#FFFFFF",
+        homeHeaderLogo: FAKE_STYLE_HEADER_LOGO,
       },
       mentorData: [clint, carlos],
     });

@@ -110,9 +110,9 @@ export interface Config {
   classifierLambdaEndpoint: string;
   urlGraphql: string;
   urlVideo: string;
-  styleHeaderLogo: string;
-  styleHeaderColor: string;
-  styleHeaderTextColor: string;
+  homeHeaderLogo: string;
+  homeHeaderColor: string;
+  homeHeaderTextColor: string;
   filterEmailMentorAddress: string;
   disclaimerTitle: string;
   disclaimerText: string;
@@ -212,9 +212,9 @@ export const CONFIG_DEFAULT: Config = {
   classifierLambdaEndpoint: "",
   urlGraphql: "/graphql",
   urlVideo: "/video",
-  styleHeaderLogo: "",
-  styleHeaderColor: "",
-  styleHeaderTextColor: "",
+  homeHeaderLogo: "",
+  homeHeaderColor: "",
+  homeHeaderTextColor: "",
   filterEmailMentorAddress: "",
   disclaimerTitle: "",
   disclaimerText: disclaimerText.disclaimerText,

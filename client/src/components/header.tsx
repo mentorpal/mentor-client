@@ -35,14 +35,14 @@ function Header(): JSX.Element {
     };
   });
 
-  const styleHeaderLogo = useSelector<State, string>(
-    (state) => state.config.styleHeaderLogo?.trim() || ""
+  const homeHeaderLogo = useSelector<State, string>(
+    (state) => state.config.homeHeaderLogo?.trim() || ""
   );
-  const styleHeaderColor = useSelector<State, string>(
-    (state) => state.config.styleHeaderColor?.trim() || "#FFFFFF"
+  const homeHeaderColor = useSelector<State, string>(
+    (state) => state.config.homeHeaderColor?.trim() || "#FFFFFF"
   );
-  const styleHeaderTextColor = useSelector<State, string>(
-    (state) => state.config.styleHeaderTextColor?.trim() || "#000000"
+  const homeHeaderTextColor = useSelector<State, string>(
+    (state) => state.config.homeHeaderTextColor?.trim() || "#000000"
   );
 
   if (!mentor) {
@@ -65,14 +65,14 @@ function Header(): JSX.Element {
       data-cy="header"
       data-mentor={mentor._id}
       style={{
-        backgroundColor: `${styleHeaderColor}`,
-        color: `${styleHeaderTextColor}`,
+        backgroundColor: `${homeHeaderColor}`,
+        color: `${homeHeaderTextColor}`,
       }}
       className="header-container"
     >
-      {styleHeaderLogo ? (
+      {homeHeaderLogo ? (
         <img
-          src={styleHeaderLogo}
+          src={homeHeaderLogo}
           style={{
             position: "absolute",
             left: "10px",
@@ -88,7 +88,7 @@ function Header(): JSX.Element {
             aria-label="information"
             component="span"
             style={{
-              color: `${styleHeaderTextColor}`,
+              color: `${homeHeaderTextColor}`,
             }}
             className="home-btn"
             onClick={handleClickHome}

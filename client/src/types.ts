@@ -114,9 +114,9 @@ export interface Config {
   classifierLambdaEndpoint: string;
   urlGraphql: string;
   urlVideo: string;
-  styleHeaderLogo: string;
-  styleHeaderColor: string;
-  styleHeaderTextColor: string;
+  homeHeaderLogo: string;
+  homeHeaderColor: string;
+  homeHeaderTextColor: string;
   filterEmailMentorAddress: string;
   disclaimerTitle: string;
   disclaimerText: string;

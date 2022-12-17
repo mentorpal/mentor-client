@@ -36,9 +36,9 @@ export async function fetchConfig(): Promise<Config> {
           disclaimerTitle
           disclaimerText
           disclaimerDisabled
-          styleHeaderColor
-          styleHeaderTextColor
-          styleHeaderLogo
+          homeHeaderColor
+          homeHeaderTextColor
+          homeHeaderLogo
           displayGuestPrompt
           defaultVirtualBackground
         }
