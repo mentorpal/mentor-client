@@ -151,10 +151,7 @@ function IndexPage(props: {
   });
 
   useEffect(() => {
-    console.log("chatSesionId:", Boolean(chatSessionId))
-    console.log("cmi5 initialized", Boolean(cmi5init))
     if (chatSessionId && cmi5init) {
-      console.log("sending cmi5 statement for init")
       sendCmi5Statement(
         {
           verb: {
