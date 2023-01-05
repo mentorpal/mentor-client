@@ -44,6 +44,9 @@ function Header(): JSX.Element {
   const styleHeaderTextColor = useSelector<State, string>(
     (state) => state.config.styleHeaderTextColor?.trim() || "#000000"
   );
+  const sessionIdInState = useSelector<State, string>(
+    (state) => state.sessionId
+  );
 
   if (!mentor) {
     return <></>;
@@ -55,7 +58,9 @@ function Header(): JSX.Element {
     const userID = JSON.parse(localData ? localData : "").userID;
     const referrer = new URL(location.href).searchParams.get("referrer");
 
-    window.location.href = `/home/?referrer=${referrer}&userEmail=${userEmail}&userid=${userID}`;
+    window.location.href = `/home/?referrer=${referrer}&userEmail=${userEmail}&userid=${userID}${
+      sessionIdInState ? `&sessionId=${sessionIdInState}` : ""
+    }`;
   };
 
   const MentorNameTitle = `${mentor.name}: ${mentor.title}`;

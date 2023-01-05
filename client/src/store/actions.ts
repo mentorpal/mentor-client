@@ -74,6 +74,8 @@ export const GUEST_NAME_SET = "GUEST_NAME_SET";
 export const SET_CHAT_SESSION_ID = "SET_CHAT_SESSION_ID";
 export const HISTORY_TOGGLE_VISIBILITY = "HISTORY_TOGGLE_VISIBILITY";
 export const CMI5_INIT = "CMI5_INIT";
+export const SESSION_ID_CREATED = "SESSION_ID_CREATED";
+export const SESSION_ID_FOUND = "SESSION_ID_FOUND";
 
 export interface AnswerFinishedAction {
   type: typeof ANSWER_FINISHED;
@@ -249,6 +251,11 @@ export interface QuestionInputChangedAction {
   payload: QuestionInput;
 }
 
+export interface SessionIdCreatedAction {
+  type: typeof SESSION_ID_CREATED | typeof SESSION_ID_FOUND;
+  payload: string;
+}
+
 export type MentorClientAction =
   | ConfigLoadAction
   | FeedbackAction
@@ -261,7 +268,8 @@ export type MentorClientAction =
   | ReplayVideoAction
   | ToggleHistoryVisibilityAction
   | Cmi5InitAction
-  | SetChatSessionId;
+  | SetChatSessionId
+  | SessionIdCreatedAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
@@ -550,7 +558,8 @@ export function mentorAnswerPlaybackStarted(video: {
           objectType: "Activity",
         },
       },
-      curState.chatSessionId
+      curState.chatSessionId,
+      curState.sessionId
     );
   };
 }
@@ -705,7 +714,8 @@ export const sendQuestion =
           objectType: "Activity",
         },
       },
-      state.chatSessionId
+      state.chatSessionId,
+      state.sessionId
     );
     const questionId = uuid.v4();
     clearNextMentorTimer();
@@ -747,7 +757,8 @@ export const sendQuestion =
                   objectType: "Activity",
                 },
               },
-              state.chatSessionId
+              state.chatSessionId,
+              state.sessionId
             );
             if (data.confidence < OFF_TOPIC_THRESHOLD) {
               resolve(offTopicResponse);

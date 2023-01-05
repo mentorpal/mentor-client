@@ -16,6 +16,8 @@ import Header from "components/header";
 import {
   loadConfig,
   loadMentors,
+  SESSION_ID_CREATED,
+  SESSION_ID_FOUND,
   setChatSessionId,
   setGuestName,
 } from "store/actions";
@@ -106,6 +108,9 @@ function IndexPage(props: {
   );
   const guestName = useSelector<State, string>((state) => state.guestName);
   const curMentor = useSelector<State, string>((state) => state.curMentor);
+  const sessionIdInState = useSelector<State, string>(
+    (state) => state.sessionId
+  );
   const chatSessionId = useSelector<State, string>(
     (state) => state.chatSessionId
   );
@@ -165,10 +170,28 @@ function IndexPage(props: {
             objectType: "Activity",
           },
         },
-        chatSessionId
+        chatSessionId,
+        sessionIdInState
       );
     }
-  }, [chatSessionId, cmi5init]);
+  }, [chatSessionId, cmi5init, sessionIdInState]);
+
+  useEffect(() => {
+    const sessionIdInUrl = new URL(location.href).searchParams.get("sessionId");
+    if (sessionIdInUrl) {
+      dispatch({
+        type: SESSION_ID_FOUND,
+        payload: sessionIdInUrl,
+      });
+      return;
+    }
+    if (!sessionIdInState) {
+      dispatch({
+        type: SESSION_ID_CREATED,
+        payload: uuid(),
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (!isConfigLoadComplete(configLoadStatus) || !curMentor) {
@@ -330,7 +353,8 @@ function IndexPage(props: {
               objectType: "Activity",
             },
           },
-          chatSessionId
+          chatSessionId,
+          sessionIdInState
         );
       }
     });

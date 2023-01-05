@@ -27,6 +27,9 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
   const chatSessionId = useSelector<State, string>(
     (state) => state.chatSessionId
   );
+  const sessionIdInState = useSelector<State, string>(
+    (state) => state.sessionId
+  );
 
   function checkForSurveyPopupVariables() {
     // Check if we already have local storage setup
@@ -214,7 +217,8 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
           objectType: "Activity",
         },
       },
-      chatSessionId
+      chatSessionId,
+      sessionIdInState
     );
   };
 
