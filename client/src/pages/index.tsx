@@ -151,6 +151,29 @@ function IndexPage(props: {
   });
 
   useEffect(() => {
+    console.log("chatSesionId:", Boolean(chatSessionId))
+    console.log("cmi5 initialized", Boolean(cmi5init))
+    if (chatSessionId && cmi5init) {
+      console.log("sending cmi5 statement for init")
+      sendCmi5Statement(
+        {
+          verb: {
+            id: `https://mentorpal.org/xapi/verb/initialized`,
+            display: {
+              "en-US": "initialized",
+            },
+          },
+          object: {
+            id: `${window.location.protocol}//${window.location.host}`,
+            objectType: "Activity",
+          },
+        },
+        chatSessionId
+      );
+    }
+  }, [chatSessionId, cmi5init]);
+
+  useEffect(() => {
     if (!isConfigLoadComplete(configLoadStatus) || !curMentor) {
       return;
     }
