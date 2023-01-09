@@ -19,12 +19,12 @@ import { convertMentorClientDataGQL, MentorQueryDataGQL } from "types-gql";
 export const GATSBY_GRAPHQL_ENDPOINT =
   process.env.GATSBY_GRAPHQL_ENDPOINT || "/graphql";
 export async function fetchConfig(): Promise<Config> {
-  const gqlRes = await axios.post<GraphQLResponse<{ config: Config }>>(
+  const gqlRes = await axios.post<GraphQLResponse<{ orgConfig: Config }>>(
     GATSBY_GRAPHQL_ENDPOINT,
     {
       query: `
       query FetchConfig {
-        config {
+        orgConfig {
           cmi5Enabled
           cmi5Endpoint
           cmi5Fetch
@@ -47,11 +47,11 @@ export async function fetchConfig(): Promise<Config> {
     }
   );
   if (gqlRes.status !== 200) {
-    throw new Error(`config load failed: ${gqlRes.statusText}}`);
+    throw new Error(`orgConfig load failed: ${gqlRes.statusText}}`);
   }
   if (gqlRes.data.errors) {
     throw new Error(
-      `errors reponse to config query: ${JSON.stringify(gqlRes.data.errors)}`
+      `errors reponse to orgConfig query: ${JSON.stringify(gqlRes.data.errors)}`
     );
   }
   if (!gqlRes.data.data) {
@@ -59,7 +59,7 @@ export async function fetchConfig(): Promise<Config> {
       `no data in non-error reponse: ${JSON.stringify(gqlRes.data)}`
     );
   }
-  return gqlRes.data.data.config;
+  return gqlRes.data.data.orgConfig;
 }
 
 export function getUtterance(

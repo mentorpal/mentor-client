@@ -154,7 +154,9 @@ export function cyMockMentorData(data: any[]) {
 // }
 
 export function cyMockConfig(config: Partial<Config>) {
-  return cyMockGQL("FetchConfig", { config: { ...CONFIG_DEFAULT, ...config } });
+  return cyMockGQL("FetchConfig", {
+    orgConfig: { ...CONFIG_DEFAULT, ...config },
+  });
 }
 
 export function mockMentorVideos(cy) {
