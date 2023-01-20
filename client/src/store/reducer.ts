@@ -46,6 +46,10 @@ import {
   VideoFinishedAction,
   HISTORY_TOGGLE_VISIBILITY,
   CMI5_INIT,
+  SET_CHAT_SESSION_ID,
+  SessionIdCreatedAction,
+  SESSION_ID_CREATED,
+  SESSION_ID_FOUND,
 } from "./actions";
 import {
   MentorState,
@@ -111,6 +115,8 @@ export const initialState: State = {
   },
   visibilityShowAllPref: false,
   replayMessageCount: 0,
+  chatSessionId: "",
+  sessionId: "",
 };
 
 function mentorSelected(state: State, action: MentorSelectedAction): State {
@@ -132,6 +138,21 @@ function mentorSelected(state: State, action: MentorSelectedAction): State {
       },
     },
   });
+}
+
+function onSessionIdCreated(
+  state: State,
+  action: SessionIdCreatedAction
+): State {
+  // add sessionId to url in the case of the back button
+  const url = new URL(window.location.href);
+  url.searchParams.delete("sessionId");
+  url.searchParams.append("sessionId", action.payload);
+  window.history.pushState({ path: url.href }, "", url.href);
+  return {
+    ...state,
+    sessionId: action.payload,
+  };
 }
 
 function mentorFaved(state: State, action: MentorFavedAction): State {
@@ -650,6 +671,9 @@ export default function reducer(
   action: MentorClientAction
 ): State {
   switch (action.type) {
+    case SESSION_ID_CREATED:
+    case SESSION_ID_FOUND:
+      return onSessionIdCreated(state, action);
     case CONFIG_LOAD_FAILED:
       return onConfigLoadFailed(state);
     case CONFIG_LOAD_STARTED:
@@ -708,6 +732,11 @@ export default function reducer(
       return {
         ...state,
         guestName: action.name,
+      };
+    case SET_CHAT_SESSION_ID:
+      return {
+        ...state,
+        chatSessionId: action.id,
       };
     case QUESTION_INPUT_CHANGED:
       return onQuestionInputChanged(state, action);

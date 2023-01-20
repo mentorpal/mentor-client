@@ -148,15 +148,27 @@ export async function initCmi5(
   }
 }
 
-export function sendCmi5Statement(statement: Partial<Statement>): void {
+export function sendCmi5Statement(
+  statement: Partial<Statement>,
+  chatSessionId: string,
+  sessionId: string
+): void {
   if (!cmi5_instance) {
     console.error("cannot send cmi5 statement because it is not available");
     return;
   }
   try {
-    const statementData = {
+    const statementData: Partial<Statement> = {
       ...statement,
-      context: { registration: getRegistrationId() },
+      context: {
+        ...statement.context,
+        registration: getRegistrationId(),
+        extensions: {
+          ...statement.context?.extensions,
+          chatSessionId,
+          sessionId,
+        },
+      },
     };
     cmi5_instance
       .sendCmi5AllowedStatement(statementData)

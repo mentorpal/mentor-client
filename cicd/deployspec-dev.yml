@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    GATSBY_GRAPHQL_ENDPOINT: 'https://api-dev.mentorpal.org/graphql/graphql'
+    GATSBY_GRAPHQL_ENDPOINT: 'https://api.devmentorpal.org/graphql/graphql'
     GATSBY_STAGE: 'dev'
     GATSBY_IS_SENTRY_ENABLED: false
   parameter-store:

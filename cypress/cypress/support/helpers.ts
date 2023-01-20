@@ -154,7 +154,9 @@ export function cyMockMentorData(data: any[]) {
 // }
 
 export function cyMockConfig(config: Partial<Config>) {
-  return cyMockGQL("FetchConfig", { config: { ...CONFIG_DEFAULT, ...config } });
+  return cyMockGQL("FetchConfig", {
+    orgConfig: { ...CONFIG_DEFAULT, ...config },
+  });
 }
 
 export function mockMentorVideos(cy) {
@@ -177,7 +179,7 @@ export function mockApiQuestions(cy, response?: string) {
   cy.intercept("**/questions/?mentor=carlos&query=*", {
     fixture: response || "response.json",
   }).as("carlos-query");
-  cy.intercept("**/questions/?mentor=*&query=*&ping=*", {});
+  cy.intercept("**/questions/?mentor=*&query=*&ping=**", {});
 }
 
 export function toGuestUrl(url: string, guestName: string) {

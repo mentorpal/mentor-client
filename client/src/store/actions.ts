@@ -71,8 +71,11 @@ export const QUESTION_RESULT = "QUESTION_RESULT";
 export const QUESTION_SENT = "QUESTION_SENT"; // question input was sent
 export const TOPIC_SELECTED = "TOPIC_SELECTED";
 export const GUEST_NAME_SET = "GUEST_NAME_SET";
+export const SET_CHAT_SESSION_ID = "SET_CHAT_SESSION_ID";
 export const HISTORY_TOGGLE_VISIBILITY = "HISTORY_TOGGLE_VISIBILITY";
 export const CMI5_INIT = "CMI5_INIT";
+export const SESSION_ID_CREATED = "SESSION_ID_CREATED";
+export const SESSION_ID_FOUND = "SESSION_ID_FOUND";
 
 export interface AnswerFinishedAction {
   type: typeof ANSWER_FINISHED;
@@ -233,6 +236,11 @@ export interface GuestNameSetAction {
   name: string;
 }
 
+export interface SetChatSessionId {
+  type: typeof SET_CHAT_SESSION_ID;
+  id: string;
+}
+
 export interface TopicSelectedAction {
   type: typeof TOPIC_SELECTED;
   topic: string;
@@ -241,6 +249,11 @@ export interface TopicSelectedAction {
 export interface QuestionInputChangedAction {
   type: typeof QUESTION_INPUT_CHANGED;
   payload: QuestionInput;
+}
+
+export interface SessionIdCreatedAction {
+  type: typeof SESSION_ID_CREATED | typeof SESSION_ID_FOUND;
+  payload: string;
 }
 
 export type MentorClientAction =
@@ -254,7 +267,9 @@ export type MentorClientAction =
   | QuestionInputChangedAction
   | ReplayVideoAction
   | ToggleHistoryVisibilityAction
-  | Cmi5InitAction;
+  | Cmi5InitAction
+  | SetChatSessionId
+  | SessionIdCreatedAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
@@ -524,24 +539,28 @@ export function mentorAnswerPlaybackStarted(video: {
       );
       return;
     }
-    sendCmi5Statement({
-      verb: {
-        id: "https://mentorpal.org/xapi/verb/answer-playback-started",
-        display: {
-          "en-US": "answer-playback-started",
+    sendCmi5Statement(
+      {
+        verb: {
+          id: "https://mentorpal.org/xapi/verb/answer-playback-started",
+          display: {
+            "en-US": "answer-playback-started",
+          },
+        },
+        result: {
+          extensions: {
+            "https://mentorpal.org/xapi/verb/answer-playback-started":
+              toXapiResultExt(mentorData, curState),
+          },
+        },
+        object: {
+          id: `${window.location.protocol}//${window.location.host}`,
+          objectType: "Activity",
         },
       },
-      result: {
-        extensions: {
-          "https://mentorpal.org/xapi/verb/answer-playback-started":
-            toXapiResultExt(mentorData, curState),
-        },
-      },
-      object: {
-        id: `${window.location.protocol}//${window.location.host}`,
-        objectType: "Activity",
-      },
-    });
+      curState.chatSessionId,
+      curState.sessionId
+    );
   };
 }
 
@@ -586,6 +605,11 @@ export const faveMentor = (mentor_id: any) => ({
 export const setGuestName = (name: string) => ({
   name,
   type: GUEST_NAME_SET,
+});
+
+export const setChatSessionId = (id: string) => ({
+  id,
+  type: SET_CHAT_SESSION_ID,
 });
 
 const currentQuestionIndex = (state: { questionsAsked: { length: any } }) =>
@@ -665,39 +689,43 @@ export const sendQuestion =
     getState: () => State
   ) => {
     const localData = getLocalStorage("userData");
+    const state = getState();
     const userEmail = JSON.parse(localData ? localData : "{}").userEmail;
-    sendCmi5Statement({
-      verb: {
-        id: "https://mentorpal.org/xapi/verb/asked",
-        display: {
-          "en-US": "asked",
-        },
-      },
-      result: {
-        extensions: {
-          "https://mentorpal.org/xapi/verb/asked": {
-            questionIndex: currentQuestionIndex(getState()) + 1,
-            text: q.question,
-            source: q.source,
-            userEmail: userEmail,
+    sendCmi5Statement(
+      {
+        verb: {
+          id: "https://mentorpal.org/xapi/verb/asked",
+          display: {
+            "en-US": "asked",
           },
         },
+        result: {
+          extensions: {
+            "https://mentorpal.org/xapi/verb/asked": {
+              questionIndex: currentQuestionIndex(state) + 1,
+              text: q.question,
+              source: q.source,
+              userEmail: userEmail,
+            },
+          },
+        },
+        object: {
+          id: `${window.location.protocol}//${window.location.host}`,
+          objectType: "Activity",
+        },
       },
-      object: {
-        id: `${window.location.protocol}//${window.location.host}`,
-        objectType: "Activity",
-      },
-    });
+      state.chatSessionId,
+      state.sessionId
+    );
     const questionId = uuid.v4();
     clearNextMentorTimer();
     dispatch(onQuestionSent({ ...q, questionId }));
-    const state = getState();
     const mentorIds = Object.keys(state.mentorsById);
     const tick = Date.now();
     // query all the mentors without waiting for the answers one by one
     const promises = mentorIds.map((mentor) => {
       return new Promise<QuestionResponse>((resolve, reject) => {
-        queryMentor(mentor, q.question, q.config)
+        queryMentor(mentor, q.question, state.chatSessionId, q.config)
           .then((r) => {
             const { data } = r;
             const [response, offTopicResponse] = getResponseObject(
@@ -708,26 +736,30 @@ export const sendQuestion =
               q,
               questionId
             );
-            sendCmi5Statement({
-              verb: {
-                id: "https://mentorpal.org/xapi/verb/answered",
-                display: {
-                  "en-US": "answered",
-                },
-              },
-              result: {
-                extensions: {
-                  "https://mentorpal.org/xapi/verb/answered": {
-                    ...response,
-                    questionIndex: currentQuestionIndex(getState()),
+            sendCmi5Statement(
+              {
+                verb: {
+                  id: "https://mentorpal.org/xapi/verb/answered",
+                  display: {
+                    "en-US": "answered",
                   },
                 },
+                result: {
+                  extensions: {
+                    "https://mentorpal.org/xapi/verb/answered": {
+                      ...response,
+                      questionIndex: currentQuestionIndex(getState()),
+                    },
+                  },
+                },
+                object: {
+                  id: `${window.location.protocol}//${window.location.host}`,
+                  objectType: "Activity",
+                },
               },
-              object: {
-                id: `${window.location.protocol}//${window.location.host}`,
-                objectType: "Activity",
-              },
-            });
+              state.chatSessionId,
+              state.sessionId
+            );
             if (data.confidence < OFF_TOPIC_THRESHOLD) {
               resolve(offTopicResponse);
             } else {

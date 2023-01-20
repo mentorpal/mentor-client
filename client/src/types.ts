@@ -274,6 +274,8 @@ export interface State {
   questionInput: QuestionInput;
   visibilityShowAllPref: boolean;
   replayMessageCount: number;
+  chatSessionId: string;
+  sessionId: string;
 }
 
 export interface QuestionInput {
