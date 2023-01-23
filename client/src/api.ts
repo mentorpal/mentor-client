@@ -39,6 +39,7 @@ export async function fetchConfig(): Promise<Config> {
           styleHeaderColor
           styleHeaderTextColor
           styleHeaderLogo
+          styleHeaderLogoUrl
           displayGuestPrompt
           defaultVirtualBackground
         }

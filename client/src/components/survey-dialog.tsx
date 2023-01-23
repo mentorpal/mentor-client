@@ -44,10 +44,18 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
       setPollingTimer(true);
       return;
     }
-
     const searchParams = new URL(location.href).searchParams;
     const postsurveytime = searchParams.get("postsurveytime");
-    const qualtricsUserId = searchParams.get("userid");
+    let qualtricsUserId = searchParams.get("userid");
+    if (!qualtricsUserId) {
+      const localData = localStorage.getItem("userData");
+      if (localData) {
+        const data = JSON.parse(localData);
+        if (data.userID) {
+          qualtricsUserId = data.userID;
+        }
+      }
+    }
     if (postsurveytime && qualtricsUserId) {
       setLocalStorage("postsurveytime", postsurveytime);
       setLocalStorage("qualtricsuserid", qualtricsUserId);

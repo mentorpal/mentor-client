@@ -83,6 +83,7 @@ export const initialState: State = {
     classifierLambdaEndpoint: process.env.CLASSIFIER_LAMBDA_ENDPOINT || "",
     urlVideo: process.env.MENTOR_VIDEO_URL || "/videos",
     styleHeaderLogo: process.env.HEADER_LOGO || "",
+    styleHeaderLogoUrl: "",
     styleHeaderColor: process.env.HEADER_COLOR || "",
     styleHeaderTextColor: process.env.HEADER_TEXT_COLOR || "",
     filterEmailMentorAddress: process.env.FILTER_EMAIL_MENTOR_ADDRESS || "",

@@ -115,6 +115,7 @@ export interface Config {
   urlGraphql: string;
   urlVideo: string;
   styleHeaderLogo: string;
+  styleHeaderLogoUrl: string;
   styleHeaderColor: string;
   styleHeaderTextColor: string;
   filterEmailMentorAddress: string;

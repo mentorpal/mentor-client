@@ -111,6 +111,7 @@ export interface Config {
   urlGraphql: string;
   urlVideo: string;
   styleHeaderLogo: string;
+  styleHeaderLogoUrl: string;
   styleHeaderColor: string;
   styleHeaderTextColor: string;
   filterEmailMentorAddress: string;
@@ -215,6 +216,7 @@ export const CONFIG_DEFAULT: Config = {
   urlGraphql: "/graphql",
   urlVideo: "/video",
   styleHeaderLogo: "",
+  styleHeaderLogoUrl: "",
   styleHeaderColor: "",
   styleHeaderTextColor: "",
   filterEmailMentorAddress: "",
