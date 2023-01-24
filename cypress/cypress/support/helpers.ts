@@ -119,6 +119,9 @@ export interface Config {
   disclaimerText: string;
   disclaimerDisabled: boolean;
   displayGuestPrompt: boolean;
+  postSurveyLink: string;
+  postSurveyTimer: number;
+  minTopicQuestionSize: number;
 }
 
 export function addGuestParams(query = {}, guestName = "guest") {

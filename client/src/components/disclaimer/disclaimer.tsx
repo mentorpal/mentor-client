@@ -15,34 +15,15 @@ import { useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
 import Tooltip from "@material-ui/core/Tooltip";
 import { SurveyDialog } from "components/survey-dialog";
-import { getLocalStorage } from "utils";
 
 export default function Disclaimer(): JSX.Element {
   const [open, setOpen] = useState<boolean>(false);
   const disclaimerText = useSelector<State, string>(
     (state) => state.config.disclaimerText
   );
-
   const disclaimerTitle = useSelector<State, string>(
     (state) => state.config.disclaimerTitle?.trim() || "Please Configure Title"
   );
-  // const disclaimerDisabled = useSelector<State, boolean>(
-  //   (state) => state.config.disclaimerDisabled
-  // );
-
-  // const [acceptedTerms, setAcceptedTerms] = useLocalStorage(
-  //   "acceptedTerms",
-  //   "false"
-  // );
-
-  //Check if user agreed to TOS, if not present dialog by setting default state
-  // const [open, setOpen] = React.useState(false);
-
-  // const handleClickOpen = () => {
-  //   setOpen(true);
-  // };
-
-  const qualtricsIdExists = Boolean(getLocalStorage("qualtricsuserid"));
 
   return (
     <Tooltip title="Disclaimer">
@@ -101,7 +82,6 @@ export default function Disclaimer(): JSX.Element {
                   marginTop: 10,
                   width: "100%",
                   textAlign: "center",
-                  display: qualtricsIdExists ? "block" : "none",
                 }}
               >
                 <SurveyDialog />
