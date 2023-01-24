@@ -10,7 +10,7 @@ import { Helmet } from "react-helmet";
 import { v1 as uuidv1, v4 as uuid } from "uuid";
 import { CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { createTheme, MuiThemeProvider } from "@material-ui/core/styles";
 
 import Header from "components/header";
 import {
@@ -147,7 +147,7 @@ function IndexPage(props: {
     (state) => state.config.styleHeaderColor?.trim() || "#FFFFFF"
   );
 
-  const brandedTheme = createMuiTheme({
+  const brandedTheme = createTheme({
     palette: {
       primary: {
         main: styleHeaderColor,

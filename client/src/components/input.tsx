@@ -135,8 +135,8 @@ function Input(): JSX.Element {
         ].join(" ")}
         value={questionInput.question}
         multiline
-        rows={2}
-        rowsMax={2}
+        minRows={2}
+        maxRows={2}
         classes={{
           input: classes.input,
         }}

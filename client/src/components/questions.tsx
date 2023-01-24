@@ -6,13 +6,13 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React from "react";
 import { useSelector } from "react-redux";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { MuiThemeProvider, createTheme } from "@material-ui/core/styles";
 import ScrollingQuestions from "components/scrolling-questions";
 import { MentorState, State } from "types";
 import withLocation from "wrap-with-location";
 import Chat from "./chat";
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: { main: "#1B6A9C" },
   },
