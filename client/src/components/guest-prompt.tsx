@@ -7,8 +7,8 @@ The full terms of this copyright and license should always be found in the root 
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { v1 as uuidv1 } from "uuid";
-import { Modal, Button, Paper, InputBase, Backdrop } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Modal, Button, Paper, InputBase, Backdrop } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 
 import { initCmi5 } from "cmiutils";
 import { Config, State } from "types";

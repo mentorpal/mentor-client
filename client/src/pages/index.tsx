@@ -8,9 +8,14 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Helmet } from "react-helmet";
 import { v1 as uuidv1, v4 as uuid } from "uuid";
-import { CircularProgress } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { createTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { CircularProgress } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import {
+  createTheme,
+  ThemeProvider,
+  Theme,
+  StyledEngineProvider,
+} from "@mui/material/styles";
 
 import Header from "components/header";
 import {
@@ -38,6 +43,11 @@ import {
 import VideoSection from "components/layout/video-section";
 import ChatSection from "components/layout/chat-section";
 import { useWithScreenOrientation } from "use-with-orientation";
+
+declare module "@mui/styles/defaultTheme" {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
 
 const useStyles = makeStyles((theme) => ({
   flexRoot: {
@@ -429,29 +439,31 @@ function IndexPage(props: {
           </div>
         </div>
       ) : (
-        <MuiThemeProvider theme={brandedTheme}>
-          <Header />
-          <div className={`main-container-${displayFormat}`}>
-            <div className="video-section">
-              <VideoSection
-                mentorType={mentorType}
-                chatHeight={chatHeight}
-                windowHeight={windowHeight}
-                hasSessionUser={hasSessionUser}
-                isMobile={displayFormat == "mobile"}
-              />
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={brandedTheme}>
+            <Header />
+            <div className={`main-container-${displayFormat}`}>
+              <div className="video-section">
+                <VideoSection
+                  mentorType={mentorType}
+                  chatHeight={chatHeight}
+                  windowHeight={windowHeight}
+                  hasSessionUser={hasSessionUser}
+                  isMobile={displayFormat == "mobile"}
+                />
+              </div>
+              <div className={`chat-section-${displayFormat}`}>
+                <ChatSection
+                  mentorType={mentorType}
+                  hasSessionUser={hasSessionUser}
+                  curTopic={curTopic}
+                  isMobile={displayFormat == "mobile"}
+                  noHistoryDownload={props.search.noHistoryDownload}
+                />
+              </div>
             </div>
-            <div className={`chat-section-${displayFormat}`}>
-              <ChatSection
-                mentorType={mentorType}
-                hasSessionUser={hasSessionUser}
-                curTopic={curTopic}
-                isMobile={displayFormat == "mobile"}
-                noHistoryDownload={props.search.noHistoryDownload}
-              />
-            </div>
-          </div>
-        </MuiThemeProvider>
+          </ThemeProvider>
+        </StyledEngineProvider>
       )}
     </div>
   );

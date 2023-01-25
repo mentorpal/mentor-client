@@ -5,8 +5,8 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import React, { useEffect } from "react";
-import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
-import { Whatshot, PlayCircleOutline } from "@material-ui/icons";
+import { List, ListItem, ListItemText, ListItemIcon } from "@mui/material";
+import { Whatshot, PlayCircleOutline } from "@mui/icons-material";
 import smoothscroll from "smoothscroll-polyfill";
 import { normalizeString } from "utils";
 import "styles/history-chat-responsive.css";

@@ -6,7 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Paper } from "@material-ui/core";
+import { Paper } from "@mui/material";
 import { normalizeString } from "utils";
 import { selectTopic } from "store/actions";
 import { MentorType, State, TopicQuestions } from "types";

@@ -5,15 +5,15 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import React, { useState } from "react";
-import Box from "@material-ui/core/Box";
-import Typography from "@material-ui/core/Typography";
-import Modal from "@material-ui/core/Modal";
-import { Button, IconButton } from "@material-ui/core";
-import InfoIcon from "@material-ui/icons/Info";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import { Button, IconButton } from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
 import { State } from "types";
 import { useSelector } from "react-redux";
 import ReactMarkdown from "react-markdown";
-import Tooltip from "@material-ui/core/Tooltip";
+import Tooltip from "@mui/material/Tooltip";
 import { SurveyDialog } from "components/survey-dialog";
 import { getLocalStorage } from "utils";
 
@@ -52,6 +52,7 @@ export default function Disclaimer(): JSX.Element {
             component="span"
             onClick={() => setOpen(true)}
             data-cy="header-disclimer-btn"
+            size="large"
           >
             <InfoIcon style={{ color: "white" }} />
           </IconButton>

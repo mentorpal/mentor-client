@@ -6,7 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React from "react";
 import { useSelector } from "react-redux";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import { State } from "types";
 
 function LoadingSpinner(args: { mentor: string }): JSX.Element {

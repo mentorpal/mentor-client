@@ -14,17 +14,17 @@ import {
   ListItemAvatar,
   Popover,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import ThumbUpIcon from "@material-ui/icons/ThumbUp";
-import ThumbDownIcon from "@material-ui/icons/ThumbDown";
-import ThumbsUpDownIcon from "@material-ui/icons/ThumbsUpDown";
-import RecordVoiceOverIcon from "@material-ui/icons/RecordVoiceOver";
-import ChevronRightRoundedIcon from "@material-ui/icons/ChevronRightRounded";
-import ExpandMoreRoundedIcon from "@material-ui/icons/ExpandMoreRounded";
-import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import ThumbsUpDownIcon from "@mui/icons-material/ThumbsUpDown";
+import RecordVoiceOverIcon from "@mui/icons-material/RecordVoiceOver";
+import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
+import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 
-import CloseIcon from "@material-ui/icons/Close";
+import CloseIcon from "@mui/icons-material/Close";
 
 import {
   ChatMsg,

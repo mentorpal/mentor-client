@@ -6,7 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React from "react";
 import { useSelector } from "react-redux";
-import { Sms, SmsFailed } from "@material-ui/icons";
+import { Sms, SmsFailed } from "@mui/icons-material";
 import { MentorQuestionStatus, State } from "types";
 
 interface MessageStatusState {

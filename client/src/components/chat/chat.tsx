@@ -6,8 +6,8 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React from "react";
 import { useSelector } from "react-redux";
-import { List } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { List } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 
 import { ChatData, ChatMsg, MentorType, State } from "types";
 import "styles/history-chat.css";

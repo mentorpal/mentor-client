@@ -6,13 +6,13 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Divider, Paper, InputBase } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Button, Divider, Paper, InputBase } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 
 import { sendQuestion, userInputChanged } from "store/actions";
 import { Config, MentorQuestionSource, QuestionInput, State } from "types";
 import { isMobile } from "react-device-detect";
-import SendRoundedIcon from "@material-ui/icons/SendRounded";
+import SendRoundedIcon from "@mui/icons-material/SendRounded";
 
 import "styles/layout.css";
 import { useWithScreenOrientation } from "use-with-orientation";

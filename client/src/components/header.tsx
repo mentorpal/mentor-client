@@ -6,10 +6,10 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React from "react";
 import { useSelector } from "react-redux";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import { State } from "types";
-import IconButton from "@material-ui/core/IconButton";
-import HomeIcon from "@material-ui/icons/Home";
+import IconButton from "@mui/material/IconButton";
+import HomeIcon from "@mui/icons-material/Home";
 import "styles/layout.css";
 import Disclaimer from "./disclaimer/disclaimer";
 
@@ -98,6 +98,7 @@ function Header(): JSX.Element {
             className="home-btn"
             onClick={handleClickHome}
             data-cy="home-button"
+            size="large"
           >
             <HomeIcon />
           </IconButton>
