@@ -371,7 +371,7 @@ export const loadMentors: ActionCreator<
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
   ) => {
-    const { intro, mentors, subject, recommendedQuestions } = args;
+    const { intro, mentors, subject, recommendedQuestions, config } = args;
     dispatch<MentorsLoadRequestedAction>({
       type: MENTORS_LOAD_REQUESTED,
       payload: {
@@ -393,10 +393,28 @@ export const loadMentors: ActionCreator<
     const mentorRequests = mentors.map(async (mentorId) => {
       try {
         const mentor: MentorClientData = await fetchMentor(mentorId, subject);
-        const topicQuestions: TopicQuestions[] = [];
+        let topicQuestions: TopicQuestions[] = [];
         const recommendedQuestions = [...getState().recommendedQuestions];
         topicQuestions.push(...mentor.topicQuestions);
         const recommendedTopics = getRecommendedTopics(topicQuestions);
+
+        if (config.minTopicQuestionSize > 0) {
+          const additionalQuestions: string[] = [];
+          for (const tq of topicQuestions) {
+            if (tq.questions.length < config.minTopicQuestionSize) {
+              additionalQuestions.push(...tq.questions);
+            }
+          }
+          topicQuestions = topicQuestions.filter(
+            (tq) => tq.questions.length >= config.minTopicQuestionSize
+          );
+          if (additionalQuestions.length > 0) {
+            topicQuestions.push({
+              topic: "Additional Questions",
+              questions: additionalQuestions,
+            });
+          }
+        }
 
         // RECOMMENDED QUESTIONS AND TOPICS
         if (recommendedTopics && recommendedQuestions.length > 0) {

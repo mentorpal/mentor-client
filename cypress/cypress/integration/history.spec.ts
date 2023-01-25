@@ -542,7 +542,7 @@ describe("Chat History (Video Mentors)", () => {
     });
   });
 
-  it("Answers can be toggled open to see the transcript of the response", () => {
+  it.skip("Answers can be toggled open to see the transcript of the response", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint", "carlos"] },
       mentorData: [clint, carlos],

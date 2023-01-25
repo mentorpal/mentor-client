@@ -4,58 +4,124 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { visitAsGuestWithDefaultSetup } from "../support/helpers";
-
-describe("Disclaimer Survey Popup Button", () => {
-  it("Only visible is qualtricsuserid exists in local storage", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
-    cy.get("[data-cy=header-disclimer-btn]").invoke("mouseover").click();
-    cy.get("[data-cy=header-survey-popup-btn]").should("not.be.visible");
-    visitAsGuestWithDefaultSetup(cy, "/?postsurveytime=10&userid=123");
-    cy.get("[data-cy=header-disclimer-btn]").invoke("mouseover").click();
-    cy.get("[data-cy=disclaimer-text]").should(
-      "contain.text",
-      "Disclaimer: The CareerFair.AI rese"
-    );
-    cy.get("[data-cy=header-survey-popup-btn]")
-      .scrollIntoView()
-      .should("be.visible");
-  });
-
-  it("If just qualtrics id is set and nothing else", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
-    window.localStorage.setItem("qualtricsuserid", "123");
-    cy.get("[data-cy=header-disclimer-btn]").invoke("mouseover").click();
-    cy.get("[data-cy=disclaimer-text]").should(
-      "contain.text",
-      "Disclaimer: The CareerFair.AI rese"
-    );
-    cy.get("[data-cy=header-survey-popup-btn]")
-      .scrollIntoView()
-      .invoke("mouseover")
-      .click();
-    cy.get("[data-cy=survey-dialog]").should("be.visible");
-    cy.get("[data-cy=survey-dialog-title]").should("be.visible");
-    cy.get("[data-cy=survey-link]").should("be.visible");
-  });
-
-  it("If local storage is setup correctly and time not passed", () => {
-    visitAsGuestWithDefaultSetup(cy, "/?postsurveytime=10&userid=123");
-    cy.get("[data-cy=header-disclimer-btn]").should("be.visible");
-    cy.get("[data-cy=header-disclimer-btn]").invoke("mouseover").click();
-    cy.get("[data-cy=header-survey-popup-btn]").invoke("mouseover").click();
-    cy.get("[data-cy=survey-dialog]").should("be.visible");
-    cy.get("[data-cy=survey-dialog-title]").should("be.visible");
-    cy.get("[data-cy=survey-link]").should("exist");
-  });
-});
+import { mockDefaultSetup } from "../support/helpers";
 
 describe("Survey Popup After Timer", () => {
-  it("If local storage setup, and after waiting the proper amount of time, pops up on its own", () => {
-    visitAsGuestWithDefaultSetup(cy, "/?postsurveytime=10&userid=123");
-    cy.wait(10000);
-    cy.get("[data-cy=survey-dialog]").should("be.visible");
-    cy.get("[data-cy=survey-dialog-title]").should("be.visible");
-    cy.get("[data-cy=survey-link]").should("be.visible");
+  it("not visible if postSurveyLink not in config", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: false,
+        disclaimerDisabled: true,
+        cmi5Enabled: false,
+      },
+    });
+    cy.visit("/");
+    cy.wait(500);
+    cy.get("[data-cy=survey-dialog]").should("not.exist");
+  });
+
+  it("not visible if postSurveyTimer not in config", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: false,
+        disclaimerDisabled: true,
+        cmi5Enabled: false,
+        postSurveyLink: "test",
+      },
+    });
+    cy.visit("/");
+    cy.wait(500);
+    cy.get("[data-cy=survey-dialog]").should("not.exist");
+  });
+
+  it("not visible if userid not in url", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: false,
+        disclaimerDisabled: true,
+        cmi5Enabled: false,
+        postSurveyLink: "test",
+        postSurveyTimer: 1,
+      },
+    });
+    cy.visit("/");
+    cy.wait(500);
+    cy.get("[data-cy=survey-dialog]").should("not.exist");
+  });
+
+  it("visible if postSurveyLink and postSurveyTimer in config, and userid in url", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: false,
+        disclaimerDisabled: true,
+        cmi5Enabled: false,
+        postSurveyLink: "test",
+        postSurveyTimer: 1,
+      },
+    });
+    cy.visit("/?userid=123");
+    cy.wait(500);
+    cy.get("[data-cy=survey-dialog]", { timeout: 10000 }).should("exist");
+  });
+
+  it("visible if postSurveyLink and postSurveyTimer in config, and qualtricsuserid in localstorage", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: false,
+        disclaimerDisabled: true,
+        cmi5Enabled: false,
+        postSurveyLink: "test",
+        postSurveyTimer: 1,
+      },
+    });
+    cy.visit("/");
+    window.localStorage.setItem("qualtricsuserid", "123");
+    cy.wait(500);
+    cy.get("[data-cy=survey-dialog]", { timeout: 10000 }).should("exist");
+  });
+
+  it("visible if postSurveyLink in config, and postsurveytime and userid in url", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: false,
+        disclaimerDisabled: true,
+        cmi5Enabled: false,
+        postSurveyLink: "test",
+        postSurveyTimer: 1,
+      },
+    });
+    cy.visit("/?postsurveytime=1&userid=123");
+    cy.wait(500);
+    cy.get("[data-cy=survey-dialog]", { timeout: 10000 }).should("exist");
+  });
+
+  it("visible if postSurveyLink in config, and postsurveytime in url, and qualtricsuserid in localstorage", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: false,
+        disclaimerDisabled: true,
+        cmi5Enabled: false,
+        postSurveyLink: "test",
+        postSurveyTimer: 1,
+      },
+    });
+    cy.visit("/?postsurveytime=1");
+    window.localStorage.setItem("qualtricsuserid", "123");
+    cy.wait(500);
+    cy.get("[data-cy=survey-dialog]", { timeout: 10000 }).should("exist");
+  });
+
+  it("if local storage is setup correctly and time not passed", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: false,
+        disclaimerDisabled: true,
+        cmi5Enabled: false,
+        postSurveyLink: "test",
+        postSurveyTimer: 1,
+      },
+    });
+    cy.visit("/?userid=123");
+    cy.get("[data-cy=survey-dialog]").should("not.exist");
   });
 });
