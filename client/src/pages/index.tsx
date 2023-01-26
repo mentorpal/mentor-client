@@ -49,7 +49,7 @@ declare module "@mui/styles/defaultTheme" {
   interface DefaultTheme extends Theme {}
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   flexRoot: {
     display: "flex",
     flexFlow: "column nowrap",
@@ -90,9 +90,6 @@ const useStyles = makeStyles((theme) => ({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-  },
-  loadingIndicator: {
-    color: theme.palette.primary.main,
   },
   loadingImage: {
     width: 100,
@@ -431,8 +428,7 @@ function IndexPage(props: {
           <div className={styles.loadingContent}>
             <CircularProgress
               data-cy="loading"
-              className={styles.loadingIndicator}
-              style={{ color: config.styleHeaderColor }}
+              style={{ color: styleHeaderColor }}
               size={150}
             />
             <div className={styles.loadingIndicatorContent}></div>
