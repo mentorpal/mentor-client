@@ -38,6 +38,9 @@ function Header(): JSX.Element {
   const styleHeaderLogo = useSelector<State, string>(
     (state) => state.config.styleHeaderLogo?.trim() || ""
   );
+  const styleHeaderLogoUrl = useSelector<State, string>(
+    (state) => state.config.styleHeaderLogoUrl?.trim() || ""
+  );
   const styleHeaderColor = useSelector<State, string>(
     (state) => state.config.styleHeaderColor?.trim() || "#FFFFFF"
   );
@@ -75,36 +78,53 @@ function Header(): JSX.Element {
       }}
       className="header-container"
     >
-      {styleHeaderLogo ? (
-        <img
-          src={styleHeaderLogo}
-          style={{
-            position: "absolute",
-            left: "10px",
-            height: 40,
-            paddingTop: 10,
-            paddingBottom: 10,
-          }}
-        />
-      ) : undefined}
-      <div className="home-btn-wrapper">
-        {mentor.name !== "USC" ? (
-          <IconButton
-            aria-label="information"
-            component="span"
-            style={{
-              color: `${styleHeaderTextColor}`,
-            }}
-            className="home-btn"
-            onClick={handleClickHome}
-            data-cy="home-button"
-            size="large"
-          >
-            <HomeIcon />
-          </IconButton>
-        ) : (
-          ""
-        )}
+      <div
+        style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+      >
+        {styleHeaderLogo ? (
+          styleHeaderLogoUrl ? (
+            <a href={styleHeaderLogoUrl}>
+              <img
+                src={styleHeaderLogo}
+                style={{
+                  height: 40,
+                  marginLeft: 10,
+                  paddingTop: 10,
+                  paddingBottom: 10,
+                }}
+              />
+            </a>
+          ) : (
+            <img
+              src={styleHeaderLogo}
+              style={{
+                height: 40,
+                marginLeft: 10,
+                paddingTop: 10,
+                paddingBottom: 10,
+              }}
+            />
+          )
+        ) : undefined}
+        <div className="home-btn-wrapper">
+          {mentor.name !== "USC" ? (
+            <IconButton
+              aria-label="information"
+              component="span"
+              style={{
+                color: `${styleHeaderTextColor}`,
+              }}
+              className="home-btn"
+              onClick={handleClickHome}
+              data-cy="home-button"
+              size="large"
+            >
+              <HomeIcon />
+            </IconButton>
+          ) : (
+            ""
+          )}
+        </div>
       </div>
       <div className="header-mentor-info">
         <Typography>{MentorNameTitle}</Typography>

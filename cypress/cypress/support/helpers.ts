@@ -111,6 +111,7 @@ export interface Config {
   urlGraphql: string;
   urlVideo: string;
   styleHeaderLogo: string;
+  styleHeaderLogoUrl: string;
   styleHeaderColor: string;
   styleHeaderTextColor: string;
   filterEmailMentorAddress: string;
@@ -118,6 +119,9 @@ export interface Config {
   disclaimerText: string;
   disclaimerDisabled: boolean;
   displayGuestPrompt: boolean;
+  postSurveyLink: string;
+  postSurveyTimer: number;
+  minTopicQuestionSize: number;
 }
 
 export function addGuestParams(query = {}, guestName = "guest") {
@@ -215,6 +219,7 @@ export const CONFIG_DEFAULT: Config = {
   urlGraphql: "/graphql",
   urlVideo: "/video",
   styleHeaderLogo: "",
+  styleHeaderLogoUrl: "",
   styleHeaderColor: "",
   styleHeaderTextColor: "",
   filterEmailMentorAddress: "",

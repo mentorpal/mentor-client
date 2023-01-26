@@ -28,10 +28,10 @@ export async function fetchConfig(): Promise<Config> {
           cmi5Enabled
           cmi5Endpoint
           cmi5Fetch
-          mentorsDefault
           classifierLambdaEndpoint
           urlGraphql
           urlVideo
+          mentorsDefault
           filterEmailMentorAddress
           disclaimerTitle
           disclaimerText
@@ -39,8 +39,12 @@ export async function fetchConfig(): Promise<Config> {
           styleHeaderColor
           styleHeaderTextColor
           styleHeaderLogo
+          styleHeaderLogoUrl
           displayGuestPrompt
           defaultVirtualBackground
+          postSurveyLink
+          postSurveyTimer
+          minTopicQuestionSize
         }
       }
     `,

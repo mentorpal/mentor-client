@@ -14,16 +14,14 @@ import {
 } from "utils";
 import { sendCmi5Statement, toXapiResultExtCustom } from "cmiutils";
 import { useSelector } from "react-redux";
-import { State } from "types";
+import { Config, State } from "types";
 
-export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
+export function SurveyDialog(): JSX.Element {
   const [title, setTitle] = useState<string>("");
   const [pollingTimer, setPollingTimer] = useState<boolean>(false);
   const [showSurveyPopup, setShowSurveyPopup] = useState<boolean>(false);
-  const surveyLink = `https://fullerton.qualtrics.com/jfe/form/SV_1ZzDYgNPzLE2QPI?userid=${getLocalStorage(
-    "qualtricsuserid"
-  )}`;
-  const { noLabel } = props;
+  const [surveyLink, setSurveyLink] = useState<string>();
+  const config = useSelector<State, Config>((state) => state.config);
   const chatSessionId = useSelector<State, string>(
     (state) => state.chatSessionId
   );
@@ -32,30 +30,41 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
   );
 
   function checkForSurveyPopupVariables() {
-    // Check if we already have local storage setup
-    const localStorageTimerPopup = getLocalStorage("postsurveytime");
-    const localStorageTimeSpent = getLocalStorage("timespentonpage");
-    const qualtricsUserIdLocalStorage = getLocalStorage("qualtricsuserid");
-    if (
-      localStorageTimerPopup &&
-      localStorageTimeSpent &&
-      qualtricsUserIdLocalStorage
-    ) {
-      setPollingTimer(true);
-      return;
-    }
-
     const searchParams = new URL(location.href).searchParams;
-    const postsurveytime = searchParams.get("postsurveytime");
-    const qualtricsUserId = searchParams.get("userid");
-    if (postsurveytime && qualtricsUserId) {
+    const postsurveytime =
+      searchParams.get("postsurveytime") || `${config.postSurveyTimer}`;
+    if (postsurveytime) {
       setLocalStorage("postsurveytime", postsurveytime);
-      setLocalStorage("qualtricsuserid", qualtricsUserId);
-      setLocalStorage("timespentonpage", "0");
-      const timertext = searchParams.get("timertext");
-      if (timertext) {
-        setLocalStorage("timertext", timertext);
+    }
+    let qualtricsuserid = searchParams.get("userid");
+    if (qualtricsuserid) {
+      setLocalStorage("qualtricsuserid", qualtricsuserid);
+    } else {
+      qualtricsuserid = getLocalStorage("qualtricsuserid");
+      if (!qualtricsuserid) {
+        const localData = getLocalStorage("userData");
+        if (localData) {
+          const data = JSON.parse(localData);
+          if (data.userID) {
+            qualtricsuserid = data.userID;
+          }
+        }
       }
+    }
+    const timertext = searchParams.get("timertext");
+    if (timertext) {
+      setLocalStorage("timertext", timertext);
+    }
+    if (config.postSurveyLink && qualtricsuserid) {
+      setSurveyLink(`${config.postSurveyLink}?userid=${qualtricsuserid}`);
+    }
+    if (
+      postsurveytime &&
+      Number(postsurveytime) > 0 &&
+      qualtricsuserid &&
+      config.postSurveyLink
+    ) {
+      setLocalStorage("timespentonpage", "0");
       setPollingTimer(true);
     }
   }
@@ -149,8 +158,10 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
   }, [showSurveyPopup, pollingTimer]);
 
   useEffect(() => {
-    checkForSurveyPopupVariables();
-  }, []);
+    if (config && config.postSurveyLink) {
+      checkForSurveyPopupVariables();
+    }
+  }, [config]);
 
   function onClose() {
     // Clear local storage if enough time was spent on page
@@ -224,7 +235,7 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
 
   return (
     <div>
-      {noLabel ? undefined : (
+      {surveyLink ? (
         <label>
           <Button
             onClick={() => {
@@ -236,7 +247,7 @@ export function SurveyDialog(props: { noLabel?: boolean }): JSX.Element {
             Open Survey Popup
           </Button>
         </label>
-      )}
+      ) : undefined}
       <Dialog
         data-cy="survey-dialog"
         maxWidth="sm"

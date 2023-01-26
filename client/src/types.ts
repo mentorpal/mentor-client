@@ -110,11 +110,12 @@ export interface Config {
   cmi5Enabled: boolean;
   cmi5Endpoint: string;
   cmi5Fetch: string;
-  mentorsDefault: string[];
   classifierLambdaEndpoint: string;
   urlGraphql: string;
   urlVideo: string;
+  mentorsDefault: string[];
   styleHeaderLogo: string;
+  styleHeaderLogoUrl: string;
   styleHeaderColor: string;
   styleHeaderTextColor: string;
   filterEmailMentorAddress: string;
@@ -123,6 +124,9 @@ export interface Config {
   disclaimerDisabled: boolean;
   displayGuestPrompt: boolean;
   defaultVirtualBackground: string;
+  postSurveyLink: string;
+  postSurveyTimer: number;
+  minTopicQuestionSize: number;
 }
 
 export enum QuestionType {
