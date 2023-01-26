@@ -6,7 +6,6 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Helmet } from "react-helmet";
 import { v1 as uuidv1, v4 as uuid } from "uuid";
 import { CircularProgress } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
@@ -419,10 +418,6 @@ function IndexPage(props: {
 
   return (
     <div>
-      <Helmet>
-        <meta name="googlebot" content="noindex" />
-        <meta name="robots" content="noindex" />
-      </Helmet>
       {!isConfigLoadComplete(configLoadStatus) || !curMentor ? (
         <div className={styles.loadingWindow}>
           <div className={styles.loadingContent}>
@@ -466,3 +461,11 @@ function IndexPage(props: {
 }
 
 export default withLocation(IndexPage);
+
+// https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-head/
+export const Head = (): JSX.Element => (
+  <>
+    <meta name="googlebot" content="noindex" />
+    <meta name="robots" content="noindex" />
+  </>
+);
