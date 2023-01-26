@@ -6,8 +6,8 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Typography, IconButton, FormGroup, Switch } from "@material-ui/core";
-import DownloadIcon from "@material-ui/icons/GetApp";
+import { Typography, IconButton, FormGroup, Switch } from "@mui/material";
+import DownloadIcon from "@mui/icons-material/GetApp";
 
 import { toggleHistoryVisibility } from "store/actions";
 import { useWithChatData } from "./chat/use-chat-data";
@@ -41,6 +41,7 @@ export default function History(props: {
         <IconButton
           data-cy="download-history-btn"
           onClick={downloadChatHistory}
+          size="large"
         >
           <DownloadIcon />
         </IconButton>

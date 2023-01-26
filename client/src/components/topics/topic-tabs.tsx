@@ -1,16 +1,17 @@
 import React, { useState } from "react";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import { ArrowDropDown, History } from "@material-ui/icons";
+import { Theme } from "@mui/material/styles";
+import createStyles from "@mui/styles/createStyles";
+import makeStyles from "@mui/styles/makeStyles";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import { ArrowDropDown, History } from "@mui/icons-material";
 import { State, TopicQuestions } from "types";
 import "styles/layout.css";
 import { useSelector } from "react-redux";
-import { Button, DialogActions, Paper, Tab, Tabs } from "@material-ui/core";
-import { ChangeEvent } from "react";
+import { Button, DialogActions, Paper, Tab, Tabs } from "@mui/material";
 import "styles/topic-tabs.css";
 import EmailMentorIcon from "components/email-mentor-icon";
 
@@ -58,7 +59,7 @@ function TopicTabs(props: {
   });
 
   const onChange = (
-    e: ChangeEvent<Record<string, unknown>>,
+    e: React.SyntheticEvent<Element, Event>,
     newValue: number
   ) => {
     setSelectedTabIx(newValue);
@@ -199,7 +200,6 @@ function TopicTabs(props: {
                 className={["topic-tab topic-selected"].join(" ")}
                 data-test="History"
                 data-cy="history-tab-inner"
-                onChange={onChange}
               />
             )}
           </Tabs>

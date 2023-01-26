@@ -6,7 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React from "react";
 import { useSelector } from "react-redux";
-import { Collapse, Paper } from "@material-ui/core";
+import { Collapse, Paper } from "@mui/material";
 
 import Topics from "components/topics/topics";
 import Questions from "components/questions";

@@ -6,13 +6,23 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React from "react";
 import { useSelector } from "react-redux";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import {
+  ThemeProvider,
+  Theme,
+  StyledEngineProvider,
+  createTheme,
+} from "@mui/material/styles";
 import ScrollingQuestions from "components/scrolling-questions";
 import { MentorState, State } from "types";
 import withLocation from "wrap-with-location";
 import Chat from "./chat";
 
-const theme = createMuiTheme({
+declare module "@mui/styles/defaultTheme" {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
+const theme = createTheme({
   palette: {
     primary: { main: "#1B6A9C" },
   },
@@ -82,7 +92,11 @@ function Questions(props: {
       />
     );
 
-  return <MuiThemeProvider theme={theme}>{content}</MuiThemeProvider>;
+  return (
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>{content}</ThemeProvider>
+    </StyledEngineProvider>
+  );
 }
 
 export default withLocation(Questions);
