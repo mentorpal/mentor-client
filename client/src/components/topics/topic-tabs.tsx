@@ -158,6 +158,8 @@ function TopicTabs(props: {
                 width: "20",
                 height: "auto",
                 marginLeft: 8,
+                margin: 0,
+                padding: 0,
               }}
             />
           }

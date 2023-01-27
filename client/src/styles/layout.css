@@ -147,6 +147,8 @@ body {
 .topic-tab {
   width: auto;
   padding: 0;
+  padding-right: 15px;
+  padding-left: 15px;
 }
 
 .MuiTab-wrapper {
