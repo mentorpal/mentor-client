@@ -237,6 +237,8 @@ export function ChatItem(props: {
             : "#000000c9",
           marginTop: !message.isUser ? "0.6rem" : "",
           marginBottom: "0.6rem",
+          display: "flex",
+          flexDirection: "row",
         }}
       >
         {!message.isIntro ? visibilityIcon : null}
