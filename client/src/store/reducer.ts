@@ -50,6 +50,10 @@ import {
   SessionIdCreatedAction,
   SESSION_ID_CREATED,
   SESSION_ID_FOUND,
+  AUTH_USER_FAILED,
+  AUTH_USER_STARTED,
+  AUTH_USER_SUCCEEDED,
+  AuthUserSucceededAction,
 } from "./actions";
 import {
   MentorState,
@@ -121,6 +125,12 @@ export const initialState: State = {
   replayMessageCount: 0,
   chatSessionId: "",
   sessionId: "",
+  authenticationStatus: LoadStatus.NONE,
+  authUserData: {
+    accessToken: "",
+    errorMessage: "",
+    authenticated: false,
+  },
 };
 
 function mentorSelected(state: State, action: MentorSelectedAction): State {
@@ -404,10 +414,24 @@ function onConfigLoadStarted(state: State): State {
   };
 }
 
+function onAuthUserStarted(state: State): State {
+  return {
+    ...state,
+    authenticationStatus: LoadStatus.LOAD_IN_PROGRESS,
+  };
+}
+
 function onConfigLoadFailed(state: State): State {
   return {
     ...state,
     configLoadStatus: LoadStatus.LOAD_FAILED,
+  };
+}
+
+function onAuthUserFailed(state: State): State {
+  return {
+    ...state,
+    authenticationStatus: LoadStatus.LOAD_FAILED,
   };
 }
 
@@ -419,6 +443,17 @@ function onConfigLoadSucceeded(
     ...state,
     config: action.payload,
     configLoadStatus: LoadStatus.LOADED,
+  };
+}
+
+function onAuthUserSucceeded(
+  state: State,
+  action: AuthUserSucceededAction
+): State {
+  return {
+    ...state,
+    authUserData: action.payload,
+    authenticationStatus: LoadStatus.LOADED,
   };
 }
 
@@ -684,6 +719,14 @@ export default function reducer(
       return onConfigLoadStarted(state);
     case CONFIG_LOAD_SUCCEEDED:
       return onConfigLoadSucceeded(state, action);
+
+    case AUTH_USER_FAILED:
+      return onAuthUserFailed(state);
+    case AUTH_USER_STARTED:
+      return onAuthUserStarted(state);
+    case AUTH_USER_SUCCEEDED:
+      return onAuthUserSucceeded(state, action);
+
     case FEEDBACK_SEND_FAILED:
       return onFeedbackSendFailed(state, action);
     case FEEDBACK_SEND_SUCCEEDED:

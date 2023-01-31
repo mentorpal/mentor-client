@@ -10,6 +10,12 @@ export interface MentorQueryDataGQL {
   mentorClientData: MentorClientDataGQL;
 }
 
+export interface AuthUserData {
+  accessToken: string;
+  errorMessage: string;
+  authenticated: boolean;
+}
+
 export interface MentorClientDataGQL {
   _id: string;
   name: string;

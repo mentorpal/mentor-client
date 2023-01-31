@@ -18,6 +18,7 @@ import {
 
 import Header from "components/header";
 import {
+  authenticateUser,
   loadConfig,
   loadMentors,
   SESSION_ID_CREATED,
@@ -42,6 +43,7 @@ import {
 import VideoSection from "components/layout/video-section";
 import ChatSection from "components/layout/chat-section";
 import { useWithScreenOrientation } from "use-with-orientation";
+import { AuthUserData } from "types-gql";
 
 declare module "@mui/styles/defaultTheme" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -112,6 +114,12 @@ function IndexPage(props: {
   const configLoadStatus = useSelector<State, LoadStatus>(
     (state) => state.configLoadStatus
   );
+  const authUserLoadStatus = useSelector<State, LoadStatus>(
+    (state) => state.authenticationStatus
+  );
+  const authUserData = useSelector<State, AuthUserData>(
+    (state) => state.authUserData
+  );
   const guestName = useSelector<State, string>((state) => state.guestName);
   const curMentor = useSelector<State, string>((state) => state.curMentor);
   const sessionIdInState = useSelector<State, string>(
@@ -144,7 +152,7 @@ function IndexPage(props: {
     return Boolean(!config.cmi5Enabled || cmi5init || guestName);
   }
 
-  function isConfigLoadComplete(s: LoadStatus): boolean {
+  function isLoadComplete(s: LoadStatus): boolean {
     return s === LoadStatus.LOADED || s === LoadStatus.LOAD_FAILED;
   }
 
@@ -183,6 +191,8 @@ function IndexPage(props: {
   }, [chatSessionId, cmi5init, sessionIdInState]);
 
   useEffect(() => {
+    dispatch(authenticateUser());
+    dispatch(loadConfig());
     const sessionIdInUrl = new URL(location.href).searchParams.get("sessionId");
     if (sessionIdInUrl) {
       dispatch({
@@ -200,7 +210,7 @@ function IndexPage(props: {
   }, []);
 
   useEffect(() => {
-    if (!isConfigLoadComplete(configLoadStatus) || !curMentor) {
+    if (!isLoadComplete(configLoadStatus) || !curMentor) {
       return;
     }
     const headerHeight = 50;
@@ -281,10 +291,10 @@ function IndexPage(props: {
     return [userIdURL, referrerURL, userEmail];
   };
 
-  function warmupMentors(mentors: string | string[]) {
+  function warmupMentors(mentors: string | string[], accessToken: string) {
     const mentorIds = Array.isArray(mentors) ? mentors : [mentors];
     mentorIds.forEach((mentorId) => {
-      pingMentor(mentorId, chatSessionId, config).catch((err) => {
+      pingMentor(mentorId, chatSessionId, config, accessToken).catch((err) => {
         // We don't really care if this query fails, so just catch error
         console.error(err);
       });
@@ -292,14 +302,14 @@ function IndexPage(props: {
   }
 
   useEffect(() => {
-    if (configLoadStatus === LoadStatus.NONE) {
-      dispatch(loadConfig());
-    }
-    if (!isConfigLoadComplete(configLoadStatus)) {
+    if (
+      !isLoadComplete(configLoadStatus) ||
+      !isLoadComplete(authUserLoadStatus)
+    ) {
       return;
     }
     if (mentor) {
-      warmupMentors(mentor);
+      warmupMentors(mentor, authUserData.accessToken);
     }
     if (config.cmi5Enabled && !config.displayGuestPrompt && !cmi5_instance) {
       const [userIdLRS, referrer, userEmail] = setupLocalStorage();
@@ -307,7 +317,7 @@ function IndexPage(props: {
         initCmi5(userIdLRS, userEmail, `guests-client/${referrer}`, config);
       }
     }
-  }, [configLoadStatus]);
+  }, [configLoadStatus, authUserLoadStatus]);
 
   useEffect(() => {
     const chatSessionId = uuid();
@@ -367,7 +377,10 @@ function IndexPage(props: {
   }, []);
 
   useEffect(() => {
-    if (!isConfigLoadComplete(configLoadStatus)) {
+    if (
+      !isLoadComplete(configLoadStatus) ||
+      !isLoadComplete(authUserLoadStatus)
+    ) {
       return;
     }
 
@@ -401,7 +414,13 @@ function IndexPage(props: {
       );
     };
     findMentor();
-  }, [configLoadStatus, mentor, subject, recommendedQuestions]);
+  }, [
+    configLoadStatus,
+    mentor,
+    subject,
+    recommendedQuestions,
+    authUserLoadStatus,
+  ]);
 
   useEffect(() => {
     let userId = getParamUserId(window.location.href);
@@ -418,7 +437,7 @@ function IndexPage(props: {
 
   return (
     <div>
-      {!isConfigLoadComplete(configLoadStatus) || !curMentor ? (
+      {!isLoadComplete(configLoadStatus) || !curMentor ? (
         <div className={styles.loadingWindow}>
           <div className={styles.loadingContent}>
             <CircularProgress

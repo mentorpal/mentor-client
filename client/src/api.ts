@@ -14,7 +14,11 @@ import {
   UtteranceName,
   MentorState,
 } from "types";
-import { convertMentorClientDataGQL, MentorQueryDataGQL } from "types-gql";
+import {
+  convertMentorClientDataGQL,
+  MentorQueryDataGQL,
+  AuthUserData,
+} from "types-gql";
 
 export const GATSBY_GRAPHQL_ENDPOINT =
   process.env.GATSBY_GRAPHQL_ENDPOINT || "/graphql";
@@ -154,6 +158,7 @@ export async function fetchMentorByAccessToken(
 // Update to convert to mentor
 export async function fetchMentor(
   mentorId: string,
+  accessToken: string,
   subjectId?: string
 ): Promise<MentorClientData> {
   const gqlRes = await axios.post<GraphQLResponse<MentorQueryDataGQL>>(
@@ -202,6 +207,11 @@ export async function fetchMentor(
       variables: {
         mentor: mentorId,
         subject: subjectId,
+      },
+    },
+    {
+      headers: {
+        Authorization: `bearer ${accessToken}`,
       },
     }
   );
@@ -252,7 +262,8 @@ export async function queryMentor(
   mentorId: string,
   question: string,
   chatsessionid: string,
-  config: Config
+  config: Config,
+  accessToken: string
 ): Promise<AxiosResponse<QuestionApiData>> {
   return await axios.get(`${config.classifierLambdaEndpoint}/questions/`, {
     params: {
@@ -260,13 +271,17 @@ export async function queryMentor(
       query: question,
       chatsessionid,
     },
+    headers: {
+      Authorization: `bearer ${accessToken}`,
+    },
   });
 }
 
 export async function pingMentor(
   mentorId: string,
   chatSessionId: string,
-  config: Config
+  config: Config,
+  accessToken: string
 ): Promise<AxiosResponse<QuestionApiData>> {
   return await axios.get(`${config.classifierLambdaEndpoint}/questions/`, {
     params: {
@@ -275,5 +290,42 @@ export async function pingMentor(
       ping: true,
       chatsessionid: chatSessionId,
     },
+    headers: {
+      Authorization: `bearer ${accessToken}`,
+    },
   });
+}
+
+export async function refreshAccessToken(): Promise<AuthUserData> {
+  const gqlRes = await axios.post(
+    GATSBY_GRAPHQL_ENDPOINT,
+    {
+      query: `
+    mutation RefreshAccessToken{
+      refreshAccessToken {
+        accessToken
+        errorMessage
+        authenticated
+      }
+    }
+    `,
+    },
+    { withCredentials: true }
+  );
+  // check that the data returned successfully,
+  if (gqlRes.status !== 200) {
+    throw new Error(`Mentors load failed: ${gqlRes.statusText}}`);
+  }
+  if (gqlRes.data.errors) {
+    throw new Error(
+      `errors reponse to config query: ${JSON.stringify(gqlRes.data.errors)}`
+    );
+  }
+  if (!gqlRes.data.data) {
+    throw new Error(
+      `no data in non-error reponse: ${JSON.stringify(gqlRes.data)}`
+    );
+  }
+  const accessTokenData = gqlRes.data.data.refreshAccessToken;
+  return accessTokenData;
 }

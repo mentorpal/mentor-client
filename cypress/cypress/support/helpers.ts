@@ -254,6 +254,13 @@ export function mockDefaultSetup(
   }
   mockMentorVtt(cy);
   cyInterceptGraphQL(cy, [
+    cyMockGQL("RefreshAccessToken", {
+      refreshAccessToken: {
+        accessToken: "",
+        errorMessage: "",
+        authenticated: true,
+      },
+    }),
     cyMockConfig(config),
     // cyMockTokenData(tokenData),
     cyMockMentorData(mentorData),
