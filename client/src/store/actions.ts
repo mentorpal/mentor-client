@@ -15,6 +15,7 @@ import {
   getUtterance,
   giveFeedback,
   queryMentor,
+  refreshAccessToken,
 } from "api";
 import { sendCmi5Statement } from "cmiutils";
 import {
@@ -46,6 +47,7 @@ import {
   Media,
   QuestionApiData,
 } from "../types";
+import { AuthUserData } from "types-gql";
 
 const OFF_TOPIC_THRESHOLD = -0.45;
 export const REPLAY_VIDEO = "REPLAY_VIDEO";
@@ -55,6 +57,9 @@ export const VIDEO_FINISHED = "VIDEO_FINISHED"; // mentor video has finished pla
 export const CONFIG_LOAD_FAILED = "CONFIG_LOAD_FAILED";
 export const CONFIG_LOAD_STARTED = "CONFIG_LOAD_STARTED";
 export const CONFIG_LOAD_SUCCEEDED = "CONFIG_LOAD_SUCCEEDED";
+export const AUTH_USER_FAILED = "AUTH_USER_FAILED";
+export const AUTH_USER_STARTED = "AUTH_USER_STARTED";
+export const AUTH_USER_SUCCEEDED = "AUTH_USER_SUCCEEDED";
 export const FEEDBACK_SENT = "FEEDBACK_SENT"; // mentor video has finished playing
 export const FEEDBACK_SEND_FAILED = "FEEDBACK_SEND_FAILED"; // mentor video has finished playing
 export const FEEDBACK_SEND_SUCCEEDED = "FEEDBACK_SEND_SUCCEEDED"; // mentor video has finished playing
@@ -79,6 +84,20 @@ export const SESSION_ID_FOUND = "SESSION_ID_FOUND";
 
 export interface AnswerFinishedAction {
   type: typeof ANSWER_FINISHED;
+}
+
+export interface AuthUserFailedAction {
+  type: typeof AUTH_USER_FAILED;
+  errors: string[];
+}
+
+export interface AuthUserStartedAction {
+  type: typeof AUTH_USER_STARTED;
+}
+
+export interface AuthUserSucceededAction {
+  type: typeof AUTH_USER_SUCCEEDED;
+  payload: AuthUserData;
 }
 
 export interface ConfigLoadFailedAction {
@@ -129,6 +148,11 @@ export type ConfigLoadAction =
   | ConfigLoadFailedAction
   | ConfigLoadStartedAction
   | ConfigLoadSucceededAction;
+
+export type AuthUserAction =
+  | AuthUserFailedAction
+  | AuthUserStartedAction
+  | AuthUserSucceededAction;
 
 export interface MentorAnswerPlaybackStartedAction {
   type: typeof MENTOR_ANSWER_PLAYBACK_STARTED;
@@ -258,6 +282,7 @@ export interface SessionIdCreatedAction {
 
 export type MentorClientAction =
   | ConfigLoadAction
+  | AuthUserAction
   | FeedbackAction
   | GuestNameSetAction
   | MentorDataAction
@@ -330,6 +355,28 @@ export const feedbackSend =
     }
   };
 
+export const authenticateUser =
+  () => async (dispatch: ThunkDispatch<State, void, AuthUserAction>) => {
+    dispatch({
+      type: AUTH_USER_STARTED,
+    });
+    try {
+      const accessTokenData = await refreshAccessToken();
+      return dispatch({
+        type: AUTH_USER_SUCCEEDED,
+        payload: accessTokenData,
+      });
+    } catch (err) {
+      console.error(err);
+      if (err instanceof Error) {
+        return dispatch({
+          type: AUTH_USER_FAILED,
+          errors: [err.message],
+        });
+      }
+    }
+  };
+
 export const loadConfig =
   () => async (dispatch: ThunkDispatch<State, void, ConfigLoadAction>) => {
     dispatch({
@@ -390,11 +437,16 @@ export const loadMentors: ActionCreator<
         {}
       ),
     };
+    const curState = getState();
     const mentorRequests = mentors.map(async (mentorId) => {
       try {
-        const mentor: MentorClientData = await fetchMentor(mentorId, subject);
+        const mentor: MentorClientData = await fetchMentor(
+          mentorId,
+          curState.authUserData.accessToken,
+          subject
+        );
         let topicQuestions: TopicQuestions[] = [];
-        const recommendedQuestions = [...getState().recommendedQuestions];
+        const recommendedQuestions = [...curState.recommendedQuestions];
         topicQuestions.push(...mentor.topicQuestions);
         const recommendedTopics = getRecommendedTopics(topicQuestions);
 
@@ -484,7 +536,6 @@ export const loadMentors: ActionCreator<
             : tqs[tqs.length - 1].topic;
       }
     }
-    const curState = getState();
     if (
       curState.chat.messages.length <
       Object.keys(mentorLoadResult.mentorsById).length
@@ -743,7 +794,13 @@ export const sendQuestion =
     // query all the mentors without waiting for the answers one by one
     const promises = mentorIds.map((mentor) => {
       return new Promise<QuestionResponse>((resolve, reject) => {
-        queryMentor(mentor, q.question, state.chatSessionId, q.config)
+        queryMentor(
+          mentor,
+          q.question,
+          state.chatSessionId,
+          q.config,
+          state.authUserData.accessToken
+        )
           .then((r) => {
             const { data } = r;
             const [response, offTopicResponse] = getResponseObject(
