@@ -49,7 +49,7 @@ import {
 } from "../types";
 import { AuthUserData } from "types-gql";
 
-const OFF_TOPIC_THRESHOLD = -0.45;
+const OFF_TOPIC_THRESHOLD = -0.55;
 export const REPLAY_VIDEO = "REPLAY_VIDEO";
 export const PLAY_IDLE_AFTER_REPLAY_VIDEO = "PLAY_IDLE_AFTER_REPLAY_VIDEO";
 export const ANSWER_FINISHED = "ANSWER_FINISHED"; // mentor video has finished playing
