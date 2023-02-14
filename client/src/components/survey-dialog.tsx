@@ -30,9 +30,17 @@ export function SurveyDialog(): JSX.Element {
   );
 
   function checkForSurveyPopupVariables() {
+    if (pollingTimer) {
+      return;
+    }
     const searchParams = new URL(location.href).searchParams;
-    const postsurveytime =
-      searchParams.get("postsurveytime") || `${config.postSurveyTimer}`;
+    let postsurveytime = searchParams.get("postsurveytime");
+    if (!postsurveytime) {
+      postsurveytime = getLocalStorage("postsurveytime");
+      if (!postsurveytime) {
+        postsurveytime = `${config.postSurveyTimer}`;
+      }
+    }
     if (postsurveytime) {
       setLocalStorage("postsurveytime", postsurveytime);
     }
