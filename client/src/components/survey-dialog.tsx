@@ -30,7 +30,6 @@ export function SurveyDialog(): JSX.Element {
   );
 
   function checkForSurveyPopupVariables() {
-    // Check if we already have local storage setup
     const localStorageTimerPopup = getLocalStorage("postsurveytime");
     const qualtricsUserIdLocalStorage = getLocalStorage("qualtricsuserid");
 
@@ -133,6 +132,7 @@ export function SurveyDialog(): JSX.Element {
     const newTimeSpentOnPage = Number(timeSpentOnPage) + 10;
     const timerDuration = getLocalStorage("postsurveytime");
     const currentEpoch = Date.now();
+
     if (!timerDuration || !timeSpentOnPage) {
       console.error("local storage not set correctly");
       clearTimerLocalStorage();
@@ -140,6 +140,7 @@ export function SurveyDialog(): JSX.Element {
     }
     if (newTimeSpentOnPage >= Number(timerDuration) && !showSurveyPopup) {
       setLocalStorage("timespentonpage", String(newTimeSpentOnPage));
+
       setShowSurveyPopup(true);
       setPollingTimer(false);
     }
