@@ -30,19 +30,8 @@ export function SurveyDialog(): JSX.Element {
   );
 
   function checkForSurveyPopupVariables() {
-    // Check if we already have local storage setup
     const localStorageTimerPopup = getLocalStorage("postsurveytime");
-    const localStorageTimeSpent = getLocalStorage("timespentonpage");
     const qualtricsUserIdLocalStorage = getLocalStorage("qualtricsuserid");
-    if (
-      localStorageTimerPopup &&
-      localStorageTimeSpent &&
-      qualtricsUserIdLocalStorage
-    ) {
-      setPollingTimer(true);
-      return;
-    }
-
     const searchParams = new URL(location.href).searchParams;
     const postsurveytime =
       searchParams.get("postsurveytime") ||
@@ -80,6 +69,7 @@ export function SurveyDialog(): JSX.Element {
       qualtricsuserid &&
       config.postSurveyLink
     ) {
+      const localStorageTimeSpent = getLocalStorage("timespentonpage");
       setLocalStorage("timespentonpage", localStorageTimeSpent || "0");
       setPollingTimer(true);
     }
@@ -140,17 +130,20 @@ export function SurveyDialog(): JSX.Element {
     const timeSpentOnPage = getLocalStorage("timespentonpage");
     const newTimeSpentOnPage = Number(timeSpentOnPage) + 10;
     const timerDuration = getLocalStorage("postsurveytime");
+    const currentEpoch = Date.now();
+
     if (!timerDuration || !timeSpentOnPage) {
       console.error("local storage not set correctly");
       clearTimerLocalStorage();
       return;
     }
     if (newTimeSpentOnPage >= Number(timerDuration) && !showSurveyPopup) {
+      setLocalStorage("timespentonpage", String(newTimeSpentOnPage));
+
       setShowSurveyPopup(true);
       setPollingTimer(false);
     }
     const lastUpdateEpoch = getLocalStorage("lastupdateepoch");
-    const currentEpoch = Date.now();
     if (lastUpdateEpoch && currentEpoch - Number(lastUpdateEpoch) <= 9800) {
       //if atleast 9.8 seconds has not passed since last update, then don't update
       return;
