@@ -30,21 +30,29 @@ export function SurveyDialog(): JSX.Element {
   );
 
   function checkForSurveyPopupVariables() {
-    if (pollingTimer) {
+    // Check if we already have local storage setup
+    const localStorageTimerPopup = getLocalStorage("postsurveytime");
+    const localStorageTimeSpent = getLocalStorage("timespentonpage");
+    const qualtricsUserIdLocalStorage = getLocalStorage("qualtricsuserid");
+    if (
+      localStorageTimerPopup &&
+      localStorageTimeSpent &&
+      qualtricsUserIdLocalStorage
+    ) {
+      setPollingTimer(true);
       return;
     }
+
     const searchParams = new URL(location.href).searchParams;
-    let postsurveytime = searchParams.get("postsurveytime");
-    if (!postsurveytime) {
-      postsurveytime = getLocalStorage("postsurveytime");
-      if (!postsurveytime) {
-        postsurveytime = `${config.postSurveyTimer}`;
-      }
-    }
+    const postsurveytime =
+      localStorageTimerPopup ||
+      searchParams.get("postsurveytime") ||
+      `${config.postSurveyTimer}`;
     if (postsurveytime) {
       setLocalStorage("postsurveytime", postsurveytime);
     }
-    let qualtricsuserid = searchParams.get("userid");
+    let qualtricsuserid =
+      qualtricsUserIdLocalStorage || searchParams.get("userid");
     if (qualtricsuserid) {
       setLocalStorage("qualtricsuserid", qualtricsuserid);
     } else {
@@ -72,7 +80,7 @@ export function SurveyDialog(): JSX.Element {
       qualtricsuserid &&
       config.postSurveyLink
     ) {
-      setLocalStorage("timespentonpage", "0");
+      setLocalStorage("timespentonpage", localStorageTimeSpent || "0");
       setPollingTimer(true);
     }
   }
