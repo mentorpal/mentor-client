@@ -45,14 +45,14 @@ export function SurveyDialog(): JSX.Element {
 
     const searchParams = new URL(location.href).searchParams;
     const postsurveytime =
-      localStorageTimerPopup ||
       searchParams.get("postsurveytime") ||
+      localStorageTimerPopup ||
       `${config.postSurveyTimer}`;
     if (postsurveytime) {
       setLocalStorage("postsurveytime", postsurveytime);
     }
     let qualtricsuserid =
-      qualtricsUserIdLocalStorage || searchParams.get("userid");
+      searchParams.get("userid") || qualtricsUserIdLocalStorage;
     if (qualtricsuserid) {
       setLocalStorage("qualtricsuserid", qualtricsuserid);
     } else {
