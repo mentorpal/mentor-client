@@ -1,0 +1,306 @@
+:root {
+  --app-container-background: #eeeeee;
+  --primary-font-color: #474747;
+  --secondary-font-color: #6e6e6e;
+  --subtitle-font-color: #230d0d;
+}
+* {
+  font-family: Helvetica, Arial, sans-serif !important;
+}
+
+.grid-container {
+  position: relative;
+  max-width: 95%;
+  height: 100vh;
+  padding-top: 55px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mentor-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  max-width: 98%;
+  background-color: #fff;
+  border-radius: 10px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  animation: fadeInAnimation 0.3s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.grid-cards {
+  row-gap: 5px;
+  padding-bottom: 50px;
+}
+
+.card-mentor-name,
+.card-position-name {
+  color: var(--secondary-font-color) !important;
+  font-size: 18px;
+  margin-left: 5px !important;
+  margin-right: 5px !important;
+}
+
+.card-mentorType {
+  text-align: left;
+  color: var(--secondary-font-color) !important;
+}
+
+/* Mentor panel card */
+.panel-card-content {
+  margin: 0px !important;
+  padding: 0px !important;
+  padding-left: 5px !important;
+}
+
+.card-mentor-panel-subtitle {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.panel-card-title {
+  margin: 0px !important;
+  padding: 0px !important;
+  color: var(--secondary-font-color) !important;
+  font-size: 20px !important;
+  font-weight: bold;
+}
+
+/* single mentor card */
+.card-mentor-details {
+  padding: 0px 20px 0px 20px;
+}
+.card-content {
+  margin-bottom: 0px !important;
+  padding-bottom: 10px !important;
+}
+
+.MuiButton-root {
+  text-decoration: none;
+  background-color: var(--app-container-background) !important;
+  color: var(--secondary-font-color) !important;
+  padding: 10px !important;
+}
+
+.MuiCardMedia-media {
+  width: 70%;
+  height: 170px;
+}
+
+.MuiCardMedia-img {
+  width: fit-content !important;
+  border-radius: 10px !important;
+  object-fit: contain !important;
+  margin: 15px;
+  margin-top: 15px !important;
+}
+
+.MuiCardMedia-root {
+  display: inline !important;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.MuiPaper-elevation1 {
+  -webkit-box-shadow: 0px 3px 6px 0px #000000;
+  box-shadow: 0px 3px 6px 0px #00000045 !important;
+}
+
+.select-mentors {
+  height: 30px;
+  width: 100px;
+  margin-right: auto;
+  border: 0px;
+  border-radius: 10px;
+  background-color: #fff;
+  text-align: center;
+}
+
+.select-mentors:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.number-of-mentors {
+  position: absolute;
+  left: 55px;
+  top: -20px;
+}
+
+.mentor-panel-popup {
+  position: absolute;
+  right: 0px;
+  top: -20px;
+}
+
+.banner-card {
+  display: flex;
+  height: 250px;
+  padding: 0px;
+  align-items: center;
+  justify-content: center;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.number-mentors-title {
+  color: var(--primary-font-color);
+}
+
+.panel-action {
+  width: fit-content !important;
+  height: fit-content !important;
+}
+.panel-container {
+  display: grid;
+  grid-template-columns: repeat(2, 80px);
+  grid-gap: 10px 25px;
+  margin-top: 10px;
+  border: 1px solid #dadada;
+  border-radius: 10px;
+  background-color: var(--app-container-background);
+  padding: 5px;
+}
+
+.panel-box {
+  width: 80px;
+  height: 80px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.panel-box-img {
+  background-position: 0 0;
+  background-size: auto 80px;
+  width: 80px;
+  height: 80px;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 10px;
+}
+
+.email-mentor-button {
+  font-weight: bold;
+  cursor: pointer;
+}
+.email-mentor-button:hover {
+  color: blue;
+  text-decoration: underline;
+}
+
+.btn-email {
+  background-color: #007cba !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+}
+
+.dialog-cookie {
+  position: "absolute";
+  padding: 20;
+  bottom: 10;
+  right: 10;
+}
+
+.mentor-action {
+  width: auto;
+  height: 60%;
+  margin: 10px;
+}
+
+.mentor-thumbnail {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+@media (min-width: 800px) {
+  body {
+    overflow-x: hidden;
+  }
+  .number-of-mentors {
+    left: 22px;
+  }
+}
+
+@media (max-width: 800px) {
+  .MuiCardMedia-img {
+    max-width: 60% !important;
+    height: fit-content !important;
+    max-height: 170px !important;
+    margin: 0px;
+    margin-top: 15px !important;
+  }
+  .card-mentor-details {
+    padding: 0px;
+  }
+  .card-content {
+    margin: 0px !important;
+    padding-left: 5px !important;
+  }
+  .card-position-name {
+    font-size: 16px !important;
+    margin-top: 10px !important;
+  }
+  .mentor-action {
+    height: 50% !important;
+  }
+}
+
+@media (max-width: 500px) {
+  .panel-card-title {
+    font-size: 15px !important;
+    width: 100px;
+  }
+  .panel-container {
+    grid-template-columns: repeat(2, 50px);
+    grid-gap: 5px 10px;
+    padding: 3px;
+  }
+  .panel-box {
+    width: 50px;
+    height: 50px;
+  }
+  .panel-box-img {
+    background-size: auto 50px;
+    width: 50px;
+    height: 50px;
+  }
+  .mentor-action {
+    height: 40% !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .grid-cards {
+    row-gap: 10px;
+  }
+  .login-btn {
+    position: absolute !important;
+    right: 10px;
+  }
+  .number-of-mentors {
+    left: 10px;
+  }
+}

@@ -5,6 +5,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import { AuthUserData } from "types-gql";
+import { LocalStorageUserData } from "utils";
 
 export interface ChatData {
   lastQuestionAt?: Date;
@@ -129,6 +130,12 @@ export interface Config {
   postSurveyLink: string;
   postSurveyTimer: number;
   minTopicQuestionSize: number;
+  postSurveyUserIdEnabled: boolean;
+  postSurveyReferrerEnabled: boolean;
+  surveyButtonInDisclaimer: SurveyButtonInDisclaimer;
+  guestPromptInputType: string;
+  guestPromptTitle: string;
+  guestPromptText: string;
 }
 
 export enum QuestionType {
@@ -241,7 +248,6 @@ export interface MentorDataResult {
 }
 
 export interface MentorsLoadRequest {
-  guestName?: string;
   mentors: string[];
   recommendedQuestions?: string[];
 }
@@ -256,6 +262,11 @@ export interface MentorsLoadResult {
 export interface QuestionResult {
   status: ResultStatus;
 }
+
+export type SurveyButtonInDisclaimer =
+  | "OFF"
+  | "ALWAYS"
+  | "PROVIDED_USER_IDENTIFIER";
 
 export interface State {
   chat: ChatData;
@@ -274,7 +285,6 @@ export interface State {
   mentorsInitialLoadStatus: LoadStatus;
   mentorAnswersLoadStatus: LoadStatus;
   mentorNext: string; // id of the next mentor to speak after the current finishes
-  guestName: string;
   questionsAsked: string[];
   recommendedQuestions: string[];
   questionInput: QuestionInput;
@@ -284,6 +294,8 @@ export interface State {
   sessionId: string;
   authenticationStatus: LoadStatus;
   authUserData: AuthUserData;
+  userDataLoadStatus: LoadStatus;
+  userData: LocalStorageUserData;
 }
 
 export interface QuestionInput {

@@ -4,39 +4,29 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import Video from "components/video-player-wrapper";
-import VideoPanel from "components/video-panel";
-import React from "react";
-import { MentorType } from "types";
-import "styles/history-chat-responsive.css";
-import Chat from "components/chat";
+// LS = Local Storage
 
-function VideoSection(props: {
-  mentorType: MentorType;
-  chatHeight: number;
-  windowHeight: number;
-  hasSessionUser: () => boolean;
-  isMobile: boolean;
-}): JSX.Element {
-  const { mentorType, chatHeight, windowHeight, hasSessionUser, isMobile } =
-    props;
+// Qualtrics Specific
+export const QUALTRICS_USER_ID_URL_PARAM_KEY = "userid";
+export const LS_USER_ID_KEY = "givenUserId";
 
-  return (
-    <>
-      <VideoPanel />
-      {mentorType === MentorType.CHAT ? (
-        <Chat
-          height={chatHeight}
-          windowHeight={windowHeight}
-          width={isMobile ? "60vw" : "auto"}
-          bubbleColor={"#88929e"}
-          isMobile={isMobile}
-        />
-      ) : (
-        <Video playing={hasSessionUser()} />
-      )}
-    </>
-  );
-}
+export const EMAIL_URL_PARAM_KEY = "userEmail";
+export const LS_EMAIL_KEY = "givenUserEmail";
 
-export default VideoSection;
+export const LS_X_API_EMAIL_KEY = "xapiUserEmail";
+
+// Other
+export const REFERRER_KEY = "referrer";
+export const EVENTS_KEY = "events";
+
+// Survey Popup
+export const TIMER_TEXT_KEY = "timertext";
+export const LAST_UPDATE_KEY = "lastupdateepoch";
+export const POST_SURVEY_TIME_KEY = "postsurveytime";
+export const TIME_SPENT_ON_PAGE_KEY = "timespentonpage";
+
+// xAPI
+export const REGISTRATION_ID_KEY = "registrationId";
+
+// Popup Timer
+export const TIMER_UPDATE_INTERVAL_MS = 2000;
