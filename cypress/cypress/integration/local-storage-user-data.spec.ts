@@ -47,6 +47,27 @@ describe("site previously visited with nothing in url params", () => {
     cy.setLocalStorage(TIME_SPENT_ON_PAGE_KEY, "20");
   });
 
+  it("user arrives with just sessionId, and closes email entry popup", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: true,
+      },
+    });
+    cy.visit("/?sessionId=123");
+    cy.get("[data-cy=username-modal-container]").within(() => {
+      cy.get("[data-cy=close-username-modal]").trigger("mouseover").click();
+    });
+    cy.get("[data-cy=username-modal-container]").should("not.exist");
+    assertLocalStorageUserDataValue(LS_USER_ID_KEY, "be.equal", "");
+    assertLocalStorageUserDataValue(LS_EMAIL_KEY, "be.equal", "");
+    assertLocalStorageUserDataValue(
+      LS_X_API_EMAIL_KEY,
+      "be.equal",
+      "123@mentorpal.org"
+    );
+    cy.setLocalStorage(TIME_SPENT_ON_PAGE_KEY, "20");
+  });
+
   it("user arrives with no userid nor useremail, and inputs email entry", () => {
     mockDefaultSetup(cy, {
       config: {

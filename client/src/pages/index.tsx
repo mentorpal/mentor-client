@@ -66,6 +66,7 @@ import {
   LS_USER_ID_KEY,
   LS_X_API_EMAIL_KEY,
   POST_SURVEY_TIME_KEY,
+  QUALTRICS_USER_ID_URL_PARAM_KEY,
   REFERRER_KEY,
   REGISTRATION_ID_KEY,
   TIME_SPENT_ON_PAGE_KEY,
@@ -228,7 +229,6 @@ function IndexPage(props: {
   useEffect(() => {
     dispatch(authenticateUser());
     dispatch(loadConfig());
-    setupSessionId();
   }, []);
 
   function setupSessionId(): string {
@@ -345,7 +345,9 @@ function IndexPage(props: {
       }
     } else {
       // Nothing passed in, so make sure we at least have an xapiemail setup
-      if (!xApiEmail) {
+      const xApiEmailIsFunctionOfSesssionId =
+        xApiEmail && !localData.givenUserEmail && !localData.givenUserId;
+      if (!xApiEmail || xApiEmailIsFunctionOfSesssionId) {
         xApiEmail = `${sessionId}@mentorpal.org`;
       }
     }
@@ -373,9 +375,9 @@ function IndexPage(props: {
       resetTimeSpentOnPage();
     }
 
-    removeQueryParam("userid");
-    removeQueryParam("referrer");
-    removeQueryParam("userEmail");
+    removeQueryParam(QUALTRICS_USER_ID_URL_PARAM_KEY);
+    removeQueryParam(REFERRER_KEY);
+    removeQueryParam(EMAIL_URL_PARAM_KEY);
 
     return userData;
   }
