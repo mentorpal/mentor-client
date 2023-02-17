@@ -15,11 +15,9 @@ function VideoSection(props: {
   mentorType: MentorType;
   chatHeight: number;
   windowHeight: number;
-  hasSessionUser: () => boolean;
   isMobile: boolean;
 }): JSX.Element {
-  const { mentorType, chatHeight, windowHeight, hasSessionUser, isMobile } =
-    props;
+  const { mentorType, chatHeight, windowHeight, isMobile } = props;
 
   return (
     <>
@@ -33,7 +31,7 @@ function VideoSection(props: {
           isMobile={isMobile}
         />
       ) : (
-        <Video playing={hasSessionUser()} />
+        <Video playing={true} />
       )}
     </>
   );

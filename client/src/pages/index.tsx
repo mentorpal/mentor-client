@@ -184,10 +184,6 @@ function IndexPage(props: {
   const { subject, recommendedQuestions, intro } = props.search;
   let { mentor } = props.search;
 
-  function hasSessionUser(): boolean {
-    return Boolean(!config.cmi5Enabled || cmi5init);
-  }
-
   function isLoadComplete(s: LoadStatus): boolean {
     return s === LoadStatus.LOADED || s === LoadStatus.LOAD_FAILED;
   }
@@ -572,7 +568,6 @@ function IndexPage(props: {
                   mentorType={mentorType}
                   chatHeight={chatHeight}
                   windowHeight={windowHeight}
-                  hasSessionUser={hasSessionUser}
                   isMobile={displayFormat == "mobile"}
                 />
               </div>
