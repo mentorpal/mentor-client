@@ -6,6 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import {
   assertLocalStorageUserDataValue,
+  mockDefaultSetup,
   visitAsCustomWithDefaultSetup,
   visitAsGuestWithDefaultSetup,
 } from "../support/helpers";
@@ -17,7 +18,12 @@ import {
 
 describe("Display Mentor Grid", () => {
   it("Displays Popup to add an username", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: true,
+      },
+    });
+    cy.visit("/");
 
     // 1. show modal with userEmail field to add
     cy.get("[data-cy=username-modal-container]").within(() => {
@@ -51,7 +57,12 @@ describe("Display Mentor Grid", () => {
   });
 
   it("Sumbit empty and gets error", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: true,
+      },
+    });
+    cy.visit("/");
 
     // 1. show modal with userEmail field to add
     cy.get("[data-cy=username-modal-container]").within(() => {
@@ -98,7 +109,12 @@ describe("Display Mentor Grid", () => {
     - email = <same number>.guest@mentorpal.org
   */
   it("User comes from survey, with no userid in URL parameters (Display Popup)", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: true,
+      },
+    });
+    cy.visit("/");
 
     // 1. show modal with userEmail field to add
     cy.get("[data-cy=username-modal-container]").within(() => {

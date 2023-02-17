@@ -27,7 +27,12 @@ describe("site previously visited with nothing in url params", () => {
   });
 
   it("user arrives with no userid nor useremail, and closes email entry popup", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: true,
+      },
+    });
+    cy.visit("/");
     cy.get("[data-cy=username-modal-container]").within(() => {
       cy.get("[data-cy=close-username-modal]").trigger("mouseover").click();
     });
@@ -43,7 +48,12 @@ describe("site previously visited with nothing in url params", () => {
   });
 
   it("user arrives with no userid nor useremail, and inputs email entry", () => {
-    visitAsGuestWithDefaultSetup(cy, "/");
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: true,
+      },
+    });
+    cy.visit("/");
     cy.get("[data-cy=username-modal-container]").within(() => {
       cy.get("[data-cy=username-field]").type("email@email.com");
       cy.get("[data-cy=sumbit-email-btn]").trigger("mouseover").click();

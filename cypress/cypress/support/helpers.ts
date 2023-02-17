@@ -250,7 +250,7 @@ export const CONFIG_DEFAULT: Config = {
   disclaimerTitle: "",
   disclaimerText: disclaimerText.disclaimerText,
   disclaimerDisabled: true,
-  displayGuestPrompt: true,
+  displayGuestPrompt: false,
   postSurveyLink: "",
   postSurveyTimer: 0,
   minTopicQuestionSize: 0,
