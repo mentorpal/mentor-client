@@ -876,6 +876,8 @@ describe("opening and closing disclaimer survey popup", () => {
     });
     cy.visit("/?userid=123");
     confirmPageLoaded(cy);
+    cy.get("[data-cy=header-disclimer-btn]").click();
+    cy.get("[data-cy=header-survey-popup-btn]").click();
     assertLocalStorageValue(
       POST_SURVEY_TIME_KEY,
       "be.equal",
@@ -888,8 +890,6 @@ describe("opening and closing disclaimer survey popup", () => {
       "be.equal",
       String((TIMER_UPDATE_INTERVAL_MS * 1) / 1000)
     );
-    cy.get("[data-cy=header-disclimer-btn]").click();
-    cy.get("[data-cy=header-survey-popup-btn]").click();
     cy.get("[data-cy=close-survey-popup-btn]").click();
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
     assertLocalStorageValue(

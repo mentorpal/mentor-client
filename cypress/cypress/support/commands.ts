@@ -32,3 +32,4 @@ The full terms of this copyright and license should always be found in the root 
 
 import "cypress-localstorage-commands";
 import "cypress-fill-command";
+require("cy-verify-downloads").addCustomCommand();
