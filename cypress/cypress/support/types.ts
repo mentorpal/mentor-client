@@ -5,6 +5,14 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 
+import {
+  EVENTS_KEY,
+  LS_EMAIL_KEY,
+  LS_USER_ID_KEY,
+  LS_X_API_EMAIL_KEY,
+  REFERRER_KEY,
+} from "./local-constants";
+
 export interface Mentor {
   _id: string;
   name: string;
@@ -55,4 +63,12 @@ export enum UtteranceName {
   REPEAT = "_REPEAT_",
   REPEAT_BUMP = "_REPEAT_BUMP_",
   PROFANIY = "_PROFANITY_",
+}
+
+export interface LocalStorageUserData {
+  [LS_USER_ID_KEY]: string;
+  [LS_EMAIL_KEY]: string;
+  [LS_X_API_EMAIL_KEY]: string;
+  [REFERRER_KEY]: string;
+  [EVENTS_KEY]: string[];
 }

@@ -23,7 +23,6 @@ import {
   MentorSelectedAction,
   MentorAnswerPlaybackStartedAction,
   QuestionSentAction,
-  GUEST_NAME_SET,
   ConfigLoadSucceededAction,
   CONFIG_LOAD_FAILED,
   CONFIG_LOAD_STARTED,
@@ -54,6 +53,9 @@ import {
   AUTH_USER_STARTED,
   AUTH_USER_SUCCEEDED,
   AuthUserSucceededAction,
+  UserDataUpdateAction,
+  USER_DATA_FINISH_LOADING,
+  USER_DATA_UPDATED,
 } from "./actions";
 import {
   MentorState,
@@ -100,11 +102,16 @@ export const initialState: State = {
     postSurveyLink: "",
     postSurveyTimer: 0,
     minTopicQuestionSize: 0,
+    surveyButtonInDisclaimer: "OFF",
+    postSurveyUserIdEnabled: true,
+    postSurveyReferrerEnabled: true,
+    guestPromptTitle: "",
+    guestPromptText: "",
+    guestPromptInputType: "Email",
   },
   mentorAnswersLoadStatus: LoadStatus.NONE,
   mentorsInitialLoadStatus: LoadStatus.NONE,
   configLoadStatus: LoadStatus.NONE,
-  guestName: "",
   curMentor: "", // id of selected mentor
   curMentorReason: MentorSelectReason.NONE,
   curQuestion: "", // question that was last asked
@@ -130,6 +137,14 @@ export const initialState: State = {
     accessToken: "",
     errorMessage: "",
     authenticated: false,
+  },
+  userDataLoadStatus: LoadStatus.LOAD_IN_PROGRESS,
+  userData: {
+    xapiUserEmail: "",
+    givenUserEmail: "",
+    givenUserId: "",
+    referrer: "",
+    events: [],
   },
 };
 
@@ -705,11 +720,40 @@ function onCmi5Init(state: State): State {
   };
 }
 
+function onUserDataUpdated(state: State, action: UserDataUpdateAction): State {
+  return {
+    ...state,
+    userData: {
+      ...state.userData,
+      ...action.payload,
+    },
+  };
+}
+
+function onUserDataFinishLoading(
+  state: State,
+  action: UserDataUpdateAction
+): State {
+  return {
+    ...state,
+    userDataLoadStatus: LoadStatus.LOADED,
+    userData: {
+      ...state.userData,
+      ...action.payload,
+    },
+  };
+}
+
 export default function reducer(
   state = initialState,
   action: MentorClientAction
 ): State {
   switch (action.type) {
+    // USER DATA
+    case USER_DATA_UPDATED:
+      return onUserDataUpdated(state, action);
+    case USER_DATA_FINISH_LOADING:
+      return onUserDataFinishLoading(state, action);
     case SESSION_ID_CREATED:
     case SESSION_ID_FOUND:
       return onSessionIdCreated(state, action);
@@ -775,11 +819,6 @@ export default function reducer(
       };
     case TOPIC_SELECTED:
       return topicSelected(state, action);
-    case GUEST_NAME_SET:
-      return {
-        ...state,
-        guestName: action.name,
-      };
     case SET_CHAT_SESSION_ID:
       return {
         ...state,

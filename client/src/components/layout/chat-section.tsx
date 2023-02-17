@@ -5,30 +5,24 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import React from "react";
-import { useSelector } from "react-redux";
 import { Collapse, Paper } from "@mui/material";
 
 import Topics from "components/topics/topics";
 import Questions from "components/questions";
-import GuestPrompt from "components/guest-prompt";
 import { UseWitInputtData } from "components/layout/use-input-data";
 import Input from "components/input";
 import History from "components/history";
-import { MentorType, State } from "types";
+import { MentorType } from "types";
 import "styles/history-chat-responsive.css";
 
 function ChatSection(props: {
   mentorType: MentorType;
-  hasSessionUser: () => boolean;
   curTopic: string;
   isMobile: boolean;
   noHistoryDownload?: string;
 }): JSX.Element {
-  const { mentorType, hasSessionUser, curTopic, isMobile } = props;
+  const { mentorType, curTopic, isMobile } = props;
   const { onTopicSelected, onQuestionSelected } = UseWitInputtData();
-  const displayGuestPrompt = useSelector<State, boolean>(
-    (state) => state.config.displayGuestPrompt
-  );
 
   if (isMobile) {
     return (
@@ -44,9 +38,6 @@ function ChatSection(props: {
           <Collapse in={Boolean(curTopic)} timeout="auto" unmountOnExit>
             <Questions isMobile={isMobile} onSelected={onQuestionSelected} />
           </Collapse>
-          {!hasSessionUser() && displayGuestPrompt ? (
-            <GuestPrompt />
-          ) : undefined}
         </Paper>
       </>
     );
@@ -63,7 +54,6 @@ function ChatSection(props: {
             <Questions isMobile={isMobile} onSelected={onQuestionSelected} />
           </Collapse>
         </div>
-        {!hasSessionUser() && displayGuestPrompt ? <GuestPrompt /> : undefined}
         <History noHistoryDownload={props.noHistoryDownload} />
         <Input />
       </div>

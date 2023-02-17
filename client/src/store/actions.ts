@@ -22,6 +22,7 @@ import {
   getLocalStorage,
   getRecommendedTopics,
   mergeRecommendedTopicsQuestions,
+  LocalStorageUserData,
 } from "utils";
 import {
   MentorsLoadRequest,
@@ -75,12 +76,20 @@ export const QUESTION_INPUT_CHANGED = "QUESTION_INPUT_CHANGED";
 export const QUESTION_RESULT = "QUESTION_RESULT";
 export const QUESTION_SENT = "QUESTION_SENT"; // question input was sent
 export const TOPIC_SELECTED = "TOPIC_SELECTED";
-export const GUEST_NAME_SET = "GUEST_NAME_SET";
 export const SET_CHAT_SESSION_ID = "SET_CHAT_SESSION_ID";
 export const HISTORY_TOGGLE_VISIBILITY = "HISTORY_TOGGLE_VISIBILITY";
 export const CMI5_INIT = "CMI5_INIT";
 export const SESSION_ID_CREATED = "SESSION_ID_CREATED";
 export const SESSION_ID_FOUND = "SESSION_ID_FOUND";
+
+// USER DATA
+export const USER_DATA_UPDATED = "USER_DATA_UPDATED";
+export const USER_DATA_FINISH_LOADING = "USER_DATA_FINISH_LOADING";
+
+export interface UserDataUpdateAction {
+  type: typeof USER_DATA_UPDATED | typeof USER_DATA_FINISH_LOADING;
+  payload: Partial<LocalStorageUserData>;
+}
 
 export interface AnswerFinishedAction {
   type: typeof ANSWER_FINISHED;
@@ -255,11 +264,6 @@ export type QuestionAction =
   | QuestionSentAction
   | VideoFinishedAction;
 
-export interface GuestNameSetAction {
-  type: typeof GUEST_NAME_SET;
-  name: string;
-}
-
 export interface SetChatSessionId {
   type: typeof SET_CHAT_SESSION_ID;
   id: string;
@@ -284,7 +288,6 @@ export type MentorClientAction =
   | ConfigLoadAction
   | AuthUserAction
   | FeedbackAction
-  | GuestNameSetAction
   | MentorDataAction
   | MentorAction
   | QuestionAction
@@ -294,7 +297,8 @@ export type MentorClientAction =
   | ToggleHistoryVisibilityAction
   | Cmi5InitAction
   | SetChatSessionId
-  | SessionIdCreatedAction;
+  | SessionIdCreatedAction
+  | UserDataUpdateAction;
 
 export const MENTOR_SELECTION_TRIGGER_AUTO = "auto";
 export const MENTOR_SELECTION_TRIGGER_USER = "user";
@@ -669,11 +673,6 @@ export const selectTopic = (topic: any) => ({
 export const faveMentor = (mentor_id: any) => ({
   id: mentor_id,
   type: MENTOR_FAVED,
-});
-
-export const setGuestName = (name: string) => ({
-  name,
-  type: GUEST_NAME_SET,
 });
 
 export const setChatSessionId = (id: string) => ({

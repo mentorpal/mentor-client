@@ -9,6 +9,16 @@ import queryString from "query-string";
 import { v4 as uuid } from "uuid";
 import * as Sentry from "@sentry/react";
 import { BrowserTracing } from "@sentry/tracing";
+import {
+  EVENTS_KEY,
+  LS_EMAIL_KEY,
+  LS_USER_ID_KEY,
+  LS_X_API_EMAIL_KEY,
+  QUALTRICS_USER_ID_URL_PARAM_KEY,
+  REFERRER_KEY,
+  REGISTRATION_ID_KEY,
+  TIME_SPENT_ON_PAGE_KEY,
+} from "local-constants";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const _ = require("lodash");
@@ -26,6 +36,44 @@ export function chromeVersion(): number {
   const raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
   return raw ? parseInt(raw[2], 10) : 0;
 }
+
+export const isUrl = (string: string): boolean => {
+  return string.startsWith("http:") || string.startsWith("https:");
+};
+
+export const getUserIdFromURL = (): string => {
+  const fetch = new URL(location.href).searchParams.get("fetch");
+  const userIfFetch =
+    fetch && isUrl(fetch)
+      ? new URL(fetch).searchParams.get(QUALTRICS_USER_ID_URL_PARAM_KEY)
+      : "";
+  const userIdfromURL = new URL(location.href).searchParams.get(
+    QUALTRICS_USER_ID_URL_PARAM_KEY
+  );
+  return userIdfromURL || userIfFetch || "";
+};
+
+export const validatedEmail = (email: string | null): string => {
+  if (!email) {
+    return "";
+  }
+  const re = /\S+@\S+\.\S+/;
+  if (re.test(email)) {
+    return email;
+  }
+  return generateFromWrongEmail(email);
+};
+
+const generateFromWrongEmail = (wrongEmail: string): string => {
+  return `${cleanWrongEmail(wrongEmail)}@mentorpal.org`;
+};
+
+export const cleanWrongEmail = (email: string | null): string => {
+  if (!email) {
+    return "";
+  }
+  return email.replace("@", "-").replace(".", "-").replace("_", "-");
+};
 
 export function isMentorReady(m: MentorState): boolean {
   return (
@@ -57,13 +105,13 @@ export function removeLocalStorageItem(key: string): void {
 
 export function getRegistrationId(): string {
   const registrationIdFromUrl = new URL(location.href).searchParams.get(
-    "registrationId"
+    REGISTRATION_ID_KEY
   );
   if (!registrationIdFromUrl) {
-    const registrationIdFromStorage = getLocalStorage("registrationId");
+    const registrationIdFromStorage = getLocalStorage(REGISTRATION_ID_KEY);
     if (!registrationIdFromStorage) {
       const registrationId = uuid();
-      setLocalStorage("registrationId", registrationId);
+      setLocalStorage(REGISTRATION_ID_KEY, registrationId);
       return registrationId;
     }
     return registrationIdFromStorage;
@@ -199,3 +247,66 @@ export function getParamUserId(urlOrQueryString: string): string | string[] {
 
   return userID;
 }
+
+export function XOR(a: boolean, b: boolean): boolean {
+  return (a || b) && !(a && b);
+}
+
+export type LocalStorageKeys =
+  | typeof LS_USER_ID_KEY
+  | typeof LS_EMAIL_KEY
+  | typeof LS_X_API_EMAIL_KEY;
+
+export function updateLocalStorageUserData(
+  updatedObject: Partial<LocalStorageUserData>
+): LocalStorageUserData {
+  const localDataString = getLocalStorage("userData");
+  const localData: LocalStorageUserData = JSON.parse(localDataString || "{}");
+  const newData = { ...localData, ...updatedObject };
+  setLocalStorage("userData", JSON.stringify(newData));
+  return localData;
+}
+
+export interface LocalStorageUserData {
+  [LS_USER_ID_KEY]: string;
+  [LS_EMAIL_KEY]: string;
+  [LS_X_API_EMAIL_KEY]: string;
+  [REFERRER_KEY]: string;
+  [EVENTS_KEY]: string[];
+}
+
+export function getLocalStorageUserData(): LocalStorageUserData {
+  const localData = JSON.parse(localStorage.getItem("userData") || "{}");
+  const localGivenUserId = localData[LS_USER_ID_KEY] || "";
+  const localEmail = localData[LS_EMAIL_KEY] || "";
+  const localXapiEmail = localData[LS_X_API_EMAIL_KEY] || "";
+  const localReferrer = localData[REFERRER_KEY] || "";
+  const localEvents = localData[EVENTS_KEY] || [];
+  return {
+    [LS_USER_ID_KEY]: localGivenUserId,
+    [LS_EMAIL_KEY]: localEmail,
+    [LS_X_API_EMAIL_KEY]: localXapiEmail,
+    [REFERRER_KEY]: localReferrer,
+    [EVENTS_KEY]: localEvents,
+  };
+}
+
+export function resetTimeSpentOnPage(): void {
+  const curTimeSpentOnPage = getLocalStorage(TIME_SPENT_ON_PAGE_KEY);
+  if (!curTimeSpentOnPage) {
+    return;
+  }
+  setLocalStorage(TIME_SPENT_ON_PAGE_KEY, "0");
+}
+
+export function emailFromUserId(userId: string): string {
+  return `${userId}@mentorpal.org`;
+}
+
+export const getParamURL = (param: string): string => {
+  const paramFromURL = new URL(location.href).searchParams.get(param);
+  if (paramFromURL) {
+    return paramFromURL;
+  }
+  return "";
+};
