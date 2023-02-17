@@ -18,9 +18,3 @@ The full terms of this copyright and license should always be found in the root 
 // the project's config changing)
 
 /// <reference types="cypress" />
-
-const { isFileExist, findFiles } = require("cy-verify-downloads");
-
-module.exports = (on, config) => {
-  on("task", { isFileExist, findFiles });
-};
