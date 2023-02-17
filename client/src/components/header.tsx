@@ -12,6 +12,14 @@ import IconButton from "@mui/material/IconButton";
 import HomeIcon from "@mui/icons-material/Home";
 import "styles/layout.css";
 import Disclaimer from "./disclaimer/disclaimer";
+import { getLocalStorageUserData, getRegistrationId } from "utils";
+import {
+  EMAIL_URL_PARAM_KEY,
+  QUALTRICS_USER_ID_URL_PARAM_KEY,
+  REFERRER_KEY,
+  REGISTRATION_ID_KEY,
+  SESSION_URL_PARAM_KEY,
+} from "local-constants";
 
 interface HeaderMentorData {
   _id: string;
@@ -56,14 +64,18 @@ function Header(): JSX.Element {
   }
 
   const handleClickHome = () => {
-    const localData = localStorage.getItem("userData");
-    const userEmail = JSON.parse(localData ? localData : "").userEmail;
-    const userID = JSON.parse(localData ? localData : "").userID;
-    const referrer = new URL(location.href).searchParams.get("referrer");
-
-    window.location.href = `/home/?referrer=${referrer}&userEmail=${userEmail}&userid=${userID}${
-      sessionIdInState ? `&sessionId=${sessionIdInState}` : ""
-    }`;
+    const localData = getLocalStorageUserData();
+    const userEmail = localData.givenUserEmail;
+    const userID = localData.givenUserId;
+    const referrer = localData.referrer;
+    let link = `/home/?${REFERRER_KEY}=${referrer}`;
+    userEmail &&
+      (link += `&${EMAIL_URL_PARAM_KEY}=${encodeURIComponent(userEmail)}`);
+    userID && (link += `&${QUALTRICS_USER_ID_URL_PARAM_KEY}=${userID}`);
+    sessionIdInState &&
+      (link += `&${SESSION_URL_PARAM_KEY}=${sessionIdInState}`);
+    link += `&${REGISTRATION_ID_KEY}=${getRegistrationId()}`;
+    window.location.href = link;
   };
 
   const MentorNameTitle = `${mentor.name}: ${mentor.title}`;

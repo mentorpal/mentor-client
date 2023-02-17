@@ -110,9 +110,7 @@ export function getRegistrationId(): string {
   if (!registrationIdFromUrl) {
     const registrationIdFromStorage = getLocalStorage(REGISTRATION_ID_KEY);
     if (!registrationIdFromStorage) {
-      const registrationId = uuid();
-      setLocalStorage(REGISTRATION_ID_KEY, registrationId);
-      return registrationId;
+      return uuid();
     }
     return registrationIdFromStorage;
   }
@@ -260,8 +258,7 @@ export type LocalStorageKeys =
 export function updateLocalStorageUserData(
   updatedObject: Partial<LocalStorageUserData>
 ): LocalStorageUserData {
-  const localDataString = getLocalStorage("userData");
-  const localData: LocalStorageUserData = JSON.parse(localDataString || "{}");
+  const localData = getLocalStorageUserData();
   const newData = { ...localData, ...updatedObject };
   setLocalStorage("userData", JSON.stringify(newData));
   return localData;

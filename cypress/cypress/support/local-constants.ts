@@ -30,3 +30,4 @@ export const REGISTRATION_ID_KEY = "registrationId";
 
 // Popup Timer
 export const TIMER_UPDATE_INTERVAL_MS = 2000;
+export const SESSION_URL_PARAM_KEY = "sessionId";

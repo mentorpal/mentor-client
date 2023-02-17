@@ -23,6 +23,7 @@ import {
   getRecommendedTopics,
   mergeRecommendedTopicsQuestions,
   LocalStorageUserData,
+  getLocalStorageUserData,
 } from "utils";
 import {
   MentorsLoadRequest,
@@ -756,9 +757,9 @@ export const sendQuestion =
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
   ) => {
-    const localData = getLocalStorage("userData");
+    const localData = getLocalStorageUserData();
     const state = getState();
-    const userEmail = JSON.parse(localData ? localData : "{}").userEmail;
+    const userEmail = localData.xapiUserEmail;
     sendCmi5Statement(
       {
         verb: {

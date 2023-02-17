@@ -12,6 +12,7 @@ import { sendCmi5Statement, toXapiResultExtCustom } from "cmiutils";
 import { Config, LoadStatus, State } from "types";
 import {
   getLocalStorage,
+  getLocalStorageUserData,
   LocalStorageUserData,
   printLocalStorage,
   removeLocalStorageItem,
@@ -232,42 +233,34 @@ export function SurveyDialog(): JSX.Element {
   }
 
   const sendUserData = () => {
-    const localData = localStorage.getItem("userData");
-    if (!localData) {
-      return;
-    }
-
-    const data = JSON.parse(localData);
-    if (!data.userID) {
-      return;
-    }
-    const userData = {
+    const data = getLocalStorageUserData();
+    const xapiUserData = {
       verb: "terminated",
-      userid: data.userID,
-      userEmail: data.userEmail,
+      userid: data.givenUserId,
+      userEmail: data.xapiUserEmail,
       referrer: data.referrer,
       postSurveyTime: getLocalStorage(POST_SURVEY_TIME_KEY),
-      timeSpentOnPage: getLocalStorage(POST_SURVEY_TIME_KEY),
+      timeSpentOnPage: getLocalStorage(TIME_SPENT_ON_PAGE_KEY),
       qualtricsUserId: getLocalStorage(LS_USER_ID_KEY),
     };
     sendCmi5Statement(
       {
         verb: {
-          id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
+          id: `https://mentorpal.org/xapi/verb/${xapiUserData.verb}`,
           display: {
-            "en-US": `${userData.verb}`,
+            "en-US": `${xapiUserData.verb}`,
           },
         },
         result: {
           extensions: {
             "https://mentorpal.org/xapi/verb/terminated": toXapiResultExtCustom(
-              userData.verb,
-              userData.userid,
-              userData.userEmail,
-              userData.referrer,
-              userData.postSurveyTime,
-              userData.timeSpentOnPage,
-              userData.qualtricsUserId
+              xapiUserData.verb,
+              xapiUserData.userid,
+              xapiUserData.userEmail,
+              xapiUserData.referrer,
+              xapiUserData.postSurveyTime,
+              xapiUserData.timeSpentOnPage,
+              xapiUserData.qualtricsUserId
             ),
           },
         },

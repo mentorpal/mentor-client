@@ -435,18 +435,11 @@ function IndexPage(props: {
 
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState !== "visible") {
-        const localData = localStorage.getItem("userData");
-        if (!localData) {
-          return;
-        }
-        const data = JSON.parse(localData);
-        if (!data.userID) {
-          return;
-        }
-        const userData = {
+        const data = getLocalStorageUserData();
+        const xapiUserData = {
           verb: "suspended",
-          userid: data.userID,
-          userEmail: data.userEmail,
+          userid: data.givenUserId,
+          userEmail: data.xapiUserEmail,
           referrer: data.referrer,
           postSurveyTime: getLocalStorage(POST_SURVEY_TIME_KEY),
           timeSpentOnPage: getLocalStorage(TIME_SPENT_ON_PAGE_KEY),
@@ -455,22 +448,22 @@ function IndexPage(props: {
         sendCmi5Statement(
           {
             verb: {
-              id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
+              id: `https://mentorpal.org/xapi/verb/${xapiUserData.verb}`,
               display: {
-                "en-US": `${userData.verb}`,
+                "en-US": `${xapiUserData.verb}`,
               },
             },
             result: {
               extensions: {
                 "https://mentorpal.org/xapi/verb/suspended":
                   toXapiResultExtCustom(
-                    userData.verb,
-                    userData.userid,
-                    userData.userEmail,
-                    userData.referrer,
-                    userData.postSurveyTime,
-                    userData.timeSpentOnPage,
-                    userData.qualtricsUserId
+                    xapiUserData.verb,
+                    xapiUserData.userid,
+                    xapiUserData.userEmail,
+                    xapiUserData.referrer,
+                    xapiUserData.postSurveyTime,
+                    xapiUserData.timeSpentOnPage,
+                    xapiUserData.qualtricsUserId
                   ),
               },
             },
