@@ -18,3 +18,7 @@ The full terms of this copyright and license should always be found in the root 
 // the project's config changing)
 
 /// <reference types="cypress" />
+
+module.exports = (on, config) => {
+  on("task", {});
+};
