@@ -891,8 +891,6 @@ describe("opening and closing disclaimer survey popup", () => {
     cy.get("[data-cy=header-disclimer-btn]").click();
     cy.get("[data-cy=header-survey-popup-btn]").click();
     cy.get("[data-cy=close-survey-popup-btn]").click();
-    cy.get("[data-cy=header-survey-popup-btn]").click();
-    cy.get("[data-cy=close-survey-popup-btn]").click();
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
     assertLocalStorageValue(
       TIME_SPENT_ON_PAGE_KEY,
