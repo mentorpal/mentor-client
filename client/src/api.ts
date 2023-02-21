@@ -45,6 +45,7 @@ export async function fetchConfig(): Promise<Config> {
           styleHeaderLogo
           styleHeaderLogoUrl
           displayGuestPrompt
+          displaySurveyPopupCondition
           defaultVirtualBackground
           postSurveyLink
           postSurveyTimer

@@ -145,6 +145,12 @@ export function cyMockGQL(query: string, data: any | any[]): MockGraphQLQuery {
     data,
   };
 }
+export enum DisplaySurveyPopupCondition {
+  ALWAYS = 'ALWAYS',
+  USER_ID = 'USER_ID',
+  USER_ID_AND_EMAIL = 'USER_ID_AND_EMAIL',
+  NEVER = 'NEVER',
+}
 
 export interface Config {
   cmi5Enabled: boolean;
@@ -163,6 +169,7 @@ export interface Config {
   disclaimerText: string;
   disclaimerDisabled: boolean;
   displayGuestPrompt: boolean;
+  displaySurveyPopupCondition: DisplaySurveyPopupCondition;
   postSurveyLink: string;
   postSurveyTimer: number;
   minTopicQuestionSize: number;
@@ -251,6 +258,7 @@ export const CONFIG_DEFAULT: Config = {
   disclaimerText: disclaimerText.disclaimerText,
   disclaimerDisabled: true,
   displayGuestPrompt: false,
+  displaySurveyPopupCondition: DisplaySurveyPopupCondition.ALWAYS,
   postSurveyLink: "",
   postSurveyTimer: 0,
   minTopicQuestionSize: 0,

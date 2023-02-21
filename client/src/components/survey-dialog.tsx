@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { Dialog, DialogTitle, DialogContent, Button } from "@mui/material";
 
 import { sendCmi5Statement, toXapiResultExtCustom } from "cmiutils";
-import { Config, LoadStatus, State } from "types";
+import { Config, DisplaySurveyPopupCondition, LoadStatus, State } from "types";
 import {
   getLocalStorage,
   getLocalStorageUserData,
@@ -84,10 +84,17 @@ export function SurveyDialog(): JSX.Element {
       setSurveyLink(url.href);
     }
 
-    const userIdentifierProvided =
-      userData.givenUserId || userData.givenUserEmail;
-    const shouldSurveyPopupAfterTimer =
-      userIdentifierProvided && config.postSurveyLink;
+    const shouldSurveyPopupAfterTimer = 
+    config.postSurveyLink //always required
+    &&
+    (
+      config.displaySurveyPopupCondition == DisplaySurveyPopupCondition.ALWAYS
+      ||
+      (config.displaySurveyPopupCondition == DisplaySurveyPopupCondition.USER_ID && userData.givenUserId)
+      ||
+      (config.displaySurveyPopupCondition == DisplaySurveyPopupCondition.USER_ID_AND_EMAIL && userData.givenUserId && userData.givenUserEmail)
+    )
+
     if (
       postsurveytime &&
       Number(postsurveytime) > 0 &&

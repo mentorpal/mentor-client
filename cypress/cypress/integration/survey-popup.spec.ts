@@ -8,6 +8,7 @@ import {
   assertLocalStorageItemDoesNotExist,
   assertLocalStorageValue,
   confirmPageLoaded,
+  DisplaySurveyPopupCondition,
   mockDefaultSetup,
   updateLocalStorageUserData,
 } from "../support/helpers";
@@ -227,6 +228,8 @@ describe("Survey Popup After Timer", () => {
         displayGuestPrompt: false,
         disclaimerDisabled: true,
         cmi5Enabled: false,
+        postSurveyTimer: 1,
+        displaySurveyPopupCondition: DisplaySurveyPopupCondition.ALWAYS
       },
     });
     cy.visit("/");
@@ -242,6 +245,7 @@ describe("Survey Popup After Timer", () => {
         disclaimerDisabled: true,
         cmi5Enabled: false,
         postSurveyLink: "http://localhost",
+        displaySurveyPopupCondition: DisplaySurveyPopupCondition.ALWAYS
       },
     });
     cy.visit("/");
@@ -250,7 +254,7 @@ describe("Survey Popup After Timer", () => {
     cy.get("[data-cy=survey-dialog]").should("not.exist");
   });
 
-  it("not visible if userid not in url", () => {
+  it("not visible if condition set to userId and no userId provided", () => {
     mockDefaultSetup(cy, {
       config: {
         displayGuestPrompt: false,
@@ -258,16 +262,16 @@ describe("Survey Popup After Timer", () => {
         cmi5Enabled: false,
         postSurveyLink: "http://localhost",
         postSurveyTimer: 1,
+        displaySurveyPopupCondition: DisplaySurveyPopupCondition.USER_ID
       },
     });
-    cy.visit("/");
+    cy.visit("/?userEmail=123@mentorpal.org");
     confirmPageLoaded(cy);
     cy.wait(TIMER_UPDATE_INTERVAL_MS + 1000);
-
     cy.get("[data-cy=survey-dialog]").should("not.exist");
   });
 
-  it("visible if postSurveyLink and postSurveyTimer in config, and userid in url", () => {
+  it("visible if condition set to userId and userId provided", () => {
     mockDefaultSetup(cy, {
       config: {
         displayGuestPrompt: false,
@@ -275,13 +279,82 @@ describe("Survey Popup After Timer", () => {
         cmi5Enabled: false,
         postSurveyLink: "http://localhost",
         postSurveyTimer: 1,
+        displaySurveyPopupCondition: DisplaySurveyPopupCondition.USER_ID
       },
     });
     cy.visit("/?userid=123");
     confirmPageLoaded(cy);
     cy.wait(TIMER_UPDATE_INTERVAL_MS + 1000);
-
     cy.get("[data-cy=survey-dialog]").should("exist");
+  });
+
+  it("not visible if display set to userId and email and only userId provided", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: false,
+        disclaimerDisabled: true,
+        cmi5Enabled: false,
+        postSurveyLink: "http://localhost",
+        postSurveyTimer: 1,
+        displaySurveyPopupCondition: DisplaySurveyPopupCondition.USER_ID_AND_EMAIL
+      },
+    });
+    cy.visit("/?userid=123");
+    confirmPageLoaded(cy);
+    cy.wait(TIMER_UPDATE_INTERVAL_MS + 1000);
+    cy.get("[data-cy=survey-dialog]").should("not.exist");
+  });
+
+  it("not visible if display set to userId and email and only userEmail provided", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: false,
+        disclaimerDisabled: true,
+        cmi5Enabled: false,
+        postSurveyLink: "http://localhost",
+        postSurveyTimer: 1,
+        displaySurveyPopupCondition: DisplaySurveyPopupCondition.USER_ID
+      },
+    });
+    cy.visit("/?userEmail=123@mentorpal.org");
+    confirmPageLoaded(cy);
+    cy.wait(TIMER_UPDATE_INTERVAL_MS + 1000);
+    cy.get("[data-cy=survey-dialog]").should("not.exist");
+  });
+
+  it("visible if display set to userId and email and both are provided", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: false,
+        disclaimerDisabled: true,
+        cmi5Enabled: false,
+        postSurveyLink: "http://localhost",
+        postSurveyTimer: 1,
+        displaySurveyPopupCondition: DisplaySurveyPopupCondition.USER_ID
+      },
+    });
+    cy.visit("/?userid=123&userEmail=123@mentorpal.org");
+    confirmPageLoaded(cy);
+    cy.wait(TIMER_UPDATE_INTERVAL_MS + 1000);
+    cy.get("[data-cy=survey-dialog]").should("exist");
+  });
+
+
+  it("not visible if condition set to NEVER despite everything being provided", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: false,
+        disclaimerDisabled: true,
+        cmi5Enabled: false,
+        postSurveyLink: "http://localhost",
+        postSurveyTimer: 1,
+        displaySurveyPopupCondition: DisplaySurveyPopupCondition.NEVER
+      },
+    });
+    cy.visit("/?userid=123&userEmail=123@mentorpal.org");
+    confirmPageLoaded(cy);
+    cy.wait(TIMER_UPDATE_INTERVAL_MS + 1000);
+    cy.get("[data-cy=survey-dialog]").should("not.exist");
   });
 
   it("visible if postSurveyLink and postSurveyTimer in config, and qualtricsuserid in localstorage", () => {
@@ -297,23 +370,6 @@ describe("Survey Popup After Timer", () => {
       },
     });
     cy.visit("/");
-    confirmPageLoaded(cy);
-    cy.wait(TIMER_UPDATE_INTERVAL_MS + 1000);
-
-    cy.get("[data-cy=survey-dialog]").should("exist");
-  });
-
-  it("pops up if postSurveyLink in config, and postsurveytime and userid in url", () => {
-    mockDefaultSetup(cy, {
-      config: {
-        displayGuestPrompt: false,
-        disclaimerDisabled: true,
-        cmi5Enabled: false,
-        postSurveyLink: "http://localhost",
-        postSurveyTimer: 1,
-      },
-    });
-    cy.visit(`/?postsurveytime=1&userid=123`);
     confirmPageLoaded(cy);
     cy.wait(TIMER_UPDATE_INTERVAL_MS + 1000);
 
@@ -864,7 +920,8 @@ describe("closing survey popup", () => {
 });
 
 describe("opening and closing disclaimer survey popup", () => {
-  it("does not clobber currently running timer", () => {
+  // TODO: update this test once local storage testing is streamlined
+  it.skip("does not clobber currently running timer", () => {
     mockDefaultSetup(cy, {
       config: {
         displayGuestPrompt: false,

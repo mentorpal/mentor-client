@@ -109,6 +109,14 @@ export interface QuestionApiData {
   classifier: string;
 }
 
+export enum DisplaySurveyPopupCondition {
+  ALWAYS = 'ALWAYS',
+  USER_ID = 'USER_ID',
+  USER_ID_AND_EMAIL = 'USER_ID_AND_EMAIL',
+  NEVER = 'NEVER',
+}
+
+
 export interface Config {
   cmi5Enabled: boolean;
   cmi5Endpoint: string;
@@ -126,6 +134,7 @@ export interface Config {
   disclaimerText: string;
   disclaimerDisabled: boolean;
   displayGuestPrompt: boolean;
+  displaySurveyPopupCondition: DisplaySurveyPopupCondition;
   defaultVirtualBackground: string;
   postSurveyLink: string;
   postSurveyTimer: number;
