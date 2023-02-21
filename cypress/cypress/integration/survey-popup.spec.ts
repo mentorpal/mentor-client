@@ -229,7 +229,7 @@ describe("Survey Popup After Timer", () => {
         disclaimerDisabled: true,
         cmi5Enabled: false,
         postSurveyTimer: 1,
-        displaySurveyPopupCondition: DisplaySurveyPopupCondition.ALWAYS
+        displaySurveyPopupCondition: DisplaySurveyPopupCondition.ALWAYS,
       },
     });
     cy.visit("/");
@@ -245,7 +245,7 @@ describe("Survey Popup After Timer", () => {
         disclaimerDisabled: true,
         cmi5Enabled: false,
         postSurveyLink: "http://localhost",
-        displaySurveyPopupCondition: DisplaySurveyPopupCondition.ALWAYS
+        displaySurveyPopupCondition: DisplaySurveyPopupCondition.ALWAYS,
       },
     });
     cy.visit("/");
@@ -262,7 +262,7 @@ describe("Survey Popup After Timer", () => {
         cmi5Enabled: false,
         postSurveyLink: "http://localhost",
         postSurveyTimer: 1,
-        displaySurveyPopupCondition: DisplaySurveyPopupCondition.USER_ID
+        displaySurveyPopupCondition: DisplaySurveyPopupCondition.USER_ID,
       },
     });
     cy.visit("/?userEmail=123@mentorpal.org");
@@ -279,7 +279,7 @@ describe("Survey Popup After Timer", () => {
         cmi5Enabled: false,
         postSurveyLink: "http://localhost",
         postSurveyTimer: 1,
-        displaySurveyPopupCondition: DisplaySurveyPopupCondition.USER_ID
+        displaySurveyPopupCondition: DisplaySurveyPopupCondition.USER_ID,
       },
     });
     cy.visit("/?userid=123");
@@ -296,7 +296,8 @@ describe("Survey Popup After Timer", () => {
         cmi5Enabled: false,
         postSurveyLink: "http://localhost",
         postSurveyTimer: 1,
-        displaySurveyPopupCondition: DisplaySurveyPopupCondition.USER_ID_AND_EMAIL
+        displaySurveyPopupCondition:
+          DisplaySurveyPopupCondition.USER_ID_AND_EMAIL,
       },
     });
     cy.visit("/?userid=123");
@@ -313,7 +314,7 @@ describe("Survey Popup After Timer", () => {
         cmi5Enabled: false,
         postSurveyLink: "http://localhost",
         postSurveyTimer: 1,
-        displaySurveyPopupCondition: DisplaySurveyPopupCondition.USER_ID
+        displaySurveyPopupCondition: DisplaySurveyPopupCondition.USER_ID,
       },
     });
     cy.visit("/?userEmail=123@mentorpal.org");
@@ -330,7 +331,7 @@ describe("Survey Popup After Timer", () => {
         cmi5Enabled: false,
         postSurveyLink: "http://localhost",
         postSurveyTimer: 1,
-        displaySurveyPopupCondition: DisplaySurveyPopupCondition.USER_ID
+        displaySurveyPopupCondition: DisplaySurveyPopupCondition.USER_ID,
       },
     });
     cy.visit("/?userid=123&userEmail=123@mentorpal.org");
@@ -338,7 +339,6 @@ describe("Survey Popup After Timer", () => {
     cy.wait(TIMER_UPDATE_INTERVAL_MS + 1000);
     cy.get("[data-cy=survey-dialog]").should("exist");
   });
-
 
   it("not visible if condition set to NEVER despite everything being provided", () => {
     mockDefaultSetup(cy, {
@@ -348,7 +348,7 @@ describe("Survey Popup After Timer", () => {
         cmi5Enabled: false,
         postSurveyLink: "http://localhost",
         postSurveyTimer: 1,
-        displaySurveyPopupCondition: DisplaySurveyPopupCondition.NEVER
+        displaySurveyPopupCondition: DisplaySurveyPopupCondition.NEVER,
       },
     });
     cy.visit("/?userid=123&userEmail=123@mentorpal.org");

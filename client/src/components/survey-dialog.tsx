@@ -84,16 +84,17 @@ export function SurveyDialog(): JSX.Element {
       setSurveyLink(url.href);
     }
 
-    const shouldSurveyPopupAfterTimer = 
-    config.postSurveyLink //always required
-    &&
-    (
-      config.displaySurveyPopupCondition == DisplaySurveyPopupCondition.ALWAYS
-      ||
-      (config.displaySurveyPopupCondition == DisplaySurveyPopupCondition.USER_ID && userData.givenUserId)
-      ||
-      (config.displaySurveyPopupCondition == DisplaySurveyPopupCondition.USER_ID_AND_EMAIL && userData.givenUserId && userData.givenUserEmail)
-    )
+    const shouldSurveyPopupAfterTimer =
+      config.postSurveyLink && //always required
+      (config.displaySurveyPopupCondition ==
+        DisplaySurveyPopupCondition.ALWAYS ||
+        (config.displaySurveyPopupCondition ==
+          DisplaySurveyPopupCondition.USER_ID &&
+          userData.givenUserId) ||
+        (config.displaySurveyPopupCondition ==
+          DisplaySurveyPopupCondition.USER_ID_AND_EMAIL &&
+          userData.givenUserId &&
+          userData.givenUserEmail));
 
     if (
       postsurveytime &&

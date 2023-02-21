@@ -146,10 +146,10 @@ export function cyMockGQL(query: string, data: any | any[]): MockGraphQLQuery {
   };
 }
 export enum DisplaySurveyPopupCondition {
-  ALWAYS = 'ALWAYS',
-  USER_ID = 'USER_ID',
-  USER_ID_AND_EMAIL = 'USER_ID_AND_EMAIL',
-  NEVER = 'NEVER',
+  ALWAYS = "ALWAYS",
+  USER_ID = "USER_ID",
+  USER_ID_AND_EMAIL = "USER_ID_AND_EMAIL",
+  NEVER = "NEVER",
 }
 
 export interface Config {
