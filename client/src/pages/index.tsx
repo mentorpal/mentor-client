@@ -4,9 +4,9 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { v1 as uuidv1, v4 as uuid } from "uuid";
+import { v4 as uuid } from "uuid";
 import { CircularProgress } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import {
@@ -24,7 +24,8 @@ import {
   SESSION_ID_CREATED,
   SESSION_ID_FOUND,
   setChatSessionId,
-  setGuestName,
+  USER_DATA_FINISH_LOADING,
+  USER_DATA_UPDATED,
 } from "store/actions";
 import { Config, LoadStatus, MentorType, State } from "types";
 import withLocation from "wrap-with-location";
@@ -33,7 +34,21 @@ import { fetchMentorByAccessToken, pingMentor } from "api";
 
 import "styles/history-chat-responsive.css";
 
-import { getLocalStorage, getParamUserId, removeQueryParam } from "utils";
+import {
+  emailFromUserId,
+  getLocalStorage,
+  getLocalStorageUserData,
+  getParamURL,
+  getRegistrationId,
+  getUserIdFromURL,
+  LocalStorageUserData,
+  removeQueryParam,
+  resetTimeSpentOnPage,
+  setLocalStorage,
+  updateLocalStorageUserData,
+  validatedEmail,
+  XOR,
+} from "utils";
 import {
   cmi5_instance,
   initCmi5,
@@ -44,6 +59,19 @@ import VideoSection from "components/layout/video-section";
 import ChatSection from "components/layout/chat-section";
 import { useWithScreenOrientation } from "use-with-orientation";
 import { AuthUserData } from "types-gql";
+import {
+  EMAIL_URL_PARAM_KEY,
+  EVENTS_KEY,
+  LS_EMAIL_KEY,
+  LS_USER_ID_KEY,
+  LS_X_API_EMAIL_KEY,
+  POST_SURVEY_TIME_KEY,
+  QUALTRICS_USER_ID_URL_PARAM_KEY,
+  REFERRER_KEY,
+  REGISTRATION_ID_KEY,
+  TIME_SPENT_ON_PAGE_KEY,
+} from "local-constants";
+import UsernameModal from "components/username-modal";
 
 declare module "@mui/styles/defaultTheme" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -102,12 +130,21 @@ function IndexPage(props: {
   search: {
     mentor?: string | string[];
     recommendedQuestions?: string | string[];
-    guest?: string;
     subject?: string;
     intro?: string;
     noHistoryDownload?: string;
   };
 }): JSX.Element {
+  const userDataState = useSelector<State, LocalStorageUserData>(
+    (state) => state.userData
+  );
+  const userDataLoadStatus = useSelector<State, LoadStatus>(
+    (state) => state.userDataLoadStatus
+  );
+
+  const [showEmailPopup, setShowEmailPopup] = useState(false);
+  const [usernameModalOpen, setUsernameModalOpen] = useState<boolean>(true);
+
   const dispatch = useDispatch();
   const styles = useStyles();
   const config = useSelector<State, Config>((state) => state.config);
@@ -120,7 +157,6 @@ function IndexPage(props: {
   const authUserData = useSelector<State, AuthUserData>(
     (state) => state.authUserData
   );
-  const guestName = useSelector<State, string>((state) => state.guestName);
   const curMentor = useSelector<State, string>((state) => state.curMentor);
   const sessionIdInState = useSelector<State, string>(
     (state) => state.sessionId
@@ -145,12 +181,8 @@ function IndexPage(props: {
   const curTopic = useSelector<State, string>((state) => state.curTopic);
   const cmi5init = useSelector<State, boolean>((state) => state.isCmi5Init);
 
-  const { guest, subject, recommendedQuestions, intro } = props.search;
+  const { subject, recommendedQuestions, intro } = props.search;
   let { mentor } = props.search;
-
-  function hasSessionUser(): boolean {
-    return Boolean(!config.cmi5Enabled || cmi5init || guestName);
-  }
 
   function isLoadComplete(s: LoadStatus): boolean {
     return s === LoadStatus.LOADED || s === LoadStatus.LOAD_FAILED;
@@ -193,21 +225,28 @@ function IndexPage(props: {
   useEffect(() => {
     dispatch(authenticateUser());
     dispatch(loadConfig());
+  }, []);
+
+  function setupSessionId(): string {
     const sessionIdInUrl = new URL(location.href).searchParams.get("sessionId");
     if (sessionIdInUrl) {
       dispatch({
         type: SESSION_ID_FOUND,
         payload: sessionIdInUrl,
       });
-      return;
+      return sessionIdInUrl;
     }
     if (!sessionIdInState) {
+      const newSessionId = uuid();
       dispatch({
         type: SESSION_ID_CREATED,
-        payload: uuid(),
+        payload: newSessionId,
       });
+      return newSessionId;
+    } else {
+      return sessionIdInState;
     }
-  }, []);
+  }
 
   useEffect(() => {
     if (!isLoadComplete(configLoadStatus) || !curMentor) {
@@ -230,66 +269,114 @@ function IndexPage(props: {
     );
   });
 
-  const setupLocalStorage = (): string[] => {
-    // get local user information
-    const localData = localStorage.getItem("userData");
-    const newId = uuidv1();
-    // grab referrer from the URL
-    const userId = new URL(location.href).searchParams.get("userID") || newId;
+  function setupUserData(config: Config) {
+    const sessionId = setupSessionId();
+    const userData = setupLocalStorageUserData(sessionId);
+
+    if (
+      !userData.givenUserId &&
+      !userData.givenUserEmail &&
+      config.displayGuestPrompt
+    ) {
+      dispatch({
+        type: USER_DATA_UPDATED,
+        payload: userData,
+      });
+      setShowEmailPopup(true);
+    } else {
+      dispatch({
+        type: USER_DATA_FINISH_LOADING,
+        payload: userData,
+      });
+    }
+  }
+
+  function setupLocalStorageUserData(sessionId: string): LocalStorageUserData {
+    const localData = getLocalStorageUserData();
+    const userIdFromUrl = getUserIdFromURL();
+    const userEmailfromUrl = new URL(location.href).searchParams.get(
+      EMAIL_URL_PARAM_KEY
+    );
+
+    const xapiEmailBeforeChanges = localData.xapiUserEmail;
+
+    let givenUserId = localData.givenUserId;
+    let givenUserEmail = localData.givenUserEmail;
+    let xApiEmail = localData.xapiUserEmail;
+
+    if (userEmailfromUrl && userIdFromUrl) {
+      // If have both userID in url and userEmail in url, then set both in local storage, and xapiUserEmail becomes userEmailUrl
+      givenUserId = userIdFromUrl;
+      givenUserEmail = validatedEmail(userEmailfromUrl);
+      xApiEmail = validatedEmail(userEmailfromUrl);
+    } else if (XOR(Boolean(userEmailfromUrl), Boolean(userIdFromUrl))) {
+      const newEmailProvided =
+        userEmailfromUrl &&
+        userEmailfromUrl !== localData.givenUserEmail &&
+        userEmailfromUrl !== emailFromUserId(localData.givenUserId);
+      const newUserIdProvided =
+        userIdFromUrl && userIdFromUrl !== localData.givenUserId;
+
+      const noUserInLocal = !localData.givenUserId;
+      const noEmailInLocal = !localData.givenUserEmail;
+      const noEmailOrUserInLocal = noUserInLocal && noEmailInLocal;
+
+      if (noEmailOrUserInLocal || newEmailProvided || newUserIdProvided) {
+        givenUserId = userIdFromUrl || "";
+        givenUserEmail = validatedEmail(userEmailfromUrl) || "";
+        xApiEmail =
+          (givenUserId && emailFromUserId(givenUserId)) || givenUserEmail;
+      }
+
+      // SPECIAL CASE: If user exists in local but no email in local, and provided email is equivalent to emailFromUserId(local.userId),
+      // then just add the given email and nothing else.
+      if (
+        userEmailfromUrl &&
+        !newEmailProvided &&
+        Boolean(localData.givenUserId) &&
+        !localData.givenUserEmail &&
+        userEmailfromUrl == emailFromUserId(localData.givenUserId)
+      ) {
+        givenUserEmail = validatedEmail(userEmailfromUrl);
+      }
+    } else {
+      // Nothing passed in, so make sure we at least have an xapiemail setup
+      const xApiEmailIsFunctionOfSesssionId =
+        xApiEmail && !localData.givenUserEmail && !localData.givenUserId;
+      if (!xApiEmail || xApiEmailIsFunctionOfSesssionId) {
+        xApiEmail = `${sessionId}@mentorpal.org`;
+      }
+    }
+
+    const referrerFromUrl = new URL(location.href).searchParams.get(
+      REFERRER_KEY
+    );
+    const referrerFromLocalStorage = localData.referrer;
     const referrer =
-      new URL(location.href).searchParams.get("referrer") || "no referrer";
-    const userEmail =
-      new URL(location.href).searchParams.get("userEmail") ||
-      `${newId}.guest@mentorpal.org`;
+      referrerFromUrl || referrerFromLocalStorage || "no referrer";
 
-    // if userId exists in localStorage and is the same as the one in the URL, use that one.
-    // Otherwise, use the one in the URL
-    const localUserId =
-      JSON.parse(localData ? localData : "{}").userID !== undefined &&
-      JSON.parse(localData ? localData : "{}").userID === userId
-        ? JSON.parse(localData ? localData : "").userID
-        : userId;
-
-    // if referrer exists in localStorage and is the same as the one in the URL, use that one.
-    // Otherwise, use the one in the URL
-    const localReferrer =
-      JSON.parse(localData ? localData : "{}").referrer !== undefined &&
-      JSON.parse(localData ? localData : "{}").referrer === referrer
-        ? JSON.parse(localData ? localData : "").referrer
-        : referrer;
-
-    // if userEmail exists in localStorage and is the same as the one in the URL, use that one.
-    // Otherwise, use the one in the URL
-    const localUserEmail =
-      JSON.parse(localData ? localData : "{}").userEmail !== undefined &&
-      JSON.parse(localData ? localData : "{}").userEmail === userEmail
-        ? JSON.parse(localData ? localData : "").userEmail
-        : userEmail;
-
-    // if no referrer in localStorage, use the one from the URL
-    const referrerURL = localData ? localReferrer : referrer;
-    // if no userEmail in localStorage, use the one from the URL
-    const userEmailURL = localData ? localUserEmail : userEmail;
-    // if no userEmail in localStorage, use the one from the URL
-    const userIdURL = localData ? localUserId : userId;
-
-    // create new localStorage object
-    const userData = {
-      userID: userIdURL,
-      referrerURL: referrerURL,
-      userEmail: userEmailURL,
+    const userData: LocalStorageUserData = {
+      [LS_USER_ID_KEY]: givenUserId,
+      [LS_EMAIL_KEY]: givenUserEmail,
+      [LS_X_API_EMAIL_KEY]: xApiEmail,
+      [EVENTS_KEY]: localData.events || [],
+      [REFERRER_KEY]: referrer,
     };
 
-    // set it in localStorage
-    localStorage.setItem("userData", JSON.stringify(userData));
+    updateLocalStorageUserData(userData);
+    setLocalStorage(REGISTRATION_ID_KEY, getRegistrationId());
 
-    // remove saved query params (no longer needed) to clean up url
-    removeQueryParam("userID");
-    removeQueryParam("referrer");
-    removeQueryParam("userEmail");
+    // Whenever a new xapi email is set, it's considered a new user so reset timer.
+    if (xapiEmailBeforeChanges !== xApiEmail) {
+      resetTimeSpentOnPage();
+    }
 
-    return [userIdURL, referrerURL, userEmail];
-  };
+    removeQueryParam(QUALTRICS_USER_ID_URL_PARAM_KEY);
+    removeQueryParam(REFERRER_KEY);
+    removeQueryParam(EMAIL_URL_PARAM_KEY);
+
+    return userData;
+  }
 
   function warmupMentors(mentors: string | string[], accessToken: string) {
     const mentorIds = Array.isArray(mentors) ? mentors : [mentors];
@@ -302,22 +389,41 @@ function IndexPage(props: {
   }
 
   useEffect(() => {
+    if (configLoadStatus === LoadStatus.LOADED) {
+      setupUserData(config);
+    }
+  }, [configLoadStatus]);
+
+  useEffect(() => {
     if (
       !isLoadComplete(configLoadStatus) ||
-      !isLoadComplete(authUserLoadStatus)
+      !isLoadComplete(authUserLoadStatus) ||
+      !isLoadComplete(userDataLoadStatus) ||
+      !sessionIdInState ||
+      !config.cmi5Enabled ||
+      cmi5_instance
     ) {
       return;
     }
     if (mentor) {
       warmupMentors(mentor, authUserData.accessToken);
     }
-    if (config.cmi5Enabled && !config.displayGuestPrompt && !cmi5_instance) {
-      const [userIdLRS, referrer, userEmail] = setupLocalStorage();
-      if (userIdLRS && userEmail && referrer) {
-        initCmi5(userIdLRS, userEmail, `guests-client/${referrer}`, config);
-      }
+    try {
+      initCmi5(
+        userDataState.givenUserId || userDataState.xapiUserEmail,
+        userDataState.xapiUserEmail,
+        userDataState.referrer,
+        config
+      );
+    } catch (err2) {
+      console.error(err2);
     }
-  }, [configLoadStatus, authUserLoadStatus]);
+  }, [
+    configLoadStatus,
+    authUserLoadStatus,
+    userDataLoadStatus,
+    sessionIdInState,
+  ]);
 
   useEffect(() => {
     const chatSessionId = uuid();
@@ -325,42 +431,35 @@ function IndexPage(props: {
 
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState !== "visible") {
-        const localData = localStorage.getItem("userData");
-        if (!localData) {
-          return;
-        }
-        const data = JSON.parse(localData);
-        if (!data.userID) {
-          return;
-        }
-        const userData = {
+        const data = getLocalStorageUserData();
+        const xapiUserData = {
           verb: "suspended",
-          userid: data.userID,
-          userEmail: data.userEmail,
+          userid: data.givenUserId,
+          userEmail: data.xapiUserEmail,
           referrer: data.referrer,
-          postSurveyTime: getLocalStorage("postsurveytime"),
-          timeSpentOnPage: getLocalStorage("postsurveytime"),
-          qualtricsUserId: getLocalStorage("qualtricsuserid"),
+          postSurveyTime: getLocalStorage(POST_SURVEY_TIME_KEY),
+          timeSpentOnPage: getLocalStorage(TIME_SPENT_ON_PAGE_KEY),
+          qualtricsUserId: getLocalStorage(LS_USER_ID_KEY),
         };
         sendCmi5Statement(
           {
             verb: {
-              id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
+              id: `https://mentorpal.org/xapi/verb/${xapiUserData.verb}`,
               display: {
-                "en-US": `${userData.verb}`,
+                "en-US": `${xapiUserData.verb}`,
               },
             },
             result: {
               extensions: {
                 "https://mentorpal.org/xapi/verb/suspended":
                   toXapiResultExtCustom(
-                    userData.verb,
-                    userData.userid,
-                    userData.userEmail,
-                    userData.referrer,
-                    userData.postSurveyTime,
-                    userData.timeSpentOnPage,
-                    userData.qualtricsUserId
+                    xapiUserData.verb,
+                    xapiUserData.userid,
+                    xapiUserData.userEmail,
+                    xapiUserData.referrer,
+                    xapiUserData.postSurveyTime,
+                    xapiUserData.timeSpentOnPage,
+                    xapiUserData.qualtricsUserId
                   ),
               },
             },
@@ -422,18 +521,22 @@ function IndexPage(props: {
     authUserLoadStatus,
   ]);
 
-  useEffect(() => {
-    let userId = getParamUserId(window.location.href);
-    if (!userId || typeof userId !== "string") {
-      userId = uuidv1();
+  function onSubmitEmail(email: string) {
+    const newGivenUserEmail = getParamURL(EMAIL_URL_PARAM_KEY) || email || "";
+    const newUserData: LocalStorageUserData = {
+      ...userDataState,
+      givenUserEmail: newGivenUserEmail,
+    };
+    if (newGivenUserEmail) {
+      newUserData.xapiUserEmail = validatedEmail(newGivenUserEmail);
+      resetTimeSpentOnPage();
     }
-  });
-
-  useEffect(() => {
-    if (guest) {
-      dispatch(setGuestName(guest));
-    }
-  }, [guest]);
+    dispatch({
+      type: USER_DATA_FINISH_LOADING,
+      payload: newUserData,
+    });
+    updateLocalStorageUserData(newUserData);
+  }
 
   return (
     <div>
@@ -452,20 +555,25 @@ function IndexPage(props: {
         <StyledEngineProvider injectFirst>
           <ThemeProvider theme={brandedTheme}>
             <Header />
+            {showEmailPopup ? (
+              <UsernameModal
+                setOpen={setUsernameModalOpen}
+                open={usernameModalOpen}
+                onSubmit={onSubmitEmail}
+              />
+            ) : null}
             <div className={`main-container-${displayFormat}`}>
               <div className="video-section">
                 <VideoSection
                   mentorType={mentorType}
                   chatHeight={chatHeight}
                   windowHeight={windowHeight}
-                  hasSessionUser={hasSessionUser}
                   isMobile={displayFormat == "mobile"}
                 />
               </div>
               <div className={`chat-section-${displayFormat}`}>
                 <ChatSection
                   mentorType={mentorType}
-                  hasSessionUser={hasSessionUser}
                   curTopic={curTopic}
                   isMobile={displayFormat == "mobile"}
                   noHistoryDownload={props.search.noHistoryDownload}

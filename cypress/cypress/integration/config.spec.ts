@@ -10,20 +10,6 @@ const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
 
 describe("Config", () => {
-  it("disables cmi5 guest prompt if config.cmi5Enabled=false", () => {
-    mockDefaultSetup(cy, { config: { cmi5Enabled: false } });
-    cy.visit("/");
-    cy.get("[data-cy=guest-prompt]").should("not.exist");
-  });
-
-  it("enables cmi5 guest prompt if config.cmi5Enabled=false", () => {
-    mockDefaultSetup(cy, {
-      config: { cmi5Enabled: true, displayGuestPrompt: true },
-    });
-    cy.visit("/");
-    cy.get("[data-cy=guest-prompt]").should("exist");
-  });
-
   it("loads a single default mentor if mentorsDefault specifies", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },

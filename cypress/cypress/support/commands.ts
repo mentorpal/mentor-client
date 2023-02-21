@@ -30,13 +30,6 @@ The full terms of this copyright and license should always be found in the root 
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+import "cypress-localstorage-commands";
 import "cypress-fill-command";
-import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command";
 require("cy-verify-downloads").addCustomCommand();
-
-addMatchImageSnapshotCommand({
-  customDiffDir: Cypress.env("CYPRESS_SNAPSHOT_DIFF_DIR"),
-  comparisonMethod: "ssim",
-  failureThreshold: 0.01,
-  failureThresholdType: "percent",
-});

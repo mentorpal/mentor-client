@@ -5,97 +5,123 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Dialog, DialogTitle, DialogContent, Button } from "@mui/material";
+
+import { sendCmi5Statement, toXapiResultExtCustom } from "cmiutils";
+import { Config, LoadStatus, State } from "types";
 import {
   getLocalStorage,
+  getLocalStorageUserData,
+  LocalStorageUserData,
   printLocalStorage,
   removeLocalStorageItem,
   setLocalStorage,
 } from "utils";
-import { sendCmi5Statement, toXapiResultExtCustom } from "cmiutils";
-import { useSelector } from "react-redux";
-import { Config, State } from "types";
+import {
+  POST_SURVEY_TIME_KEY,
+  TIME_SPENT_ON_PAGE_KEY,
+  QUALTRICS_USER_ID_URL_PARAM_KEY,
+  TIMER_TEXT_KEY,
+  LAST_UPDATE_KEY,
+  LS_USER_ID_KEY,
+  REFERRER_KEY,
+  TIMER_UPDATE_INTERVAL_MS,
+} from "../local-constants";
 
 export function SurveyDialog(): JSX.Element {
   const [title, setTitle] = useState<string>("");
   const [pollingTimer, setPollingTimer] = useState<boolean>(false);
   const [showSurveyPopup, setShowSurveyPopup] = useState<boolean>(false);
   const [surveyLink, setSurveyLink] = useState<string>();
-  const config = useSelector<State, Config>((state) => state.config);
+  const configInState = useSelector<State, Config>((state) => state.config);
+  const configLoadStatus = useSelector<State, LoadStatus>(
+    (state) => state.configLoadStatus
+  );
   const chatSessionId = useSelector<State, string>(
     (state) => state.chatSessionId
   );
   const sessionIdInState = useSelector<State, string>(
     (state) => state.sessionId
   );
+  const userDataInState = useSelector<State, LocalStorageUserData>(
+    (state) => state.userData
+  );
+  const userDataLoadStatus = useSelector<State, LoadStatus>(
+    (state) => state.userDataLoadStatus
+  );
 
-  function checkForSurveyPopupVariables() {
-    const localStorageTimerPopup = getLocalStorage("postsurveytime");
-    const qualtricsUserIdLocalStorage = getLocalStorage("qualtricsuserid");
-
+  function checkForSurveyPopupVariables(
+    userData: LocalStorageUserData,
+    config: Config
+  ) {
     const searchParams = new URL(location.href).searchParams;
+    const postSurveyTimeLocal = getLocalStorage(POST_SURVEY_TIME_KEY);
+    const timerTextLocal = getLocalStorage(TIMER_TEXT_KEY);
+
     const postsurveytime =
-      searchParams.get("postsurveytime") ||
-      localStorageTimerPopup ||
-      `${config.postSurveyTimer}`;
-    if (postsurveytime) {
-      setLocalStorage("postsurveytime", postsurveytime);
+      searchParams.get(POST_SURVEY_TIME_KEY) ||
+      postSurveyTimeLocal ||
+      (config.postSurveyTimer && `${config.postSurveyTimer}`) ||
+      "";
+    const timertext = searchParams.get(TIMER_TEXT_KEY) || timerTextLocal || "";
+
+    postsurveytime && setLocalStorage(POST_SURVEY_TIME_KEY, postsurveytime);
+    timertext && setLocalStorage(TIMER_TEXT_KEY, timertext);
+
+    if (config.postSurveyLink) {
+      const url = new URL(config.postSurveyLink);
+      config.postSurveyUserIdEnabled &&
+        url.searchParams.append(
+          QUALTRICS_USER_ID_URL_PARAM_KEY,
+          userData.givenUserId ||
+            userData.givenUserEmail ||
+            userData.xapiUserEmail
+        );
+      config.postSurveyReferrerEnabled &&
+        userData.referrer &&
+        url.searchParams.append(REFERRER_KEY, userData.referrer);
+      setSurveyLink(url.href);
     }
-    let qualtricsuserid =
-      searchParams.get("userid") || qualtricsUserIdLocalStorage;
-    if (qualtricsuserid) {
-      setLocalStorage("qualtricsuserid", qualtricsuserid);
-    } else {
-      qualtricsuserid = getLocalStorage("qualtricsuserid");
-      if (!qualtricsuserid) {
-        const localData = getLocalStorage("userData");
-        if (localData) {
-          const data = JSON.parse(localData);
-          if (data.userID) {
-            qualtricsuserid = data.userID;
-          }
-        }
-      }
-    }
-    const timertext = searchParams.get("timertext");
-    if (timertext) {
-      setLocalStorage("timertext", timertext);
-    }
-    if (config.postSurveyLink && qualtricsuserid) {
-      setSurveyLink(`${config.postSurveyLink}?userid=${qualtricsuserid}`);
-    }
+
+    const userIdentifierProvided =
+      userData.givenUserId || userData.givenUserEmail;
+    const shouldSurveyPopupAfterTimer =
+      userIdentifierProvided && config.postSurveyLink;
     if (
       postsurveytime &&
       Number(postsurveytime) > 0 &&
-      qualtricsuserid &&
-      config.postSurveyLink
+      shouldSurveyPopupAfterTimer
     ) {
-      const localStorageTimeSpent = getLocalStorage("timespentonpage");
-      setLocalStorage("timespentonpage", localStorageTimeSpent || "0");
+      const localStorageTimeSpent = getLocalStorage(TIME_SPENT_ON_PAGE_KEY);
+      setLocalStorage(LAST_UPDATE_KEY, String(Date.now()));
+      setLocalStorage(TIME_SPENT_ON_PAGE_KEY, localStorageTimeSpent || "0");
       setPollingTimer(true);
     }
   }
 
   function clearTimerLocalStorage() {
-    removeLocalStorageItem("timespentonpage");
-    removeLocalStorageItem("postsurveytime");
-    removeLocalStorageItem("qualtricsuserid");
-    removeLocalStorageItem("timertext");
+    removeLocalStorageItem(TIME_SPENT_ON_PAGE_KEY);
+    removeLocalStorageItem(POST_SURVEY_TIME_KEY);
+    removeLocalStorageItem(TIMER_TEXT_KEY);
     setPollingTimer(false);
   }
 
   function generateSurveyPopupTitle(): string {
-    const timerTextFromLocalStorage = getLocalStorage("timertext");
+    const timerTextFromLocalStorage = getLocalStorage(TIMER_TEXT_KEY);
     if (timerTextFromLocalStorage) {
       return timerTextFromLocalStorage;
     }
 
-    const timeSpentOnPageFromLocalStorage = getLocalStorage("timespentonpage");
+    const timeSpentOnPageFromLocalStorage = getLocalStorage(
+      TIME_SPENT_ON_PAGE_KEY
+    );
     const timeSpentOnPage = timeSpentOnPageFromLocalStorage
       ? Number(timeSpentOnPageFromLocalStorage)
       : 0;
 
-    const surveyWaitTimeFromLocalStorage = getLocalStorage("postsurveytime");
+    const surveyWaitTimeFromLocalStorage =
+      getLocalStorage(POST_SURVEY_TIME_KEY);
     const surveyWaitTime = surveyWaitTimeFromLocalStorage
       ? Number(surveyWaitTimeFromLocalStorage)
       : 0;
@@ -128,9 +154,10 @@ export function SurveyDialog(): JSX.Element {
   }
 
   function pollTimer(): void {
-    const timeSpentOnPage = getLocalStorage("timespentonpage");
-    const newTimeSpentOnPage = Number(timeSpentOnPage) + 10;
-    const timerDuration = getLocalStorage("postsurveytime");
+    const timeSpentOnPage = getLocalStorage(TIME_SPENT_ON_PAGE_KEY);
+    const newTimeSpentOnPage =
+      Number(timeSpentOnPage) + TIMER_UPDATE_INTERVAL_MS / 1000;
+    const timerDuration = getLocalStorage(POST_SURVEY_TIME_KEY);
     const currentEpoch = Date.now();
 
     if (!timerDuration || !timeSpentOnPage) {
@@ -139,25 +166,40 @@ export function SurveyDialog(): JSX.Element {
       return;
     }
     if (newTimeSpentOnPage >= Number(timerDuration) && !showSurveyPopup) {
-      setLocalStorage("timespentonpage", String(newTimeSpentOnPage));
+      setLocalStorage(TIME_SPENT_ON_PAGE_KEY, String(newTimeSpentOnPage));
 
       setShowSurveyPopup(true);
       setPollingTimer(false);
     }
-    const lastUpdateEpoch = getLocalStorage("lastupdateepoch");
-    if (lastUpdateEpoch && currentEpoch - Number(lastUpdateEpoch) <= 9800) {
-      //if atleast 9.8 seconds has not passed since last update, then don't update
+    const lastUpdateEpoch = getLocalStorage(LAST_UPDATE_KEY);
+    if (
+      lastUpdateEpoch &&
+      currentEpoch - Number(lastUpdateEpoch) <= TIMER_UPDATE_INTERVAL_MS * 0.9
+    ) {
+      //if atleast 90% of the interval has not passed since last update, then don't update
       return;
     }
-    setLocalStorage("lastupdateepoch", String(currentEpoch));
-    setLocalStorage("timespentonpage", String(newTimeSpentOnPage));
+    setLocalStorage(LAST_UPDATE_KEY, String(currentEpoch));
+    setLocalStorage(TIME_SPENT_ON_PAGE_KEY, String(newTimeSpentOnPage));
   }
+
+  useEffect(() => {
+    if (
+      configLoadStatus == LoadStatus.LOADED &&
+      userDataLoadStatus == LoadStatus.LOADED
+    ) {
+      checkForSurveyPopupVariables(userDataInState, configInState);
+    }
+  }, [configLoadStatus, userDataLoadStatus]);
 
   useEffect(() => {
     if (!pollingTimer) {
       return;
     }
-    const id = setInterval(() => pollTimer(), pollingTimer ? 10000 : undefined);
+    const id = setInterval(
+      () => pollTimer(),
+      pollingTimer ? TIMER_UPDATE_INTERVAL_MS : undefined
+    );
     return () => clearInterval(id);
   }, [pollingTimer]);
 
@@ -167,19 +209,16 @@ export function SurveyDialog(): JSX.Element {
     }
   }, [showSurveyPopup, pollingTimer]);
 
-  useEffect(() => {
-    if (config && config.postSurveyLink) {
-      checkForSurveyPopupVariables();
-    }
-  }, [config]);
-
   function onClose() {
     // Clear local storage if enough time was spent on page
-    const timeSpentOnPageFromLocalStorage = getLocalStorage("timespentonpage");
+    const timeSpentOnPageFromLocalStorage = getLocalStorage(
+      TIME_SPENT_ON_PAGE_KEY
+    );
     const timeSpentOnPage = timeSpentOnPageFromLocalStorage
       ? Number(timeSpentOnPageFromLocalStorage)
       : 0;
-    const surveyWaitTimeFromLocalStorage = getLocalStorage("postsurveytime");
+    const surveyWaitTimeFromLocalStorage =
+      getLocalStorage(POST_SURVEY_TIME_KEY);
     const surveyWaitTime = surveyWaitTimeFromLocalStorage
       ? Number(surveyWaitTimeFromLocalStorage)
       : 0;
@@ -194,42 +233,34 @@ export function SurveyDialog(): JSX.Element {
   }
 
   const sendUserData = () => {
-    const localData = localStorage.getItem("userData");
-    if (!localData) {
-      return;
-    }
-
-    const data = JSON.parse(localData);
-    if (!data.userID) {
-      return;
-    }
-    const userData = {
+    const data = getLocalStorageUserData();
+    const xapiUserData = {
       verb: "terminated",
-      userid: data.userID,
-      userEmail: data.userEmail,
+      userid: data.givenUserId,
+      userEmail: data.xapiUserEmail,
       referrer: data.referrer,
-      postSurveyTime: getLocalStorage("postsurveytime"),
-      timeSpentOnPage: getLocalStorage("postsurveytime"),
-      qualtricsUserId: getLocalStorage("qualtricsuserid"),
+      postSurveyTime: getLocalStorage(POST_SURVEY_TIME_KEY),
+      timeSpentOnPage: getLocalStorage(TIME_SPENT_ON_PAGE_KEY),
+      qualtricsUserId: getLocalStorage(LS_USER_ID_KEY),
     };
     sendCmi5Statement(
       {
         verb: {
-          id: `https://mentorpal.org/xapi/verb/${userData.verb}`,
+          id: `https://mentorpal.org/xapi/verb/${xapiUserData.verb}`,
           display: {
-            "en-US": `${userData.verb}`,
+            "en-US": `${xapiUserData.verb}`,
           },
         },
         result: {
           extensions: {
             "https://mentorpal.org/xapi/verb/terminated": toXapiResultExtCustom(
-              userData.verb,
-              userData.userid,
-              userData.userEmail,
-              userData.referrer,
-              userData.postSurveyTime,
-              userData.timeSpentOnPage,
-              userData.qualtricsUserId
+              xapiUserData.verb,
+              xapiUserData.userid,
+              xapiUserData.userEmail,
+              xapiUserData.referrer,
+              xapiUserData.postSurveyTime,
+              xapiUserData.timeSpentOnPage,
+              xapiUserData.qualtricsUserId
             ),
           },
         },
@@ -243,9 +274,14 @@ export function SurveyDialog(): JSX.Element {
     );
   };
 
+  const shouldExistInDisclaimer =
+    configInState.surveyButtonInDisclaimer == "ALWAYS" ||
+    (configInState.surveyButtonInDisclaimer == "PROVIDED_USER_IDENTIFIER" &&
+      (userDataInState.givenUserEmail || userDataInState.givenUserId));
+
   return (
-    <div>
-      {surveyLink ? (
+    <div data-cy="survey-container">
+      {surveyLink && shouldExistInDisclaimer ? (
         <label>
           <Button
             onClick={() => {
@@ -253,6 +289,7 @@ export function SurveyDialog(): JSX.Element {
               printLocalStorage();
             }}
             data-cy="header-survey-popup-btn"
+            data-survey-link={surveyLink}
           >
             Open Survey Popup
           </Button>
@@ -276,7 +313,9 @@ export function SurveyDialog(): JSX.Element {
           Careerfair Survey
         </a>
         <DialogContent>
-          <Button onClick={onClose}>Close</Button>
+          <Button data-cy="close-survey-popup-btn" onClick={onClose}>
+            Close
+          </Button>
         </DialogContent>
       </Dialog>
     </div>

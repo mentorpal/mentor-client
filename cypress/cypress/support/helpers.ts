@@ -5,6 +5,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import { v1 as uuidv1 } from "uuid";
+import { LocalStorageUserData } from "./types";
 
 interface StaticResponse {
   /**
@@ -45,6 +46,49 @@ interface MockGraphQLQuery {
   query: string;
   data: any | any[];
 }
+
+export function visitAsCustomWithDefaultSetup(cy, url = "/", customParams) {
+  mockDefaultSetup(cy);
+  cy.visit(url, {
+    qs: addCustomParams({}, customParams.userId, customParams),
+  });
+}
+
+interface CustomParams {
+  userid?: string;
+  userEmail?: string;
+  referrer?: string;
+}
+
+export function addCustomParams(
+  query = {},
+  guestName,
+  customParam: CustomParams
+) {
+  return {
+    activityId: "https://fake.org/resources/fake-activity",
+    actor: {
+      objectType: "Agent",
+      account: {
+        homePage: `https://fake.org/homepage/?referrer=${customParam.referrer}`,
+        name: customParam.userid,
+      },
+      name: customParam.userid || guestName,
+      mbox: `mailto:${customParam.userEmail}`,
+    },
+    endpoint: "https://fake.org/lrs/xapi",
+    fetch: `https://fake.org/lrs/xapi/?&username=${encodeURIComponent(
+      customParam.userEmail
+    )}&userid=${customParam.userid}`,
+    registration: uuidv1(),
+    ...(query || {}),
+  };
+}
+
+export type SurveyButtonInDisclaimer =
+  | "OFF"
+  | "ALWAYS"
+  | "PROVIDED_USER_IDENTIFIER";
 
 export function cySetup(cy) {
   cy.server();
@@ -122,6 +166,12 @@ export interface Config {
   postSurveyLink: string;
   postSurveyTimer: number;
   minTopicQuestionSize: number;
+  postSurveyUserIdEnabled: boolean;
+  postSurveyReferrerEnabled: boolean;
+  surveyButtonInDisclaimer: SurveyButtonInDisclaimer;
+  guestPromptInputType: string;
+  guestPromptTitle: string;
+  guestPromptText: string;
 }
 
 export function addGuestParams(query = {}, guestName = "guest") {
@@ -153,10 +203,6 @@ export function cyMockMentorData(data: any[]) {
   return cyMockGQL("FetchMentor", mentorList);
 }
 
-// export function cyMockTokenData(data: any[]) {
-//   return cyMockGQL("mentorToken", data, false);
-// }
-
 export function cyMockConfig(config: Partial<Config>) {
   return cyMockGQL("FetchConfig", {
     orgConfig: { ...CONFIG_DEFAULT, ...config },
@@ -186,28 +232,6 @@ export function mockApiQuestions(cy, response?: string) {
   cy.intercept("**/questions/?mentor=*&query=*&ping=**", {});
 }
 
-export function toGuestUrl(url: string, guestName: string) {
-  const cmiParam = {
-    activityId: "https://fake.org/resources/fake-activity",
-    actor: {
-      name: guestName,
-      account: {
-        name: `id4-${guestName}`,
-        homePage: "https://fake.org/lrs/users",
-      },
-    },
-    endpoint: "https://fake.org/lrs/xapi",
-    fetch: `https://fake.org.lrs/auth?user=${encodeURIComponent(guestName)}`,
-    registration: uuidv1(),
-  };
-  const urlBase = `${url}${url.includes("?") ? "" : "?"}${
-    url.includes("&") ? "&" : ""
-  }`;
-  return Object.getOwnPropertyNames(cmiParam).reduce((acc, cur) => {
-    return `${acc}&${cur}=${encodeURIComponent(cmiParam[cur])}`;
-  }, urlBase);
-}
-
 const disclaimerText = require("../fixtures/disclaimer_text.json");
 
 export const CONFIG_DEFAULT: Config = {
@@ -227,6 +251,16 @@ export const CONFIG_DEFAULT: Config = {
   disclaimerText: disclaimerText.disclaimerText,
   disclaimerDisabled: true,
   displayGuestPrompt: false,
+  postSurveyLink: "",
+  postSurveyTimer: 0,
+  minTopicQuestionSize: 0,
+  surveyButtonInDisclaimer: "ALWAYS",
+  postSurveyUserIdEnabled: true,
+  postSurveyReferrerEnabled: true,
+  guestPromptInputType: "Email",
+  guestPromptTitle: "Welcome to CareerFair.ai",
+  guestPromptText:
+    "We make high-quality mentoring available to students for free, using virtual agents representing real-life STEM mentors.\n\nIf you are from the CSUF study or wish to receive information (no more than monthly) about CareerFair.ai, please put your email here:",
 };
 
 const clint = require("../fixtures/clint.json");
@@ -274,4 +308,53 @@ export function visitAsGuestWithDefaultSetup(cy, url = "/") {
   cy.visit(url, { qs: addGuestParams() });
 }
 
-export const defaultRootGuestUrl = toGuestUrl("/", "guest");
+export function assertLocalStorageValue(
+  key: string,
+  comparater: string,
+  value: string
+) {
+  cy.window().then((win) => {
+    const userData = win.localStorage.getItem(key);
+    cy.wrap(userData).should(comparater, value);
+  });
+}
+
+export function assertLocalStorageUserDataValue(
+  key: string,
+  comparater: string,
+  value: string
+) {
+  cy.window().then((win) => {
+    const userData = JSON.parse(win.localStorage.getItem("userData"));
+    cy.wrap(userData[key]).should(comparater, value);
+  });
+}
+
+export function assertLocalStorageItemDoesNotExist(key: string) {
+  cy.window().then((win) => {
+    const storedData = win.localStorage.getItem(key);
+    cy.wrap(storedData).should("not.exist");
+  });
+}
+
+export function confirmPageLoaded(cy) {
+  cy.get("[data-cy=chat-thread]").should("be.visible");
+}
+
+export function updateLocalStorageUserData(
+  cy,
+  updatedObject: Partial<LocalStorageUserData>
+) {
+  const startingData: LocalStorageUserData = {
+    givenUserEmail: "",
+    givenUserId: "",
+    referrer: "",
+    events: [],
+    xapiUserEmail: "",
+  };
+
+  cy.setLocalStorage(
+    "userData",
+    JSON.stringify({ ...startingData, ...updatedObject })
+  );
+}

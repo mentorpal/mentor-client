@@ -49,6 +49,12 @@ export async function fetchConfig(): Promise<Config> {
           postSurveyLink
           postSurveyTimer
           minTopicQuestionSize
+          postSurveyUserIdEnabled
+          postSurveyReferrerEnabled
+          surveyButtonInDisclaimer
+          guestPromptInputType
+          guestPromptTitle
+          guestPromptText
         }
       }
     `,
