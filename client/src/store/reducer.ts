@@ -70,6 +70,7 @@ import {
   UtteranceName,
   WebLink,
   LINK_TYPE_WEB,
+  DisplaySurveyPopupCondition,
 } from "types";
 import { getUtterance } from "api";
 import { v4 as uuid } from "uuid";
@@ -98,6 +99,7 @@ export const initialState: State = {
     disclaimerDisabled:
       process.env.DISCLAIMER_DISABLED?.toLowerCase() === "true" || true,
     displayGuestPrompt: false,
+    displaySurveyPopupCondition: DisplaySurveyPopupCondition.USER_ID,
     defaultVirtualBackground: "",
     postSurveyLink: "",
     postSurveyTimer: 0,
