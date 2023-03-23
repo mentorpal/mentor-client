@@ -522,10 +522,10 @@ function IndexPage(props: {
   ]);
 
   function onSubmitEmail(email: string) {
-    const newGivenUserEmail = getParamURL(EMAIL_URL_PARAM_KEY) || email || "";
+    const newGivenUserEmail = getParamURL(EMAIL_URL_PARAM_KEY) || email;
     const newUserData: LocalStorageUserData = {
       ...userDataState,
-      givenUserEmail: newGivenUserEmail,
+      givenUserEmail: newGivenUserEmail || "guest@mentorpal.org",
     };
     if (newGivenUserEmail) {
       newUserData.xapiUserEmail = validatedEmail(newGivenUserEmail);

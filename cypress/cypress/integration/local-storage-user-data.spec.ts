@@ -38,7 +38,11 @@ describe("site previously visited with nothing in url params", () => {
     });
     cy.get("[data-cy=username-modal-container]").should("not.exist");
     assertLocalStorageUserDataValue(LS_USER_ID_KEY, "be.equal", "");
-    assertLocalStorageUserDataValue(LS_EMAIL_KEY, "be.equal", "");
+    assertLocalStorageUserDataValue(
+      LS_EMAIL_KEY,
+      "be.equal",
+      "guest@mentorpal.org"
+    );
     assertLocalStorageUserDataValue(
       LS_X_API_EMAIL_KEY,
       "contain",
@@ -59,7 +63,11 @@ describe("site previously visited with nothing in url params", () => {
     });
     cy.get("[data-cy=username-modal-container]").should("not.exist");
     assertLocalStorageUserDataValue(LS_USER_ID_KEY, "be.equal", "");
-    assertLocalStorageUserDataValue(LS_EMAIL_KEY, "be.equal", "");
+    assertLocalStorageUserDataValue(
+      LS_EMAIL_KEY,
+      "be.equal",
+      "guest@mentorpal.org"
+    );
     assertLocalStorageUserDataValue(
       LS_X_API_EMAIL_KEY,
       "be.equal",
