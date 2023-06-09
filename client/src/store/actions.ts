@@ -504,6 +504,7 @@ export const loadMentors: ActionCreator<
         }
         const mentorData: MentorState = {
           mentor: mentor,
+          isDirty: mentor.isDirty,
           topic_questions: topicQuestions,
           status: MentorQuestionStatus.READY, // move this out of mentor data
           answer_id: introUtterance?._id,

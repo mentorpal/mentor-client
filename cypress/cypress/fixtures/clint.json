@@ -3,6 +3,7 @@
   "name": "Clinton Anderson",
   "title": "Nuclear Electrician's Mate",
   "email": "clinton@anderson.com",
+  "isDirty": false,
   "mentorType": "VIDEO",
   "topicQuestions": [
     {

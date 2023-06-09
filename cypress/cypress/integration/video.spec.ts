@@ -271,4 +271,17 @@ describe("Video Mentor", () => {
       "That is a great question, but unfortunately I never recorded an answer to that."
     );
   });
+
+  it("warns user if the mentor is dirty", () => {
+    mockDefaultSetup(cy, {
+      mentorData: { ...clint, isDirty: true },
+    });
+    cy.visit("/?mentor=clint");
+    cy.get("[data-cy=base-dialog]")
+      .should("exist")
+      .should("be.visible")
+      .should("contain.text", "Notice");
+    cy.get("[data-cy=close-base-dialog-button]").click();
+    cy.get("[data-cy=base-dialog]").should("not.exist");
+  });
 });

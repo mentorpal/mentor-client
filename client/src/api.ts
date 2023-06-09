@@ -182,6 +182,7 @@ export async function fetchMentor(
           allowContact
           hasVirtualBackground
           virtualBackgroundUrl
+          isDirty
           topicQuestions {
             topic
             questions

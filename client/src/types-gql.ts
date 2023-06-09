@@ -27,6 +27,7 @@ export interface MentorClientDataGQL {
   utterances: UtteranceGQL[];
   hasVirtualBackground: boolean;
   virtualBackgroundUrl: string;
+  isDirty: boolean;
 }
 
 export interface UtteranceGQL {

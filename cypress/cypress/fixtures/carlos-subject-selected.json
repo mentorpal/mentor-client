@@ -3,6 +3,7 @@
   "name": "Carlos Rios",
   "title": "Marine Logistician",
   "mentorType": "VIDEO",
+  "isDirty": false,
   "topicQuestions": [
     {
       "topic": "About Me",

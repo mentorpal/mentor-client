@@ -76,6 +76,7 @@ export interface MentorClientData {
   allowContact: boolean;
   hasVirtualBackground: boolean;
   virtualBackgroundUrl: string;
+  isDirty: boolean;
 }
 
 export interface Utterance {
@@ -236,6 +237,7 @@ export interface MentorState {
   status: MentorQuestionStatus;
   answerDuration: number;
 
+  isDirty: boolean;
   answer_id?: string;
   answer_text?: string;
   answer_media: Media[];

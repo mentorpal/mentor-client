@@ -3,6 +3,7 @@
   "name": "USC",
   "title": "COVID-19 FAQ Chat Bot",
   "mentorType": "CHAT",
+  "isDirty": false,
   "topicQuestions": [
     {
       "topic": "COVID-19 General Information",

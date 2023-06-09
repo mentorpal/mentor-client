@@ -4,6 +4,7 @@
   "title": "Nuclear Electrician's Mate",
   "email": "clinton@anderson.com",
   "mentorType": "VIDEO",
+  "isDirty": false,
   "topicQuestions": [
     {
       "topic": "About Me",
