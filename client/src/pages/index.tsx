@@ -176,14 +176,14 @@ function IndexPage(props: {
       state.mentorsById[state.curMentor]?.mentor?.mentorType || MentorType.VIDEO
     );
   });
-  const mentorIsDirty = useSelector<State, boolean>((state) => {
+  const answerMissing = useSelector<State, boolean>((state) => {
     if (!state.curMentor) {
       return false;
     }
-    return state.mentorsById[state.curMentor]?.isDirty || false;
+    return state.mentorsById[state.curMentor]?.answer_missing || false;
   });
   const [chatHeight, setChatHeight] = React.useState<number>(0);
-  const [warnedDirtyMentor, setWarnedDirtyMentor] = React.useState(false);
+  const [warnedAnswerMissing, setWarnedAnswerMissing] = React.useState(false);
   const { displayFormat, windowHeight } = useWithScreenOrientation();
   const curTopic = useSelector<State, string>((state) => state.curTopic);
   const cmi5init = useSelector<State, boolean>((state) => state.isCmi5Init);
@@ -560,12 +560,12 @@ function IndexPage(props: {
         </div>
       ) : (
         <StyledEngineProvider injectFirst>
-          {mentorIsDirty ? (
+          {answerMissing && !warnedAnswerMissing ? (
             <BaseDialog
               title="Notice"
-              subtext="This mentor is currently being updated."
-              open={mentorIsDirty && !warnedDirtyMentor}
-              closeDialog={() => setWarnedDirtyMentor(true)}
+              subtext="It appears this mentor is currently being updated and may not respond correctly to all questions."
+              open={answerMissing && !warnedAnswerMissing}
+              closeDialog={() => setWarnedAnswerMissing(true)}
             />
           ) : undefined}
           <ThemeProvider theme={brandedTheme}>

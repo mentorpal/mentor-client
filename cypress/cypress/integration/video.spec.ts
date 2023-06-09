@@ -272,16 +272,29 @@ describe("Video Mentor", () => {
     );
   });
 
-  it("warns user if the mentor is dirty", () => {
+  it("warns user if the predicted answer was missing", () => {
     mockDefaultSetup(cy, {
-      mentorData: { ...clint, isDirty: true },
+      mentorData: { ...clint },
+    });
+    cy.intercept("**/questions/?mentor=clint&query=*", {
+      fixture: "response_with_missing_answer.json",
     });
     cy.visit("/?mentor=clint");
+
+    cy.get("[data-cy=input-field]").type("is the food good");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+
     cy.get("[data-cy=base-dialog]")
       .should("exist")
       .should("be.visible")
       .should("contain.text", "Notice");
     cy.get("[data-cy=close-base-dialog-button]").click();
+    cy.get("[data-cy=base-dialog]").should("not.exist");
+
+    cy.wait(8000);
+    cy.get("[data-cy=input-field]").type("is the food good");
+    cy.get("[data-cy=input-send]").trigger("mouseover").click();
+    cy.wait(1000);
     cy.get("[data-cy=base-dialog]").should("not.exist");
   });
 });
