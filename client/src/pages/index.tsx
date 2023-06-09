@@ -72,6 +72,7 @@ import {
   TIME_SPENT_ON_PAGE_KEY,
 } from "local-constants";
 import UsernameModal from "components/username-modal";
+import { BaseDialog } from "components/base-dialog";
 
 declare module "@mui/styles/defaultTheme" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -175,8 +176,14 @@ function IndexPage(props: {
       state.mentorsById[state.curMentor]?.mentor?.mentorType || MentorType.VIDEO
     );
   });
+  const mentorIsDirty = useSelector<State, boolean>((state) => {
+    if (!state.curMentor) {
+      return false;
+    }
+    return state.mentorsById[state.curMentor]?.isDirty || false;
+  });
   const [chatHeight, setChatHeight] = React.useState<number>(0);
-
+  const [warnedDirtyMentor, setWarnedDirtyMentor] = React.useState(false);
   const { displayFormat, windowHeight } = useWithScreenOrientation();
   const curTopic = useSelector<State, string>((state) => state.curTopic);
   const cmi5init = useSelector<State, boolean>((state) => state.isCmi5Init);
@@ -553,6 +560,14 @@ function IndexPage(props: {
         </div>
       ) : (
         <StyledEngineProvider injectFirst>
+          {mentorIsDirty ? (
+            <BaseDialog
+              title="Notice"
+              subtext="This mentor is currently being updated and may not behave correctly."
+              open={mentorIsDirty && !warnedDirtyMentor}
+              closeDialog={() => setWarnedDirtyMentor(true)}
+            />
+          ) : undefined}
           <ThemeProvider theme={brandedTheme}>
             <Header />
             {showEmailPopup ? (

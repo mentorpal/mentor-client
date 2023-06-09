@@ -3,6 +3,7 @@
   "name": "Clinton Anderson",
   "title": "Nuclear Electrician's Mate",
   "mentorType": "VIDEO",
+  "isDirty": false,
   "topicQuestions": [
     {
       "topic": "About Me",

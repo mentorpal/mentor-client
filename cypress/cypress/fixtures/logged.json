@@ -3,6 +3,7 @@
   "name": "Ben Mai",
   "title": "j",
   "mentorType": "CHAT",
+  "isDirty": false,
   "topicQuestions": [
     {
       "topic": "About Me",

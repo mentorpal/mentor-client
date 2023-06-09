@@ -3,6 +3,7 @@
   "name": "Julianne Nordhagen",
   "title": "Student Naval Aviator",
   "mentorType": "VIDEO",
+  "isDirty": false,
   "topicQuestions": [
     {
       "topic": "About Me",
