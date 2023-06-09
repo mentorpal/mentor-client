@@ -563,7 +563,7 @@ function IndexPage(props: {
           {mentorIsDirty ? (
             <BaseDialog
               title="Notice"
-              subtext="This mentor is currently being updated and may not behave correctly."
+              subtext="This mentor is currently being updated."
               open={mentorIsDirty && !warnedDirtyMentor}
               closeDialog={() => setWarnedDirtyMentor(true)}
             />
