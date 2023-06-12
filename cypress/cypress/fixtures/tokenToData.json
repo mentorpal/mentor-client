@@ -5,6 +5,7 @@
       "name": "Ben Mai",
       "title": "j",
       "email": "talhaanwar.anwar@gmail.com",
+      "isDirty": false,
       "mentorType": "CHAT",
       "lastTrainedAt": null,
       "defaultSubject": null,

@@ -72,6 +72,7 @@ import {
   TIME_SPENT_ON_PAGE_KEY,
 } from "local-constants";
 import UsernameModal from "components/username-modal";
+import { BaseDialog } from "components/base-dialog";
 
 declare module "@mui/styles/defaultTheme" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -175,8 +176,14 @@ function IndexPage(props: {
       state.mentorsById[state.curMentor]?.mentor?.mentorType || MentorType.VIDEO
     );
   });
+  const answerMissing = useSelector<State, boolean>((state) => {
+    if (!state.curMentor) {
+      return false;
+    }
+    return state.mentorsById[state.curMentor]?.answer_missing || false;
+  });
   const [chatHeight, setChatHeight] = React.useState<number>(0);
-
+  const [warnedAnswerMissing, setWarnedAnswerMissing] = React.useState(false);
   const { displayFormat, windowHeight } = useWithScreenOrientation();
   const curTopic = useSelector<State, string>((state) => state.curTopic);
   const cmi5init = useSelector<State, boolean>((state) => state.isCmi5Init);
@@ -553,6 +560,14 @@ function IndexPage(props: {
         </div>
       ) : (
         <StyledEngineProvider injectFirst>
+          {answerMissing && !warnedAnswerMissing ? (
+            <BaseDialog
+              title="Notice"
+              subtext="It appears this mentor is currently being updated and may not respond correctly to all questions."
+              open={answerMissing && !warnedAnswerMissing}
+              closeDialog={() => setWarnedAnswerMissing(true)}
+            />
+          ) : undefined}
           <ThemeProvider theme={brandedTheme}>
             <Header />
             {showEmailPopup ? (

@@ -587,6 +587,7 @@ function onQuestionAnswered(
     const mentor: MentorState = {
       ...stateCopy.mentorsById[response.mentor],
       // we need chat messages to live up here
+      answer_missing: response.answerMissing,
       answer_id: response.answerId,
       answer_text: response.answerText,
       answer_media: response.answerMedia,

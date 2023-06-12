@@ -76,6 +76,7 @@ export interface MentorClientData {
   allowContact: boolean;
   hasVirtualBackground: boolean;
   virtualBackgroundUrl: string;
+  isDirty: boolean;
 }
 
 export interface Utterance {
@@ -104,6 +105,7 @@ export interface QuestionApiData {
   answer_text: string;
   answer_markdown_text: string;
   answer_media: AnswerMediaClassifier;
+  answer_missing: boolean;
   confidence: number;
   feedback_id: string;
   classifier: string;
@@ -236,9 +238,11 @@ export interface MentorState {
   status: MentorQuestionStatus;
   answerDuration: number;
 
+  isDirty: boolean;
   answer_id?: string;
   answer_text?: string;
   answer_media: Media[];
+  answer_missing: boolean;
   answer_utterance_type: string;
   utterances: Utterance[];
   answerReceivedAt?: number;
@@ -315,6 +319,7 @@ export interface QuestionResponse {
   answerId: string;
   answerText: string;
   answerMedia: Media[];
+  answerMissing: boolean;
   answerClassifier: string;
   answerConfidence: number;
   answerIsOffTopic: boolean;

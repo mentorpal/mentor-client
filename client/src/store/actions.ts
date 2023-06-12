@@ -504,9 +504,11 @@ export const loadMentors: ActionCreator<
         }
         const mentorData: MentorState = {
           mentor: mentor,
+          isDirty: mentor.isDirty,
           topic_questions: topicQuestions,
           status: MentorQuestionStatus.READY, // move this out of mentor data
           answer_id: introUtterance?._id,
+          answer_missing: false,
           answer_media: introUtterance?.media || [],
           answer_utterance_type: UtteranceName.INTRO,
           utterances: mentor.utterances,
@@ -716,6 +718,7 @@ const getResponseObject = (
     answerClassifier: "",
     answerConfidence: data.confidence,
     answerIsOffTopic: true,
+    answerMissing: data.answer_missing,
     answerFeedbackId: "",
     answerUtteranceType: "",
     answerResponseTimeSecs: Number(Date.now() - tick) / 1000,
@@ -726,7 +729,7 @@ const getResponseObject = (
     status: MentorQuestionStatus.READY,
   };
   // regular return
-  const response = {
+  const response: QuestionResponse = {
     answerId: data.answer_id,
     answerText: data.answer_markdown_text,
     answerMedia: answer_media,
@@ -734,6 +737,7 @@ const getResponseObject = (
     answerConfidence: data.confidence,
     answerIsOffTopic: data.confidence <= OFF_TOPIC_THRESHOLD,
     answerFeedbackId: data.feedback_id,
+    answerMissing: data.answer_missing,
     answerUtteranceType: "", //TODO: need to update classifier to also respond with utterance type
     answerResponseTimeSecs: Number(Date.now() - tick) / 1000,
     mentor,
@@ -854,6 +858,7 @@ export const sendQuestion =
               answerClassifier: "",
               answerConfidence: 0,
               answerIsOffTopic: true,
+              answerMissing: false,
               answerFeedbackId: "",
               answerUtteranceType: "",
               answerResponseTimeSecs: Number(Date.now() - tick) / 1000,
