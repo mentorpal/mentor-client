@@ -10,7 +10,16 @@ import Cmi5, { LaunchParameters } from "@kycarr/cmi5";
 import { Statement } from "@xapi/xapi";
 
 import { Config, XapiResultCustom } from "types";
-import { getRegistrationId } from "utils";
+import {
+  getLocalStorage,
+  getLocalStorageUserData,
+  getRegistrationId,
+} from "utils";
+import {
+  LS_USER_ID_KEY,
+  POST_SURVEY_TIME_KEY,
+  TIME_SPENT_ON_PAGE_KEY,
+} from "local-constants";
 
 export interface CmiParams {
   activityId: string;
@@ -99,11 +108,58 @@ function stripNonAsciiCharacters(input: string): string {
   return input.replace(regex, "");
 }
 
+export function customInitCmi5Statement(
+  chatSessionId: string,
+  sessionIdInState: string
+): void {
+  const data = getLocalStorageUserData();
+  const xapiUserData = {
+    verb: "terminated",
+    userid: data.givenUserId,
+    userEmail: data.xapiUserEmail,
+    referrer: data.referrer,
+    postSurveyTime: getLocalStorage(POST_SURVEY_TIME_KEY),
+    timeSpentOnPage: getLocalStorage(TIME_SPENT_ON_PAGE_KEY),
+    qualtricsUserId: getLocalStorage(LS_USER_ID_KEY),
+  };
+  sendCmi5Statement(
+    {
+      verb: {
+        id: `https://mentorpal.org/xapi/verb/initialized`,
+        display: {
+          "en-US": "initialized",
+        },
+      },
+      result: {
+        extensions: {
+          "https://mentorpal.org/xapi/verb/initialized": toXapiResultExtCustom(
+            xapiUserData.verb,
+            xapiUserData.userid,
+            xapiUserData.userEmail,
+            xapiUserData.referrer,
+            xapiUserData.postSurveyTime,
+            xapiUserData.timeSpentOnPage,
+            xapiUserData.qualtricsUserId
+          ),
+        },
+      },
+      object: {
+        id: `${window.location.protocol}//${window.location.host}`,
+        objectType: "Activity",
+      },
+    },
+    chatSessionId,
+    sessionIdInState
+  );
+}
+
 export async function initCmi5(
   userID: string,
   userEmail: string,
   homePage: string,
-  config: Config
+  config: Config,
+  sessionIdInState: string,
+  chatSessionId: string
 ): Promise<void> {
   if (!userID && !userEmail) {
     console.error("No user id or user email passed in");
@@ -113,6 +169,7 @@ export async function initCmi5(
   try {
     cmi5_instance = new Cmi5(launchParams);
     await cmi5_instance.initialize();
+    customInitCmi5Statement(chatSessionId, sessionIdInState);
   } catch (err) {
     console.error(
       err,
@@ -130,6 +187,7 @@ export async function initCmi5(
     try {
       cmi5_instance = new Cmi5(launchParams);
       await cmi5_instance.initialize();
+      customInitCmi5Statement(chatSessionId, sessionIdInState);
     } catch (err) {
       console.error(
         err,
@@ -141,6 +199,7 @@ export async function initCmi5(
       try {
         cmi5_instance = new Cmi5(launchParams);
         await cmi5_instance.initialize();
+        customInitCmi5Statement(chatSessionId, sessionIdInState);
       } catch (err) {
         console.error(err);
       }
