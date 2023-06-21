@@ -557,6 +557,7 @@ export const loadMentors: ActionCreator<
   };
 
 function toXapiResultExt(mentorData: MentorState, state: State): XapiResultExt {
+  const data = getLocalStorageUserData();
   return {
     answerClassifier: mentorData.classifier || "",
     answerConfidence: Number(mentorData.confidence),
@@ -595,6 +596,7 @@ function toXapiResultExt(mentorData: MentorState, state: State): XapiResultExt {
     questionIndex: currentQuestionIndex(state),
     timestampAnswered: state.curQuestionUpdatedAt,
     timestampAsked: mentorData.answerReceivedAt,
+    referrer: data.referrer,
   };
 }
 
@@ -779,6 +781,7 @@ export const sendQuestion =
               text: q.question,
               source: q.source,
               userEmail: userEmail,
+              referrer: localData.referrer,
             },
           },
         },
@@ -797,6 +800,7 @@ export const sendQuestion =
     const tick = Date.now();
     // query all the mentors without waiting for the answers one by one
     const promises = mentorIds.map((mentor) => {
+      const localStorageData = getLocalStorageUserData();
       return new Promise<QuestionResponse>((resolve, reject) => {
         queryMentor(
           mentor,
@@ -828,6 +832,7 @@ export const sendQuestion =
                     "https://mentorpal.org/xapi/verb/answered": {
                       ...response,
                       questionIndex: currentQuestionIndex(getState()),
+                      referrer: localStorageData.referrer,
                     },
                   },
                 },

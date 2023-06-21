@@ -186,7 +186,6 @@ function IndexPage(props: {
   const [warnedAnswerMissing, setWarnedAnswerMissing] = React.useState(false);
   const { displayFormat, windowHeight } = useWithScreenOrientation();
   const curTopic = useSelector<State, string>((state) => state.curTopic);
-  const cmi5init = useSelector<State, boolean>((state) => state.isCmi5Init);
 
   const { subject, recommendedQuestions, intro } = props.search;
   let { mentor } = props.search;
@@ -207,27 +206,6 @@ function IndexPage(props: {
       },
     },
   });
-
-  useEffect(() => {
-    if (chatSessionId && cmi5init) {
-      sendCmi5Statement(
-        {
-          verb: {
-            id: `https://mentorpal.org/xapi/verb/initialized`,
-            display: {
-              "en-US": "initialized",
-            },
-          },
-          object: {
-            id: `${window.location.protocol}//${window.location.host}`,
-            objectType: "Activity",
-          },
-        },
-        chatSessionId,
-        sessionIdInState
-      );
-    }
-  }, [chatSessionId, cmi5init, sessionIdInState]);
 
   useEffect(() => {
     dispatch(authenticateUser());
@@ -420,7 +398,9 @@ function IndexPage(props: {
         userDataState.givenUserId || userDataState.xapiUserEmail,
         userDataState.xapiUserEmail,
         userDataState.referrer,
-        config
+        config,
+        sessionIdInState,
+        chatSessionId
       );
     } catch (err2) {
       console.error(err2);
