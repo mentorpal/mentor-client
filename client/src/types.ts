@@ -368,4 +368,5 @@ export interface XapiResultExt {
   questionsAsked: string[];
   timestampAsked?: number;
   timestampAnswered?: number;
+  referrer: string;
 }
