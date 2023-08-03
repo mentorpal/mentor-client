@@ -222,7 +222,7 @@ export function mockMentorVideos(cy) {
 }
 
 export function mockMentorVtt(cy) {
-  cy.intercept("**/*.vtt", { fixture: "default.vtt" });
+  cy.intercept("**/*.vtt*", { fixture: "default.vtt" });
 }
 
 export function mockApiQuestions(cy, response?: string) {

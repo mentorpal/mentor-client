@@ -311,6 +311,29 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     height: "auto",
   };
 
+  function getVideoPlayerTracks() {
+    const internalPlayer = reactPlayerRef.current?.getInternalPlayer();
+    if (!internalPlayer) {
+      return [];
+    }
+    return internalPlayer.textTracks || [];
+  }
+
+  function hideVideoPlayerTracks() {
+    const tracks = getVideoPlayerTracks();
+    const firstTrack = tracks[0];
+    if (
+      !firstTrack ||
+      firstTrack.cues.length == 0 ||
+      firstTrack.activeCues.length == 0
+    ) {
+      return;
+    }
+    for (let i = 0; i < firstTrack.activeCues.length; i++) {
+      firstTrack.activeCues[i].startTime = 100000;
+    }
+  }
+
   return (
     <div
       data-cy={"answer-video-player-wrapper"}
@@ -334,6 +357,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
             dispatch({ type: PlayerActionType.ANSWER_FINISHED });
           }
           onEnded();
+          hideVideoPlayerTracks();
         }}
         ref={reactPlayerRef}
         onPlay={onPlay}

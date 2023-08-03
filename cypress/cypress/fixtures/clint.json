@@ -66,6 +66,11 @@
         "type": "video",
         "tag": "mobile",
         "url": "http://videos.org/answer_id.mp4"
+      },
+      "vttMedia": {
+        "type": "subtitles",
+        "tag": "en",
+        "url": "http://videos.org/answer_id.vtt"
       }
     },
     {
@@ -81,6 +86,11 @@
         "type": "video",
         "tag": "mobile",
         "url": "http://videos.org/answer_id.mp4"
+      },
+      "vttMedia": {
+        "type": "subtitles",
+        "tag": "en",
+        "url": "http://videos.org/answer_id.vtt"
       }
     }
   ]
