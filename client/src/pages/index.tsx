@@ -152,6 +152,9 @@ function IndexPage(props: {
   const configLoadStatus = useSelector<State, LoadStatus>(
     (state) => state.configLoadStatus
   );
+  const mentorsLoadStatus = useSelector<State, LoadStatus>(
+    (state) => state.mentorsInitialLoadStatus
+  );
   const authUserLoadStatus = useSelector<State, LoadStatus>(
     (state) => state.authenticationStatus
   );
@@ -168,6 +171,7 @@ function IndexPage(props: {
   const mentorCount = useSelector<State, number>((state) => {
     return Object.getOwnPropertyNames(state.mentorsById).length;
   });
+
   const mentorType = useSelector<State, MentorType>((state) => {
     if (!state.curMentor) {
       return MentorType.VIDEO;
@@ -211,6 +215,14 @@ function IndexPage(props: {
     dispatch(authenticateUser());
     dispatch(loadConfig());
   }, []);
+
+  useEffect(() => {
+    console.log(mentorsLoadStatus);
+    if (mentorsLoadStatus === LoadStatus.EMPTY_LOAD) {
+      // TODO: handle no mentors found
+      console.log("mentor load finished but no mentor found");
+    }
+  }, [mentorsLoadStatus]);
 
   function setupSessionId(): string {
     const sessionIdInUrl = new URL(location.href).searchParams.get("sessionId");
@@ -527,6 +539,14 @@ function IndexPage(props: {
 
   return (
     <div>
+      <BaseDialog
+        subtext="You are not authorized to view this mentor(s). "
+        open={mentorsLoadStatus === LoadStatus.EMPTY_LOAD}
+        customButtonText="Go to home"
+        closeDialog={() => {
+          window.location.href = "/home";
+        }}
+      />
       {!isLoadComplete(configLoadStatus) || !curMentor ? (
         <div className={styles.loadingWindow}>
           <div className={styles.loadingContent}>

@@ -71,9 +71,12 @@ import {
   WebLink,
   LINK_TYPE_WEB,
   DisplaySurveyPopupCondition,
+  ResultStatus,
+  MentorDataResult,
 } from "types";
 import { getUtterance } from "api";
 import { v4 as uuid } from "uuid";
+import { UserRole } from "types-gql";
 
 export const initialState: State = {
   chat: {
@@ -139,6 +142,8 @@ export const initialState: State = {
     accessToken: "",
     errorMessage: "",
     authenticated: false,
+    userRole: UserRole.NONE,
+    mentorIds: [],
   },
   userDataLoadStatus: LoadStatus.LOAD_IN_PROGRESS,
   userData: {
@@ -286,7 +291,25 @@ function onMentorLoadResults(
   action: MentorsLoadResultAction
 ): State {
   const firstActiveMentorId = action?.payload?.firstActiveMentorId;
-  const mentorsToAddToState = Object.keys(action.payload.mentorsById);
+  const filteredMentorsById = Object.keys(action.payload.mentorsById).reduce(
+    (acc: Record<string, MentorDataResult>, mentorId: string) => {
+      if (
+        action.payload.mentorsById[mentorId]?.status === ResultStatus.SUCCEEDED
+      ) {
+        acc[mentorId] = action.payload.mentorsById[mentorId];
+      }
+      return acc;
+    },
+    {} as Record<string, MentorDataResult>
+  );
+  const mentorsToAddToState = Object.keys(filteredMentorsById);
+
+  if (!mentorsToAddToState.length) {
+    return {
+      ...state,
+      mentorsInitialLoadStatus: LoadStatus.EMPTY_LOAD,
+    };
+  }
 
   let stateCopy: State = JSON.parse(JSON.stringify(state));
 
@@ -342,11 +365,11 @@ function onMentorLoadResults(
   }
 
   stateCopy.mentorsById = Object.getOwnPropertyNames(
-    action.payload.mentorsById
+    filteredMentorsById
   ).reduce((acc: Record<string, MentorState>, mid: string) => {
     acc[mid] = {
       ...stateCopy.mentorsById[mid],
-      ...(action.payload.mentorsById[mid]?.data || {}),
+      ...(filteredMentorsById[mid]?.data || {}),
       status: MentorQuestionStatus.READY,
     };
     return acc;

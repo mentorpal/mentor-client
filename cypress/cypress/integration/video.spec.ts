@@ -5,6 +5,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import { mockDefaultSetup, cyMockGQL } from "../support/helpers";
+import { UserRole } from "../support/types";
 const clint = require("../fixtures/clint.json");
 const carlos = require("../fixtures/carlos.json");
 const carlos_subject_selected = require("../fixtures/carlos-subject-selected.json");
@@ -30,6 +31,65 @@ describe("Video Mentor", () => {
       });
     });
   });
+
+  describe("mentor approved/unapproved for public visibility", () => {
+    it("mentors that are not approved are not visible to USERs", () => {
+      mockDefaultSetup(cy, {
+        mentorData: { ...clint, isPublicApproved: false },
+        userAuth: { userRole: UserRole.USER },
+      });
+      cy.visit("/?mentor=clint");
+      cy.get("[data-cy=base-dialog]")
+        .should("be.visible")
+        .should(
+          "contain.text",
+          "You are not authorized to view this mentor(s)"
+        );
+    });
+
+    it("to USERs, publicly approved mentors are visible", () => {
+      mockDefaultSetup(cy, {
+        config: { mentorsDefault: ["clint", "carlos"] },
+        mentorData: [
+          { ...clint, isPublicApproved: true },
+          { ...carlos, isPublicApproved: false },
+        ],
+        userAuth: { userRole: UserRole.USER },
+      });
+      cy.visit("/");
+      cy.get("[data-cy=header]").should("contain.text", "Clinton Anderson");
+      cy.get("[data-cy=video-thumbnail-container-carlos]").should("not.exist");
+    });
+
+    it("to USERs, their owned mentors are visible, regardless of approval status", () => {
+      mockDefaultSetup(cy, {
+        config: { mentorsDefault: ["clint", "carlos"] },
+        mentorData: [
+          { ...clint, isPublicApproved: false },
+          { ...carlos, isPublicApproved: false },
+        ],
+        userAuth: { userRole: UserRole.USER, mentorIds: ["clint"] },
+      });
+      cy.visit("/");
+      cy.get("[data-cy=header]").should("contain.text", "Clinton Anderson");
+      cy.get("[data-cy=video-thumbnail-container-carlos]").should("not.exist");
+    });
+
+    it("to ADMINs, all mentors are visible, regardless of approval status", () => {
+      mockDefaultSetup(cy, {
+        config: { mentorsDefault: ["clint", "carlos"] },
+        mentorData: [
+          { ...clint, isPublicApproved: false },
+          { ...carlos, isPublicApproved: false },
+        ],
+        userAuth: { userRole: UserRole.ADMIN },
+      });
+      cy.visit("/");
+      cy.get("[data-cy=video-thumbnail-container-carlos]").should("exist");
+      cy.get("[data-cy=video-thumbnail-container-clint]").should("exist");
+    });
+  });
+
   it("Display mentor-name card over the left-corner of the video", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },

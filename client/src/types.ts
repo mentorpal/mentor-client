@@ -77,6 +77,7 @@ export interface MentorClientData {
   hasVirtualBackground: boolean;
   virtualBackgroundUrl: string;
   isDirty: boolean;
+  isPublicApproved: boolean;
 }
 
 export interface Utterance {
@@ -186,6 +187,7 @@ export enum LoadStatus {
   LOAD_IN_PROGRESS = "LOAD_IN_PROGRESS",
   LOADED = "LOADED",
   LOAD_FAILED = "LOAD_FAILED",
+  EMPTY_LOAD = "EMPTY_LOAD",
 }
 
 export enum MentorQuestionStatus {
@@ -254,9 +256,19 @@ export interface MentorState {
   response_time?: number;
 }
 
+export enum MentorLoadFailedReasons {
+  NONE = "NONE",
+  PRIVATE = "PRIVATE",
+  NOT_PUBLIC_APPROVED = "NOT_PUBLIC_APPROVED",
+  NOT_AUTHORIZED = "NOT_AUTHORIZED",
+  DISABLED = "DISABLED",
+  NETWORK_ERROR = "NETWORK_ERROR",
+}
+
 export interface MentorDataResult {
   data?: MentorState;
   status: ResultStatus;
+  failedReason: MentorLoadFailedReasons;
 }
 
 export interface MentorsLoadRequest {

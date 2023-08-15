@@ -182,6 +182,7 @@ export async function fetchMentor(
           allowContact
           hasVirtualBackground
           virtualBackgroundUrl
+          isPublicApproved
           isDirty
           topicQuestions {
             topic
@@ -314,6 +315,8 @@ export async function refreshAccessToken(): Promise<AuthUserData> {
         accessToken
         errorMessage
         authenticated
+        userRole
+        mentorIds
       }
     }
     `,

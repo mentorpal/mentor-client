@@ -48,8 +48,9 @@ import {
   TopicQuestions,
   Media,
   QuestionApiData,
+  MentorLoadFailedReasons,
 } from "../types";
-import { AuthUserData } from "types-gql";
+import { AuthUserData, UserRole } from "types-gql";
 
 const OFF_TOPIC_THRESHOLD = -0.55;
 export const REPLAY_VIDEO = "REPLAY_VIDEO";
@@ -436,6 +437,7 @@ export const loadMentors: ActionCreator<
         (acc: Record<string, MentorDataResult>, cur: string) => {
           acc[cur] = {
             status: ResultStatus.FAILED,
+            failedReason: MentorLoadFailedReasons.NONE,
           };
           return acc;
         },
@@ -450,6 +452,23 @@ export const loadMentors: ActionCreator<
           curState.authUserData.accessToken,
           subject
         );
+        console.log(mentor);
+        console.log(curState.authUserData);
+        const canViewMentor =
+          mentor.isPublicApproved ||
+          curState.authUserData.mentorIds.includes(mentorId) ||
+          curState.authUserData.userRole === UserRole.ADMIN ||
+          curState.authUserData.userRole === UserRole.CONTENT_MANAGER ||
+          curState.authUserData.userRole === UserRole.SUPER_ADMIN ||
+          curState.authUserData.userRole === UserRole.SUPER_CONTENT_MANAGER;
+        if (!canViewMentor) {
+          console.log("cannot view mentor");
+          mentorLoadResult.mentorsById[mentorId].failedReason =
+            !mentor.isPublicApproved
+              ? MentorLoadFailedReasons.NOT_PUBLIC_APPROVED
+              : MentorLoadFailedReasons.NOT_AUTHORIZED;
+          return;
+        }
         let topicQuestions: TopicQuestions[] = [];
         const recommendedQuestions = [...curState.recommendedQuestions];
         topicQuestions.push(...mentor.topicQuestions);
@@ -517,6 +536,7 @@ export const loadMentors: ActionCreator<
         mentorLoadResult.mentorsById[mentorId] = {
           data: mentorData,
           status: ResultStatus.SUCCEEDED,
+          failedReason: MentorLoadFailedReasons.NONE,
         };
       } catch (mentorErr) {
         console.error(mentorErr);
@@ -543,6 +563,7 @@ export const loadMentors: ActionCreator<
             : tqs[tqs.length - 1].topic;
       }
     }
+    console.log("load results", mentorLoadResult);
     if (
       curState.chat.messages.length <
       Object.keys(mentorLoadResult.mentorsById).length

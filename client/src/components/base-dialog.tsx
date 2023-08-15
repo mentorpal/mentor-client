@@ -15,11 +15,12 @@ import {
 
 export function BaseDialog(props: {
   title?: string;
+  customButtonText?: string;
   subtext: string;
   open: boolean;
   closeDialog: () => void;
 }): JSX.Element {
-  const { title, subtext, open, closeDialog } = props;
+  const { title, customButtonText, subtext, open, closeDialog } = props;
 
   return (
     <Dialog data-cy="base-dialog" maxWidth="sm" fullWidth={true} open={open}>
@@ -42,7 +43,7 @@ export function BaseDialog(props: {
           {subtext}
         </Typography>
         <Button data-cy="close-base-dialog-button" onClick={closeDialog}>
-          Close
+          {customButtonText || "Close"}
         </Button>
       </DialogContent>
     </Dialog>
