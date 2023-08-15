@@ -452,8 +452,6 @@ export const loadMentors: ActionCreator<
           curState.authUserData.accessToken,
           subject
         );
-        console.log(mentor);
-        console.log(curState.authUserData);
         const canViewMentor =
           mentor.isPublicApproved ||
           curState.authUserData.mentorIds.includes(mentorId) ||
@@ -563,7 +561,6 @@ export const loadMentors: ActionCreator<
             : tqs[tqs.length - 1].topic;
       }
     }
-    console.log("load results", mentorLoadResult);
     if (
       curState.chat.messages.length <
       Object.keys(mentorLoadResult.mentorsById).length

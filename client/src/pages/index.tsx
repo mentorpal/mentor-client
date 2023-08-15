@@ -216,14 +216,6 @@ function IndexPage(props: {
     dispatch(loadConfig());
   }, []);
 
-  useEffect(() => {
-    console.log(mentorsLoadStatus);
-    if (mentorsLoadStatus === LoadStatus.EMPTY_LOAD) {
-      // TODO: handle no mentors found
-      console.log("mentor load finished but no mentor found");
-    }
-  }, [mentorsLoadStatus]);
-
   function setupSessionId(): string {
     const sessionIdInUrl = new URL(location.href).searchParams.get("sessionId");
     if (sessionIdInUrl) {
