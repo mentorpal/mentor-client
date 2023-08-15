@@ -95,7 +95,6 @@ export function useWithChatData(): UseWithChatData {
   const mentorNameById = useSelector<State, Record<string, string>>((s) => {
     const mentorIds = Object.getOwnPropertyNames(s.mentorsById);
     mentorIds.sort();
-
     return mentorIds.reduce<Record<string, string>>((acc, cur) => {
       acc[cur] = s.mentorsById[cur].mentor.name;
       return acc;

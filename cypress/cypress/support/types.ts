@@ -23,6 +23,23 @@ export interface Mentor {
   utterances: Answer[];
 }
 
+export enum UserRole {
+  NONE = "NONE",
+  USER = "USER",
+  CONTENT_MANAGER = "CONTENT_MANAGER",
+  ADMIN = "ADMIN",
+  SUPER_CONTENT_MANAGER = "SUPER_CONTENT_MANAGER",
+  SUPER_ADMIN = "SUPER_ADMIN",
+}
+
+export interface AuthUserData {
+  accessToken: string;
+  errorMessage: string;
+  authenticated: boolean;
+  userRole: UserRole;
+  mentorIds: string[];
+}
+
 export interface Topic {
   _id: string;
   name: string;
