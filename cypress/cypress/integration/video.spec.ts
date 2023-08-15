@@ -43,7 +43,7 @@ describe("Video Mentor", () => {
         .should("be.visible")
         .should(
           "contain.text",
-          "You are not authorized to view this mentor(s)"
+          "You are not authorized to view the selected mentor(s)"
         );
     });
 
