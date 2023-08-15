@@ -540,7 +540,7 @@ function IndexPage(props: {
   return (
     <div>
       <BaseDialog
-        subtext="You are not authorized to view this mentor(s). "
+        subtext="You are not authorized to view the selected mentor(s)."
         open={mentorsLoadStatus === LoadStatus.EMPTY_LOAD}
         customButtonText="Go to home"
         closeDialog={() => {
