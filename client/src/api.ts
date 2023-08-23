@@ -364,66 +364,9 @@ export async function queryMentor(
   const mentorIsParaproDoctor = paraproMentorIds.includes(mentorId);
   if (mentorIsParaproDoctor) {
     const npcEditorUrl = process.env.GATSBY_NPCEDITOR_ENDPOINT;
-    const builtNpcEditorUrl = `${npcEditorUrl}?question=${question}&mentor=${mentorId}`;
-    try {
-      const npcEditorRes = await axios.post<NpcEditorResponse>(
-        builtNpcEditorUrl
-      );
-      const answerFromGql = await getAnswerFromGqlByField(
-        mentorId,
-        "externalVideoIds.wistiaId",
-        npcEditorRes.data.data.id,
-        accessToken
-      );
-
-      return {
-        query: question,
-        answer_id: answerFromGql._id,
-        answer_text: answerFromGql.transcript,
-        answer_markdown_text: answerFromGql.markdownTranscript,
-        answer_media: {
-          web_media: answerFromGql.webMedia,
-          vtt_media: answerFromGql.vttMedia,
-          mobile_media: answerFromGql.mobileMedia,
-        },
-        answer_missing: false,
-        confidence: 1,
-        feedback_id: "",
-        classifier: "NPCEditor",
-      };
-    } catch (err) {
-      console.log(JSON.stringify(err));
-      return {
-        query: question,
-        answer_id: "",
-        answer_text: "",
-        answer_markdown_text: "",
-        answer_media: {
-          web_media: {
-            type: "video",
-            tag: "web",
-            url: "",
-            transparentVideoUrl: "",
-          },
-          vtt_media: {
-            type: "subtitles",
-            tag: "en",
-            url: "",
-            transparentVideoUrl: "",
-          },
-          mobile_media: {
-            type: "video",
-            tag: "mobile",
-            url: "",
-            transparentVideoUrl: "",
-          },
-        },
-        answer_missing: true,
-        confidence: 0,
-        feedback_id: "",
-        classifier: "NPCEditor",
-      };
-    }
+    const builtNpcEditorUrl = `${npcEditorUrl}?query=${question}&mentor=${mentorId}`;
+    const npcEditorRes = await axios.post<QuestionApiData>(builtNpcEditorUrl);
+    return npcEditorRes.data;
   } else {
     const res = await axios.get(
       `${config.classifierLambdaEndpoint}/questions/`,
