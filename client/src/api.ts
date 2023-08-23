@@ -267,23 +267,179 @@ export async function giveFeedback(
   });
 }
 
+export interface NpcEditorResponse {
+  data: {
+    id: string;
+    speaker: string;
+    text: string;
+    error?: boolean;
+    reason?: string;
+  };
+}
+
+export interface Answer {
+  _id: string;
+  question: {
+    _id: string;
+    question: string;
+  };
+  transcript: string;
+  markdownTranscript: string;
+  webMedia: Media;
+  vttMedia: Media;
+  mobileMedia: Media;
+  externalVideoIds: {
+    wistiaId: string;
+  };
+}
+
+export async function getAnswerFromGqlByField(
+  mentorId: string,
+  fieldKey: string,
+  fieldValue: string,
+  accessToken: string
+): Promise<Answer> {
+  const res = await axios.post(
+    GATSBY_GRAPHQL_ENDPOINT,
+    {
+      query: `
+      query AnswerByFieldValue($mentor: ID!, $fieldKey: String!, $fieldValue: String!) {
+        answerByFieldValue(mentor: $mentor, fieldKey: $fieldKey, fieldValue: $fieldValue) {
+          _id
+          question{
+            _id
+            question
+          }
+          transcript
+          markdownTranscript
+          webMedia{
+            type
+            tag
+            url
+          }
+          vttMedia{
+            type
+            tag
+            url
+          }
+          mobileMedia{
+            type
+            tag
+            url
+          }
+          externalVideoIds{
+            wistiaId
+          }
+        }
+      }
+    `,
+      variables: {
+        mentor: mentorId,
+        fieldKey: fieldKey,
+        fieldValue: fieldValue,
+      },
+    },
+    {
+      headers: {
+        Authorization: `bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return res.data.data.answerByFieldValue;
+}
+
 export async function queryMentor(
   mentorId: string,
   question: string,
   chatsessionid: string,
   config: Config,
   accessToken: string
-): Promise<AxiosResponse<QuestionApiData>> {
-  return await axios.get(`${config.classifierLambdaEndpoint}/questions/`, {
-    params: {
-      mentor: mentorId,
-      query: question,
-      chatsessionid,
-    },
-    headers: {
-      Authorization: `bearer ${accessToken}`,
-    },
-  });
+): Promise<QuestionApiData> {
+  const paraproMentorIds = [
+    "64b8251cef4d1ec577642925",
+    "64b823c6ef4d1ec5776314b2",
+    "63b897bb796fb654b71a6dba",
+  ];
+  const mentorIsParaproDoctor = paraproMentorIds.includes(mentorId);
+  if (mentorIsParaproDoctor) {
+    const npcEditorUrl = process.env.GATSBY_NPCEDITOR_ENDPOINT;
+    const builtNpcEditorUrl = `${npcEditorUrl}?question=${question}&mentor=${mentorId}`;
+    try {
+      const npcEditorRes = await axios.post<NpcEditorResponse>(
+        builtNpcEditorUrl
+      );
+      const answerFromGql = await getAnswerFromGqlByField(
+        mentorId,
+        "externalVideoIds.wistiaId",
+        npcEditorRes.data.data.id,
+        accessToken
+      );
+
+      return {
+        query: question,
+        answer_id: answerFromGql._id,
+        answer_text: answerFromGql.transcript,
+        answer_markdown_text: answerFromGql.markdownTranscript,
+        answer_media: {
+          web_media: answerFromGql.webMedia,
+          vtt_media: answerFromGql.vttMedia,
+          mobile_media: answerFromGql.mobileMedia,
+        },
+        answer_missing: false,
+        confidence: 1,
+        feedback_id: "",
+        classifier: "NPCEditor",
+      };
+    } catch (err) {
+      console.log(JSON.stringify(err));
+      return {
+        query: question,
+        answer_id: "",
+        answer_text: "",
+        answer_markdown_text: "",
+        answer_media: {
+          web_media: {
+            type: "video",
+            tag: "web",
+            url: "",
+            transparentVideoUrl: "",
+          },
+          vtt_media: {
+            type: "subtitles",
+            tag: "en",
+            url: "",
+            transparentVideoUrl: "",
+          },
+          mobile_media: {
+            type: "video",
+            tag: "mobile",
+            url: "",
+            transparentVideoUrl: "",
+          },
+        },
+        answer_missing: true,
+        confidence: 0,
+        feedback_id: "",
+        classifier: "NPCEditor",
+      };
+    }
+  } else {
+    const res = await axios.get(
+      `${config.classifierLambdaEndpoint}/questions/`,
+      {
+        params: {
+          mentor: mentorId,
+          query: question,
+          chatsessionid,
+        },
+        headers: {
+          Authorization: `bearer ${accessToken}`,
+        },
+      }
+    );
+    return res.data;
+  }
 }
 
 export async function pingMentor(
