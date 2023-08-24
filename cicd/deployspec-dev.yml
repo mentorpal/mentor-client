@@ -3,6 +3,7 @@ version: 0.2
 env:
   variables:
     GATSBY_GRAPHQL_ENDPOINT: 'https://api.devmentorpal.org/graphql/graphql'
+    GATSBY_NPCEDITOR_ENDPOINT: 'https://api.devmentorpal.org/npceditor'
     GATSBY_STAGE: 'dev'
     GATSBY_IS_SENTRY_ENABLED: false
   parameter-store:

@@ -267,23 +267,124 @@ export async function giveFeedback(
   });
 }
 
+export interface NpcEditorResponse {
+  data: {
+    id: string;
+    speaker: string;
+    text: string;
+    error?: boolean;
+    reason?: string;
+  };
+}
+
+export interface Answer {
+  _id: string;
+  question: {
+    _id: string;
+    question: string;
+  };
+  transcript: string;
+  markdownTranscript: string;
+  webMedia: Media;
+  vttMedia: Media;
+  mobileMedia: Media;
+  externalVideoIds: {
+    wistiaId: string;
+  };
+}
+
+export async function getAnswerFromGqlByField(
+  mentorId: string,
+  fieldKey: string,
+  fieldValue: string,
+  accessToken: string
+): Promise<Answer> {
+  const res = await axios.post(
+    GATSBY_GRAPHQL_ENDPOINT,
+    {
+      query: `
+      query AnswerByFieldValue($mentor: ID!, $fieldKey: String!, $fieldValue: String!) {
+        answerByFieldValue(mentor: $mentor, fieldKey: $fieldKey, fieldValue: $fieldValue) {
+          _id
+          question{
+            _id
+            question
+          }
+          transcript
+          markdownTranscript
+          webMedia{
+            type
+            tag
+            url
+          }
+          vttMedia{
+            type
+            tag
+            url
+          }
+          mobileMedia{
+            type
+            tag
+            url
+          }
+          externalVideoIds{
+            wistiaId
+          }
+        }
+      }
+    `,
+      variables: {
+        mentor: mentorId,
+        fieldKey: fieldKey,
+        fieldValue: fieldValue,
+      },
+    },
+    {
+      headers: {
+        Authorization: `bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return res.data.data.answerByFieldValue;
+}
+
 export async function queryMentor(
   mentorId: string,
   question: string,
   chatsessionid: string,
   config: Config,
   accessToken: string
-): Promise<AxiosResponse<QuestionApiData>> {
-  return await axios.get(`${config.classifierLambdaEndpoint}/questions/`, {
-    params: {
-      mentor: mentorId,
-      query: question,
-      chatsessionid,
-    },
-    headers: {
-      Authorization: `bearer ${accessToken}`,
-    },
-  });
+): Promise<QuestionApiData> {
+  const classifierInUrl = new URL(location.href).searchParams.get("classifier");
+  const useNpcEditorClassifier = classifierInUrl === "npceditor";
+  const paraproMentorIds = [
+    "64b8251cef4d1ec577642925",
+    "64b823c6ef4d1ec5776314b2",
+    "63b897bb796fb654b71a6dba",
+  ];
+  const mentorIsParaproDoctor = paraproMentorIds.includes(mentorId);
+  if (mentorIsParaproDoctor && useNpcEditorClassifier) {
+    const npcEditorUrl = process.env.GATSBY_NPCEDITOR_ENDPOINT;
+    const builtNpcEditorUrl = `${npcEditorUrl}?query=${question}&mentor=${mentorId}&chatsessionid=${chatsessionid}`;
+    const npcEditorRes = await axios.post<QuestionApiData>(builtNpcEditorUrl);
+    return npcEditorRes.data;
+  } else {
+    const res = await axios.get(
+      `${config.classifierLambdaEndpoint}/questions/`,
+      {
+        params: {
+          mentor: mentorId,
+          query: question,
+          chatsessionid,
+        },
+        headers: {
+          Authorization: `bearer ${accessToken}`,
+        },
+      }
+    );
+    return res.data;
+  }
 }
 
 export async function pingMentor(
