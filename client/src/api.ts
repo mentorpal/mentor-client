@@ -356,15 +356,17 @@ export async function queryMentor(
   config: Config,
   accessToken: string
 ): Promise<QuestionApiData> {
+  const classifierInUrl = new URL(location.href).searchParams.get("classifier");
+  const useNpcEditorClassifier = classifierInUrl === "npceditor";
   const paraproMentorIds = [
     "64b8251cef4d1ec577642925",
     "64b823c6ef4d1ec5776314b2",
     "63b897bb796fb654b71a6dba",
   ];
   const mentorIsParaproDoctor = paraproMentorIds.includes(mentorId);
-  if (mentorIsParaproDoctor) {
+  if (mentorIsParaproDoctor && useNpcEditorClassifier) {
     const npcEditorUrl = process.env.GATSBY_NPCEDITOR_ENDPOINT;
-    const builtNpcEditorUrl = `${npcEditorUrl}?query=${question}&mentor=${mentorId}`;
+    const builtNpcEditorUrl = `${npcEditorUrl}?query=${question}&mentor=${mentorId}&chatsessionid=${chatsessionid}`;
     const npcEditorRes = await axios.post<QuestionApiData>(builtNpcEditorUrl);
     return npcEditorRes.data;
   } else {
