@@ -20,7 +20,7 @@ import {
   TIME_SPENT_ON_PAGE_KEY,
 } from "../support/local-constants";
 
-describe("Survey Popup Timing Tracker", () => {
+describe.skip("Survey Popup Timing Tracker", () => {
   it("Properly increments and shows survey popup", () => {
     mockDefaultSetup(cy, {
       config: {

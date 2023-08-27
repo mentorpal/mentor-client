@@ -865,8 +865,7 @@ export const sendQuestion =
           q.config,
           state.authUserData.accessToken
         )
-          .then((r) => {
-            const { data } = r;
+          .then((data) => {
             const [response, offTopicResponse] = getResponseObject(
               state,
               data,
