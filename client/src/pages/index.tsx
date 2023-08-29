@@ -133,6 +133,9 @@ function IndexPage(props: {
     recommendedQuestions?: string | string[];
     subject?: string;
     intro?: string;
+    introVideo?: string;
+    introVideoStart?: number;
+    introVideoEnd?: number;
     noHistoryDownload?: string;
   };
 }): JSX.Element {
@@ -191,7 +194,14 @@ function IndexPage(props: {
   const { displayFormat, windowHeight } = useWithScreenOrientation();
   const curTopic = useSelector<State, string>((state) => state.curTopic);
 
-  const { subject, recommendedQuestions, intro } = props.search;
+  const {
+    subject,
+    recommendedQuestions,
+    intro,
+    introVideo,
+    introVideoStart,
+    introVideoEnd,
+  } = props.search;
   let { mentor } = props.search;
 
   function isLoadComplete(s: LoadStatus): boolean {
@@ -495,6 +505,9 @@ function IndexPage(props: {
             : config.mentorsDefault,
           subject: subject,
           intro,
+          introVideo,
+          introVideoStart,
+          introVideoEnd,
           recommendedQuestions: recommendedQuestions
             ? Array.isArray(recommendedQuestions)
               ? recommendedQuestions

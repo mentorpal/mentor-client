@@ -8,7 +8,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import React, { useEffect, useReducer, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import { getLocalStorage, setLocalStorage } from "utils";
-import { WebLink } from "types";
+import { State, Utterance, UtteranceName, WebLink } from "types";
 import "styles/video.css";
 import FaveButton from "./fave-button";
 import EmailMentorIcon from "./email-mentor-icon";
@@ -21,6 +21,8 @@ import {
 import { useWithIntervalManagement } from "use-with-interval-management";
 import { useWithVideoPlayerHeight } from "use-with-video-player-height";
 import { useWithScreenOrientation } from "use-with-orientation";
+import { useSelector } from "react-redux";
+import { getUtterance } from "api";
 
 export interface VideoPlayerData {
   videoUrl: string;
@@ -81,6 +83,11 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
       zIndex: 2,
     });
   const isMobile = displayFormat == "mobile";
+  const curMentorUtterance = useSelector<State, Utterance | undefined>(
+    (state) =>
+      getUtterance(state.mentorsById[state.curMentor], UtteranceName.INTRO)
+  );
+  const [introEnded, setIntroEnded] = useState<boolean>(false);
 
   useEffect(() => {
     if (isIntro && videoUrl) {
@@ -334,6 +341,17 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     }
   }
 
+  function endVideo(): void {
+    newVideo();
+    if (isIntro) {
+      dispatch({ type: PlayerActionType.INTRO_FINISHED });
+    } else {
+      dispatch({ type: PlayerActionType.ANSWER_FINISHED });
+    }
+    onEnded();
+    hideVideoPlayerTracks();
+  }
+
   return (
     <div
       data-cy={"answer-video-player-wrapper"}
@@ -349,18 +367,20 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         url={state.urlToPlay}
         pip={false}
         muted={false}
-        onEnded={() => {
-          newVideo();
-          if (isIntro) {
-            dispatch({ type: PlayerActionType.INTRO_FINISHED });
-          } else {
-            dispatch({ type: PlayerActionType.ANSWER_FINISHED });
-          }
-          onEnded();
-          hideVideoPlayerTracks();
-        }}
+        onEnded={endVideo}
         ref={reactPlayerRef}
         onPlay={onPlay}
+        onProgress={({ playedSeconds }) => {
+          if (
+            isIntro &&
+            curMentorUtterance?.endTime &&
+            playedSeconds >= curMentorUtterance.endTime &&
+            !introEnded
+          ) {
+            endVideo();
+            setIntroEnded(true);
+          }
+        }}
         onReady={(player: ReactPlayer) => {
           newVideo();
           if (isIntro) {
@@ -375,6 +395,15 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
             return;
           }
           setReadied(true);
+          if (isIntro) {
+            setIntroEnded(false);
+          }
+          if (isIntro && curMentorUtterance?.startTime) {
+            reactPlayerRef.current?.seekTo(
+              curMentorUtterance.startTime,
+              "seconds"
+            );
+          }
           const internalPlayer = player.getInternalPlayer();
           if (!internalPlayer) {
             return;
@@ -404,7 +433,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         width="fit-content"
         height="fit-content"
         progressInterval={100}
-        playing={Boolean(playing)}
+        playing={Boolean(playing && !introEnded)}
         playsinline
         webkit-playsinline="true"
         config={{

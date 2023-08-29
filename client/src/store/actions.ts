@@ -10,6 +10,7 @@ import { ThunkAction, ThunkDispatch } from "redux-thunk";
 import * as uuid from "uuid";
 
 import {
+  fetchAnswer,
   fetchConfig,
   fetchMentor,
   getUtterance,
@@ -19,7 +20,6 @@ import {
 } from "api";
 import { sendCmi5Statement } from "cmiutils";
 import {
-  getLocalStorage,
   getRecommendedTopics,
   mergeRecommendedTopicsQuestions,
   LocalStorageUserData,
@@ -418,13 +418,25 @@ export const loadMentors: ActionCreator<
     mentors: string[];
     subject?: string;
     intro?: string;
+    introVideo?: string;
+    introVideoStart?: number;
+    introVideoEnd?: number;
     recommendedQuestions?: string[];
   }) =>
   async (
     dispatch: ThunkDispatch<State, void, AnyAction>,
     getState: () => State
   ) => {
-    const { intro, mentors, subject, recommendedQuestions, config } = args;
+    const {
+      intro,
+      introVideo,
+      introVideoStart,
+      introVideoEnd,
+      mentors,
+      subject,
+      recommendedQuestions,
+      config,
+    } = args;
     dispatch<MentorsLoadRequestedAction>({
       type: MENTORS_LOAD_REQUESTED,
       payload: {
@@ -445,7 +457,7 @@ export const loadMentors: ActionCreator<
       ),
     };
     const curState = getState();
-    const mentorRequests = mentors.map(async (mentorId) => {
+    const mentorRequests = mentors.map(async (mentorId, idx) => {
       try {
         const mentor: MentorClientData = await fetchMentor(
           mentorId,
@@ -515,7 +527,33 @@ export const loadMentors: ActionCreator<
 
         topicQuestions.push({ topic: "History", questions: [] });
 
-        const introUtterance = getUtterance(mentor, UtteranceName.INTRO);
+        let introUtterance;
+        // replace intro with different video (for first mentor in panel only)
+        if (introVideo && idx === 0) {
+          introUtterance = await fetchAnswer(
+            mentor._id,
+            introVideo,
+            curState.authUserData.accessToken
+          );
+        }
+        // if intro was replaced, update it for the rest of the session
+        if (introUtterance) {
+          introUtterance.name = UtteranceName.INTRO;
+          introUtterance.startTime = introVideoStart;
+          introUtterance.endTime = introVideoEnd;
+          const uttIdx = mentor.utterances.findIndex(
+            (u) => u.name === UtteranceName.INTRO
+          );
+          if (uttIdx === -1) {
+            mentor.utterances.push(introUtterance);
+          } else {
+            mentor.utterances[uttIdx] = introUtterance;
+          }
+        }
+        // otherwise just use the default intro utterance
+        else {
+          introUtterance = getUtterance(mentor, UtteranceName.INTRO);
+        }
         if (intro && introUtterance) {
           introUtterance.transcript = intro;
         }
@@ -524,7 +562,7 @@ export const loadMentors: ActionCreator<
           isDirty: mentor.isDirty,
           topic_questions: topicQuestions,
           status: MentorQuestionStatus.READY, // move this out of mentor data
-          answer_id: introUtterance?._id,
+          answer_id: introVideo || introUtterance?._id,
           answer_missing: false,
           answer_media: introUtterance?.media || [],
           answer_utterance_type: UtteranceName.INTRO,

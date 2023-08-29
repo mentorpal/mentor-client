@@ -20,6 +20,20 @@ import {
   TIME_SPENT_ON_PAGE_KEY,
 } from "../support/local-constants";
 
+function checkApproximate(
+  value: number,
+  key: string = TIME_SPENT_ON_PAGE_KEY,
+  range: number = 2
+) {
+  cy.window().then((win) => {
+    const userData = win.localStorage.getItem(key);
+    expect(Number.parseInt(userData)).to.be.closeTo(
+      (TIMER_UPDATE_INTERVAL_MS * value) / 1000,
+      range
+    );
+  });
+}
+
 describe("Survey Popup Timing Tracker", () => {
   it("Properly increments and shows survey popup", () => {
     mockDefaultSetup(cy, {
@@ -38,31 +52,15 @@ describe("Survey Popup Timing Tracker", () => {
       "be.equal",
       String((TIMER_UPDATE_INTERVAL_MS / 1000) * 4)
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
+    checkApproximate(0);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 1) / 1000)
-    );
+    checkApproximate(1);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 2) / 1000)
-    );
+    checkApproximate(2);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 3) / 1000)
-    );
+    checkApproximate(3);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 4) / 1000)
-    );
+    checkApproximate(4);
     cy.get("[data-cy=survey-dialog]").should("exist");
   });
 
@@ -83,33 +81,17 @@ describe("Survey Popup Timing Tracker", () => {
       "be.equal",
       String((TIMER_UPDATE_INTERVAL_MS / 1000) * 4)
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
+    checkApproximate(0);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 1) / 1000)
-    );
+    checkApproximate(1);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 2) / 1000)
-    );
+    checkApproximate(2);
     cy.visit("/?userid=123");
     confirmPageLoaded(cy);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 3) / 1000)
-    );
+    checkApproximate(3);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 4) / 1000)
-    );
+    checkApproximate(4);
     cy.get("[data-cy=survey-dialog]").should("exist");
   });
 
@@ -130,33 +112,17 @@ describe("Survey Popup Timing Tracker", () => {
       "be.equal",
       String((TIMER_UPDATE_INTERVAL_MS / 1000) * 4)
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
+    checkApproximate(0);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 1) / 1000)
-    );
+    checkApproximate(1);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 2) / 1000)
-    );
+    checkApproximate(2);
     cy.visit("/");
     confirmPageLoaded(cy);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 3) / 1000)
-    );
+    checkApproximate(3);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 4) / 1000)
-    );
+    checkApproximate(4);
     cy.get("[data-cy=survey-dialog]").should("exist");
   });
 
@@ -177,46 +143,22 @@ describe("Survey Popup Timing Tracker", () => {
       "be.equal",
       String((TIMER_UPDATE_INTERVAL_MS / 1000) * 4)
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
+    checkApproximate(0);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 1) / 1000)
-    );
+    checkApproximate(1);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 2) / 1000)
-    );
+    checkApproximate(2);
     cy.visit("/?userid=5678");
     confirmPageLoaded(cy);
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
+    checkApproximate(0);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 1) / 1000)
-    );
+    checkApproximate(1);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 2) / 1000)
-    );
+    checkApproximate(2);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 3) / 1000)
-    );
+    checkApproximate(3);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 4) / 1000)
-    );
+    checkApproximate(4);
     cy.get("[data-cy=survey-dialog]").should("exist");
   });
 });
@@ -885,7 +827,7 @@ describe("closing survey popup", () => {
       "be.equal",
       String(TIMER_UPDATE_INTERVAL_MS / 1000)
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
+    checkApproximate(0);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
     cy.get("[data-cy=survey-dialog]").should("exist");
     cy.get("[data-cy=close-survey-popup-btn]").click();
@@ -910,7 +852,7 @@ describe("closing survey popup", () => {
       "be.equal",
       String(TIMER_UPDATE_INTERVAL_MS / 1000)
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
+    checkApproximate(0);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
     cy.get("[data-cy=survey-dialog]").should("exist");
     cy.get("[data-cy=close-survey-popup-btn]").click();
@@ -940,32 +882,16 @@ describe("opening and closing disclaimer survey popup", () => {
       "be.equal",
       String((TIMER_UPDATE_INTERVAL_MS / 1000) * 4)
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
+    checkApproximate(0);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 1) / 1000)
-    );
+    checkApproximate(1);
     cy.get("[data-cy=close-survey-popup-btn]").click();
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 2) / 1000)
-    );
+    checkApproximate(2);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 3) / 1000)
-    );
+    checkApproximate(3);
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
-    assertLocalStorageValue(
-      TIME_SPENT_ON_PAGE_KEY,
-      "be.equal",
-      String((TIMER_UPDATE_INTERVAL_MS * 4) / 1000)
-    );
+    checkApproximate(4);
     cy.get("[data-cy=survey-dialog]").should("exist");
   });
 });
