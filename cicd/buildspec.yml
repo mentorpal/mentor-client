@@ -5,7 +5,7 @@ phases:
       nodejs: 14
     commands:
       # to use node 16:
-      # - n 16 # workaround https://github.com/aws/aws-codebuild-docker-images/issues/490
+      - n 18 # workaround https://github.com/aws/aws-codebuild-docker-images/issues/490
       # Install top-level deps
       - NODE_ENV=dev npm ci
       - (cd client && npm ci)

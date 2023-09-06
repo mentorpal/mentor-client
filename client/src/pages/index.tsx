@@ -8,11 +8,10 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { v4 as uuid } from "uuid";
 import { CircularProgress } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
+import { makeStyles } from "tss-react/mui";
 import {
   createTheme,
   ThemeProvider,
-  Theme,
   StyledEngineProvider,
 } from "@mui/material/styles";
 
@@ -74,12 +73,7 @@ import {
 import UsernameModal from "components/username-modal";
 import { BaseDialog } from "components/base-dialog";
 
-declare module "@mui/styles/defaultTheme" {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
-
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles({ name: { IndexPage } })(() => ({
   flexRoot: {
     display: "flex",
     flexFlow: "column nowrap",
@@ -150,7 +144,7 @@ function IndexPage(props: {
   const [usernameModalOpen, setUsernameModalOpen] = useState<boolean>(true);
 
   const dispatch = useDispatch();
-  const styles = useStyles();
+  const { classes: styles } = useStyles();
   const config = useSelector<State, Config>((state) => state.config);
   const configLoadStatus = useSelector<State, LoadStatus>(
     (state) => state.configLoadStatus

@@ -8,7 +8,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 import {
   ThemeProvider,
-  Theme,
   StyledEngineProvider,
   createTheme,
 } from "@mui/material/styles";
@@ -16,11 +15,6 @@ import ScrollingQuestions from "components/scrolling-questions";
 import { MentorState, State } from "types";
 import withLocation from "wrap-with-location";
 import Chat from "./chat";
-
-declare module "@mui/styles/defaultTheme" {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
 
 const theme = createTheme({
   palette: {

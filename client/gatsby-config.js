@@ -36,6 +36,9 @@ module.exports = {
       },
     },
     {
+      resolve: "@iostindex/gatsby-plugin-material-ui",
+    },
+    {
       resolve: "gatsby-plugin-manifest",
       options: {
         icon: "src/static/favicon-cf.png",
