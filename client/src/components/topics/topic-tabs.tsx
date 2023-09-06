@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Theme } from "@mui/material/styles";
-import createStyles from "@mui/styles/createStyles";
-import makeStyles from "@mui/styles/makeStyles";
+import { makeStyles } from "tss-react/mui";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -15,22 +14,20 @@ import { Button, DialogActions, Paper, Tab, Tabs } from "@mui/material";
 import "styles/topic-tabs.css";
 import EmailMentorIcon from "components/email-mentor-icon";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    container: {
-      display: "flex",
-      flexWrap: "wrap",
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-    },
-    root: {
-      flexGrow: 1,
-      width: "100%",
-    },
-  })
-);
+const useStyles = makeStyles({ name: { TopicTabs } })((theme: Theme) => ({
+  container: {
+    display: "flex",
+    flexWrap: "wrap",
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  root: {
+    flexGrow: 1,
+    width: "100%",
+  },
+}));
 
 function TopicTabs(props: {
   topicQuestions: TopicQuestions[];
@@ -46,7 +43,7 @@ function TopicTabs(props: {
     existRecommendedQuestions,
     isMobile,
   } = props;
-  const classes = useStyles();
+  const { classes } = useStyles();
   const [open, setOpen] = useState<boolean>(false);
   const [selectedTabIx, setSelectedTabIx] = React.useState<number>(
     existRecommendedQuestions ? 1 : 0
