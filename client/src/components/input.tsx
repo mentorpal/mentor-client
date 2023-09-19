@@ -7,7 +7,7 @@ The full terms of this copyright and license should always be found in the root 
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Divider, Paper, InputBase } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
+import { makeStyles } from "tss-react/mui";
 
 import { sendQuestion, userInputChanged } from "store/actions";
 import { Config, MentorQuestionSource, QuestionInput, State } from "types";
@@ -17,7 +17,7 @@ import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import "styles/layout.css";
 import { useWithScreenOrientation } from "use-with-orientation";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles({ name: { Input } })(() => ({
   root: {
     display: "flex",
     alignItems: "center",
@@ -57,7 +57,7 @@ const useStyles = makeStyles(() => ({
 
 function Input(): JSX.Element {
   const dispatch = useDispatch();
-  const classes = useStyles();
+  const { classes } = useStyles();
   const config = useSelector<State, Config>((s) => s.config);
   const curTopic = useSelector<State, string>((s) => s.curTopic);
   const curQuestion = useSelector<State, string>((s) => s.curQuestion);

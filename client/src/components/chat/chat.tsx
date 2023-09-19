@@ -7,7 +7,7 @@ The full terms of this copyright and license should always be found in the root 
 import React from "react";
 import { useSelector } from "react-redux";
 import { List } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
+import { makeStyles } from "tss-react/mui";
 
 import { ChatData, ChatMsg, MentorType, State } from "types";
 import "styles/history-chat.css";
@@ -36,7 +36,7 @@ function Chat(props: {
   bubbleColor?: string;
 }): JSX.Element {
   const { width, bubbleColor, isMobile } = props;
-  const useStyles = makeStyles((theme) => ({
+  const useStyles = makeStyles({ name: { Chat } })((theme) => ({
     root: {
       width: "auto",
     },
@@ -78,7 +78,7 @@ function Chat(props: {
       marginLeft: "5px",
     },
   }));
-  const styles = useStyles();
+  const { classes: styles } = useStyles();
   const {
     mentorType,
     lastQuestionId,

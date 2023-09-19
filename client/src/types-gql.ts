@@ -4,7 +4,13 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import { Media, MentorClientData, MentorType, TopicQuestions } from "types";
+import {
+  Media,
+  MentorClientData,
+  MentorType,
+  TopicQuestions,
+  Utterance,
+} from "types";
 
 export interface MentorQueryDataGQL {
   mentorClientData: MentorClientDataGQL;
@@ -65,14 +71,20 @@ export function getMediaListFromUtteranceGql(utterance: UtteranceGQL): Media[] {
   return mediaList;
 }
 
+export function convertUtteranceGQL(utteranceGql: UtteranceGQL): Utterance {
+  return {
+    ...utteranceGql,
+    media: getMediaListFromUtteranceGql(utteranceGql),
+  };
+}
+
 export function convertMentorClientDataGQL(
   mentorClientData: MentorClientDataGQL
 ): MentorClientData {
   return {
     ...mentorClientData,
-    utterances: mentorClientData.utterances.map((utteranceGql) => ({
-      ...utteranceGql,
-      media: getMediaListFromUtteranceGql(utteranceGql),
-    })),
+    utterances: mentorClientData.utterances.map((utteranceGql) =>
+      convertUtteranceGQL(utteranceGql)
+    ),
   };
 }

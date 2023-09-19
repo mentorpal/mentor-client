@@ -85,6 +85,8 @@ export interface Utterance {
   name: string;
   transcript: string;
   media: Media[];
+  startTime?: number;
+  endTime?: number;
 }
 
 export interface Media {

@@ -8,11 +8,10 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { v4 as uuid } from "uuid";
 import { CircularProgress } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
+import { makeStyles } from "tss-react/mui";
 import {
   createTheme,
   ThemeProvider,
-  Theme,
   StyledEngineProvider,
 } from "@mui/material/styles";
 
@@ -74,12 +73,7 @@ import {
 import UsernameModal from "components/username-modal";
 import { BaseDialog } from "components/base-dialog";
 
-declare module "@mui/styles/defaultTheme" {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
-
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles({ name: { IndexPage } })(() => ({
   flexRoot: {
     display: "flex",
     flexFlow: "column nowrap",
@@ -133,6 +127,9 @@ function IndexPage(props: {
     recommendedQuestions?: string | string[];
     subject?: string;
     intro?: string;
+    introVideo?: string;
+    introVideoStart?: number;
+    introVideoEnd?: number;
     noHistoryDownload?: string;
   };
 }): JSX.Element {
@@ -147,7 +144,7 @@ function IndexPage(props: {
   const [usernameModalOpen, setUsernameModalOpen] = useState<boolean>(true);
 
   const dispatch = useDispatch();
-  const styles = useStyles();
+  const { classes: styles } = useStyles();
   const config = useSelector<State, Config>((state) => state.config);
   const configLoadStatus = useSelector<State, LoadStatus>(
     (state) => state.configLoadStatus
@@ -191,7 +188,14 @@ function IndexPage(props: {
   const { displayFormat, windowHeight } = useWithScreenOrientation();
   const curTopic = useSelector<State, string>((state) => state.curTopic);
 
-  const { subject, recommendedQuestions, intro } = props.search;
+  const {
+    subject,
+    recommendedQuestions,
+    intro,
+    introVideo,
+    introVideoStart,
+    introVideoEnd,
+  } = props.search;
   let { mentor } = props.search;
 
   function isLoadComplete(s: LoadStatus): boolean {
@@ -495,6 +499,9 @@ function IndexPage(props: {
             : config.mentorsDefault,
           subject: subject,
           intro,
+          introVideo,
+          introVideoStart,
+          introVideoEnd,
           recommendedQuestions: recommendedQuestions
             ? Array.isArray(recommendedQuestions)
               ? recommendedQuestions

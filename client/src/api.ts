@@ -18,6 +18,8 @@ import {
   convertMentorClientDataGQL,
   MentorQueryDataGQL,
   AuthUserData,
+  UtteranceGQL,
+  convertUtteranceGQL,
 } from "types-gql";
 
 export const GATSBY_GRAPHQL_ENDPOINT =
@@ -240,6 +242,66 @@ export async function fetchMentor(
   }
   const mentorClientData = gqlRes.data.data.mentorClientData;
   return convertMentorClientDataGQL(mentorClientData);
+}
+export async function fetchAnswer(
+  mentorId: string,
+  questionId: string,
+  accessToken: string
+): Promise<Utterance> {
+  const gqlRes = await axios.post<GraphQLResponse<{ answer: UtteranceGQL }>>(
+    GATSBY_GRAPHQL_ENDPOINT,
+    {
+      query: `
+        query FetchAnswer($mentor: ID!, $question: ID!) {
+          answer(mentor: $mentor, question: $question) {
+            _id
+            transcript
+            webMedia {
+              tag
+              type
+              url
+              transparentVideoUrl
+            }
+            mobileMedia {
+              tag
+              type
+              url
+              transparentVideoUrl
+            }
+            vttMedia {
+              tag
+              type
+              url
+            }
+          }
+        }
+    `,
+      variables: {
+        mentor: mentorId,
+        question: questionId,
+      },
+    },
+    {
+      headers: {
+        Authorization: `bearer ${accessToken}`,
+      },
+    }
+  );
+  // check that the data returned successfully,
+  if (gqlRes.status !== 200) {
+    throw new Error(`Answer load failed: ${gqlRes.statusText}}`);
+  }
+  if (gqlRes.data.errors) {
+    throw new Error(
+      `errors reponse to config query: ${JSON.stringify(gqlRes.data.errors)}`
+    );
+  }
+  if (!gqlRes.data.data) {
+    throw new Error(
+      `no data in non-error reponse: ${JSON.stringify(gqlRes.data)}`
+    );
+  }
+  return convertUtteranceGQL(gqlRes.data.data.answer);
 }
 
 interface GiveFeedbackResult {
