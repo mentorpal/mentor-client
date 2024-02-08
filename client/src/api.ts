@@ -5,6 +5,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import axios, { AxiosResponse } from "axios";
+import { LS_LEFT_HOME_PAGE } from "local-constants";
 import {
   Utterance,
   Config,
@@ -21,6 +22,7 @@ import {
   UtteranceGQL,
   convertUtteranceGQL,
 } from "types-gql";
+import { getLocalStorage } from "utils";
 
 export const GATSBY_GRAPHQL_ENDPOINT =
   process.env.GATSBY_GRAPHQL_ENDPOINT || "/graphql";
@@ -170,12 +172,13 @@ export async function fetchMentor(
   accessToken: string,
   subjectId?: string
 ): Promise<MentorClientData> {
+  const leftHomePageData = getLocalStorage(LS_LEFT_HOME_PAGE);
   const gqlRes = await axios.post<GraphQLResponse<MentorQueryDataGQL>>(
     GATSBY_GRAPHQL_ENDPOINT,
     {
       query: `
-      query FetchMentor($mentor: ID!, $subject: ID) {
-        mentorClientData(mentor: $mentor, subject: $subject) {
+      query FetchMentor($mentor: ID!, $subject: ID, $leftHomePageData: String!) {
+        mentorClientData(mentor: $mentor, subject: $subject, leftHomePageData: $leftHomePageData) {
           _id
           name
           title
@@ -218,6 +221,7 @@ export async function fetchMentor(
       variables: {
         mentor: mentorId,
         subject: subjectId,
+        leftHomePageData: leftHomePageData,
       },
     },
     {

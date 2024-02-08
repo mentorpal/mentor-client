@@ -535,7 +535,7 @@ function IndexPage(props: {
     });
     updateLocalStorageUserData(newUserData);
   }
-
+  console.log(document.referrer);
   return (
     <div>
       <BaseDialog
