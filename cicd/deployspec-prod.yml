@@ -4,11 +4,9 @@ env:
   variables:
     GATSBY_GRAPHQL_ENDPOINT: 'https://api.mentorpal.org/graphql/graphql'
     GATSBY_NPCEDITOR_ENDPOINT: 'https://api.mentorpal.org/npceditor'
-    GATSBY_STAGE: 'cf'
+    GATSBY_STAGE: 'prod'
     GATSBY_IS_SENTRY_ENABLED: true
   parameter-store:
-    S3_DEPLOY_BUCKET_CF: "/mentorpal/cf/s3-websites/NAME"
-    CDN_ID_CF: "/mentorpal/cf/CLOUDFRONT_DISTRIBUTION_ID"
     S3_DEPLOY_BUCKET: "/mentorpal/s3-websites/NAME"
     CDN_ID: "/mentorpal/CLOUDFRONT_DISTRIBUTION_ID"
 
@@ -22,9 +20,6 @@ phases:
   build:
     commands:
       - cd client && npm run build
-      - echo Deploying to $S3_DEPLOY_BUCKET_CF
-      - aws s3 sync ./public s3://$S3_DEPLOY_BUCKET_CF/chat
-      - aws cloudfront create-invalidation --distribution-id $CDN_ID_CF --paths "/chat*"
       - echo Deploying to $S3_DEPLOY_BUCKET
       - aws s3 sync ./public s3://$S3_DEPLOY_BUCKET/chat
       - aws cloudfront create-invalidation --distribution-id $CDN_ID --paths "/chat*"
