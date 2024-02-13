@@ -5,11 +5,20 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 /**
- * Implement Gatsby's SSR (Server Side Rendering) APIs in this file.
+ * Implement Gatsby's Browser APIs in this file.
  *
- * See: https://www.gatsbyjs.org/docs/ssr-apis/
+ * See: https://www.gatsbyjs.org/docs/browser-apis/
  */
 
+import "regenerator-runtime/runtime";
+
 import wrapWithProvider from "./wrap-with-provider";
+
+import { loadSentry } from "./src/utils";
+
+if (process.env.GATSBY_IS_SENTRY_ENABLED === "true") {
+  console.log("Loading sentry");
+  loadSentry();
+}
 
 export const wrapRootElement = wrapWithProvider;
