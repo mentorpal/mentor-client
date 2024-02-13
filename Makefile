@@ -98,11 +98,3 @@ test-e2e-exec:
 test-e2e-up:
 	$(TEST_E2E_DOCKER_COMPOSE) up -d
 
-.PHONY: deploy
-deploy:
-	cd client && \
-	export GATSBY_GRAPHQL_ENDPOINT=https://api.devmentorpal.org/graphql/graphql && \
-	export GATSBY_STAGE=dev && \
-	npm run build && \
-	aws s3 sync ./public/ s3://mentorpal-us-east-1-newdev-mentorpal-origin/chat && \
-	aws cloudfront create-invalidation --distribution-id E6VOL8BYUVNWS --paths "/chat*"
