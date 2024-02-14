@@ -10,6 +10,8 @@ The full terms of this copyright and license should always be found in the root 
  * See: https://www.gatsbyjs.org/docs/browser-apis/
  */
 
+import "regenerator-runtime/runtime";
+
 import wrapWithProvider from "./wrap-with-provider";
 
 import { loadSentry } from "./src/utils";

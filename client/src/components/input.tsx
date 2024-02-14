@@ -6,13 +6,24 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Divider, Paper, InputBase } from "@mui/material";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
+import {
+  Button,
+  Divider,
+  Paper,
+  InputBase,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
+import { Mic, MicOutlined } from "@mui/icons-material";
+import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import { makeStyles } from "tss-react/mui";
 
 import { sendQuestion, userInputChanged } from "store/actions";
 import { Config, MentorQuestionSource, QuestionInput, State } from "types";
 import { isMobile } from "react-device-detect";
-import SendRoundedIcon from "@mui/icons-material/SendRounded";
 
 import "styles/layout.css";
 import { useWithScreenOrientation } from "use-with-orientation";
@@ -65,6 +76,13 @@ function Input(): JSX.Element {
     (s) => s.questionInput
   );
   const { displayFormat } = useWithScreenOrientation();
+  const {
+    transcript,
+    listening,
+    browserSupportsSpeechRecognition,
+    resetTranscript,
+  } = useSpeechRecognition();
+  const [stt, setSTT] = React.useState<string>("");
 
   const [animatingInputField, setAnimatingInputField] =
     useState<boolean>(false);
@@ -74,6 +92,13 @@ function Input(): JSX.Element {
       ? setAnimatingInputField(false)
       : setAnimatingInputField(true);
   }, [questionInput]);
+
+  useEffect(() => {
+    onQuestionInputChanged(
+      questionInput.question + transcript.substr(stt.length)
+    );
+    setSTT(transcript);
+  }, [transcript]);
 
   function handleQuestionChanged(
     question: string,
@@ -114,6 +139,18 @@ function Input(): JSX.Element {
     onQuestionInputSend();
   }
 
+  function toggleSTT() {
+    if (listening) {
+      SpeechRecognition.stopListening();
+      resetTranscript();
+      setSTT("");
+    } else {
+      resetTranscript();
+      setSTT("");
+      SpeechRecognition.startListening();
+    }
+  }
+
   // Input field keyboard was lowered
   const onBlur = () => {
     if (isMobile) {
@@ -140,6 +177,10 @@ function Input(): JSX.Element {
         classes={{
           input: classes.input,
         }}
+        disabled={listening}
+        style={{
+          backgroundColor: listening ? "rgba(26, 107, 155, 0.1)" : "white",
+        }}
         placeholder={curQuestion || "Ask a question"}
         onChange={(e) => {
           onQuestionInputChanged(e.target.value);
@@ -149,6 +190,17 @@ function Input(): JSX.Element {
         onKeyPress={onKeyPress}
       />
       <Divider className={classes.divider} />
+      {browserSupportsSpeechRecognition ? (
+        <InputAdornment position="start">
+          <IconButton color="primary" edge="start" onClick={toggleSTT}>
+            {listening ? (
+              <Mic style={{ color: "#1a6b9b" }} />
+            ) : (
+              <MicOutlined style={{ color: "gray" }} />
+            )}
+          </IconButton>
+        </InputAdornment>
+      ) : undefined}
       <Button
         data-cy="input-send"
         className={`send-question-btn-${displayFormat}`}
