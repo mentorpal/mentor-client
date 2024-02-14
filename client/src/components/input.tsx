@@ -177,6 +177,10 @@ function Input(): JSX.Element {
         classes={{
           input: classes.input,
         }}
+        disabled={listening}
+        style={{
+          backgroundColor: listening ? "rgba(26, 107, 155, 0.1)" : "white",
+        }}
         placeholder={curQuestion || "Ask a question"}
         onChange={(e) => {
           onQuestionInputChanged(e.target.value);
@@ -184,21 +188,19 @@ function Input(): JSX.Element {
         onClick={onQuestionInputSelected}
         onBlur={onBlur}
         onKeyPress={onKeyPress}
-        startAdornment={
-          browserSupportsSpeechRecognition ? (
-            <InputAdornment position="start">
-              <IconButton color="primary" edge="end" onClick={toggleSTT}>
-                {listening ? (
-                  <Mic color="secondary" />
-                ) : (
-                  <MicOutlined color="primary" />
-                )}
-              </IconButton>
-            </InputAdornment>
-          ) : undefined
-        }
       />
       <Divider className={classes.divider} />
+      {browserSupportsSpeechRecognition ? (
+        <InputAdornment position="start">
+          <IconButton color="primary" edge="start" onClick={toggleSTT}>
+            {listening ? (
+              <Mic style={{ color: "#1a6b9b" }} />
+            ) : (
+              <MicOutlined style={{ color: "gray" }} />
+            )}
+          </IconButton>
+        </InputAdornment>
+      ) : undefined}
       <Button
         data-cy="input-send"
         className={`send-question-btn-${displayFormat}`}
