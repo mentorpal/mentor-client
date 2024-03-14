@@ -27,6 +27,7 @@ import { isMobile } from "react-device-detect";
 
 import "styles/layout.css";
 import { useWithScreenOrientation } from "use-with-orientation";
+import withLocation from "wrap-with-location";
 
 const useStyles = makeStyles({ name: { Input } })(() => ({
   root: {
@@ -66,7 +67,7 @@ const useStyles = makeStyles({ name: { Input } })(() => ({
   },
 }));
 
-function Input(): JSX.Element {
+function Input(props: { search: { nostt: string } }): JSX.Element {
   const dispatch = useDispatch();
   const { classes } = useStyles();
   const config = useSelector<State, Config>((s) => s.config);
@@ -190,8 +191,8 @@ function Input(): JSX.Element {
         onKeyPress={onKeyPress}
       />
       <Divider className={classes.divider} />
-      {browserSupportsSpeechRecognition ? (
-        <InputAdornment position="start">
+      {browserSupportsSpeechRecognition && !props.search.nostt ? (
+        <InputAdornment data-cy="stt-btn" position="start">
           <IconButton color="primary" edge="start" onClick={toggleSTT}>
             {listening ? (
               <Mic style={{ color: "#1a6b9b" }} />
@@ -225,4 +226,4 @@ function Input(): JSX.Element {
   );
 }
 
-export default Input;
+export default withLocation(Input);
