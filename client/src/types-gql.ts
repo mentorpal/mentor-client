@@ -57,6 +57,12 @@ export interface UtteranceGQL {
   vttMedia?: Media;
 }
 
+export interface OrgCheckPermission {
+  isOrg: boolean;
+  isPrivate: boolean;
+  canView: boolean;
+}
+
 export function getMediaListFromUtteranceGql(utterance: UtteranceGQL): Media[] {
   const mediaList = [];
   if (utterance.mobileMedia) {

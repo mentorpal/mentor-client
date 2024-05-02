@@ -211,7 +211,7 @@ export function cyMockMentorData(data: any[]) {
 }
 
 export function cyMockConfig(config: Partial<Config>) {
-  return cyMockGQL("FetchConfig", {
+  return cyMockGQL("FetchOrgConfig", {
     orgConfig: { ...CONFIG_DEFAULT, ...config },
   });
 }
@@ -311,6 +311,14 @@ export function mockDefaultSetup(
     // cyMockTokenData(tokenData),
     cyMockMentorData(mentorData),
     ...gqlQueries,
+    // defaults
+    cyMockGQL("OrgCheckPermission", {
+      orgCheckPermission: {
+        isOrg: false,
+        isPrivate: false,
+        canView: true,
+      },
+    }),
   ]);
   cy.viewport("iphone-x");
 }

@@ -19,6 +19,7 @@ export const LS_X_API_EMAIL_KEY = "xapiUserEmail";
 export const REFERRER_KEY = "referrer";
 export const EVENTS_KEY = "events";
 export const LS_LEFT_HOME_PAGE = "leftHomePage";
+export const ORG_ACCESS_CODE = "orgAccessCode";
 
 // Survey Popup
 export const TIMER_TEXT_KEY = "timertext";
