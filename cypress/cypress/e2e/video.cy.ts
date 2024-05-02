@@ -278,7 +278,7 @@ describe("Video Mentor", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_off_topic.mp4",
+      fixture: "video_off_topic.mp4,null",
     });
 
     cy.visit("/");
@@ -310,7 +310,7 @@ describe("Video Mentor", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/off_topic_answer_id.mp4", {
-      fixture: "video_off_topic.mp4",
+      fixture: "video_off_topic.mp4,null",
     });
 
     cy.visit("/");

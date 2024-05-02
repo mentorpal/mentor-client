@@ -115,7 +115,7 @@ describe("Chat History (Video Mentors Links)", () => {
       .and("match", /.*answer_id.mp4*/);
 
     cy.get("[data-cy=mentor-name]").should("contain", "Carlos");
-    cy.wait(6000); //wait for Carlos to finish answering
+    cy.wait(8000); //wait for Carlos to finish answering
     cy.get("[data-cy=mentor-name]").should("contain", "Clint");
     cy.get("[data-cy=history-chat").within(($hc) => {
       cy.get("[data-cy=chat-thread]").within(($hc) => {
@@ -179,7 +179,7 @@ describe("Chat History (Video Mentors Links)", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
     cy.visit("/");
     cy.get("[data-cy=history-chat]").should("exist");
@@ -210,11 +210,14 @@ describe("Chat History (Video Mentors Links)", () => {
     cy.get("[data-cy=video-container]", { timeout: 30000 })
       .should("have.attr", "data-test-replay")
       .and("match", /.*answer_id.mp4*/);
-
-    cy.get("[data-cy=chat-msg-4]")
+    cy.get("[data-cy=mentor-name-card]", { timeout: 9000 }).should(
+      "contain",
+      "Clinton"
+    );
+    cy.get("[data-cy=chat-msg-7]")
       .scrollIntoView()
       .within(() => {
-        cy.get("[data-cy=ask-icon-4]");
+        cy.get("[data-cy=ask-icon-7]");
       });
   });
 

@@ -217,8 +217,8 @@ export function cyMockConfig(config: Partial<Config>) {
 }
 
 export function mockMentorVideos(cy) {
-  cy.intercept("**/idle.mp4", { fixture: "3.mp4" });
-  cy.intercept("**/*.mp4*", { fixture: "video_response.mp4" });
+  cy.intercept("**/idle.mp4", { fixture: "3.mp4,null" });
+  cy.intercept("**/*.mp4*", { fixture: "video_response.mp4,null" });
 }
 
 export function mockMentorVtt(cy) {

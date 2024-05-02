@@ -66,19 +66,15 @@ describe("Chat History (Video Mentors)", () => {
     });
 
     // video intercept
-    cy.intercept("http://videos.org/answer_id4.mp4", {
-      fixture: "video_intro.mp4",
+    cy.intercept("**answer_id.mp4**", {
+      fixture: "video_off_topic.mp4,null",
     }).as("askClint");
-    cy.intercept("http://videos.org/answer_id2.mp4", {
-      fixture: "video_intro.mp4",
-    }).as("askCarlos");
-
     cy.visit("/");
 
     cy.get("[data-cy=history-chat]").should("exist");
 
     // wait for it to finish
-    cy.get("[data-cy=video-container]", { timeout: 30000 })
+    cy.get("[data-cy=video-container]", { timeout: 8000 })
       .should("have.attr", "data-test-replay")
       .and("match", /.*answer_id.mp4*/);
   });
@@ -94,7 +90,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
     cy.visit("/", {
       qs: addGuestParams({
@@ -125,7 +121,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
     cy.visit("/");
     cy.get("[data-cy=header]").should("have.attr", "data-mentor", "clint");
@@ -143,7 +139,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
     cy.visit("/");
 
@@ -185,7 +181,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
     cy.visit("/");
     cy.viewport("macbook-13");
@@ -224,7 +220,7 @@ describe("Chat History (Video Mentors)", () => {
 
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
     cy.visit("/");
     cy.get("[data-cy=history-chat]").should("exist");
@@ -250,7 +246,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
     cy.visit("/");
 
@@ -285,7 +281,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
     cy.visit("/");
 
@@ -339,7 +335,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
     cy.visit("/");
     cy.viewport(1200, 800);
@@ -436,7 +432,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
 
     cy.get("[data-cy=history-chat]").should("exist");
@@ -514,7 +510,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
     cy.visit("/");
 
@@ -557,7 +553,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
     cy.visit("/");
     cy.viewport(1200, 800);
@@ -631,7 +627,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
 
     cy.get("[data-cy=history-chat]").should("exist");
@@ -684,7 +680,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
 
     cy.get("[data-cy=history-chat]").should("exist");
@@ -736,7 +732,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
 
     cy.get("[data-cy=history-chat]").should("exist");
@@ -802,7 +798,7 @@ describe("Chat History (Video Mentors)", () => {
     });
     // video intercept
     cy.intercept("http://videos.org/answer_id.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
 
     cy.get("[data-cy=history-chat]").should("exist");
@@ -897,16 +893,16 @@ describe("Chat History (Video Mentors)", () => {
 
     // video intercept
     cy.intercept("http://videos.org/answer_id4.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     }).as("askClint");
     cy.intercept("http://videos.org/answer_id2.mp4", {
-      fixture: "video_intro.mp4",
+      fixture: "video_intro.mp4,null",
     }).as("askCarlos");
     cy.intercept("http://videos.org/answer_id3.mp4", {
-      fixture: "3.mp4",
+      fixture: "3.mp4,null",
     });
     cy.intercept("http://videos.org/answer_id7.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     });
     cy.visit("/");
     cy.viewport(1200, 800);
@@ -966,7 +962,7 @@ describe("Chat History (Video Mentors)", () => {
 
     // video intercept
     cy.intercept("http://videos.org/answer_id4.mp4", {
-      fixture: "video_response.mp4",
+      fixture: "video_response.mp4,null",
     }).as("askClint");
 
     cy.visit("/");
