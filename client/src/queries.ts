@@ -26,6 +26,7 @@ query FetchOrgConfig($orgAccessCode: String) {
     homeBannerColor
     homeBannerButtonColor
     homeCarouselColor
+    filterEmailMentorAddress
     walkthroughDisabled
     walkthroughTitle
     urlVideoMentorpalWalkthrough
