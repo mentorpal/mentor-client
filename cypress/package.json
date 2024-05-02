@@ -4,8 +4,7 @@
   "version": "1.0.0",
   "dependencies": {
     "cypress": "^13.6.2",
-    "cypress-fill-command": "^1.0.2",
-    "cypress-image-snapshot": "^4.0.1"
+    "cypress-fill-command": "^1.0.2"
   },
   "scripts": {
     "cy:open": "npx cypress open --env failOnSnapshotDiff=false",
