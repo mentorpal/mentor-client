@@ -101,32 +101,7 @@ function Chat(props: {
     }, {});
   });
 
-  const lastQuestionCounter = useSelector<State, number>(
-    (s) => s.chat.lastQuestionCounter || s.questionsAsked.length + 1
-  );
-
-  const _chatData = useSelector<State, ChatData>((s) => s.chat);
-  const chatData = sortChatData(_chatData);
-
-  function sortChatData(_chatData: ChatData): ChatData {
-    const chatData: ChatData = JSON.parse(JSON.stringify(_chatData));
-    // get last answers
-    const lastAnswers = chatData.messages.filter((m) => {
-      return m.questionCounter === lastQuestionCounter && !m.isUser;
-    });
-    // sort last answers by timestampAnswered
-    const answersSorted = lastAnswers.sort((a, b) =>
-      String(a.timestampAnswered).localeCompare(String(b.timestampAnswered))
-    );
-
-    // replace last answers with sorted answers
-    chatData.messages.splice(
-      chatData.messages.length - Object.keys(answersSorted).length,
-      chatData.messages.length
-    );
-    chatData.messages.push(...answersSorted);
-    return chatData;
-  }
+  const chatData = useSelector<State, ChatData>((s) => s.chat);
 
   function isQuestionsAnswersVisible(
     questionId: string,
