@@ -73,6 +73,7 @@ import {
   DisplaySurveyPopupCondition,
   ResultStatus,
   MentorDataResult,
+  ChatMsg,
 } from "types";
 import { getUtterance } from "api";
 import { v4 as uuid } from "uuid";
@@ -574,24 +575,51 @@ function findAskLinks(text: string): AskLink[] {
   return askLinks;
 }
 
+function sortChatMessages(
+  _msgs: ChatMsg[],
+  lastQuestionCounter: number
+): ChatMsg[] {
+  const msgs: ChatMsg[] = JSON.parse(JSON.stringify(_msgs));
+  // get last answers
+  const lastAnswers = msgs.filter((m) => {
+    return m.questionCounter === lastQuestionCounter && !m.isUser;
+  });
+  // sort last answers by timestampAnswered
+  const answersSorted = lastAnswers.sort((a, b) =>
+    String(a.timestampAnswered).localeCompare(String(b.timestampAnswered))
+  );
+
+  // replace last answers with sorted answers
+  msgs.splice(msgs.length - Object.keys(answersSorted).length, msgs.length);
+  msgs.push(...answersSorted);
+  return msgs;
+}
+
 function onMentorDisplayAnswer(
   state: State,
   action: VideoFinishedAction
 ): State {
+  const _newMessages: ChatMsg[] = JSON.parse(
+    JSON.stringify(state.chat.messages)
+  );
+  const newMessages = _newMessages.map((m) => {
+    return m.isVideoInProgress !== action.payload.isVideoInProgress &&
+      m.mentorId === action.payload.curMentor
+      ? {
+          ...m,
+          isVideoInProgress: action.payload.isVideoInProgress,
+          timestampAnswered: action.payload.timestampAnswered,
+        }
+      : m;
+  });
+  const lastQuestionCounter =
+    state.chat.lastQuestionCounter || state.questionsAsked.length + 1;
+  const sortedMessages = sortChatMessages(newMessages, lastQuestionCounter);
   return {
     ...state,
     chat: {
       ...state.chat,
-      messages: state.chat.messages.map((m) => {
-        return m.isVideoInProgress !== action.payload.isVideoInProgress &&
-          m.mentorId === action.payload.curMentor
-          ? {
-              ...m,
-              isVideoInProgress: action.payload.isVideoInProgress,
-              timestampAnswered: action.payload.timestampAnswered,
-            }
-          : m;
-      }),
+      messages: sortedMessages,
     },
   };
 }

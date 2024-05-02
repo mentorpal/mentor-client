@@ -384,12 +384,13 @@ export const authenticateUser =
   };
 
 export const loadConfig =
-  () => async (dispatch: ThunkDispatch<State, void, ConfigLoadAction>) => {
+  (orgAccessCode: string) =>
+  async (dispatch: ThunkDispatch<State, void, ConfigLoadAction>) => {
     dispatch({
       type: CONFIG_LOAD_STARTED,
     });
     try {
-      const config = await fetchConfig();
+      const config = await fetchConfig(orgAccessCode);
       return dispatch({
         type: CONFIG_LOAD_SUCCEEDED,
         payload: config,

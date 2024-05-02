@@ -118,7 +118,7 @@ export function ChatItem(props: {
     const chatLink = hrefToChatLink(props?.node?.url || "", message);
     return chatLink.type === LINK_TYPE_ASK ? (
       <a
-        href="#"
+        // href="#"
         rel="noreferrer"
         onClick={() =>
           onAskLinkClicked(chatLink.question, MentorQuestionSource.CHAT_LINK)
