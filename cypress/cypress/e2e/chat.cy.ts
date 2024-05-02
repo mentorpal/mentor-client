@@ -121,4 +121,22 @@ describe("Chat", () => {
     cy.get("[data-cy=click-good]").trigger("mouseover").click();
     cy.get("[data-cy=selected-good]").should("be.visible");
   });
+
+  it("shows or hides stt button", () => {
+    mockDefaultSetup(cy, {
+      config: { mentorsDefault: ["covid"] },
+      mentorData: [covid],
+      apiResponse: "response_with_feedback.json",
+      gqlQueries: [
+        cyMockGQL("UserQuestionSetFeedback", { userQuestionSetFeedback: null }),
+      ],
+    });
+    cy.intercept("**/questions/?mentor=covid&query=*", {
+      fixture: "response_with_feedback.json",
+    });
+    cy.visit("/");
+    cy.get("[data-cy=stt-btn]").should("exist");
+    cy.visit("/?nostt=true");
+    cy.get("[data-cy=stt-btn]").should("not.exist");
+  });
 });

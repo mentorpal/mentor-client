@@ -72,6 +72,7 @@ import {
 } from "local-constants";
 import UsernameModal from "components/username-modal";
 import { BaseDialog } from "components/base-dialog";
+import { useWithOrgPerms } from "hooks/use-with-org-perms";
 
 const useStyles = makeStyles({ name: { IndexPage } })(() => ({
   flexRoot: {
@@ -187,6 +188,8 @@ function IndexPage(props: {
   const [warnedAnswerMissing, setWarnedAnswerMissing] = React.useState(false);
   const { displayFormat, windowHeight } = useWithScreenOrientation();
   const curTopic = useSelector<State, string>((state) => state.curTopic);
+  const { orgPermitted, OrgPermDisplay, orgAccessCode, orgPermloading } =
+    useWithOrgPerms();
 
   const {
     subject,
@@ -217,8 +220,13 @@ function IndexPage(props: {
 
   useEffect(() => {
     dispatch(authenticateUser());
-    dispatch(loadConfig());
   }, []);
+
+  useEffect(() => {
+    if (orgPermitted) {
+      dispatch(loadConfig(orgAccessCode));
+    }
+  }, [orgPermitted]);
 
   function setupSessionId(): string {
     const sessionIdInUrl = new URL(location.href).searchParams.get("sessionId");
@@ -535,9 +543,24 @@ function IndexPage(props: {
     });
     updateLocalStorageUserData(newUserData);
   }
-  if (typeof window !== "undefined") {
-    console.log(document.referrer);
+
+  if (orgPermloading) {
+    <div className={styles.loadingWindow}>
+      <div className={styles.loadingContent}>
+        <CircularProgress
+          data-cy="loading"
+          style={{ color: styleHeaderColor }}
+          size={150}
+        />
+        <div className={styles.loadingIndicatorContent}></div>
+      </div>
+    </div>;
   }
+
+  if (!orgPermloading && !orgPermitted) {
+    return OrgPermDisplay;
+  }
+
   return (
     <div>
       <BaseDialog

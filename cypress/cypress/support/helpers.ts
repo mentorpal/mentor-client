@@ -211,14 +211,14 @@ export function cyMockMentorData(data: any[]) {
 }
 
 export function cyMockConfig(config: Partial<Config>) {
-  return cyMockGQL("FetchConfig", {
+  return cyMockGQL("FetchOrgConfig", {
     orgConfig: { ...CONFIG_DEFAULT, ...config },
   });
 }
 
 export function mockMentorVideos(cy) {
-  cy.intercept("**/idle.mp4", { fixture: "3.mp4" });
-  cy.intercept("**/*.mp4*", { fixture: "video_response.mp4" });
+  cy.intercept("**/idle.mp4", { fixture: "3.mp4,null" });
+  cy.intercept("**/*.mp4*", { fixture: "video_response.mp4,null" });
 }
 
 export function mockMentorVtt(cy) {
@@ -311,6 +311,14 @@ export function mockDefaultSetup(
     // cyMockTokenData(tokenData),
     cyMockMentorData(mentorData),
     ...gqlQueries,
+    // defaults
+    cyMockGQL("OrgCheckPermission", {
+      orgCheckPermission: {
+        isOrg: false,
+        isPrivate: false,
+        canView: true,
+      },
+    }),
   ]);
   cy.viewport("iphone-x");
 }

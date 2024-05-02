@@ -4,8 +4,10 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
+import { GATSBY_GRAPHQL_ENDPOINT, execGql } from "api-helpers";
 import axios, { AxiosResponse } from "axios";
 import { LS_LEFT_HOME_PAGE } from "local-constants";
+import * as queries from "queries";
 import {
   Utterance,
   Config,
@@ -21,64 +23,22 @@ import {
   AuthUserData,
   UtteranceGQL,
   convertUtteranceGQL,
+  OrgCheckPermission,
 } from "types-gql";
 import { getLocalStorage } from "utils";
 
-export const GATSBY_GRAPHQL_ENDPOINT =
-  process.env.GATSBY_GRAPHQL_ENDPOINT || "/graphql";
-export async function fetchConfig(): Promise<Config> {
-  const gqlRes = await axios.post<GraphQLResponse<{ orgConfig: Config }>>(
-    GATSBY_GRAPHQL_ENDPOINT,
+export async function fetchConfig(orgAccessCode: string): Promise<Config> {
+  return await execGql<Config>(
     {
-      query: `
-      query FetchConfig {
-        orgConfig {
-          cmi5Enabled
-          cmi5Endpoint
-          cmi5Fetch
-          classifierLambdaEndpoint
-          urlGraphql
-          urlVideo
-          mentorsDefault
-          filterEmailMentorAddress
-          disclaimerTitle
-          disclaimerText
-          disclaimerDisabled
-          styleHeaderColor
-          styleHeaderTextColor
-          styleHeaderLogo
-          styleHeaderLogoUrl
-          displayGuestPrompt
-          displaySurveyPopupCondition
-          defaultVirtualBackground
-          postSurveyLink
-          postSurveyTimer
-          minTopicQuestionSize
-          postSurveyUserIdEnabled
-          postSurveyReferrerEnabled
-          surveyButtonInDisclaimer
-          guestPromptInputType
-          guestPromptTitle
-          guestPromptText
-        }
-      }
-    `,
+      query: `${queries.getOrgConfig}`,
+      variables: {
+        orgAccessCode: orgAccessCode,
+      },
+    },
+    {
+      dataPath: ["orgConfig"],
     }
   );
-  if (gqlRes.status !== 200) {
-    throw new Error(`orgConfig load failed: ${gqlRes.statusText}}`);
-  }
-  if (gqlRes.data.errors) {
-    throw new Error(
-      `errors reponse to orgConfig query: ${JSON.stringify(gqlRes.data.errors)}`
-    );
-  }
-  if (!gqlRes.data.data) {
-    throw new Error(
-      `no data in non-error reponse: ${JSON.stringify(gqlRes.data)}`
-    );
-  }
-  return gqlRes.data.data.orgConfig;
 }
 
 export function getUtterance(
@@ -506,4 +466,20 @@ export async function refreshAccessToken(): Promise<AuthUserData> {
   }
   const accessTokenData = gqlRes.data.data.refreshAccessToken;
   return accessTokenData;
+}
+
+export async function fetchOrgPerm(
+  orgAccessCode?: string
+): Promise<OrgCheckPermission> {
+  return await execGql<OrgCheckPermission>(
+    {
+      query: `${queries.checkOrgPermission}`,
+      variables: {
+        orgAccessCode: orgAccessCode,
+      },
+    },
+    {
+      dataPath: ["orgCheckPermission"],
+    }
+  );
 }
