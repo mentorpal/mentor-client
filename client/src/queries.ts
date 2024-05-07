@@ -13,6 +13,7 @@ query FetchOrgConfig($orgAccessCode: String) {
     styleHeaderTitle
     styleHeaderText
     styleHeaderColor
+    classifierLambdaEndpoint
     styleHeaderTextColor
     styleHeaderLogo
     styleHeaderLogoUrl
@@ -52,6 +53,11 @@ query FetchOrgConfig($orgAccessCode: String) {
     postSurveyUserIdEnabled
     postSurveyReferrerEnabled
     surveyButtonInDisclaimer
+    urlGraphql
+    urlVideo
+    mentorsDefault
+    defaultVirtualBackground
+    minTopicQuestionSize
   }
 }
 `;
