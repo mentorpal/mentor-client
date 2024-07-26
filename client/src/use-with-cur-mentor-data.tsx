@@ -121,7 +121,9 @@ export function useWithCurMentorData(): UseWithCurMentorData {
     const _idleVideoData = getIdleVideoData(curMentor);
     if (_idleVideoData.src !== idleVideo.src)
       setIdleVideo({
-        src: _idleVideoData.src,
+        src: _idleVideoData.src
+          ? `${_idleVideoData.src}?v=${Math.random()}`
+          : "",
         subtitles: "",
       });
   }, [curMentor?.answer_media, replayMessageCount]);
