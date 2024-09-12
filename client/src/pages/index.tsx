@@ -547,11 +547,7 @@ function IndexPage(props: {
   if (orgPermloading) {
     <div className={styles.loadingWindow}>
       <div className={styles.loadingContent}>
-        <CircularProgress
-          data-cy="loading"
-          style={{ color: styleHeaderColor }}
-          size={150}
-        />
+        <CircularProgress data-cy="loading" size={150} />
         <div className={styles.loadingIndicatorContent}></div>
       </div>
     </div>;
@@ -574,11 +570,7 @@ function IndexPage(props: {
       {!isLoadComplete(configLoadStatus) || !curMentor ? (
         <div className={styles.loadingWindow}>
           <div className={styles.loadingContent}>
-            <CircularProgress
-              data-cy="loading"
-              style={{ color: styleHeaderColor }}
-              size={150}
-            />
+            <CircularProgress data-cy="loading" size={150} />
             <div className={styles.loadingIndicatorContent}></div>
           </div>
         </div>
