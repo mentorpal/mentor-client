@@ -50,6 +50,21 @@
   position: relative;
 }
 
+.email-mentor-button {
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.email-mentor-button:hover {
+  color: blue;
+  text-decoration: underline;
+}
+
 .mentor-name-card {
   background-color: #373737ad;
   position: absolute;
@@ -64,28 +79,17 @@
   border-radius: 0px 0px 10px 0px;
 }
 
-.mentor-fav-icon-wrapper {
-  display: flex;
-  align-items: center;
-}
-
 .mentor-name-text {
   padding: 0px 10px 0px 10px;
   height: 1rem;
   color: #ffffffd6;
 }
 
-.email-mentor-button {
-  font-weight: bold;
-  cursor: pointer;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.email-mentor-button:hover {
-  color: blue;
-  text-decoration: underline;
+@media (max-width: 800px) {
+  .mentor-name-text {
+    font-size: 12px;
+    margin: 0;
+    margin-top: 7px;
+    margin-bottom: 7px;
+  }
 }

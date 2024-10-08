@@ -1,5 +1,5 @@
 DOCKER_IMAGE?=mentor-client
-TEST_E2E_DOCKER_COMPOSE=docker-compose
+TEST_E2E_DOCKER_COMPOSE=docker compose
 LICENSE_CONFIG?="license-config.json"
 
 node_modules/license-check-and-add:

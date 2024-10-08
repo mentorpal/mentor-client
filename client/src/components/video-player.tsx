@@ -23,6 +23,7 @@ import { useWithVideoPlayerHeight } from "use-with-video-player-height";
 import { useWithScreenOrientation } from "use-with-orientation";
 import { useSelector } from "react-redux";
 import { getUtterance } from "api";
+import { controlsDisableHelper } from "hooks/controls-disable-helper";
 
 export interface VideoPlayerData {
   videoUrl: string;
@@ -88,6 +89,9 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
       getUtterance(state.mentorsById[state.curMentor], UtteranceName.INTRO)
   );
   const [introEnded, setIntroEnded] = useState<boolean>(false);
+  const [paused, setPaused] = useState<boolean>(true);
+  const { enabled: controlsEnabled, interacted } =
+    controlsDisableHelper(paused);
 
   useEffect(() => {
     if (isIntro && videoUrl) {
@@ -302,7 +306,10 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
   const mentorNameCard = (
     <div data-cy="mentor-name-card" className="mentor-name-card">
       <div
-        className="mentor-fav-icon-wrapper"
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
         data-cy="mentorname-faveicon-wrapper"
       >
         <p className="mentor-name-text" data-cy="mentor-name">
@@ -356,20 +363,38 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     <div
       data-cy={"answer-video-player-wrapper"}
       style={{ width: "100%", height: "auto", justifyContent: "center" }}
+      onMouseOver={() => {
+        interacted();
+      }}
+      onClick={() => {
+        interacted();
+      }}
+      onMouseMove={() => {
+        interacted();
+      }}
     >
-      {/* TODO: shouldDisplayWebLinks && !isIdle */}
       {shouldDiplayWebLinks ? answerLinkCard : null}
       {mentorName ? mentorNameCard : null}
       <ReactPlayer
         style={answerReactPlayerStyling}
         className="player-wrapper react-player-wrapper"
         data-cy="react-player-answer-video"
+        controls={controlsEnabled || paused}
         url={state.urlToPlay}
         pip={false}
+        onPause={() => {
+          interacted();
+          setPaused(true);
+        }}
         muted={false}
         onEnded={endVideo}
         ref={reactPlayerRef}
-        onPlay={onPlay}
+        onPlay={() => {
+          onPlay();
+          if (paused) {
+            setPaused(false);
+          }
+        }}
         onProgress={({ playedSeconds }) => {
           if (
             isIntro &&
@@ -428,8 +453,10 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
             track["mode"] = showCaptions ? "showing" : "hidden";
           }
         }}
+        onSeek={() => {
+          interacted();
+        }}
         loop={false}
-        controls={true}
         width="fit-content"
         height="fit-content"
         progressInterval={100}

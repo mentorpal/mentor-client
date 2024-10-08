@@ -31,8 +31,8 @@ jobs:
       - name: Authenticate with private NPM package
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - uses: actions/checkout@v2
-      - name: build + run app in docker-compose
-        run: docker-compose up -d
+      - name: build + run app in docker compose
+        run: docker compose up -d
       - name: check services running
         run: docker ps
       - name: cypress - run tests
