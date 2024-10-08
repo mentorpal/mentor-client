@@ -89,9 +89,9 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
       getUtterance(state.mentorsById[state.curMentor], UtteranceName.INTRO)
   );
   const [introEnded, setIntroEnded] = useState<boolean>(false);
-  const [paused, setPaused] = useState<boolean>(true);
+  const [firstPauseCleared, setFirstPauseCleared] = useState<boolean>(false);
   const { enabled: controlsEnabled, interacted } =
-    controlsDisableHelper(paused);
+    controlsDisableHelper(firstPauseCleared);
 
   useEffect(() => {
     if (isIntro && videoUrl) {
@@ -364,12 +364,15 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
       data-cy={"answer-video-player-wrapper"}
       style={{ width: "100%", height: "auto", justifyContent: "center" }}
       onMouseOver={() => {
+        console.log("mouse over");
         interacted();
       }}
       onClick={() => {
+        console.log("clicked");
         interacted();
       }}
       onMouseMove={() => {
+        console.log("mouse move");
         interacted();
       }}
     >
@@ -379,20 +382,16 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         style={answerReactPlayerStyling}
         className="player-wrapper react-player-wrapper"
         data-cy="react-player-answer-video"
-        controls={controlsEnabled || paused}
+        controls={controlsEnabled || !firstPauseCleared}
         url={state.urlToPlay}
         pip={false}
-        onPause={() => {
-          interacted();
-          setPaused(true);
-        }}
         muted={false}
         onEnded={endVideo}
         ref={reactPlayerRef}
         onPlay={() => {
           onPlay();
-          if (paused) {
-            setPaused(false);
+          if (!firstPauseCleared) {
+            setFirstPauseCleared(true);
           }
         }}
         onProgress={({ playedSeconds }) => {
@@ -454,6 +453,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
           }
         }}
         onSeek={() => {
+          console.log("seeked");
           interacted();
         }}
         loop={false}

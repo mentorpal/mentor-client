@@ -12,7 +12,9 @@ export interface ControlsDisableHelper {
   interacted: () => void;
 }
 
-export function controlsDisableHelper(paused: boolean): ControlsDisableHelper {
+export function controlsDisableHelper(
+  firstPauseCleared: boolean
+): ControlsDisableHelper {
   const [enabled, setEnabled] = useState(true);
   const [lastInteractionTime, setLastInteractionTime] = useState(Date.now());
 
@@ -23,10 +25,11 @@ export function controlsDisableHelper(paused: boolean): ControlsDisableHelper {
         setEnabled(false);
       }
     },
-    enabled && !paused ? 1000 : null
+    enabled && firstPauseCleared ? 1000 : null
   );
 
   function interacted() {
+    console.log("interacted");
     setLastInteractionTime(Date.now());
     if (!enabled) {
       setEnabled(true);
