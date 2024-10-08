@@ -23,6 +23,7 @@ import { useWithVideoPlayerHeight } from "use-with-video-player-height";
 import { useWithScreenOrientation } from "use-with-orientation";
 import { useSelector } from "react-redux";
 import { getUtterance } from "api";
+import { controlsDisableHelper } from "hooks/controls-disable-helper";
 
 export interface VideoPlayerData {
   videoUrl: string;
@@ -88,6 +89,7 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
       getUtterance(state.mentorsById[state.curMentor], UtteranceName.INTRO)
   );
   const [introEnded, setIntroEnded] = useState<boolean>(false);
+  const { enabled: controlsEnabled, interacted } = controlsDisableHelper();
 
   useEffect(() => {
     if (isIntro && videoUrl) {
@@ -356,14 +358,23 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
     <div
       data-cy={"answer-video-player-wrapper"}
       style={{ width: "100%", height: "auto", justifyContent: "center" }}
+      onMouseOver={() => {
+        interacted();
+      }}
+      onClick={() => {
+        interacted();
+      }}
+      onMouseMove={() => {
+        interacted();
+      }}
     >
-      {/* TODO: shouldDisplayWebLinks && !isIdle */}
       {shouldDiplayWebLinks ? answerLinkCard : null}
       {mentorName ? mentorNameCard : null}
       <ReactPlayer
         style={answerReactPlayerStyling}
         className="player-wrapper react-player-wrapper"
         data-cy="react-player-answer-video"
+        controls={controlsEnabled}
         url={state.urlToPlay}
         pip={false}
         muted={false}
@@ -429,7 +440,6 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
           }
         }}
         loop={false}
-        controls={true}
         width="fit-content"
         height="fit-content"
         progressInterval={100}
