@@ -18,7 +18,7 @@ export function controlsDisableHelper(paused: boolean): ControlsDisableHelper {
 
   useInterval(
     () => {
-      if (Date.now() - lastInteractionTime > 10000) {
+      if (Date.now() - lastInteractionTime > 3000) {
         //10 seconds
         setEnabled(false);
       }
