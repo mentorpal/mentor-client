@@ -89,7 +89,9 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
       getUtterance(state.mentorsById[state.curMentor], UtteranceName.INTRO)
   );
   const [introEnded, setIntroEnded] = useState<boolean>(false);
-  const { enabled: controlsEnabled, interacted } = controlsDisableHelper();
+  const [paused, setPaused] = useState<boolean>(true);
+  const { enabled: controlsEnabled, interacted } =
+    controlsDisableHelper(paused);
 
   useEffect(() => {
     if (isIntro && videoUrl) {
@@ -304,7 +306,10 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
   const mentorNameCard = (
     <div data-cy="mentor-name-card" className="mentor-name-card">
       <div
-        className="mentor-fav-icon-wrapper"
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
         data-cy="mentorname-faveicon-wrapper"
       >
         <p className="mentor-name-text" data-cy="mentor-name">
@@ -374,13 +379,22 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
         style={answerReactPlayerStyling}
         className="player-wrapper react-player-wrapper"
         data-cy="react-player-answer-video"
-        controls={controlsEnabled}
+        controls={controlsEnabled || paused}
         url={state.urlToPlay}
         pip={false}
+        onPause={() => {
+          interacted();
+          setPaused(true);
+        }}
         muted={false}
         onEnded={endVideo}
         ref={reactPlayerRef}
-        onPlay={onPlay}
+        onPlay={() => {
+          onPlay();
+          if (paused) {
+            setPaused(false);
+          }
+        }}
         onProgress={({ playedSeconds }) => {
           if (
             isIntro &&
@@ -438,6 +452,9 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
             const showCaptions = localStorageMode === "showing";
             track["mode"] = showCaptions ? "showing" : "hidden";
           }
+        }}
+        onSeek={() => {
+          interacted();
         }}
         loop={false}
         width="fit-content"

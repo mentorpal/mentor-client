@@ -12,17 +12,18 @@ export interface ControlsDisableHelper {
   interacted: () => void;
 }
 
-export function controlsDisableHelper(): ControlsDisableHelper {
-  const [enabled, setEnabled] = useState(false);
+export function controlsDisableHelper(paused: boolean): ControlsDisableHelper {
+  const [enabled, setEnabled] = useState(true);
   const [lastInteractionTime, setLastInteractionTime] = useState(Date.now());
 
   useInterval(
     () => {
-      if (Date.now() - lastInteractionTime > 3000) {
+      if (Date.now() - lastInteractionTime > 10000) {
+        //10 seconds
         setEnabled(false);
       }
     },
-    enabled ? 1000 : null
+    enabled && !paused ? 1000 : null
   );
 
   function interacted() {
