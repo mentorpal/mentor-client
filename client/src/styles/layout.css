@@ -102,9 +102,9 @@ body {
 
 .spinner {
   position: absolute;
-  left: 50%;
-  bottom: 15px;
-  transform: translateX(-50%);
+  top: 25%;
+  left: 25%;
+  transform: translate(-50%, -50%);
 }
 
 .message-notice {

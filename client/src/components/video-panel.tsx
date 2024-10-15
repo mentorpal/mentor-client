@@ -78,6 +78,7 @@ function VideoPanel(): JSX.Element {
               key={`${id}-${i}`}
               style={{ display: "inline-block", position: "relative" }}
             >
+              <LoadingSpinner mentor={id} />
               <div
                 style={{ position: "absolute", right: 0, top: 5, zIndex: 2 }}
               >
@@ -102,7 +103,6 @@ function VideoPanel(): JSX.Element {
                 onClick={() => onClick(id)}
               >
                 <VideoThumbnail mentor={id} />
-                <LoadingSpinner mentor={id} />
                 <MessageStatus mentor={id} />
               </button>
             </div>
