@@ -65,10 +65,10 @@ describe("Mentor panel", () => {
     cy.get("[data-cy=input-send]").trigger("mouseover").click();
     cy.wait("@carlos-query");
     // Despite recieving a response to carlos, we are still waiting for all responses before continuing
-    cy.get("[data-cy=video-thumbnail-carlos]").within(($within) => {
+    cy.get("[data-cy=video-thumbnail-container-carlos]").within(($within) => {
       cy.get("[data-cy=loading-answer-spinner]").should("exist");
     });
-    cy.get("[data-cy=video-thumbnail-clint]").within(($within) => {
+    cy.get("[data-cy=video-thumbnail-container-clint]").within(($within) => {
       cy.get("[data-cy=loading-answer-spinner]").should("exist");
     });
   });

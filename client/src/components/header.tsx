@@ -6,7 +6,7 @@ The full terms of this copyright and license should always be found in the root 
 */
 import React from "react";
 import { useSelector } from "react-redux";
-import { Typography } from "@mui/material";
+import { Tooltip, Typography } from "@mui/material";
 import { State } from "types";
 import IconButton from "@mui/material/IconButton";
 import HomeIcon from "@mui/icons-material/Home";
@@ -20,6 +20,7 @@ import {
   REGISTRATION_ID_KEY,
   SESSION_URL_PARAM_KEY,
 } from "local-constants";
+import { useWithWindowSize } from "use-with-window-size";
 
 interface HeaderMentorData {
   _id: string;
@@ -42,7 +43,7 @@ function Header(): JSX.Element {
       title: m.mentor.title,
     };
   });
-
+  const { isMobile } = useWithWindowSize();
   const styleHeaderLogo = useSelector<State, string>(
     (state) => state.config.styleHeaderLogo?.trim() || ""
   );
@@ -79,7 +80,10 @@ function Header(): JSX.Element {
   };
 
   const MentorNameTitle = `${mentor.name}: ${mentor.title}`;
-
+  const mentorTitleTooLong = isMobile && MentorNameTitle.length > 80;
+  const displayMentorNameTitle = mentorTitleTooLong
+    ? MentorNameTitle.slice(0, 80).concat("...")
+    : MentorNameTitle;
   return (
     <div
       data-cy="header"
@@ -138,9 +142,11 @@ function Header(): JSX.Element {
           )}
         </div>
       </div>
-      <div className="header-mentor-info">
-        <Typography>{MentorNameTitle}</Typography>
-      </div>
+      <Tooltip title={mentorTitleTooLong ? MentorNameTitle : ""}>
+        <div className="header-mentor-info">
+          <Typography>{displayMentorNameTitle}</Typography>
+        </div>
+      </Tooltip>
       <div>
         <Disclaimer />
       </div>

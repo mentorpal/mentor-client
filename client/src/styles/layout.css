@@ -102,9 +102,9 @@ body {
 
 .spinner {
   position: absolute;
-  left: 50%;
-  bottom: 15px;
-  transform: translateX(-50%);
+  top: 25%;
+  left: 25%;
+  transform: translate(-50%, -50%);
 }
 
 .message-notice {
@@ -287,6 +287,7 @@ body {
 .header-mentor-info > p {
   font-size: 1.2rem !important;
 }
+
 /* width */
 ::-webkit-scrollbar {
   width: 15px;
@@ -342,4 +343,12 @@ textarea:-moz-placeholder {
   box-shadow: 0px -9px 12px 0px rgba(0, 0, 0, 0.15) !important;
   background-color: #fff !important;
   border-radius: 0px;
+}
+
+@media only screen and (max-width: 800px) {
+  .header-mentor-info > p {
+    font-weight: bold;
+    font-size: 0.8rem !important;
+    line-height: 1rem !important;
+  }
 }

@@ -9,11 +9,12 @@ import { useEffect, useState } from "react";
 interface WindowSize {
   width: number;
   height: number;
+  isMobile: boolean;
 }
 
 export function useWithWindowSize(): WindowSize {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
-
+  const isMobile = windowSize.width < 768;
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
@@ -30,5 +31,6 @@ export function useWithWindowSize(): WindowSize {
   return {
     width: windowSize.width,
     height: windowSize.height,
+    isMobile,
   };
 }
