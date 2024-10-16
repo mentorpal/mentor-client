@@ -80,9 +80,9 @@ function Header(): JSX.Element {
   };
 
   const MentorNameTitle = `${mentor.name}: ${mentor.title}`;
-  const mentorTitleTooLong = isMobile && MentorNameTitle.length > 80;
+  const mentorTitleTooLong = isMobile && MentorNameTitle.length > 60;
   const displayMentorNameTitle = mentorTitleTooLong
-    ? MentorNameTitle.slice(0, 80).concat("...")
+    ? MentorNameTitle.slice(0, 60).concat("...")
     : MentorNameTitle;
   return (
     <div
