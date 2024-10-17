@@ -4,7 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Tooltip, Typography } from "@mui/material";
 import { State } from "types";
@@ -43,6 +43,7 @@ function Header(): JSX.Element {
       title: m.mentor.title,
     };
   });
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const { isMobile } = useWithWindowSize();
   const styleHeaderLogo = useSelector<State, string>(
     (state) => state.config.styleHeaderLogo?.trim() || ""
@@ -142,7 +143,19 @@ function Header(): JSX.Element {
           )}
         </div>
       </div>
-      <Tooltip title={mentorTitleTooLong ? MentorNameTitle : ""}>
+      <Tooltip
+        open={isTooltipOpen}
+        onClick={() => {
+          setIsTooltipOpen(!isTooltipOpen);
+        }}
+        onMouseEnter={() => {
+          setIsTooltipOpen(true);
+        }}
+        onMouseLeave={() => {
+          setIsTooltipOpen(false);
+        }}
+        title={mentorTitleTooLong ? MentorNameTitle : ""}
+      >
         <div className="header-mentor-info">
           <Typography>{displayMentorNameTitle}</Typography>
         </div>
