@@ -62,6 +62,7 @@ import {
   EMAIL_URL_PARAM_KEY,
   EVENTS_KEY,
   LS_EMAIL_KEY,
+  LS_LEFT_HOME_PAGE,
   LS_USER_ID_KEY,
   LS_X_API_EMAIL_KEY,
   POST_SURVEY_TIME_KEY,
@@ -429,6 +430,11 @@ function IndexPage(props: {
   ]);
 
   useEffect(() => {
+    const leftHomePageData = getParamURL(LS_LEFT_HOME_PAGE);
+    if (leftHomePageData) {
+      setLocalStorage(LS_LEFT_HOME_PAGE, leftHomePageData);
+      removeQueryParam(LS_LEFT_HOME_PAGE);
+    }
     const chatSessionId = uuid();
     dispatch(setChatSessionId(chatSessionId));
 
@@ -485,7 +491,6 @@ function IndexPage(props: {
     ) {
       return;
     }
-
     const findMentor = async () => {
       // check local store=
       if (!mentor) {

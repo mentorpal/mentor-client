@@ -146,4 +146,28 @@ describe("Display Mentor Grid", () => {
     );
     cy.get("[data-cy=username-modal-container]").should("not.exist");
   });
+
+  it("leftHomePage data is pulled from url params", () => {
+    mockDefaultSetup(cy, {
+      config: {
+        displayGuestPrompt: false,
+      },
+    });
+    cy.visit(
+      `/?mentor=carlos&leftHomePage=${encodeURIComponent(
+        JSON.stringify({
+          targetMentors: ["carlos"],
+          time: new Date().toISOString(),
+        })
+      )}`
+    );
+    cy.wait(1000);
+    cy.window().then((win) => {
+      const leftHomePageData = JSON.parse(
+        win.localStorage.getItem("leftHomePage")
+      );
+      console.log("leftHomePageData", leftHomePageData);
+      cy.wrap(leftHomePageData.targetMentors).should("deep.equal", ["carlos"]);
+    });
+  });
 });

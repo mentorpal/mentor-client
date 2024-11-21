@@ -378,3 +378,14 @@ export function updateLocalStorageUserData(
     JSON.stringify({ ...startingData, ...updatedObject })
   );
 }
+
+export function appendHomePageData(targetMentors: string[], url: string) {
+  const time = new Date().toISOString();
+  const data = {
+    targetMentors,
+    time,
+  };
+  const urlParams = new URLSearchParams(url);
+  urlParams.set("leftHomePage", JSON.stringify(data));
+  return `${url}?${urlParams.toString()}`;
+}
