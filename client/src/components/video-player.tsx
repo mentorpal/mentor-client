@@ -364,15 +364,12 @@ export default function VideoPlayer(args: VideoPlayerParams): JSX.Element {
       data-cy={"answer-video-player-wrapper"}
       style={{ width: "100%", height: "auto", justifyContent: "center" }}
       onMouseOver={() => {
-        console.log("mouse over");
         interacted();
       }}
       onClick={() => {
-        console.log("clicked");
         interacted();
       }}
       onMouseMove={() => {
-        console.log("mouse move");
         interacted();
       }}
     >

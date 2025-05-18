@@ -7,7 +7,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { ArrowDropDown, History } from "@mui/icons-material";
-import { State, TopicQuestions } from "types";
+import { LoadStatus, State, TopicQuestions } from "types";
 import "styles/layout.css";
 import { useSelector } from "react-redux";
 import { Button, DialogActions, Paper, Tab, Tabs } from "@mui/material";
@@ -54,7 +54,9 @@ function TopicTabs(props: {
   const firstTopic = useSelector<State, string>((state) => {
     return state.mentorsById[curMentor]?.mentor?.topicQuestions[0]?.topic || "";
   });
-
+  const topicQuestionsLoadStatus = useSelector<State, string>(
+    (s) => s.topicQuestionsLoadStatus
+  );
   const onChange = (
     e: React.SyntheticEvent<Element, Event>,
     newValue: number
@@ -134,7 +136,14 @@ function TopicTabs(props: {
           />
         )}
         <Tab
-          label={curTopic && curTopic !== "History" ? curTopic : firstTopic}
+          label={
+            topicQuestionsLoadStatus === LoadStatus.NONE
+              ? "Loading topics..."
+              : curTopic && curTopic !== "History"
+              ? curTopic
+              : firstTopic
+          }
+          disabled={topicQuestionsLoadStatus === LoadStatus.NONE}
           data-cy="topic-tab"
           onClick={onClickOpen}
           className="topic-tab"
@@ -230,6 +239,31 @@ function TopicTabs(props: {
               />
             ) : null
           )}
+          {topicQuestionsLoadStatus === LoadStatus.NONE ? (
+            <>
+              {/* Hack to make the default selected tab (tab 0) not be visibly selected while loading */}
+              <Tab
+                style={{
+                  display: "none",
+                }}
+              />
+              <Tab
+                label="Loading topics..."
+                disabled
+                className="loading-topic-tab topic-tab"
+              />
+              <Tab
+                label="Loading topics..."
+                disabled
+                className="loading-topic-tab topic-tab"
+              />
+              <Tab
+                label="Loading topics..."
+                disabled
+                className="loading-topic-tab topic-tab"
+              />
+            </>
+          ) : null}
         </Tabs>
       </Paper>
     </div>

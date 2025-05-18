@@ -29,7 +29,6 @@ export function controlsDisableHelper(
   );
 
   function interacted() {
-    console.log("interacted");
     setLastInteractionTime(Date.now());
     if (!enabled) {
       setEnabled(true);

@@ -30,7 +30,7 @@ function Topics(args: {
     if (!state.curMentor) {
       return [];
     }
-    return state.mentorsById[state.curMentor]?.topic_questions || [];
+    return state.mentorsById[state.curMentor]?.mentor.topicQuestions || [];
   });
 
   const mentorType = useSelector<State, MentorType>((state) => {

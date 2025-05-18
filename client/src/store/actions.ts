@@ -69,6 +69,8 @@ export const FEEDBACK_SEND_SUCCEEDED = "FEEDBACK_SEND_SUCCEEDED"; // mentor vide
 export const MENTOR_ANSWER_PLAYBACK_STARTED = "MENTOR_ANSWER_PLAYBACK_STARTED";
 export const MENTORS_LOAD_REQUESTED = "MENTORS_LOAD_REQUESTED";
 export const MENTORS_LOAD_RESULT = "MENTORS_LOAD_RESULT";
+export const MENTORS_TOPIC_QUESTIONS_LOAD_RESULT =
+  "MENTORS_TOPIC_QUESTIONS_LOAD_RESULT";
 export const MENTOR_FAVED = "MENTOR_FAVED"; // mentor was favorited
 export const MENTOR_NEXT = "MENTOR_NEXT"; // set next mentor to play after current
 export const MENTOR_SELECTED = "MENTOR_SELECTED"; // mentor video was selected
@@ -178,6 +180,11 @@ export interface MentorsLoadRequestedAction {
   payload: MentorsLoadRequest;
 }
 
+export interface MentorsTopicQuestionsLoadResultAction {
+  type: typeof MENTORS_TOPIC_QUESTIONS_LOAD_RESULT;
+  payload: Record<string, TopicQuestions[]>;
+}
+
 export interface MentorsLoadResultAction {
   type: typeof MENTORS_LOAD_RESULT;
   payload: MentorsLoadResult;
@@ -185,7 +192,8 @@ export interface MentorsLoadResultAction {
 
 export type MentorDataAction =
   | MentorsLoadRequestedAction
-  | MentorsLoadResultAction;
+  | MentorsLoadResultAction
+  | MentorsTopicQuestionsLoadResultAction;
 
 export interface MentorFavedAction {
   type: typeof MENTOR_FAVED;
@@ -406,6 +414,61 @@ export const loadConfig =
     }
   };
 
+function processTopicQuestions(
+  mentor: MentorClientData,
+  config: Config,
+  recommendedQuestions: string[]
+) {
+  // START TOPIC QUESTIONS
+  let topicQuestions: TopicQuestions[] = [];
+  topicQuestions.push(...mentor.topicQuestions);
+  const recommendedTopics = getRecommendedTopics(topicQuestions);
+
+  if (config.minTopicQuestionSize > 0) {
+    const additionalQuestions: string[] = [];
+    for (const tq of topicQuestions) {
+      if (tq.questions.length < config.minTopicQuestionSize) {
+        additionalQuestions.push(...tq.questions);
+      }
+    }
+    topicQuestions = topicQuestions.filter(
+      (tq) => tq.questions.length >= config.minTopicQuestionSize
+    );
+    if (additionalQuestions.length > 0) {
+      topicQuestions.push({
+        topic: "Additional Questions",
+        questions: additionalQuestions,
+      });
+    }
+  }
+
+  // RECOMMENDED QUESTIONS AND TOPICS
+  if (recommendedTopics && recommendedQuestions.length > 0) {
+    const recommendedQuestionsTopics = mergeRecommendedTopicsQuestions(
+      recommendedTopics.questions,
+      recommendedQuestions
+    );
+    topicQuestions.unshift(recommendedQuestionsTopics);
+  }
+
+  // RECOMMENDED QUESTIONS ONLY
+  if (recommendedQuestions.length > 0 && !recommendedTopics) {
+    topicQuestions.unshift({
+      topic: "Recommended",
+      questions: recommendedQuestions,
+    });
+  }
+
+  // RECOMMENDED TOPICS ONLY
+  if (recommendedTopics && recommendedQuestions.length === 0) {
+    // add recommended topics with questions to mentor topics
+    topicQuestions.unshift(recommendedTopics);
+  }
+
+  topicQuestions.push({ topic: "History", questions: [] });
+  return topicQuestions;
+}
+
 export const loadMentors: ActionCreator<
   ThunkAction<
     Promise<void>, // The type of the last action to be dispatched - will always be promise<T> for async actions
@@ -463,7 +526,8 @@ export const loadMentors: ActionCreator<
         const mentor: MentorClientData = await fetchMentor(
           mentorId,
           curState.authUserData.accessToken,
-          subject
+          subject,
+          true
         );
         const canViewMentor =
           mentor.isPublicApproved ||
@@ -480,53 +544,10 @@ export const loadMentors: ActionCreator<
               : MentorLoadFailedReasons.NOT_AUTHORIZED;
           return;
         }
-        let topicQuestions: TopicQuestions[] = [];
-        const recommendedQuestions = [...curState.recommendedQuestions];
-        topicQuestions.push(...mentor.topicQuestions);
-        const recommendedTopics = getRecommendedTopics(topicQuestions);
 
-        if (config.minTopicQuestionSize > 0) {
-          const additionalQuestions: string[] = [];
-          for (const tq of topicQuestions) {
-            if (tq.questions.length < config.minTopicQuestionSize) {
-              additionalQuestions.push(...tq.questions);
-            }
-          }
-          topicQuestions = topicQuestions.filter(
-            (tq) => tq.questions.length >= config.minTopicQuestionSize
-          );
-          if (additionalQuestions.length > 0) {
-            topicQuestions.push({
-              topic: "Additional Questions",
-              questions: additionalQuestions,
-            });
-          }
-        }
-
-        // RECOMMENDED QUESTIONS AND TOPICS
-        if (recommendedTopics && recommendedQuestions.length > 0) {
-          const recommendedQuestionsTopics = mergeRecommendedTopicsQuestions(
-            recommendedTopics.questions,
-            recommendedQuestions
-          );
-          topicQuestions.unshift(recommendedQuestionsTopics);
-        }
-
-        // RECOMMENDED QUESTIONS ONLY
-        if (recommendedQuestions.length > 0 && !recommendedTopics) {
-          topicQuestions.unshift({
-            topic: "Recommended",
-            questions: recommendedQuestions,
-          });
-        }
-
-        // RECOMMENDED TOPICS ONLY
-        if (recommendedTopics && recommendedQuestions.length === 0) {
-          // add recommended topics with questions to mentor topics
-          topicQuestions.unshift(recommendedTopics);
-        }
-
-        topicQuestions.push({ topic: "History", questions: [] });
+        const topicQuestions = processTopicQuestions(mentor, config, [
+          ...curState.recommendedQuestions,
+        ]);
 
         let introUtterance;
         // replace intro with different video (for first mentor in panel only)
@@ -561,7 +582,6 @@ export const loadMentors: ActionCreator<
         const mentorData: MentorState = {
           mentor: mentor,
           isDirty: mentor.isDirty,
-          topic_questions: topicQuestions,
           status: MentorQuestionStatus.READY, // move this out of mentor data
           answer_id: introVideo || introUtterance?._id,
           answer_missing: false,
@@ -586,7 +606,7 @@ export const loadMentors: ActionCreator<
     if (mentorLoadResult.firstActiveMentorId) {
       const tqs =
         mentorLoadResult.mentorsById[mentorLoadResult.firstActiveMentorId]?.data
-          ?.topic_questions;
+          ?.mentor.topicQuestions;
       if (tqs && tqs.length > 0) {
         const recommendedQuestions = getState().recommendedQuestions;
         let mentorType: string | undefined = "";
@@ -608,10 +628,43 @@ export const loadMentors: ActionCreator<
         type: MENTORS_LOAD_RESULT,
         payload: mentorLoadResult,
       });
+      loadMentorsTopicQuestions(mentors, config, curState, dispatch, subject);
     }
 
     return;
   };
+
+async function loadMentorsTopicQuestions(
+  mentors: string[],
+  config: Config,
+  curState: State,
+  dispatch: ThunkDispatch<State, void, AnyAction>,
+  subject?: string
+) {
+  const mentorToTopicsQuestionsMap: Record<string, TopicQuestions[]> = {};
+
+  const mentorRequests = mentors.map(async (mentorId, idx) => {
+    try {
+      const mentor: MentorClientData = await fetchMentor(
+        mentorId,
+        curState.authUserData.accessToken,
+        subject,
+        false
+      );
+      const topicQuestions = processTopicQuestions(mentor, config, [
+        ...curState.recommendedQuestions,
+      ]);
+      mentorToTopicsQuestionsMap[mentorId] = topicQuestions;
+    } catch (mentorErr) {
+      console.error(mentorErr);
+    }
+  });
+  await Promise.all(mentorRequests);
+  dispatch<MentorsTopicQuestionsLoadResultAction>({
+    type: MENTORS_TOPIC_QUESTIONS_LOAD_RESULT,
+    payload: mentorToTopicsQuestionsMap,
+  });
+}
 
 function toXapiResultExt(mentorData: MentorState, state: State): XapiResultExt {
   const data = getLocalStorageUserData();

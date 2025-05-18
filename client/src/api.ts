@@ -130,15 +130,17 @@ export async function fetchMentorByAccessToken(
 export async function fetchMentor(
   mentorId: string,
   accessToken: string,
-  subjectId?: string
+  subjectId?: string,
+  // Topic Questins take a long time to load, so we can ignore them if we don't need them
+  ignoreTopicQuestions?: boolean
 ): Promise<MentorClientData> {
   const leftHomePageData = getLocalStorage(LS_LEFT_HOME_PAGE);
   const gqlRes = await axios.post<GraphQLResponse<MentorQueryDataGQL>>(
     GATSBY_GRAPHQL_ENDPOINT,
     {
       query: `
-      query FetchMentor($mentor: ID!, $subject: ID, $leftHomePageData: String!) {
-        mentorClientData(mentor: $mentor, subject: $subject, leftHomePageData: $leftHomePageData) {
+      query FetchMentor($mentor: ID!, $subject: ID, $leftHomePageData: String!, $ignoreTopicQuestions: Boolean) {
+        mentorClientData(mentor: $mentor, subject: $subject, leftHomePageData: $leftHomePageData, ignoreTopicQuestions: $ignoreTopicQuestions) {
           _id
           name
           title
@@ -182,6 +184,7 @@ export async function fetchMentor(
         mentor: mentorId,
         subject: subjectId,
         leftHomePageData: leftHomePageData,
+        ignoreTopicQuestions: ignoreTopicQuestions,
       },
     },
     {
