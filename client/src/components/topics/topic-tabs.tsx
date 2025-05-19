@@ -247,21 +247,14 @@ function TopicTabs(props: {
                   display: "none",
                 }}
               />
-              <Tab
-                label="Loading topics..."
-                disabled
-                className="loading-topic-tab topic-tab"
-              />
-              <Tab
-                label="Loading topics..."
-                disabled
-                className="loading-topic-tab topic-tab"
-              />
-              <Tab
-                label="Loading topics..."
-                disabled
-                className="loading-topic-tab topic-tab"
-              />
+              {[...Array(3)].map((_, index) => (
+                <Tab
+                  key={`loading-tab-${index}`}
+                  label="Loading topics..."
+                  disabled
+                  className="loading-topic-tab topic-tab"
+                />
+              ))}
             </>
           ) : null}
         </Tabs>
