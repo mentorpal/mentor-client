@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Paper } from "@mui/material";
 import { normalizeString } from "utils";
 import { selectTopic } from "store/actions";
-import { MentorType, State, TopicQuestions } from "types";
+import { LoadStatus, MentorType, State, TopicQuestions } from "types";
 import withLocation from "wrap-with-location";
 
 import "styles/layout.css";
@@ -41,6 +41,9 @@ function Topics(args: {
       state.mentorsById[state.curMentor]?.mentor?.mentorType || MentorType.VIDEO
     );
   });
+  const topicQuestionsLoadStatus = useSelector<State, LoadStatus>(
+    (state) => state.topicQuestionsLoadStatus
+  );
 
   const existRecommendedQuestions =
     topicQuestions.filter((q) => {
@@ -53,12 +56,15 @@ function Topics(args: {
   );
 
   useEffect(() => {
+    if (topicQuestionsLoadStatus !== LoadStatus.LOADED) {
+      return;
+    }
     mentorType === "VIDEO"
       ? existRecommendedQuestions
         ? dispatch(selectTopic("Recommended"))
         : dispatch(selectTopic("History"))
       : null;
-  }, []);
+  }, [topicQuestionsLoadStatus]);
 
   async function onTopicSelected(topic: string) {
     if (curTopic === topic) {

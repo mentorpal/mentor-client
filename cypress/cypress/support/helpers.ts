@@ -45,6 +45,7 @@ interface StaticResponse {
 interface MockGraphQLQuery {
   query: string;
   data: any | any[];
+  variablesMatch?: Record<string, any>;
 }
 
 export function visitAsCustomWithDefaultSetup(cy, url = "/", customParams) {
@@ -120,14 +121,24 @@ export function cyInterceptGraphQL(cy, mocks: MockGraphQLQuery[]): void {
       if (
         queryBody.match(new RegExp(`^(mutation|query) ${mock.query}[{(\\s]`))
       ) {
+        if (mock.variablesMatch) {
+          const variables = body.variables || {};
+          console.log(variables);
+          console.log(mock.variablesMatch);
+          const matches = Object.entries(mock.variablesMatch).every(
+            ([key, value]) => variables[key] === value
+          );
+          if (!matches) continue;
+        }
+
         const data = Array.isArray(mock.data) ? mock.data : [mock.data];
         const val = data[Math.min(queryCalls[mock.query], data.length - 1)];
-        let body = val;
+        const responseBody = val;
         req.alias = mock.query;
         req.reply(
           staticResponse({
             body: {
-              data: body,
+              data: responseBody,
               errors: null,
             },
           })
@@ -139,10 +150,15 @@ export function cyInterceptGraphQL(cy, mocks: MockGraphQLQuery[]): void {
   });
 }
 
-export function cyMockGQL(query: string, data: any | any[]): MockGraphQLQuery {
+export function cyMockGQL(
+  query: string,
+  data: any | any[],
+  variablesMatch?: Record<string, any>
+): MockGraphQLQuery {
   return {
     query,
     data,
+    variablesMatch,
   };
 }
 export enum DisplaySurveyPopupCondition {
@@ -198,7 +214,7 @@ export function addGuestParams(query = {}, guestName = "guest") {
   };
 }
 
-export function cyMockMentorData(data: any[]) {
+export function cyMockMentorData(data: any[]): MockGraphQLQuery[] {
   let mentorList = [];
   if (Array.isArray(data)) {
     data.forEach((mentor) => {
@@ -207,7 +223,9 @@ export function cyMockMentorData(data: any[]) {
   } else {
     mentorList.push({ mentorClientData: data });
   }
-  return cyMockGQL("FetchMentor", mentorList);
+  return mentorList.map((mentor) =>
+    cyMockGQL("FetchMentor", mentor, { mentor: mentor.mentorClientData._id })
+  );
 }
 
 export function cyMockConfig(config: Partial<Config>) {
@@ -309,7 +327,7 @@ export function mockDefaultSetup(
     }),
     cyMockConfig(config),
     // cyMockTokenData(tokenData),
-    cyMockMentorData(mentorData),
+    ...cyMockMentorData(mentorData),
     ...gqlQueries,
     // defaults
     cyMockGQL("OrgCheckPermission", {
