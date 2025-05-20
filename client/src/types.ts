@@ -238,7 +238,6 @@ export interface TopicQuestions {
 
 export interface MentorState {
   mentor: MentorClientData;
-  topic_questions: TopicQuestions[];
   status: MentorQuestionStatus;
   answerDuration: number;
 
@@ -310,6 +309,7 @@ export interface State {
   mentorsById: Record<string, MentorState>;
   mentorsInitialLoadStatus: LoadStatus;
   mentorAnswersLoadStatus: LoadStatus;
+  topicQuestionsLoadStatus: LoadStatus;
   mentorNext: string; // id of the next mentor to speak after the current finishes
   questionsAsked: string[];
   recommendedQuestions: string[];

@@ -77,7 +77,7 @@ describe("Topics list", () => {
     });
   });
 
-  it("has default 'recommended' topic (web - sinlge mentor - one topic) ", () => {
+  it("has default 'recommended' topic (web - single mentor - one topic) ", () => {
     mockDefaultSetup(cy, {
       config: { mentorsDefault: ["clint"] },
       mentorData: [clint],

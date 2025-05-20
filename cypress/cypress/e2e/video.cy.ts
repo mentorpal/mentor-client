@@ -283,7 +283,11 @@ describe("Video Mentor", () => {
 
     cy.visit("/");
 
-    cy.get("[data-cy=header]").should("have.attr", "data-mentor", "carlos");
+    cy.get("[data-cy=header]").should(
+      "have.attr",
+      "data-mentor",
+      "carlos_subject_selected"
+    );
     cy.get("[data-cy=header]").contains("Carlos Rios: Marine Logistician");
 
     cy.get("[data-cy=video-container").within(($hc) => {

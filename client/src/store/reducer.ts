@@ -56,6 +56,8 @@ import {
   UserDataUpdateAction,
   USER_DATA_FINISH_LOADING,
   USER_DATA_UPDATED,
+  MentorsTopicQuestionsLoadResultAction,
+  MENTORS_TOPIC_QUESTIONS_LOAD_RESULT,
 } from "./actions";
 import {
   MentorState,
@@ -154,6 +156,7 @@ export const initialState: State = {
     referrer: "",
     events: [],
   },
+  topicQuestionsLoadStatus: LoadStatus.NONE,
 };
 
 function mentorSelected(state: State, action: MentorSelectedAction): State {
@@ -396,6 +399,27 @@ function onMentorLoadResults(
     ...stateCopy,
     mentorsInitialLoadStatus: LoadStatus.LOADED,
     mentorAnswersLoadStatus: LoadStatus.LOADED,
+  };
+}
+
+function onMentorsTopicQuestionsLoadResult(
+  state: State,
+  action: MentorsTopicQuestionsLoadResultAction
+): State {
+  const mentorToTopicsQuestionsMap = action.payload;
+  const stateCopy: State = JSON.parse(JSON.stringify(state));
+  for (const mentorId of Object.keys(mentorToTopicsQuestionsMap)) {
+    stateCopy.mentorsById[mentorId] = {
+      ...stateCopy.mentorsById[mentorId],
+      mentor: {
+        ...stateCopy.mentorsById[mentorId].mentor,
+        topicQuestions: mentorToTopicsQuestionsMap[mentorId],
+      },
+    };
+  }
+  return {
+    ...stateCopy,
+    topicQuestionsLoadStatus: LoadStatus.LOADED,
   };
 }
 
@@ -653,11 +677,13 @@ function onQuestionAnswered(
       status: MentorQuestionStatus.READY,
     };
 
-    const history = mentor.topic_questions.length - 1;
+    const history = mentor.mentor.topicQuestions.length - 1;
     if (
-      !mentor.topic_questions[history].questions.includes(response.question)
+      !mentor.mentor.topicQuestions[history].questions.includes(
+        response.question
+      )
     ) {
-      mentor.topic_questions[history].questions.push(response.question);
+      mentor.mentor.topicQuestions[history].questions.push(response.question);
     }
 
     stateCopy = {
@@ -837,6 +863,8 @@ export default function reducer(
       return onMentorsLoadRequested(state, action);
     case MENTORS_LOAD_RESULT:
       return onMentorLoadResults(state, action);
+    case MENTORS_TOPIC_QUESTIONS_LOAD_RESULT:
+      return onMentorsTopicQuestionsLoadResult(state, action);
     case MENTOR_SELECTED:
       return mentorSelected(state, action);
     case MENTOR_FAVED:
