@@ -4,7 +4,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { v4 as uuid } from "uuid";
 import { CircularProgress } from "@mui/material";
@@ -170,6 +170,8 @@ function IndexPage(props: {
   const mentorCount = useSelector<State, number>((state) => {
     return Object.getOwnPropertyNames(state.mentorsById).length;
   });
+
+  const disableHeaderParam = useMemo(() => getParamURL("disableHeader"), []);
 
   const mentorType = useSelector<State, MentorType>((state) => {
     if (!state.curMentor) {
@@ -590,7 +592,7 @@ function IndexPage(props: {
             />
           ) : undefined}
           <ThemeProvider theme={brandedTheme}>
-            <Header />
+            {disableHeaderParam ? null : <Header />}
             {showEmailPopup ? (
               <UsernameModal
                 setOpen={setUsernameModalOpen}

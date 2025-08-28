@@ -301,6 +301,9 @@ export function emailFromUserId(userId: string): string {
 }
 
 export const getParamURL = (param: string): string => {
+  if (typeof window === "undefined") {
+    return "";
+  }
   const paramFromURL = new URL(location.href).searchParams.get(param);
   if (paramFromURL) {
     return paramFromURL;
