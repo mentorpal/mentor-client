@@ -6,7 +6,6 @@ phases:
     commands:
       - NODE_ENV=dev npm ci
       - (cd client && npm ci)
-      - npm run build
   pre_build:
     on-failure: ABORT # or CONTINUE
     commands:
