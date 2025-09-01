@@ -346,6 +346,18 @@ export function visitAsGuestWithDefaultSetup(cy, url = "/") {
   cy.visit(url, { qs: addGuestParams() });
 }
 
+export function assertSurveyPopupDataValue(
+  key: string,
+  comparater: string,
+  value: string
+) {
+  cy.window().then((win) => {
+    const surveyPopupData = win.localStorage.getItem("survey-popup-data");
+    const data = JSON.parse(surveyPopupData);
+    cy.wrap(data[key]).should(comparater, value);
+  });
+}
+
 export function assertLocalStorageValue(
   key: string,
   comparater: string,

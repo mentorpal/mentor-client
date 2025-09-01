@@ -42,7 +42,6 @@ import {
   getUserIdFromURL,
   LocalStorageUserData,
   removeQueryParam,
-  resetTimeSpentOnPage,
   setLocalStorage,
   updateLocalStorageUserData,
   validatedEmail,
@@ -74,6 +73,7 @@ import {
 import UsernameModal from "components/username-modal";
 import { BaseDialog } from "components/base-dialog";
 import { useWithOrgPerms } from "hooks/use-with-org-perms";
+import { resetTimeSpentOnPage } from "components/survey-dialog";
 
 const useStyles = makeStyles({ name: { IndexPage } })(() => ({
   flexRoot: {
