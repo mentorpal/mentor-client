@@ -210,16 +210,6 @@ export function SurveyDialog({
       setShowSurveyPopup(true);
       setPollingTimer(false);
     }
-    const lastUpdateEpoch = popupData[LAST_UPDATE_KEY]
-      ? Number(popupData[LAST_UPDATE_KEY])
-      : 0;
-    if (
-      lastUpdateEpoch &&
-      currentEpoch - lastUpdateEpoch <= TIMER_UPDATE_INTERVAL_MS * 0.3
-    ) {
-      //if atleast 90% of the interval has not passed since last update, then don't update
-      return;
-    }
     setSurveyPopupData({
       [LAST_UPDATE_KEY]: String(currentEpoch),
       [TIME_SPENT_ON_PAGE_KEY]: String(newTimeSpentOnPage),
