@@ -7,14 +7,11 @@ The full terms of this copyright and license should always be found in the root 
 import React, { useEffect, useState } from "react";
 import { Dialog, DialogTitle, DialogContent, Button } from "@mui/material";
 
-import { printLocalStorage } from "utils";
-import {
-  LAST_UPDATE_KEY,
-  POST_SURVEY_TIME_KEY,
-  TIME_SPENT_ON_PAGE_KEY,
-  TIMER_TEXT_KEY,
-  TIMER_UPDATE_INTERVAL_MS,
-} from "../local-constants";
+export const LAST_UPDATE_KEY = "lastupdateepoch";
+export const POST_SURVEY_TIME_KEY = "postsurveytime";
+export const TIME_SPENT_ON_PAGE_KEY = "timespentonpage";
+export const TIMER_TEXT_KEY = "timertext";
+export const TIMER_UPDATE_INTERVAL_MS = 2000;
 
 export function resetTimeSpentOnPage(): void {
   const curTimeSpentOnPage = getSurveyPopupData()[TIME_SPENT_ON_PAGE_KEY];
@@ -289,7 +286,6 @@ export function SurveyDialog({
           <Button
             onClick={() => {
               setShowSurveyPopup(true);
-              printLocalStorage();
             }}
             data-cy="header-survey-popup-btn"
             data-survey-link={surveyLink}
