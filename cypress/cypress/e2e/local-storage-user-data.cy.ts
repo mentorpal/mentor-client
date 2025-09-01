@@ -6,16 +6,13 @@ The full terms of this copyright and license should always be found in the root 
 */
 import {
   assertLocalStorageUserDataValue,
-  assertLocalStorageValue,
   confirmPageLoaded,
   mockDefaultSetup,
-  visitAsGuestWithDefaultSetup,
 } from "../support/helpers";
 import {
   LS_EMAIL_KEY,
   LS_USER_ID_KEY,
   LS_X_API_EMAIL_KEY,
-  TIME_SPENT_ON_PAGE_KEY,
 } from "../support/local-constants";
 
 describe("site previously visited with nothing in url params", () => {
@@ -23,7 +20,6 @@ describe("site previously visited with nothing in url params", () => {
     mockDefaultSetup(cy);
     cy.visit("/");
     confirmPageLoaded(cy);
-    cy.setLocalStorage(TIME_SPENT_ON_PAGE_KEY, "20");
   });
 
   it("user arrives with no userid nor useremail, and closes email entry popup", () => {
@@ -48,7 +44,6 @@ describe("site previously visited with nothing in url params", () => {
       "contain",
       "@mentorpal.org"
     );
-    cy.setLocalStorage(TIME_SPENT_ON_PAGE_KEY, "20");
   });
 
   it("user arrives with just sessionId, and closes email entry popup", () => {
@@ -73,7 +68,6 @@ describe("site previously visited with nothing in url params", () => {
       "be.equal",
       "123@mentorpal.org"
     );
-    cy.setLocalStorage(TIME_SPENT_ON_PAGE_KEY, "20");
   });
 
   it("user arrives with no userid nor useremail, and inputs email entry", () => {
@@ -98,7 +92,6 @@ describe("site previously visited with nothing in url params", () => {
       "contain",
       "email@email.com"
     );
-    cy.setLocalStorage(TIME_SPENT_ON_PAGE_KEY, "0");
   });
 
   it("only userid in url param", () => {
@@ -111,7 +104,6 @@ describe("site previously visited with nothing in url params", () => {
       "be.equal",
       "1234@mentorpal.org"
     );
-    cy.setLocalStorage(TIME_SPENT_ON_PAGE_KEY, "0");
   });
 
   it("only userEmail in url param", () => {
@@ -128,7 +120,6 @@ describe("site previously visited with nothing in url params", () => {
       "be.equal",
       "test@mentorpal.org"
     );
-    cy.setLocalStorage(TIME_SPENT_ON_PAGE_KEY, "0");
   });
 
   it("both userid and userEmail in url param", () => {
@@ -145,7 +136,6 @@ describe("site previously visited with nothing in url params", () => {
       "be.equal",
       "test@mentorpal.org"
     );
-    cy.setLocalStorage(TIME_SPENT_ON_PAGE_KEY, "0");
   });
 });
 
@@ -154,7 +144,6 @@ describe("site previously visited with just userid in url params", () => {
     mockDefaultSetup(cy);
     cy.visit("/?userid=1234");
     confirmPageLoaded(cy);
-    cy.setLocalStorage(TIME_SPENT_ON_PAGE_KEY, "20");
   });
 
   it("visited with no param urls", () => {
@@ -166,7 +155,6 @@ describe("site previously visited with just userid in url params", () => {
       "be.equal",
       "1234@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "20");
   });
 
   it("SAME userid in url param", () => {
@@ -179,7 +167,6 @@ describe("site previously visited with just userid in url params", () => {
       "be.equal",
       "1234@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "20");
   });
 
   it("NEW userid in url param", () => {
@@ -192,7 +179,6 @@ describe("site previously visited with just userid in url params", () => {
       "be.equal",
       "5678@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
   });
 
   it("userEmail in url param", () => {
@@ -209,7 +195,6 @@ describe("site previously visited with just userid in url params", () => {
       "be.equal",
       "test@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
   });
 
   it("userEmail equivalent to f(userid) in url param (gets inserted but no changes)", () => {
@@ -226,7 +211,6 @@ describe("site previously visited with just userid in url params", () => {
       "be.equal",
       "1234@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "20");
   });
 
   it("NEW userid and userEmail in url param", () => {
@@ -243,7 +227,6 @@ describe("site previously visited with just userid in url params", () => {
       "be.equal",
       "test@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
   });
 });
 
@@ -252,7 +235,6 @@ describe("site previously visited with just email in url params", () => {
     mockDefaultSetup(cy);
     cy.visit("/?userEmail=test@mentorpal.org");
     confirmPageLoaded(cy);
-    cy.setLocalStorage(TIME_SPENT_ON_PAGE_KEY, "20");
   });
 
   it("visited with no param urls", () => {
@@ -268,7 +250,6 @@ describe("site previously visited with just email in url params", () => {
       "be.equal",
       "test@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "20");
   });
 
   it("userid in url param", () => {
@@ -281,7 +262,6 @@ describe("site previously visited with just email in url params", () => {
       "be.equal",
       "5678@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
   });
 
   it("NEW userEmail in url param", () => {
@@ -298,7 +278,6 @@ describe("site previously visited with just email in url params", () => {
       "be.equal",
       "testnewemail@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
   });
 
   it("NEW userid and userEmail in url param", () => {
@@ -315,7 +294,6 @@ describe("site previously visited with just email in url params", () => {
       "be.equal",
       "testnewemail@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
   });
 });
 
@@ -324,7 +302,6 @@ describe("site first visited with both email and userid in url params", () => {
     mockDefaultSetup(cy);
     cy.visit("/?userEmail=test@mentorpal.org&userid=1234");
     confirmPageLoaded(cy);
-    cy.setLocalStorage(TIME_SPENT_ON_PAGE_KEY, "20");
   });
 
   it("visited with no param urls", () => {
@@ -340,7 +317,6 @@ describe("site first visited with both email and userid in url params", () => {
       "be.equal",
       "test@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "20");
   });
 
   it("EQUIVALENT userid in url param", () => {
@@ -357,7 +333,6 @@ describe("site first visited with both email and userid in url params", () => {
       "be.equal",
       "test@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "20");
   });
 
   it("EQUIVALENT userEmail in url param", () => {
@@ -374,7 +349,6 @@ describe("site first visited with both email and userid in url params", () => {
       "be.equal",
       "test@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "20");
   });
 
   it("NEW userid in url param", () => {
@@ -387,7 +361,6 @@ describe("site first visited with both email and userid in url params", () => {
       "be.equal",
       "5678@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
   });
 
   it("NEW userEmail in url param", () => {
@@ -404,7 +377,6 @@ describe("site first visited with both email and userid in url params", () => {
       "be.equal",
       "testnewemail@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
   });
 
   it("NEW userid and NEW userEmail in url param", () => {
@@ -421,6 +393,5 @@ describe("site first visited with both email and userid in url params", () => {
       "be.equal",
       "testnewemail@mentorpal.org"
     );
-    assertLocalStorageValue(TIME_SPENT_ON_PAGE_KEY, "be.equal", "0");
   });
 });

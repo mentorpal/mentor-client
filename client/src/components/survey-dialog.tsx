@@ -218,7 +218,7 @@ export function SurveyDialog({
       : 0;
     if (
       lastUpdateEpoch &&
-      currentEpoch - lastUpdateEpoch <= TIMER_UPDATE_INTERVAL_MS * 0.6
+      currentEpoch - lastUpdateEpoch <= TIMER_UPDATE_INTERVAL_MS * 0.3
     ) {
       //if atleast 90% of the interval has not passed since last update, then don't update
       return;
