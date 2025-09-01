@@ -184,6 +184,7 @@ export function SurveyDialog({
   }
 
   function pollTimer(): void {
+    const currentEpoch = Date.now();
     const popupData = getSurveyPopupData();
     const timeSpentOnPage = popupData[TIME_SPENT_ON_PAGE_KEY]
       ? Number(popupData[TIME_SPENT_ON_PAGE_KEY])
@@ -193,7 +194,6 @@ export function SurveyDialog({
     const timerDuration = popupData[POST_SURVEY_TIME_KEY]
       ? Number(popupData[POST_SURVEY_TIME_KEY])
       : 0;
-    const currentEpoch = Date.now();
 
     if (
       !popupData[POST_SURVEY_TIME_KEY] ||
