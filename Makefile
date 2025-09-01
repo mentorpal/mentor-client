@@ -84,7 +84,7 @@ test-license: LICENSE LICENSE_HEADER node_modules/license-check-and-add
 .PHONY: test-e2e
 test-e2e:
 	$(TEST_E2E_DOCKER_COMPOSE) up -d
-	$(TEST_E2E_DOCKER_COMPOSE) exec cypress npx cypress run --headed --browser chrome
+	$(TEST_E2E_DOCKER_COMPOSE) exec cypress npx cypress run --headed --browser electron
 
 .PHONY: test-e2e-build
 test-e2e-build:
@@ -92,7 +92,7 @@ test-e2e-build:
 
 .PHONY: test-e2e-exec
 test-e2e-exec:
-	$(TEST_E2E_DOCKER_COMPOSE) exec -T cypress npx cypress run --headed --browser chrome
+	$(TEST_E2E_DOCKER_COMPOSE) exec -T cypress npx cypress run --headed --browser electron
 
 .PHONY: test-e2e-up
 test-e2e-up:
