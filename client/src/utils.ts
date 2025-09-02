@@ -17,7 +17,6 @@ import {
   QUALTRICS_USER_ID_URL_PARAM_KEY,
   REFERRER_KEY,
   REGISTRATION_ID_KEY,
-  TIME_SPENT_ON_PAGE_KEY,
 } from "local-constants";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -286,14 +285,6 @@ export function getLocalStorageUserData(): LocalStorageUserData {
     [REFERRER_KEY]: localReferrer,
     [EVENTS_KEY]: localEvents,
   };
-}
-
-export function resetTimeSpentOnPage(): void {
-  const curTimeSpentOnPage = getLocalStorage(TIME_SPENT_ON_PAGE_KEY);
-  if (!curTimeSpentOnPage) {
-    return;
-  }
-  setLocalStorage(TIME_SPENT_ON_PAGE_KEY, "0");
 }
 
 export function emailFromUserId(userId: string): string {

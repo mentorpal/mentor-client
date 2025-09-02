@@ -5,12 +5,12 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import {
-  assertLocalStorageItemDoesNotExist,
-  assertLocalStorageValue,
   confirmPageLoaded,
   DisplaySurveyPopupCondition,
   mockDefaultSetup,
+  assertSurveyPopupDataValue,
   updateLocalStorageUserData,
+  assertLocalStorageItemDoesNotExist,
 } from "../support/helpers";
 import {
   LS_EMAIL_KEY,
@@ -26,8 +26,9 @@ function checkApproximate(
   range: number = 2
 ) {
   cy.window().then((win) => {
-    const userData = win.localStorage.getItem(key);
-    expect(Number.parseInt(userData)).to.be.closeTo(
+    const userData = win.localStorage.getItem("survey-popup-data");
+    const data = JSON.parse(userData);
+    expect(Number.parseInt(data[key])).to.be.closeTo(
       (TIMER_UPDATE_INTERVAL_MS * value) / 1000,
       range
     );
@@ -47,7 +48,7 @@ describe("Survey Popup Timing Tracker", () => {
     });
     cy.visit("/?userid=123");
     confirmPageLoaded(cy);
-    assertLocalStorageValue(
+    assertSurveyPopupDataValue(
       POST_SURVEY_TIME_KEY,
       "be.equal",
       String((TIMER_UPDATE_INTERVAL_MS / 1000) * 4)
@@ -76,7 +77,7 @@ describe("Survey Popup Timing Tracker", () => {
     });
     cy.visit("/?userid=123");
     confirmPageLoaded(cy);
-    assertLocalStorageValue(
+    assertSurveyPopupDataValue(
       POST_SURVEY_TIME_KEY,
       "be.equal",
       String((TIMER_UPDATE_INTERVAL_MS / 1000) * 4)
@@ -107,7 +108,7 @@ describe("Survey Popup Timing Tracker", () => {
     });
     cy.visit("/?userid=123");
     confirmPageLoaded(cy);
-    assertLocalStorageValue(
+    assertSurveyPopupDataValue(
       POST_SURVEY_TIME_KEY,
       "be.equal",
       String((TIMER_UPDATE_INTERVAL_MS / 1000) * 4)
@@ -138,7 +139,7 @@ describe("Survey Popup Timing Tracker", () => {
     });
     cy.visit("/?userid=123");
     confirmPageLoaded(cy);
-    assertLocalStorageValue(
+    assertSurveyPopupDataValue(
       POST_SURVEY_TIME_KEY,
       "be.equal",
       String((TIMER_UPDATE_INTERVAL_MS / 1000) * 4)
@@ -822,7 +823,7 @@ describe("closing survey popup", () => {
     cy.visit("/?userid=123");
     confirmPageLoaded(cy);
     cy.get("[data-cy=header-survey-popup-btn]").should("exist");
-    assertLocalStorageValue(
+    assertSurveyPopupDataValue(
       POST_SURVEY_TIME_KEY,
       "be.equal",
       String(TIMER_UPDATE_INTERVAL_MS / 1000)
@@ -847,7 +848,7 @@ describe("closing survey popup", () => {
     cy.visit("/?userid=123");
     confirmPageLoaded(cy);
     cy.get("[data-cy=header-survey-popup-btn]").should("exist");
-    assertLocalStorageValue(
+    assertSurveyPopupDataValue(
       POST_SURVEY_TIME_KEY,
       "be.equal",
       String(TIMER_UPDATE_INTERVAL_MS / 1000)
@@ -856,8 +857,7 @@ describe("closing survey popup", () => {
     cy.wait(TIMER_UPDATE_INTERVAL_MS);
     cy.get("[data-cy=survey-dialog]").should("exist");
     cy.get("[data-cy=close-survey-popup-btn]").click();
-    assertLocalStorageItemDoesNotExist(POST_SURVEY_TIME_KEY);
-    assertLocalStorageItemDoesNotExist(TIME_SPENT_ON_PAGE_KEY);
+    assertLocalStorageItemDoesNotExist("survey-popup-data");
   });
 });
 
@@ -877,7 +877,7 @@ describe("opening and closing disclaimer survey popup", () => {
     confirmPageLoaded(cy);
     cy.get("[data-cy=header-disclimer-btn]").click();
     cy.get("[data-cy=header-survey-popup-btn]").click();
-    assertLocalStorageValue(
+    assertSurveyPopupDataValue(
       POST_SURVEY_TIME_KEY,
       "be.equal",
       String((TIMER_UPDATE_INTERVAL_MS / 1000) * 4)

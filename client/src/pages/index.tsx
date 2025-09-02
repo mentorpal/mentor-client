@@ -42,7 +42,6 @@ import {
   getUserIdFromURL,
   LocalStorageUserData,
   removeQueryParam,
-  resetTimeSpentOnPage,
   setLocalStorage,
   updateLocalStorageUserData,
   validatedEmail,
@@ -65,15 +64,18 @@ import {
   LS_LEFT_HOME_PAGE,
   LS_USER_ID_KEY,
   LS_X_API_EMAIL_KEY,
-  POST_SURVEY_TIME_KEY,
   QUALTRICS_USER_ID_URL_PARAM_KEY,
   REFERRER_KEY,
   REGISTRATION_ID_KEY,
-  TIME_SPENT_ON_PAGE_KEY,
 } from "local-constants";
+import {
+  POST_SURVEY_TIME_KEY,
+  TIME_SPENT_ON_PAGE_KEY,
+} from "components/survey-dialog";
 import UsernameModal from "components/username-modal";
 import { BaseDialog } from "components/base-dialog";
 import { useWithOrgPerms } from "hooks/use-with-org-perms";
+import { resetTimeSpentOnPage } from "components/survey-dialog";
 
 const useStyles = makeStyles({ name: { IndexPage } })(() => ({
   flexRoot: {

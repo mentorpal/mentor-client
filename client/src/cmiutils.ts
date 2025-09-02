@@ -15,11 +15,11 @@ import {
   getLocalStorageUserData,
   getRegistrationId,
 } from "utils";
+import { LS_USER_ID_KEY } from "local-constants";
 import {
-  LS_USER_ID_KEY,
   POST_SURVEY_TIME_KEY,
   TIME_SPENT_ON_PAGE_KEY,
-} from "local-constants";
+} from "components/survey-dialog";
 
 export interface CmiParams {
   activityId: string;

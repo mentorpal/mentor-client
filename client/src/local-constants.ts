@@ -21,15 +21,8 @@ export const EVENTS_KEY = "events";
 export const LS_LEFT_HOME_PAGE = "leftHomePage";
 export const ORG_ACCESS_CODE = "orgAccessCode";
 
-// Survey Popup
-export const TIMER_TEXT_KEY = "timertext";
-export const LAST_UPDATE_KEY = "lastupdateepoch";
-export const POST_SURVEY_TIME_KEY = "postsurveytime";
-export const TIME_SPENT_ON_PAGE_KEY = "timespentonpage";
-
 // xAPI
 export const REGISTRATION_ID_KEY = "registrationId";
 
 // Popup Timer
-export const TIMER_UPDATE_INTERVAL_MS = 2000;
 export const SESSION_URL_PARAM_KEY = "sessionId";
