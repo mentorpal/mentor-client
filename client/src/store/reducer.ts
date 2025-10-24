@@ -656,13 +656,13 @@ function onQuestionAnswered(
   // It seems like the answerFeedbackId should be
   // associated to the chat message
   let stateCopy: State = JSON.parse(JSON.stringify(state));
-
   const responses = action.payload;
   for (const response of responses) {
     const mentor: MentorState = {
       ...stateCopy.mentorsById[response.mentor],
       // we need chat messages to live up here
       answer_missing: response.answerMissing,
+      answer_question_id: response.answerQuestionId,
       answer_id: response.answerId,
       answer_text: response.answerText,
       answer_media: response.answerMedia,
