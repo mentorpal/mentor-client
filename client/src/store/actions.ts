@@ -584,6 +584,7 @@ export const loadMentors: ActionCreator<
           isDirty: mentor.isDirty,
           status: MentorQuestionStatus.READY, // move this out of mentor data
           answer_id: introVideo || introUtterance?._id,
+          answer_question_id: "",
           answer_missing: false,
           answer_media: introUtterance?.media || [],
           answer_utterance_type: UtteranceName.INTRO,
@@ -701,6 +702,7 @@ function toXapiResultExt(mentorData: MentorState, state: State): XapiResultExt {
     mentorNext: state.mentorNext,
     mentorTopicDisplayed: state.curTopic,
     questionsAsked: state.questionsAsked,
+    answerQuestionId: mentorData.answer_question_id || "",
     question: state.curQuestion,
     questionSource: state.curQuestionSource,
     questionIndex: currentQuestionIndex(state),
@@ -825,6 +827,7 @@ const getResponseObject = (
   // replace answer with off topic
   const offTopicResponse: QuestionResponse = {
     answerId: offTopicUtterance?._id || "",
+    answerQuestionId: "",
     answerText: offTopicUtterance?.transcript || "",
     answerMedia: offTopicUtterance?.media || [],
     answerClassifier: "",
@@ -843,6 +846,7 @@ const getResponseObject = (
   // regular return
   const response: QuestionResponse = {
     answerId: data.answer_id,
+    answerQuestionId: data.question_id,
     answerText: data.answer_markdown_text,
     answerMedia: answer_media,
     answerClassifier: data.classifier,
@@ -967,6 +971,7 @@ export const sendQuestion =
             );
             const response: QuestionResponse = {
               answerId: offTopicUtterance?._id || "",
+              answerQuestionId: "",
               answerText: offTopicUtterance?.transcript || "",
               answerMedia: offTopicUtterance?.media || [],
               answerClassifier: "",

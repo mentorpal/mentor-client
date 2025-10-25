@@ -105,6 +105,7 @@ interface AnswerMediaClassifier {
 export interface QuestionApiData {
   query: string;
   answer_id: string;
+  question_id: string;
   answer_text: string;
   answer_markdown_text: string;
   answer_media: AnswerMediaClassifier;
@@ -242,6 +243,7 @@ export interface MentorState {
   answerDuration: number;
 
   isDirty: boolean;
+  answer_question_id: string;
   answer_id?: string;
   answer_text?: string;
   answer_media: Media[];
@@ -331,6 +333,7 @@ export interface QuestionInput {
 
 export interface QuestionResponse {
   answerId: string;
+  answerQuestionId: string;
   answerText: string;
   answerMedia: Media[];
   answerMissing: boolean;
@@ -376,6 +379,7 @@ export interface XapiResultExt {
   mentorFaved: string;
   mentorNext: string;
   mentorTopicDisplayed: string;
+  answerQuestionId: string;
   question: string;
   questionIndex: number;
   questionSource: MentorQuestionSource;
