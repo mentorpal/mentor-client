@@ -5,9 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v4
         with:
-          node-version: "18.13"
+          node-version: "26"
       - name: Authenticate with private NPM package
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
       - name: Install
@@ -24,6 +24,8 @@ jobs:
         run: cd client && npm run test:lint
       - name: Client - Run types test
         run: cd client && npm run test:types
+      - name: Client - Build static files
+        run: cd client && npm run build
   test-e2e:
     name: test e2e
     runs-on: ubuntu-latest

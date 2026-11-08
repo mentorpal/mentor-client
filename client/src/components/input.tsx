@@ -89,9 +89,11 @@ function Input(props: { search: { nostt: string } }): JSX.Element {
     useState<boolean>(false);
 
   useEffect(() => {
-    questionInput.source !== "CHAT_LINK"
-      ? setAnimatingInputField(false)
-      : setAnimatingInputField(true);
+    if (questionInput.source !== "CHAT_LINK") {
+      setAnimatingInputField(false);
+    } else {
+      setAnimatingInputField(true);
+    }
   }, [questionInput]);
 
   useEffect(() => {

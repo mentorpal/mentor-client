@@ -1,4 +1,4 @@
-FROM node:18.13 as builder
+FROM node:26-bookworm-slim AS builder
 RUN apt-get update && \
     apt-get install -y \
         libgif-dev \

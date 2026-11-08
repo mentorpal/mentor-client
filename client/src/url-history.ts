@@ -4,33 +4,13 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-module.exports = {
-  pathPrefix: `/chat`,
-  siteMetadata: {
-    title: `Chat`,
-    description: ``,
-  },
-  plugins: [
-    {
-      resolve: `gatsby-plugin-env-variables`,
-      options: {
-        allowlist: [
-          "CMI5_ENDPOINT",
-          "CMI5_FETCH",
-          "MENTOR_API_URL",
-          "MENTOR_VIDEO_URL",
-        ],
-      },
-    },
-    `gatsby-plugin-typescript`,
-    {
-      resolve: "@iostindex/gatsby-plugin-material-ui",
-    },
-    {
-      resolve: "gatsby-plugin-manifest",
-      options: {
-        icon: "src/static/favicon-cf.png",
-      },
-    },
-  ],
-};
+/** Keep React Router's history index, key and user state on legacy URL writes. */
+export function pushUrl(url: URL): void {
+  // Re-applying an existing session/query on Back must not erase Forward.
+  if (url.href === window.location.href) return;
+  window.history.pushState(
+    { ...window.history.state, path: url.href },
+    "",
+    url.href
+  );
+}

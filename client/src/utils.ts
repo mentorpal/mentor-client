@@ -20,7 +20,8 @@ import {
 } from "local-constants";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const _ = require("lodash");
+import _ from "lodash";
+import { pushUrl } from "./url-history";
 
 export function normalizeString(s: string): string {
   return s.replace(/\W+/g, "").normalize().toLowerCase();
@@ -231,7 +232,7 @@ export const shouldDisplayPortrait = (): boolean =>
 export function removeQueryParam(param: string): void {
   const url = new URL(window.location.href);
   url.searchParams.delete(param);
-  window.history.pushState({ path: url.href }, "", url.href);
+  pushUrl(url);
 }
 
 export function getParamUserId(urlOrQueryString: string): string | string[] {

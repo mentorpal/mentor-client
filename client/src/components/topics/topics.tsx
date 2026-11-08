@@ -59,11 +59,11 @@ function Topics(args: {
     if (topicQuestionsLoadStatus !== LoadStatus.LOADED) {
       return;
     }
-    mentorType === "VIDEO"
-      ? existRecommendedQuestions
-        ? dispatch(selectTopic("Recommended"))
-        : dispatch(selectTopic("History"))
-      : null;
+    if (mentorType === "VIDEO") {
+      dispatch(
+        selectTopic(existRecommendedQuestions ? "Recommended" : "History")
+      );
+    }
   }, [topicQuestionsLoadStatus]);
 
   async function onTopicSelected(topic: string) {

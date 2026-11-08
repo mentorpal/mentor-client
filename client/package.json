@@ -1,13 +1,13 @@
 {
   "name": "mentor-client",
   "private": true,
-  "description": "A simple starter to get up and developing quickly with Gatsby",
+  "description": "Mentor chat static React SPA",
   "version": "1.0.0",
   "dependencies": {
+    "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@gradiant/xapi-dsl": "^1.12.0",
-    "@iostindex/gatsby-plugin-material-ui": "^5.0.0",
     "@kycarr/cmi5": "^1.1.6",
     "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.117",
@@ -16,10 +16,11 @@
     "@reduxjs/toolkit": "^1.9.1",
     "@sentry/react": "^6.19.7",
     "@sentry/tracing": "^6.19.7",
+    "@xapi/xapi": "^1.0.3",
     "axios": "^1.9.0",
     "classnames": "^2.3.2",
     "detect-browser": "^5.3.0",
-    "gatsby": "^5.14.3",
+    "lodash": "^4.17.21",
     "query-string": "^7.1.3",
     "react": "^18.2.0",
     "react-device-detect": "^2.2.3",
@@ -28,11 +29,13 @@
     "react-player": "^2.11.0",
     "react-redux": "^7.2.9",
     "react-resize-detector": "^7.1.2",
+    "react-router-dom": "^6.30.6",
     "react-scroll": "^1.8.9",
     "react-speech-recognition": "^3.10.0",
     "redux": "^4.1.1",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.4.2",
+    "regenerator-runtime": "^0.14.1",
     "smoothscroll-polyfill": "^0.4.4",
     "tss-react": "^4.9.0",
     "use-local-storage": "^2.3.6",
@@ -40,50 +43,45 @@
     "yn": "^4.0.0"
   },
   "devDependencies": {
-    "@types/node": "^18.11.18",
-    "@types/react": "^17.0.53",
+    "@types/lodash": "^4.17.0",
+    "@types/node": "^26.0.0",
+    "@types/react": "^18.3.0",
     "@types/react-beautiful-dnd": "^13.1.3",
-    "@types/react-dom": "^17.0.18",
+    "@types/react-dom": "^18.3.0",
     "@types/react-redux": "^7.1.25",
     "@types/react-scroll": "^1.8.6",
     "@types/react-speech-recognition": "^3.9.5",
     "@types/smoothscroll-polyfill": "^0.3.1",
     "@types/uuid": "^8.3.4",
-    "@typescript-eslint/eslint-plugin": "^4.29.1",
-    "@typescript-eslint/parser": "^4.29.1",
-    "eslint": "^7.32.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@vitejs/plugin-react-swc": "^4.3.3",
+    "eslint": "^8.57.1",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-react": "^7.32.1",
-    "gatsby-plugin-env-variables": "^2.3.0",
-    "gatsby-plugin-manifest": "^5.5.0",
-    "gatsby-plugin-sitemap": "^6.5.0",
-    "gatsby-plugin-typescript": "^5.5.0",
+    "prettier": "3.0.2",
     "react-markdown": "^5.0.3",
-    "typescript": "^4.9.4"
+    "typescript": "^5.9.3",
+    "vite": "^8.3.6"
   },
   "keywords": [
-    "gatsby"
+    "vite",
+    "react"
   ],
   "license": "MIT",
   "scripts": {
-    "build": "npx gatsby build --prefix-paths",
-    "develop": "npx gatsby develop",
-    "format": "prettier --write '**/*.{js,jsx,json,ts,tsx}'",
-    "start": "npm run develop",
-    "serve": "gatsby serve --prefix-paths",
+    "build": "vite build",
+    "develop": "vite",
+    "format": "prettier --write '**/*.{js,jsx,json,ts,tsx,mts,cjs,html}'",
+    "start": "vite",
+    "serve": "vite preview",
     "test": "echo 'uses only cypress tests'",
     "test:audit": "npm audit --production --audit-level=moderate",
-    "test:lint": "eslint src --ext ts --ext tsx --ext js --ext jsx --max-warnings=0",
+    "test:lint": "eslint src --ext ts --ext tsx --ext js --ext jsx --ext mts",
     "test:types": "tsc --noEmit"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
-  },
-  "bugs": {
-    "url": "https://github.com/gatsbyjs/gatsby/issues"
-  },
-  "overrides": {
-    "@types/react": "^17.0.53"
+  "engines": {
+    "node": "26.x",
+    "npm": "11.x"
   }
 }
