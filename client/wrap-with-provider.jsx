@@ -10,7 +10,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import thunk from "redux-thunk";
 
 import store from "store/reducer";
-import logger from "redux-logger";
+import { createLogger } from "redux-logger";
+const logger = createLogger();
 import * as Sentry from "@sentry/react";
 
 const sentryEnhancer = Sentry.createReduxEnhancer({

@@ -4,21 +4,29 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-/**
- * Implement Gatsby's Browser APIs in this file.
- *
- * See: https://www.gatsbyjs.org/docs/browser-apis/
- */
+import React from "react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { CacheProvider } from "@emotion/react";
+import createCache from "@emotion/cache";
+import { appRoutes } from "./app-routes";
 
-import "regenerator-runtime/runtime";
-
-import wrapWithProvider from "./wrap-with-provider";
-
-import { loadSentry } from "./src/utils";
-
-if (process.env.GATSBY_IS_SENTRY_ENABLED === "true") {
-  console.log("Loading sentry");
-  loadSentry();
+const cache = createCache({ key: "css" });
+export default function App(): JSX.Element {
+  return (
+    <CacheProvider value={cache}>
+      <BrowserRouter basename="/chat">
+        <Routes>
+          {appRoutes.map(({ path, Component }) => (
+            <Route
+              key={path}
+              caseSensitive
+              path={path}
+              element={<Component />}
+            />
+          ))}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </CacheProvider>
+  );
 }
-
-export const wrapRootElement = wrapWithProvider;

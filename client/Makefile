@@ -13,8 +13,8 @@ clean:
 	rm -rf node_modules .cache public
 
 .PHONY: develop
-develop: .env.development node_modules/gatsby
-	npx gatsby develop -p 8000
+develop: .env.development node_modules/vite
+	npm run develop
 
 .PHONY: format
 format:
@@ -31,7 +31,7 @@ pretty:
 node_modules/eslint:
 	npm ci 
 
-node_modules/gatsby-cli:
+node_modules/vite:
 	npm ci 
 
 node_modules/typescript:

@@ -60,7 +60,9 @@ export function useWithOrgPerms(): UseWithOrgPerms {
   }
 
   async function getOrgPerms(accessCode: string) {
-    accessCode && setLocalStorage(ORG_ACCESS_CODE, accessCode);
+    if (accessCode) {
+      setLocalStorage(ORG_ACCESS_CODE, accessCode);
+    }
     setOrgPermitteds({
       loading: true,
       accessCode,

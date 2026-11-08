@@ -7,7 +7,7 @@ The full terms of this copyright and license should always be found in the root 
 import queryString from "query-string";
 import { Agent } from "@gradiant/xapi-dsl";
 import Cmi5, { LaunchParameters } from "@kycarr/cmi5";
-import { Statement } from "@xapi/xapi";
+import type { Statement } from "@xapi/xapi";
 
 import { Config, XapiResultCustom } from "types";
 import {

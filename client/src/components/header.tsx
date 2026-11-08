@@ -71,11 +71,15 @@ function Header(): JSX.Element {
     const userID = localData.givenUserId;
     const referrer = localData.referrer;
     let link = `/home/?${REFERRER_KEY}=${referrer}`;
-    userEmail &&
-      (link += `&${EMAIL_URL_PARAM_KEY}=${encodeURIComponent(userEmail)}`);
-    userID && (link += `&${QUALTRICS_USER_ID_URL_PARAM_KEY}=${userID}`);
-    sessionIdInState &&
-      (link += `&${SESSION_URL_PARAM_KEY}=${sessionIdInState}`);
+    if (userEmail) {
+      link += `&${EMAIL_URL_PARAM_KEY}=${encodeURIComponent(userEmail)}`;
+    }
+    if (userID) {
+      link += `&${QUALTRICS_USER_ID_URL_PARAM_KEY}=${userID}`;
+    }
+    if (sessionIdInState) {
+      link += `&${SESSION_URL_PARAM_KEY}=${sessionIdInState}`;
+    }
     link += `&${REGISTRATION_ID_KEY}=${getRegistrationId()}`;
     window.location.href = link;
   };

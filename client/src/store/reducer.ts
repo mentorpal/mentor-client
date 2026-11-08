@@ -5,6 +5,7 @@ Permission to use, copy, modify, and distribute this software and its documentat
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
 import { normalizeString } from "utils";
+import { pushUrl } from "../url-history";
 import {
   ANSWER_FINISHED,
   VIDEO_FINISHED,
@@ -188,7 +189,7 @@ function onSessionIdCreated(
   const url = new URL(window.location.href);
   url.searchParams.delete("sessionId");
   url.searchParams.append("sessionId", action.payload);
-  window.history.pushState({ path: url.href }, "", url.href);
+  pushUrl(url);
   return {
     ...state,
     sessionId: action.payload,
@@ -370,14 +371,17 @@ function onMentorLoadResults(
 
   stateCopy.mentorsById = Object.getOwnPropertyNames(
     filteredMentorsById
-  ).reduce((acc: Record<string, MentorState>, mid: string) => {
-    acc[mid] = {
-      ...stateCopy.mentorsById[mid],
-      ...(filteredMentorsById[mid]?.data || {}),
-      status: MentorQuestionStatus.READY,
-    };
-    return acc;
-  }, {} as Record<string, MentorState>);
+  ).reduce(
+    (acc: Record<string, MentorState>, mid: string) => {
+      acc[mid] = {
+        ...stateCopy.mentorsById[mid],
+        ...(filteredMentorsById[mid]?.data || {}),
+        status: MentorQuestionStatus.READY,
+      };
+      return acc;
+    },
+    {} as Record<string, MentorState>
+  );
 
   if (firstActiveMentorId) {
     stateCopy = mentorSelected(stateCopy, {

@@ -4,15 +4,9 @@ Permission to use, copy, modify, and distribute this software and its documentat
 
 The full terms of this copyright and license should always be found in the root directory of this software deliverable as "license.txt" and if these terms are not found with this software, please contact the USC Stevens Center for the full license.
 */
-const path = require("path");
+import React from "react";
+import IndexPage from "./pages/index";
 
-exports.onCreateWebpackConfig = ({ actions }) => {
-  actions.setWebpackConfig({
-    resolve: {
-      alias: {
-        "@": path.resolve(__dirname, "src"),
-      },
-      modules: [path.resolve(__dirname, "src"), "node_modules"],
-    },
-  });
-};
+export const appRoutes: { path: string; Component: React.ComponentType }[] = [
+  { path: "/", Component: IndexPage },
+];
